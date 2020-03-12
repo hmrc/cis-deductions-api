@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Sample Endpoint",
+  "description": "Sample Endpoint",
+  "type": "object",
+  "properties": {
+    "anIdUsedAcrossMultipleSchemas": { "$ref": "definitions.json#/definitions/uid" },
+    "aFieldDefinedInline": {
+      "description": "a field defined within the schema",
+      "type": "string",
+      "example": "example"
+    },
+    "links": { "$ref": "definitions.json#/definitions/hateoasLinks"}
+  },
+  "required": [
+    "anIdUsedAcrossMultipleSchemas",
+    "aFieldDefinedInline"
+  ]
+}
