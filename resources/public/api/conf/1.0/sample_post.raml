@@ -1,0 +1,35 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatLossId
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFoundLossId
+displayName: Sample endoint [test only]
+description: This endpoint allows a user to see an example endpoint.
+(annotations.sandboxData): !include scenarios/example_test_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/sample_request.json
+    examples:
+     example-1:
+      description: sample request body
+      value: !include examples/request_1.json
+responses:
+  201:
+    body:
+      application/json:
+        type: !include schemas/sample_response.json
+        examples:
+          example-1:
+            description: Sample example 1
+            value: !include examples/example_1.json
+          example-2:
+            description: Sample example 2
+            value: !include examples/example_2.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.
