@@ -21,11 +21,11 @@ import java.util.Date
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class PeriodData(
-                  deductionAmount: Double,
+                  deductionAmount: BigDecimal,
                   deductionFromDate: String,
                   deductionToDate: String,
-                  costOfMaterials: Double,
-                  grossAmountPaid: Double
+                  costOfMaterials: Option[BigDecimal],
+                  grossAmountPaid: BigDecimal
                 )
 
 object PeriodData{
