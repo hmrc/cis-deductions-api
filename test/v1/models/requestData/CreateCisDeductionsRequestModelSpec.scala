@@ -16,7 +16,7 @@
 
 package v1.models.requestData
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import support.UnitSpec
 
 class CreateCisDeductionsRequestModelSpec extends UnitSpec {
@@ -28,6 +28,33 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val cisDeductionsInvalidJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": false,
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -88,7 +115,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
     )
   )
   "CisDeductionsRequestModel" when {
-    " read from valid JSON " should {
+    " written to JSON " should {
       "return the expected CisDeductionsRequestBody" in {
         Json.toJson(cisDeductionsRequestObj) shouldBe cisDeductionsRequestJson
       }
@@ -96,6 +123,17 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
         Json.toJson(testNegative) shouldBe testNegativeJson
       }
     }
-  }
 
+    "read from valid JSON" should {
+      "return the expected CisDeductionsRequestBody" in {
+        cisDeductionsRequestJson.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsRequestObj)
+      }
+    }
+
+    "read from invalid JSON" should {
+      "return the expected error" in {
+        cisDeductionsInvalidJson.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
+      }
+    }
+  }
 }
