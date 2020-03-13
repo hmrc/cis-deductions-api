@@ -75,7 +75,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val testNegativeJson: JsValue = Json.parse {
+  val cisDeductionsEmptyResponse: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -84,23 +84,48 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       |  "employerRef": "BV40092",
       |  "periodData": [
       |      {
-      |      "deductionAmount": -355.00,
+      |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": -35.00,
-      |      "grossAmountPaid": -1457.00
+      |      "grossAmountPaid": 1457.00
       |    },
       |    {
-      |      "deductionAmount": -355.00,
+      |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-07-06",
       |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": -35.00,
-      |      "grossAmountPaid": -1457.00
+      |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
       |""".stripMargin
   }
+
+  val cisDeductionsinvalidFieldResponse: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
 
   val cisDeductionsRequestObj: CreateCisDeductionsRequestModel = CreateCisDeductionsRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
@@ -108,32 +133,40 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       PeriodData(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
     )
   )
-  val testNegative: CreateCisDeductionsRequestModel = CreateCisDeductionsRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+
+  val cisDeductionsEmptyObj: CreateCisDeductionsRequestModel = CreateCisDeductionsRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
-      PeriodData(-355.00, "2019-06-06", "2019-07-05", Some(-35.00), -1457.00),
-      PeriodData(-355.00, "2019-07-06", "2019-08-05", Some(-35.00), -1457.00)
+      PeriodData(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
+      PeriodData(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
     )
   )
-  "CisDeductionsRequestModel" when {
-    " written to JSON " should {
-      "return the expected CisDeductionsRequestBody" in {
-        Json.toJson(cisDeductionsRequestObj) shouldBe cisDeductionsRequestJson
-      }
-      "return the expected negative test for CisDeductionsRequestBody" in {
-        Json.toJson(testNegative) shouldBe testNegativeJson
-      }
-    }
 
-    "read from valid JSON" should {
-      "return the expected CisDeductionsRequestBody" in {
-        cisDeductionsRequestJson.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsRequestObj)
-      }
-    }
 
-    "read from invalid JSON" should {
-      "return the expected error" in {
-        cisDeductionsInvalidJson.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
-      }
+  "read from valid JSON" should {
+    "return the expected CisDeductionsRequestBody" in {
+      cisDeductionsRequestJson.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsRequestObj)
+    }
+    "return the expected CisDeductionRequestBody when optional field is omitted" in {
+      cisDeductionsEmptyResponse.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsEmptyObj)
     }
   }
+
+  "read from invalid JSON" should {
+    "return the expected error when field contains incorrect data type" in {
+      cisDeductionsInvalidJson.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
+    }
+
+    "return the expected error when mandatory field is omitted" in {
+      cisDeductionsinvalidFieldResponse.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
+    }
+  }
+
+  " written to JSON " should {
+    "return the expected CisDeductionsRequestBody" in {
+      Json.toJson(cisDeductionsRequestObj) shouldBe cisDeductionsRequestJson
+    }
+  }
+
 }
+
+

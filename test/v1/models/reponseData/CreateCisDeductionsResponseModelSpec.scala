@@ -43,7 +43,7 @@ class CreateCisDeductionsResponseModelSpec extends UnitSpec {
   val CisDeductionsResponseObj: CreateCisDeductionsResponseModel = CreateCisDeductionsResponseModel("S4636A77V5KB8625U")
 
   "CisDeductionsResponseModel" when {
-    " written to JSON " should {
+    " write to JSON " should {
       "return the expected CisDeductionsResponseBody" in {
         Json.toJson(CisDeductionsResponseObj) shouldBe CisDeductionsResponseJsonObj
       }
@@ -61,4 +61,9 @@ class CreateCisDeductionsResponseModelSpec extends UnitSpec {
       InvalidCisDeductionsResponseJsonObj.validate[CreateCisDeductionsResponseModel] shouldBe a[JsError]
     }
   }
+
+
+
+
+
 }
