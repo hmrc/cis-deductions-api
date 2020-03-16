@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.request
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.JsValue
+import v1.models.requestData.RawData
 
-case class
-CreateCisDeductionsResponseModel(id: String)
+case class CreateRawData(nino: String, body: JsValue) extends RawData
 
-object CreateCisDeductionsResponseModel {
-  implicit val reads: Reads[CreateCisDeductionsResponseModel] = Json.reads[CreateCisDeductionsResponseModel]
-  implicit val writes: Writes[CreateCisDeductionsResponseModel] = Json.writes[CreateCisDeductionsResponseModel]
-}

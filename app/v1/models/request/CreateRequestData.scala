@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.request
 
-import play.api.libs.json.{Json, Reads, Writes}
+import uk.gov.hmrc.domain.Nino
 
-case class
-CreateCisDeductionsResponseModel(id: String)
-
-object CreateCisDeductionsResponseModel {
-  implicit val reads: Reads[CreateCisDeductionsResponseModel] = Json.reads[CreateCisDeductionsResponseModel]
-  implicit val writes: Writes[CreateCisDeductionsResponseModel] = Json.writes[CreateCisDeductionsResponseModel]
-}
+case class CreateRequestData(nino: Nino, body: CreateCisDeductionsRequestModel)

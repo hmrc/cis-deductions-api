@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}

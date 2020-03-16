@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
-
-import java.util.Date
+package v1.models.request
 
 import play.api.libs.json.{Json, Reads, Writes}
 
