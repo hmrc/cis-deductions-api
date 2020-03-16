@@ -16,8 +16,6 @@
 
 package v1.models.requestData
 
-import java.util.Date
-
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class PeriodData(
@@ -33,8 +31,7 @@ object PeriodData{
   implicit val writes: Writes[PeriodData] = Json.writes[PeriodData]
 }
 
-case class CreateCisDeductionsRequestModel(
-                                       fromDate: String,
+case class CreateCisDeductionsRequestModel(fromDate: String,
                                        toDate: String,
                                        contractorName: String,
                                        employerRef: String,
