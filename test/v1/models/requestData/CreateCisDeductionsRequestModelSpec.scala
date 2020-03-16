@@ -75,7 +75,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val cisDeductionsEmptyResponse: JsValue = Json.parse {
+  val cisDeductionsEmptyRequest: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -100,7 +100,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val cisDeductionsinvalidFieldResponse: JsValue = Json.parse {
+  val cisDeductionsinvalidFieldRequest: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -147,7 +147,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
       cisDeductionsRequestJson.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsRequestObj)
     }
     "return the expected CisDeductionRequestBody when optional field is omitted" in {
-      cisDeductionsEmptyResponse.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsEmptyObj)
+      cisDeductionsEmptyRequest.validate[CreateCisDeductionsRequestModel] shouldBe JsSuccess(cisDeductionsEmptyObj)
     }
   }
 
@@ -157,7 +157,7 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
     }
 
     "return the expected error when mandatory field is omitted" in {
-      cisDeductionsinvalidFieldResponse.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
+      cisDeductionsinvalidFieldRequest.validate[CreateCisDeductionsRequestModel] shouldBe a[JsError]
     }
   }
 
