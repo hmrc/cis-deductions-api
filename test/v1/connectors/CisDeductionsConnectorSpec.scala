@@ -32,7 +32,7 @@ class CisDeductionsConnectorSpec extends ConnectorSpec {
   val id = "123456789"
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: CisDeductionsConnector = new CisDeductionsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: CreateCisDeductionsConnector = new CreateCisDeductionsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl

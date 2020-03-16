@@ -27,8 +27,8 @@ import v1.models.responseData.CreateCisDeductionsResponseModel
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CisDeductionsConnector @Inject()(val http: HttpClient,
-                                       val appConfig: AppConfig
+class CreateCisDeductionsConnector @Inject()(val http: HttpClient,
+                                             val appConfig: AppConfig
                                       ) extends BaseDesConnector {
 
   def createDeductions(request: CreateCisDeductionsRequestData)(
