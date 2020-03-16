@@ -20,7 +20,6 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateCisDeductionsRequestModel, PeriodData}
 import v1.models.requestData.{CreateCisDeductionsRequestData, CreateCisDeductionsRequestModel, PeriodData}
 import v1.models.responseData.CreateCisDeductionsResponseModel
 
