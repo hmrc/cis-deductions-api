@@ -129,15 +129,15 @@ class CreateCisDeductionsRequestModelSpec extends UnitSpec {
 
   val cisDeductionsRequestObj: CreateCisDeductionsRequestModel = CreateCisDeductionsRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
-      PeriodData(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
-      PeriodData(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
     )
   )
 
   val cisDeductionsEmptyObj: CreateCisDeductionsRequestModel = CreateCisDeductionsRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
-      PeriodData(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
-      PeriodData(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
     )
   )
 

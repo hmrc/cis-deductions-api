@@ -20,25 +20,12 @@ import java.util.Date
 
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class PeriodData(
-                  deductionAmount: BigDecimal,
-                  deductionFromDate: String,
-                  deductionToDate: String,
-                  costOfMaterials: Option[BigDecimal],
-                  grossAmountPaid: BigDecimal
-                )
-
-object PeriodData{
-  implicit val reads: Reads[PeriodData] = Json.reads[PeriodData]
-  implicit val writes: Writes[PeriodData] = Json.writes[PeriodData]
-}
-
 case class CreateCisDeductionsRequestModel(
                                        fromDate: String,
                                        toDate: String,
                                        contractorName: String,
                                        employerRef: String,
-                                       periodData: Seq[PeriodData],
+                                       periodData: Seq[PeriodDetails],
                                      )
 
 object CreateCisDeductionsRequestModel {
