@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import play.api.libs.json.{Json, Reads, Writes}
 
-object DesTaxYear {
+case class CreateRequestModel(
+                               fromDate: String,
+                               toDate: String,
+                               contractorName: String,
+                               employerRef: String,
+                               periodData: Seq[PeriodDetails],
+                             )
 
-  val taxYearStart: Int = 2
-  val taxYearEnd: Int = 5
-
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(taxYearStart) + taxYear.drop(taxYearEnd))
+object CreateRequestModel {
+  implicit val reads: Reads[CreateRequestModel] = Json.reads[CreateRequestModel]
+  implicit val writes: Writes[CreateRequestModel] = Json.writes[CreateRequestModel]
 }

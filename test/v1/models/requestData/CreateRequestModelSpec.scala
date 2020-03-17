@@ -1,0 +1,185 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v1.models.requestData
+
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import support.UnitSpec
+import v1.models.request.{CreateRequestModel, PeriodDetails}
+
+class CreateRequestModelSpec extends UnitSpec {
+
+  val RequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val InvalidRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": false,
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val missingOptionalRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val missingMandatoryFieldRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val missingPeriodDataRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+
+  val RequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+    Seq(
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
+    )
+  )
+
+  val EmptyRequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+    Seq(
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
+    )
+  )
+
+  "read from valid JSON" should {
+    "return the expected CisDeductionsRequestBody" in {
+      RequestJson.validate[CreateRequestModel] shouldBe JsSuccess(RequestObj)
+    }
+    "return the expected CisDeductionRequestBody when optional field is omitted" in {
+      missingOptionalRequestJson.validate[CreateRequestModel] shouldBe JsSuccess(EmptyRequestObj)
+    }
+  }
+
+  "read from invalid JSON" should {
+    "return the expected error when field contains incorrect data type" in {
+      InvalidRequestJson.validate[CreateRequestModel] shouldBe a[JsError]
+    }
+
+    "return the expected error when mandatory field is omitted" in {
+      missingMandatoryFieldRequestJson.validate[CreateRequestModel] shouldBe a[JsError]
+    }
+  }
+
+  " written to JSON " should {
+    "return the expected CisDeductionsRequestBody" in {
+      Json.toJson(RequestObj) shouldBe RequestJson
+    }
+  }
+
+}
+
+
