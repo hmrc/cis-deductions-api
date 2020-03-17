@@ -18,15 +18,15 @@ package v1.models.request
 
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class CreateCisDeductionsRequestModel(
-                                       fromDate: String,
-                                       toDate: String,
-                                       contractorName: String,
-                                       employerRef: String,
-                                       periodData: Seq[PeriodDetails],
-                                     )
+case class CreateRequestModel(
+                               fromDate: String,
+                               toDate: String,
+                               contractorName: String,
+                               employerRef: String,
+                               periodData: Seq[PeriodDetails],
+                             )
 
-object CreateCisDeductionsRequestModel {
-  implicit val reads: Reads[CreateCisDeductionsRequestModel] = Json.reads[CreateCisDeductionsRequestModel]
-  implicit val writes: Writes[CreateCisDeductionsRequestModel] = Json.writes[CreateCisDeductionsRequestModel]
+object CreateRequestModel {
+  implicit val reads: Reads[CreateRequestModel] = Json.reads[CreateRequestModel]
+  implicit val writes: Writes[CreateRequestModel] = Json.writes[CreateRequestModel]
 }

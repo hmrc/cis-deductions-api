@@ -18,4 +18,4 @@ package v1.models.request
 
 import uk.gov.hmrc.domain.Nino
 
-case class CreateRequestData(nino: Nino, body: CreateCisDeductionsRequestModel)
+case class CreateRequestData(nino: Nino, body: CreateRequestModel)

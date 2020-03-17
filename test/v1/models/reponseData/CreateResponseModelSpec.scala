@@ -18,10 +18,10 @@ package v1.models.reponseData
 
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import support.UnitSpec
-import v1.models.responseData.CreateCisDeductionsResponseModel
+import v1.models.responseData.CreateResponseModel
 
 
-class CreateCisDeductionsResponseModelSpec extends UnitSpec {
+class CreateResponseModelSpec extends UnitSpec {
 
 
   val CisDeductionsResponseJsonObj: JsValue = Json.parse(
@@ -40,7 +40,7 @@ class CreateCisDeductionsResponseModelSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val CisDeductionsResponseObj: CreateCisDeductionsResponseModel = CreateCisDeductionsResponseModel("S4636A77V5KB8625U")
+  val CisDeductionsResponseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
@@ -52,18 +52,13 @@ class CreateCisDeductionsResponseModelSpec extends UnitSpec {
 
   "Read from valid JSON" should {
     "Return the expected CisReductionsResponseBody" in {
-      CisDeductionsResponseJsonObj.validate[CreateCisDeductionsResponseModel] shouldBe JsSuccess(CisDeductionsResponseObj)
+      CisDeductionsResponseJsonObj.validate[CreateResponseModel] shouldBe JsSuccess(CisDeductionsResponseObj)
     }
   }
 
   "Read from invalid JSON" should {
     "return the expected error" in {
-      InvalidCisDeductionsResponseJsonObj.validate[CreateCisDeductionsResponseModel] shouldBe a[JsError]
+      InvalidCisDeductionsResponseJsonObj.validate[CreateResponseModel] shouldBe a[JsError]
     }
   }
-
-
-
-
-
 }

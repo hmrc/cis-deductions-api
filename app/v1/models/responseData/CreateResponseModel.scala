@@ -18,10 +18,9 @@ package v1.models.responseData
 
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class
-CreateCisDeductionsResponseModel(id: String)
+case class CreateResponseModel(id: String)
 
-object CreateCisDeductionsResponseModel {
-  implicit val reads: Reads[CreateCisDeductionsResponseModel] = Json.reads[CreateCisDeductionsResponseModel]
-  implicit val writes: Writes[CreateCisDeductionsResponseModel] = Json.writes[CreateCisDeductionsResponseModel]
+object CreateResponseModel {
+  implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
+  implicit val writes: Writes[CreateResponseModel] = Json.writes[CreateResponseModel]
 }
