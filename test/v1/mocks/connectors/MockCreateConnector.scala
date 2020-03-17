@@ -19,21 +19,21 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreateCisDeductionsConnector, DesOutcome}
-import v1.models.requestData.CreateCisDeductionsRequestData
-import v1.models.responseData.CreateCisDeductionsResponseModel
+import v1.connectors.{CreateConnector, DesOutcome}
+import v1.models.request.CreateRequestData
+import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateCisDeductionsConnector extends MockFactory {
+trait MockCreateConnector extends MockFactory {
 
-  val mockCreateCisDeductionsConnector: CreateCisDeductionsConnector = mock[CreateCisDeductionsConnector]
+  val mockCreateConnector: CreateConnector = mock[CreateConnector]
 
   object MockCreateCisDeductionsConnector {
 
-    def createCisDeduction(requestData: CreateCisDeductionsRequestData): CallHandler[Future[DesOutcome[CreateCisDeductionsResponseModel]]] = {
-      (mockCreateCisDeductionsConnector
-        .createDeductions(_: CreateCisDeductionsRequestData)(_: HeaderCarrier, _: ExecutionContext))
+    def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DesOutcome[CreateResponseModel]]] = {
+      (mockCreateConnector
+        .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }

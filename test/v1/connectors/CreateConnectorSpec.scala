@@ -20,18 +20,17 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.requestData.{CreateCisDeductionsRequestData, CreateCisDeductionsRequestModel, PeriodData}
-import v1.models.responseData.CreateCisDeductionsResponseModel
-
+import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
+import v1.models.responseData.CreateResponseModel
 import scala.concurrent.Future
 
-class CisDeductionsConnectorSpec extends ConnectorSpec {
+class CreateConnectorSpec extends ConnectorSpec {
 
   val nino = Nino("AA123456A")
   val id = "123456789"
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: CreateCisDeductionsConnector = new CreateCisDeductionsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
@@ -40,10 +39,10 @@ class CisDeductionsConnectorSpec extends ConnectorSpec {
   }
 
   "createDeductions" must {
-    val request = CreateCisDeductionsRequestData(nino, CreateCisDeductionsRequestModel("","","","",Seq(PeriodData(0.00,"","",Some(0.00),0.00))))
+    val request = CreateRequestData(nino, CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
-      val outcome = Right(ResponseWrapper(id, CreateCisDeductionsResponseModel(id)))
+      val outcome = Right(ResponseWrapper(id, CreateResponseModel(id)))
 
       MockedHttpClient
         .post(
@@ -53,7 +52,7 @@ class CisDeductionsConnectorSpec extends ConnectorSpec {
         )
         .returns(Future.successful(outcome))
 
-      await(connector.createDeductions(request)) shouldBe outcome
+      await(connector.create(request)) shouldBe outcome
     }
   }
 }

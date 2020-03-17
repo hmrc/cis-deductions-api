@@ -20,31 +20,31 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockCreateCisDeductionsConnector
+import v1.mocks.connectors.MockCreateConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.requestData._
-import v1.models.responseData.CreateCisDeductionsResponseModel
+import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
+import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CreateCisDeductionsServiceSpec extends UnitSpec {
+class CreateServiceSpec extends UnitSpec {
 
   private val nino = "AA123456A"
   private val correlationId = "X-123"
   private val id = "123456789"
 
-  private val requestBody = CreateCisDeductionsRequestModel("","","","",Seq(PeriodData(0.00,"","",Some(0.00),0.00)))
+  private val requestBody = CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00)))
 
-  private val requestData = CreateCisDeductionsRequestData(Nino(nino), requestBody)
+  private val requestData = CreateRequestData(Nino(nino), requestBody)
 
-  trait Test extends MockCreateCisDeductionsConnector {
+  trait Test extends MockCreateConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new CreateCisDeductionsService(
-      connector = mockCreateCisDeductionsConnector
+    val service = new CreateService(
+      connector = mockCreateConnector
     )
   }
 
@@ -52,9 +52,9 @@ class CreateCisDeductionsServiceSpec extends UnitSpec {
     "service call successsful" must {
       "return mapped result" in new Test {
         MockCreateCisDeductionsConnector.createCisDeduction(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId,CreateCisDeductionsResponseModel(id)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId,CreateResponseModel(id)))))
 
-        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateCisDeductionsResponseModel(id)))
+        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateResponseModel(id)))
       }
     }
 
