@@ -22,7 +22,6 @@ import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
-
 import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {

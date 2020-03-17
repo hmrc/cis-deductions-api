@@ -24,8 +24,14 @@ object MtdError {
   implicit val writes: Writes[MtdError] = Json.writes[MtdError]
 }
 
+// Format Errors
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
+object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
+object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTION_FROM_DATE", "The provided Deduction From date is invalid")
+object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTION_TO_DATE", "The provided Deduction To date is invalid")
+
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
@@ -35,6 +41,12 @@ object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_B
 
 object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
+
+object RuleDateRangeInvalidError
+    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The specified date range is invalid")
+
+object RuleToDateBeforeFromDateError
+    extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
