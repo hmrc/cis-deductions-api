@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.responseData
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import play.api.libs.json._
 
-object DesTaxYear {
+case class CreateResponseModel(id: String)
 
-  val taxYearStart: Int = 2
-  val taxYearEnd: Int = 5
-
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(taxYearStart) + taxYear.drop(taxYearEnd))
+object CreateResponseModel {
+  implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
+  implicit val writes: Writes[CreateResponseModel] = Json.writes[CreateResponseModel]
 }

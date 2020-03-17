@@ -21,23 +21,23 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.requestData.CreateCisDeductionsRequestData
-import v1.models.responseData.CreateCisDeductionsResponseModel
+import v1.models.request.CreateRequestData
+import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateCisDeductionsConnector @Inject()(val http: HttpClient,
-                                             val appConfig: AppConfig
+class CreateConnector @Inject()(val http: HttpClient,
+                                val appConfig: AppConfig
                                       ) extends BaseDesConnector {
 
-  def createDeductions(request: CreateCisDeductionsRequestData)(
+  def create(request: CreateRequestData)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[CreateCisDeductionsResponseModel]] = {
+    ec: ExecutionContext): Future[DesOutcome[CreateResponseModel]] = {
 
     post(
       body = request.body,
-      DesUri[CreateCisDeductionsResponseModel](s"cross-regime/deductions-placeholder/CIS/${request.nino}")
+      DesUri[CreateResponseModel](s"cross-regime/deductions-placeholder/CIS/${request.nino}")
     )
   }
 }
