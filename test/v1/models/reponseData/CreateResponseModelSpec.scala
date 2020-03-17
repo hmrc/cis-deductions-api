@@ -24,7 +24,7 @@ import v1.models.responseData.CreateResponseModel
 class CreateResponseModelSpec extends UnitSpec {
 
 
-  val CisDeductionsResponseJsonObj: JsValue = Json.parse(
+  val ResponseJson: JsValue = Json.parse(
     """
       |{
       |"id": "S4636A77V5KB8625U"
@@ -32,7 +32,7 @@ class CreateResponseModelSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val InvalidCisDeductionsResponseJsonObj: JsValue = Json.parse(
+  val InvalidResponseJson: JsValue = Json.parse(
     """
       |{
       |"id": 1
@@ -40,25 +40,36 @@ class CreateResponseModelSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val CisDeductionsResponseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
+  val missingMandatoryResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |}
+      |""".stripMargin
+  )
+
+  val ResponseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
       "return the expected CisDeductionsResponseBody" in {
-        Json.toJson(CisDeductionsResponseObj) shouldBe CisDeductionsResponseJsonObj
+        Json.toJson(ResponseObj) shouldBe ResponseJson
       }
     }
   }
 
   "Read from valid JSON" should {
     "Return the expected CisReductionsResponseBody" in {
-      CisDeductionsResponseJsonObj.validate[CreateResponseModel] shouldBe JsSuccess(CisDeductionsResponseObj)
+      ResponseJson.validate[CreateResponseModel] shouldBe JsSuccess(ResponseObj)
     }
   }
 
   "Read from invalid JSON" should {
-    "return the expected error" in {
-      InvalidCisDeductionsResponseJsonObj.validate[CreateResponseModel] shouldBe a[JsError]
+    "return the expected error when invalid data type is used" in {
+      InvalidResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
+    }
+
+    "return the expected error when id field is missing" in {
+      missingMandatoryResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
   }
 }

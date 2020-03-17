@@ -22,7 +22,7 @@ import v1.models.request.{CreateRequestModel, PeriodDetails}
 
 class CreateRequestModelSpec extends UnitSpec {
 
-  val cisDeductionsRequestJson: JsValue = Json.parse {
+  val RequestJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -49,7 +49,7 @@ class CreateRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val cisDeductionsInvalidJson: JsValue = Json.parse {
+  val InvalidRequestJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -76,7 +76,7 @@ class CreateRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val cisDeductionsEmptyRequest: JsValue = Json.parse {
+  val missingOptionalRequestJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -101,7 +101,7 @@ class CreateRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
-  val cisDeductionsinvalidFieldRequest: JsValue = Json.parse {
+  val missingMandatoryFieldRequestJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -127,15 +127,28 @@ class CreateRequestModelSpec extends UnitSpec {
       |""".stripMargin
   }
 
+  val missingPeriodDataRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |  ]
+      |}
+      |""".stripMargin
+  }
 
-  val cisDeductionsRequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+
+  val RequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
     )
   )
 
-  val cisDeductionsEmptyObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val EmptyRequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
@@ -144,26 +157,26 @@ class CreateRequestModelSpec extends UnitSpec {
 
   "read from valid JSON" should {
     "return the expected CisDeductionsRequestBody" in {
-      cisDeductionsRequestJson.validate[CreateRequestModel] shouldBe JsSuccess(cisDeductionsRequestObj)
+      RequestJson.validate[CreateRequestModel] shouldBe JsSuccess(RequestObj)
     }
     "return the expected CisDeductionRequestBody when optional field is omitted" in {
-      cisDeductionsEmptyRequest.validate[CreateRequestModel] shouldBe JsSuccess(cisDeductionsEmptyObj)
+      missingOptionalRequestJson.validate[CreateRequestModel] shouldBe JsSuccess(EmptyRequestObj)
     }
   }
 
   "read from invalid JSON" should {
     "return the expected error when field contains incorrect data type" in {
-      cisDeductionsInvalidJson.validate[CreateRequestModel] shouldBe a[JsError]
+      InvalidRequestJson.validate[CreateRequestModel] shouldBe a[JsError]
     }
 
     "return the expected error when mandatory field is omitted" in {
-      cisDeductionsinvalidFieldRequest.validate[CreateRequestModel] shouldBe a[JsError]
+      missingMandatoryFieldRequestJson.validate[CreateRequestModel] shouldBe a[JsError]
     }
   }
 
   " written to JSON " should {
     "return the expected CisDeductionsRequestBody" in {
-      Json.toJson(cisDeductionsRequestObj) shouldBe cisDeductionsRequestJson
+      Json.toJson(RequestObj) shouldBe RequestJson
     }
   }
 
