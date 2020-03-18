@@ -20,7 +20,6 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.CreateRequestData
 import v1.models.responseData.CreateResponseModel
 
@@ -34,6 +33,8 @@ class CreateConnector @Inject()(val http: HttpClient,
   def create(request: CreateRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): Future[DesOutcome[CreateResponseModel]] = {
+
+    import v1.connectors.httpparsers.StandardDesHttpParser._
 
     post(
       body = request.body,

@@ -68,7 +68,7 @@ class SampleServiceSpec extends UnitSpec {
             MockSampleConnector.doConnectorThing(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.doServiceThing(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+            await(service.doServiceThing(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
           }
 
         val input = Seq(
