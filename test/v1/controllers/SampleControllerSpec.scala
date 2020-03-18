@@ -124,7 +124,7 @@ class SampleControllerSpec
 
             MockSampleRequestDataParser
               .parse(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
 
             val result: Future[Result] = controller.handleRequest(nino, taxYear)(fakePostRequest(requestBodyJson))
 
@@ -169,7 +169,7 @@ class SampleControllerSpec
 
             MockSampleService
               .doServiceThing(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), Seq(mtdError)))))
 
             val result: Future[Result] = controller.handleRequest(nino, taxYear)(fakePostRequest(requestBodyJson))
 

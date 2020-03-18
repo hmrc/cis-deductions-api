@@ -23,7 +23,7 @@ case class CreateRequestModel(
                                toDate: String,
                                contractorName: String,
                                employerRef: String,
-                               periodData: Seq[PeriodDetails],
+                               periodData: Seq[PeriodDetails]
                              )
 
 object CreateRequestModel {
