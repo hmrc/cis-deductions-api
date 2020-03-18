@@ -85,14 +85,14 @@ class DesResponseMappingSupportSpec extends UnitSpec {
 
     "the error code is an OutboundError" must {
       "return the error as is (in an ErrorWrapper)" in {
-        mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain))) shouldBe
+        mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(Seq(ErrorBvrMain)))) shouldBe
           ErrorWrapper(Some(correlationId), Seq(ErrorBvrMain))
       }
     }
 
     "the error code is an OutboundError with multiple errors" must {
       "return the error as is (in an ErrorWrapper)" in {
-        mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
+        mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(Seq(ErrorBvrMain, ErrorBvr)))) shouldBe
           ErrorWrapper(Some(correlationId), Seq(ErrorBvrMain, ErrorBvr))
       }
     }

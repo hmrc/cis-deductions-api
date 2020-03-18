@@ -48,8 +48,8 @@ trait DesResponseMappingSupport {
           ErrorWrapper(Some(correlationId), Seq(BadRequestError) ++ mtdErrors)
         }
 
-      case ResponseWrapper(correlationId, OutboundError(error, errors)) =>
-        ErrorWrapper(Some(correlationId), Seq(error) ++ errors.getOrElse(Seq()))
+      case ResponseWrapper(correlationId, OutboundError(errors)) =>
+        ErrorWrapper(Some(correlationId), errors)
     }
   }
 }
