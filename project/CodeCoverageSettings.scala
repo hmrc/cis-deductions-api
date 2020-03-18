@@ -24,6 +24,9 @@ object CodeCoverageSettings {
     "Reverse.*",
     "uk.gov.hmrc.BuildInfo",
     "v1.hateoas.HateoasLinks",
+    "com.kenshoo.*",
+    ".*.ReverseSampleController.*",
+    "v1.controllers.javascript",
     "app.*",
     "prod.*",
     ".*Routes.*",
@@ -34,7 +37,7 @@ object CodeCoverageSettings {
 
   val settings: Seq[Setting[_]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimum := 95,
+    ScoverageKeys.coverageMinimum := 99,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
