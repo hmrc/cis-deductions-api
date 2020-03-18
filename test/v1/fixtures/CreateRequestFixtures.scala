@@ -154,9 +154,4 @@ object CreateRequestFixtures {
     )
   )
 
-  def foo(jsonStuffs: Option[JsValue]): AnyContentAsJson = {
-    AnyContentAsJson(
-      jsonStuffs.get
-    )
-  }
 }

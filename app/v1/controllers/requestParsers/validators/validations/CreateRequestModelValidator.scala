@@ -23,7 +23,6 @@ import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
 import v1.models.requestData.SampleRequestData
 
 class CreateRequestModelValidator extends Validator[CreateRawData] with FixedConfig {
-
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator
@@ -31,7 +30,6 @@ class CreateRequestModelValidator extends Validator[CreateRawData] with FixedCon
   )
 
   private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
-
     List(
       NinoValidation.validate(data.nino)
     )

@@ -22,6 +22,7 @@ import support.UnitSpec
 import v1.controllers.requestParsers.validators.validations.CreateRequestModelValidator
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
+import v1.models.errors.{InvalidBodyTypeError, RuleIncorrectOrEmptyBodyError}
 
 class CreateRequestModelValidatorSpec extends UnitSpec{
 
@@ -49,6 +50,14 @@ class CreateRequestModelValidatorSpec extends UnitSpec{
           .isEmpty shouldBe true
       }
     }
+    "return errors" when {
+      "invalid body type error" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, missingMandatoryFieldRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+    }
   }
-
 }
