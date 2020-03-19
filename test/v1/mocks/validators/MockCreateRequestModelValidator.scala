@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.mocks.validators
 
-import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
+import org.scalamock.handlers.{CallHandler, CallHandler1}
+import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.CreateRequestModelValidator
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
-import v1.models.requestData.{SampleRawData, SampleRequestData}
+import v1.models.errors.MtdError
+import v1.models.request.CreateRawData
 
-class CreateRequestModelParser @Inject()(val validator: CreateRequestModelValidator)
-  extends RequestParser[CreateRawData, CreateRequestData] {
+class MockCreateRequestModelValidator extends MockFactory {
 
-  override protected def requestFor(data: CreateRawData): CreateRequestData = {
-    val requestBody = data.body.as[CreateRequestModel]
-    CreateRequestData(Nino(data.nino), requestBody)
+  val mockValidator: CreateRequestModelValidator =  mock[CreateRequestModelValidator]
+
+  object MockValidator {
+
+    def validate(data: CreateRawData): CallHandler1[CreateRawData, List[MtdError]] = {
+      (mockValidator
+        .validate(_:CreateRawData))
+        .expects(data)
+    }
   }
-
 }

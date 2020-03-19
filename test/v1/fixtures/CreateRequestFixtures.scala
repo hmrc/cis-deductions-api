@@ -140,6 +140,33 @@ object CreateRequestFixtures {
       |""".stripMargin
   }
 
+  val invalidFieldsRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": false,
+      |  "employerRef": 78,
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
   val requestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
