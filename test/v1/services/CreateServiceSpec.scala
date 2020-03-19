@@ -20,42 +20,41 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockSampleConnector
-import v1.models.des.DesSampleResponse
-import v1.models.domain.{SampleRequestBody, SampleResponse}
+import v1.mocks.connectors.MockCreateConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.requestData.{DesTaxYear, SampleRequestData}
+import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
+import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SampleServiceSpec extends UnitSpec {
+class CreateServiceSpec extends UnitSpec {
 
   private val nino = "AA123456A"
-  private val taxYear = "2017-18"
   private val correlationId = "X-123"
+  private val id = "123456789"
 
-  private val requestBody = SampleRequestBody("someData")
+  private val requestBody = CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00)))
 
-  private val requestData = SampleRequestData(Nino(nino), DesTaxYear.fromMtd(taxYear), requestBody)
+  private val requestData = CreateRequestData(Nino(nino), requestBody)
 
-  trait Test extends MockSampleConnector {
+  trait Test extends MockCreateConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new SampleService(
-      sampleConnector = mockSampleConnector
+    val service = new CreateService(
+      connector = mockCreateConnector
     )
   }
 
   "service" when {
     "service call successsful" must {
       "return mapped result" in new Test {
-        MockSampleConnector.doConnectorThing(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, DesSampleResponse("result")))))
+        MockCreateCisDeductionsConnector.createCisDeduction(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId,CreateResponseModel(id)))))
 
-        await(service.doServiceThing(requestData)) shouldBe Right(ResponseWrapper(correlationId, SampleResponse("result")))
+        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateResponseModel(id)))
       }
     }
 
@@ -65,13 +64,20 @@ class SampleServiceSpec extends UnitSpec {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockSampleConnector.doConnectorThing(requestData)
+            MockCreateCisDeductionsConnector.createCisDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.doServiceThing(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
+            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
           }
 
         val input = Seq(
+          ("INVALID_IDVALUE" , NinoFormatError),
+          ("INVALID_DEDUCTION_DATE_FROM" , DeductionFromDateFormatError),
+          ("INVALID_DEDUCTION_DATE_TO" , DeductionToDateFormatError),
+          ("INVALID_DATE_FROM" , FromDateFormatError),
+          ("INVALID_DATE_TO" , ToDateFormatError),
+          ("INVALID_DEDUCTIONS_DATE_RANGE" , RuleDateRangeInvalidError),
+          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" , RuleToDateBeforeFromDateError),
           ("NOT_FOUND", NotFoundError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)

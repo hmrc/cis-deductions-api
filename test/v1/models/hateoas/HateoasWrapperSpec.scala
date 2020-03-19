@@ -30,11 +30,11 @@ class HateoasWrapperSpec extends UnitSpec {
 
   "HateoasWrapper writes" must {
     "place links alongside wrapped object fields" in {
-      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 123), Seq(Link("/some/resource", GET, "thing")))) shouldBe
+      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 1), Seq(Link("/some/resource", GET, "thing")))) shouldBe
         Json.parse("""
       |{
       |"field1": "value1",
-      |"field2": 123,
+      |"field2": 1,
       |"links" : [
       |  {
       |    "href": "/some/resource",
@@ -47,11 +47,11 @@ class HateoasWrapperSpec extends UnitSpec {
     }
 
     "not write links array if there are no links" in {
-      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 123), Nil)) shouldBe
+      Json.toJson(HateoasWrapper(TestMtdResponse("value1", 1), Nil)) shouldBe
         Json.parse("""
                      |{
                      |"field1": "value1",
-                     |"field2": 123
+                     |"field2": 1
                      |}
     """.stripMargin)
     }

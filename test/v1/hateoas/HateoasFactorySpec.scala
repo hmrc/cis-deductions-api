@@ -19,6 +19,7 @@ package v1.hateoas
 import cats.Functor
 import config.AppConfig
 import mocks.MockAppConfig
+import play.api.libs.json.{Json, OWrites}
 import support.UnitSpec
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasData, HateoasWrapper, Link}
@@ -35,6 +36,14 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
   val response = Response("X")
 
+  object Response {
+    implicit val writes: OWrites[Response] = Json.writes[Response]
+  }
+
+  object ListResponse {
+    implicit val writes: OWrites[ListResponse[HateoasWrapper[Response]]] = Json.writes[ListResponse[HateoasWrapper[Response]]]
+  }
+
   class Test {
     MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
   }
@@ -50,11 +59,43 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
     }
 
     "use the response specific links" in new Test {
-      hateoasFactory.wrap(response, Data1("id")) shouldBe HateoasWrapper(response, Seq(Link("context/id", GET, "rel1")))
+
+      val wrapper = HateoasWrapper(response, Seq(Link("context/id", GET, "rel1")))
+      hateoasFactory.wrap(response, Data1("id")) shouldBe wrapper
+
+      Json.toJson(wrapper) shouldBe
+        Json.parse("""
+          |{
+          |"foo": "X",
+          |"links" : [
+          |  {
+          |    "href": "context/id",
+          |    "method": "GET",
+          |    "rel": "rel1"
+          |  }
+          | ]
+          |}
+          |""".stripMargin)
+
     }
 
     "use the endpoint HateoasData specific links" in new Test {
-      hateoasFactory.wrap(response, Data2("id")) shouldBe HateoasWrapper(response, Seq(Link("context/id", GET, "rel2")))
+      val wrapper = HateoasWrapper(response, Seq(Link("context/id", GET, "rel2")))
+      hateoasFactory.wrap(response, Data2("id")) shouldBe wrapper
+
+      Json.toJson(wrapper) shouldBe
+        Json.parse("""
+                     |{
+                     |"foo": "X",
+                     |"links" : [
+                     |  {
+                     |    "href": "context/id",
+                     |    "method": "GET",
+                     |    "rel": "rel2"
+                     |  }
+                     | ]
+                     |}
+                     |""".stripMargin)
     }
   }
 
@@ -72,8 +113,29 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
     }
 
     "work" in new Test {
-      hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe
-        HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
+
+      val wrapper = HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
+
+      hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe wrapper
+
+      Json.toJson(wrapper) shouldBe
+        Json.parse("""
+                     |{
+                     |	"items": [{
+                     |		"foo": "X",
+                     |		"links": [{
+                     |			"href": "context/id/X",
+                     |			"method": "GET",
+                     |			"rel": "item"
+                     |		}]
+                     |	}],
+                     |	"links": [{
+                     |		"href": "context/id",
+                     |		"method": "GET",
+                     |		"rel": "rel"
+                     |	}]
+                     |}
+                     |""".stripMargin)
     }
   }
 }

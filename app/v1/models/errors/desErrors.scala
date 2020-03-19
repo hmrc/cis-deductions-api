@@ -28,10 +28,10 @@ object DesErrorCode {
 
 sealed trait DesError
 
-case class DesErrors(errors: List[DesErrorCode]) extends DesError
+case class DesErrors(errors: Seq[DesErrorCode]) extends DesError
 
 object DesErrors {
-  def single(error: DesErrorCode): DesErrors = DesErrors(List(error))
+  def single(error: DesErrorCode): DesErrors = DesErrors(Seq(error))
 }
 
-case class OutboundError(error: MtdError, errors: Option[Seq[MtdError]] = None) extends DesError
+case class OutboundError(errors: Seq[MtdError] = Seq()) extends DesError

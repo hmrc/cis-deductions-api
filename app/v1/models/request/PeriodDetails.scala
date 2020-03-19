@@ -33,4 +33,5 @@ object PeriodDetails {
       (JsPath \ "grossAmountPaid").read[BigDecimal]
     )(PeriodDetails.apply _)
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
+
 }

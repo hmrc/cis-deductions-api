@@ -16,7 +16,7 @@
 
 package v1.models.responseData
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json._
 
 case class CreateResponseModel(id: String)
 
