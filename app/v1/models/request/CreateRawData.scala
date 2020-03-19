@@ -17,7 +17,6 @@
 package v1.models.request
 
 import play.api.libs.json.JsValue
-import play.api.mvc.AnyContentAsJson
 import v1.models.requestData.RawData
 
 case class CreateRawData(nino: String, body: JsValue) extends RawData

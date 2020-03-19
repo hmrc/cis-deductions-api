@@ -24,9 +24,7 @@ case class PeriodDetails(deductionAmount: BigDecimal,
                          deductionToDate: String,
                          costOfMaterials: Option[BigDecimal],
                          grossAmountPaid: BigDecimal)
-
 object PeriodDetails {
-
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "deductionAmount").read[BigDecimal] and
       (JsPath \ "deductionFromDate").read[String] and
@@ -34,7 +32,5 @@ object PeriodDetails {
       (JsPath \ "costOfMaterials").readNullable[BigDecimal] and
       (JsPath \ "grossAmountPaid").read[BigDecimal]
     )(PeriodDetails.apply _)
-
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
-
 }

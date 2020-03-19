@@ -16,22 +16,19 @@
 
 package v1.controllers.requestParsers.validators
 
-import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.controllers.requestParsers.validators.validations.CreateRequestModelValidator
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
-import v1.models.errors.{InvalidBodyTypeError, RuleIncorrectOrEmptyBodyError}
+import v1.models.errors._
 
 class CreateRequestModelValidatorSpec extends UnitSpec{
 
   val nino = "AA123456A"
+  val invalidNino = "GHFG197854"
 
   class SetUp {
     val validator = new CreateRequestModelValidator
   }
-
   "running validation" should {
     "return no errors" when {
       "all the fields are submitted in a request" in new SetUp {
@@ -57,6 +54,13 @@ class CreateRequestModelValidatorSpec extends UnitSpec{
         )
         result.length shouldBe 1
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+      "invalid nino is provided" in new SetUp{
+        private val result = validator.validate(
+          CreateRawData(invalidNino,requestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(NinoFormatError)
       }
     }
   }

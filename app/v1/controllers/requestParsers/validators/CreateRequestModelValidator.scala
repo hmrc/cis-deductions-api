@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v1.controllers.requestParsers.validators.Validator
+import v1.controllers.requestParsers.validators.validations.{JsonFormatValidation, NinoValidation}
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
-import v1.models.requestData.SampleRequestData
+import v1.models.request.{CreateRawData, CreateRequestModel}
 
 class CreateRequestModelValidator extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator
-
   )
 
   private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
