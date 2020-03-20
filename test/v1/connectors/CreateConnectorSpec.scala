@@ -38,7 +38,7 @@ class CreateConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desEnvironment returns "des-environment"
   }
 
-  "createDeductions" must {
+  "create" must {
     val request = CreateRequestData(nino, CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
