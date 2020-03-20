@@ -19,6 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
@@ -49,7 +50,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.get(
           url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-            s"?fromDate=${request.fromDate}&toDate${request.toDate}&source${request.source.getOrElse("all")}",
+            s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}",
           requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
         ).returns(Future.successful(outcome))
 
@@ -66,11 +67,26 @@ class ListConnectorSpec extends ConnectorSpec {
 
       MockedHttpClient.get(
         url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-          s"?fromDate=${request.fromDate}&toDate${request.toDate}&source${request.source.getOrElse("all")}",
+          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}",
         requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
       ).returns(Future.successful(outcome))
 
       await(connector.list(request)) shouldBe outcome
+    }
+
+    "return a Des Error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", Some("contractor"))
+
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
+
+        MockedHttpClient.get[DesOutcome[ListResponseModel]](s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
+          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}")
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
+
+        val result: DesOutcome[ListResponseModel] = await(connector.list(request))
+        result shouldBe outcome
+      }
     }
   }
 }

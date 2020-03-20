@@ -38,7 +38,7 @@ class ListConnector @Inject()(val http: HttpClient,
 
     get(
       DesUri[ListResponseModel](s"cross-regime/deductions-placeholder/CIS/${request.nino}/current-position" +
-        s"?fromDate=${request.fromDate}&toDate${request.toDate}&source${request.source.getOrElse("all")}")
+        s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}")
     )
   }
 }
