@@ -30,38 +30,38 @@ object ListJson {
       |    "employerRef": "BV40092",
       |    "periodData": [
       |      {
-      |        "deductionAmount": 355.00,
+      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-04-06",
       |        "deductionToDate": "2019-05-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2019-04-03",
       |        "submittedBy": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
+      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-05-06",
       |        "deductionToDate": "2019-06-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2019-05-03",
       |        "submittedBy": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
+      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-06-06",
       |        "deductionToDate": "2019-07-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2020-01-14",
       |        "submittedBy": "customer"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
+      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2020-01-14",
       |        "submittedBy": "customer"
       |      }
@@ -74,20 +74,20 @@ object ListJson {
       |    "employerRef": "TW44355",
       |    "periodData": [
       |      {
-      |        "deductionAmount": 60.00,
+      |        "deductionAmount": 60.11,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2019-08-05",
       |        "submittedBy": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 60.00,
+      |        "deductionAmount": 60.11,
       |        "deductionFromDate": "2019-09-06",
       |        "deductionToDate": "2019-10-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
+      |        "costOfMaterials": 35.11,
+      |        "grossAmountPaid": 1457.11,
       |        "submissionDate": "2019-08-05",
       |        "submittedBy": "contractor"
       |      }

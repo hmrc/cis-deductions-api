@@ -29,10 +29,10 @@ object ListModels {
         "Bovis",
         "BV40092",
         Seq(
-          PeriodDeductions(355.00, "2019-04-06", "2019-05-05", Some(35.00), 1457.00, "2019-04-03", "contractor"),
-          PeriodDeductions(355.00, "2019-05-06", "2019-06-05", Some(35.00), 1457.00, "2019-05-03", "contractor"),
-          PeriodDeductions(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00, "2020-01-14", "customer"),
-          PeriodDeductions(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00, "2020-01-14", "customer")
+          PeriodDeductions(355.11, "2019-04-06", "2019-05-05", Some(35.11), 1457.11, "2019-04-03", "contractor"),
+          PeriodDeductions(355.11, "2019-05-06", "2019-06-05", Some(35.11), 1457.11, "2019-05-03", "contractor"),
+          PeriodDeductions(355.11, "2019-06-06", "2019-07-05", Some(35.11), 1457.11, "2020-01-14", "customer"),
+          PeriodDeductions(355.11, "2019-07-06", "2019-08-05", Some(35.11), 1457.11, "2020-01-14", "customer")
         )
       ),
       DeductionsDetails(
@@ -42,8 +42,8 @@ object ListModels {
         "Taylor Wimpy",
         "TW44355",
         Seq(
-          PeriodDeductions(60.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00, "2019-08-05", "contractor"),
-          PeriodDeductions(60.00, "2019-09-06", "2019-10-05", Some(35.00), 1457.00, "2019-08-05", "contractor")
+          PeriodDeductions(60.11, "2019-07-06", "2019-08-05", Some(35.11), 1457.11, "2019-08-05", "contractor"),
+          PeriodDeductions(60.11, "2019-09-06", "2019-10-05", Some(35.11), 1457.11, "2019-08-05", "contractor")
         )
       )
     )

@@ -40,7 +40,7 @@ class ListResponseModelSpec extends UnitSpec {
 
     "producing json from a valid model" should {
       "produce valid json" in {
-        Json.toJson(ListModels.multipleDeductionsModel) shouldBe ListJson.multipleDeductionsJson
+        Json.toJson(ListModels.multipleDeductionsModel) shouldBe Json.parse(ListJson.multipleDeductionsJson)
       }
     }
   }
