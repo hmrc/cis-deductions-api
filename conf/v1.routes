@@ -1,1 +1,1 @@
-POST       /:nino/:taxYear/sampleEndpoint                  v1.controllers.SampleController.handleRequest(nino: String, taxYear: String)
+POST       /deductions/cis/:nino/amendments                v1.controllers.CreateRequestController.CreateRequest(nino: String)
