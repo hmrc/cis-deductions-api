@@ -1,1 +1,1 @@
-POST       /deductions/cis/:nino/amendments                v1.controllers.CreateRequestController.CreateRequest(nino: String)
+POST       /deductions/cis/:nino/amendments                v1.controllers.CreateRequestController.createRequest(nino: String)
