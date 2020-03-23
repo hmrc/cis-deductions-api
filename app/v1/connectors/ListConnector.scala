@@ -36,9 +36,11 @@ class ListConnector @Inject()(val http: HttpClient,
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
+    val sourceParam = request.source.map(src => s"&source=${src}")
+
     get(
       DesUri[ListResponseModel](s"cross-regime/deductions-placeholder/CIS/${request.nino}/current-position" +
-        s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}")
+        s"?fromDate=${request.fromDate}&toDate=${request.toDate}${sourceParam.getOrElse("")}")
     )
   }
 }
