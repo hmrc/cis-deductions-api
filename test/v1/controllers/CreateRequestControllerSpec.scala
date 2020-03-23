@@ -69,6 +69,9 @@ class CreateRequestControllerSpec
   private val rawCreateRequest = CreateRawData(nino, requestJson)
   private val createRequest = CreateRequestData(Nino(nino), requestObj)
 
+  private val rawMissingOptionalCreateRequest = CreateRawData(nino, missingOptionalRequestJson)
+  private val missingOptionalCreateRequest = CreateRequestData(Nino(nino), missingOptionalRequestObj)
+
   val response = CreateResponseModel(responseId)
 
   val testHateoasLinks: Seq[Link] = Seq(
@@ -111,12 +114,36 @@ class CreateRequestControllerSpec
 
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
 
-        status(result) shouldBe OK
+        status(result) shouldBe CREATED
         contentAsJson(result) shouldBe Json.parse(hateoasResponse(nino, responseId))
-        header("X-CorrelationId",result) shouldBe Some(correlationId)
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(Json.parse(hateoasResponse(nino, responseId))))
+        val auditResponse: CreateAuditResponse = CreateAuditResponse(CREATED, None, Some(Json.parse(hateoasResponse(nino, responseId))))
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+      }
+
+      "a valid request is supplied when an optional field is missing" in new Test {
+
+        MockCreateRequestDataParser
+          .parse(rawMissingOptionalCreateRequest)
+          .returns(Right(missingOptionalCreateRequest))
+
+        MockCreateService
+          .submitCreateRequest(missingOptionalCreateRequest)
+          .returns(Future.successful((Right(ResponseWrapper(correlationId, response)))))
+
+        MockHateoasFactory
+          .wrap(response, CreateHateoasData(nino))
+          .returns(HateoasWrapper(response, testHateoasLinks))
+
+        val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
+
+        status(result) shouldBe CREATED
+        contentAsJson(result) shouldBe Json.parse(hateoasResponse(nino, responseId))
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: CreateAuditResponse = CreateAuditResponse(CREATED, None, Some(Json.parse(hateoasResponse(nino, responseId))))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(missingOptionalRequestJson))).once
       }
     }
   }

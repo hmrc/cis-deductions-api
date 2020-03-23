@@ -75,9 +75,9 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-        auditSubmission(createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails))
+        auditSubmission(createAuditDetails(rawData, CREATED, responseWrapper.correlationId, request.userDetails))
 
-        Ok(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
+        Created(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
