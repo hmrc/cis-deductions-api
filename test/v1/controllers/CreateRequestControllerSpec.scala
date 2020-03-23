@@ -79,17 +79,16 @@ class CreateRequestControllerSpec
     )
   )
 
-  def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+  def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
     AuditEvent(
-      auditType = "createRequest",
-      transactionName = "create-request",
-      detail = GenericAuditDetail(
+      auditType = "createCisDeductionsAuditType",
+      transactionName = "create-cis-deductions-transaction-type",
+      detail = CreateAuditDetail(
         userType = "Individual",
         agentReferenceNumber = None,
-        params = Map("nino" -> nino),
-        requestBody = requestBody,
+        nino,
         `X-CorrelationId` = correlationId,
-        auditResponse = auditResponse
+        auditResponse
       )
     )
 
@@ -116,7 +115,7 @@ class CreateRequestControllerSpec
         header("X-CorrelationId",result) shouldBe Some(correlationId)
 
         val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(Json.parse(hateoasResponse(nino, responseId))))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(Json.parse(hateoasResponse(nino, responseId))))).once
       }
     }
   }
