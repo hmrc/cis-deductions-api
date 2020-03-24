@@ -97,7 +97,7 @@ class CreateRequestControllerSpec
     )
 
   "createRequest" should {
-    "return a successful hateoas response with status 200 (OK)" when {
+    "return a successful response with status 200 (OK)" when {
       "a valid request is supplied for a cis post request" in new Test {
 
         MockCreateRequestDataParser
@@ -161,6 +161,12 @@ class CreateRequestControllerSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
+        (DeductionFromDateFormatError, BAD_REQUEST),
+        (DeductionToDateFormatError, BAD_REQUEST),
+        (FromDateFormatError, BAD_REQUEST),
+        (ToDateFormatError, BAD_REQUEST),
+        (RuleToDateBeforeFromDateError, BAD_REQUEST),
+        (RuleDateRangeInvalidError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (DownstreamError, INTERNAL_SERVER_ERROR),
       )

@@ -26,13 +26,4 @@ case class CreateResponseModel(id: String)
 object CreateResponseModel extends HateoasLinks {
   implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
   implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
-
-  implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
-    override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
-      import data._
-      Seq(sampleLink(appConfig, nino))
-    }
-  }
 }
-
-case class CreateHateoasData(nino: String) extends HateoasData

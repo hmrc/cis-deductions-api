@@ -28,10 +28,9 @@ import v1.hateoas.HateoasFactory
 import v1.models.audit._
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
+import v1.models.responseData.CreateResponseModel
 import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -89,7 +88,8 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
 
     (errorWrapper.errors.head: @unchecked) match {
       case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeExceededError =>
+           RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
+           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDateRangeInvalidError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
