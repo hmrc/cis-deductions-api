@@ -19,53 +19,27 @@ package v1.models.reponseData
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import support.UnitSpec
 import v1.models.responseData.CreateResponseModel
-import v1.fixtures.CreateRequestFixtures
+import v1.fixtures.CreateRequestFixtures._
 
 class CreateResponseModelSpec extends UnitSpec {
-
-
-  val ResponseJson: JsValue = Json.parse(
-    """
-      |{
-      |"id": "S4636A77V5KB8625U"
-      |}
-      |""".stripMargin
-  )
-
-  val InvalidResponseJson: JsValue = Json.parse(
-    """
-      |{
-      |"id": 1
-      |}
-      |""".stripMargin
-  )
-
-  val missingMandatoryResponseJson: JsValue = Json.parse(
-    """
-      |{
-      |}
-      |""".stripMargin
-  )
-
-  val ResponseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
       "return the expected CisDeductionsResponseBody" in {
-        Json.toJson(ResponseObj) shouldBe ResponseJson
+        Json.toJson(responseObj) shouldBe responseJson
       }
     }
   }
 
   "Read from valid JSON" should {
     "Return the expected CisReductionsResponseBody" in {
-      ResponseJson.validate[CreateResponseModel] shouldBe JsSuccess(ResponseObj)
+      responseJson.validate[CreateResponseModel] shouldBe JsSuccess(responseObj)
     }
   }
 
   "Read from invalid JSON" should {
     "return the expected error when invalid data type is used" in {
-      InvalidResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
+      invalidResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
 
     "return the expected error when id field is missing" in {

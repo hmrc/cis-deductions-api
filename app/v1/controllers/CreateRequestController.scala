@@ -69,15 +69,13 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
     serviceResponse.map {
       case Right(responseWrapper) =>
 
-        val hateoasWrappedResponse: HateoasWrapper[CreateResponseModel] =
-          hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino))
-
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-        auditSubmission(createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasWrappedResponse))))
+        auditSubmission(
+          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
 
-        Ok(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
+        Ok(Json.toJson(responseWrapper.responseData)).withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
