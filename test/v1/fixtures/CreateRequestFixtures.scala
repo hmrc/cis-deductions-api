@@ -18,6 +18,7 @@ package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
 import v1.models.request.{CreateRequestModel, PeriodDetails}
+import v1.models.responseData.CreateResponseModel
 
 object CreateRequestFixtures {
 
@@ -180,4 +181,28 @@ object CreateRequestFixtures {
     )
   )
 
+  val responseJson: JsValue = Json.parse(
+    """
+      |{
+      |"id": "S4636A77V5KB8625U"
+      |}
+      |""".stripMargin
+  )
+
+  val invalidResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |"id": 1
+      |}
+      |""".stripMargin
+  )
+
+  val missingMandatoryResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |}
+      |""".stripMargin
+  )
+
+  val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 }
