@@ -17,7 +17,6 @@
 package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.AnyContentAsJson
 import v1.models.request.{CreateRequestModel, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
 

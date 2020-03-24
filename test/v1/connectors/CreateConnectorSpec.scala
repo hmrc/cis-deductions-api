@@ -19,9 +19,11 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
+
 import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {
@@ -38,7 +40,7 @@ class CreateConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desEnvironment returns "des-environment"
   }
 
-  "createDeductions" must {
+  "create" must {
     val request = CreateRequestData(nino, CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
@@ -53,6 +55,23 @@ class CreateConnectorSpec extends ConnectorSpec {
         .returns(Future.successful(outcome))
 
       await(connector.create(request)) shouldBe outcome
+    }
+
+    "return a Des Error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
+
+        MockedHttpClient
+          .post(
+            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}",
+            body = request.body,
+            requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          )
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
+
+        val result: DesOutcome[CreateResponseModel] = await(connector.create(request))
+        result shouldBe outcome
+      }
     }
   }
 }

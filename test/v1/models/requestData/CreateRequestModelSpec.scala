@@ -16,9 +16,9 @@
 
 package v1.models.requestData
 
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.models.request.{CreateRequestModel, PeriodDetails}
+import v1.models.request.CreateRequestModel
 import v1.fixtures.CreateRequestFixtures._
 
 
