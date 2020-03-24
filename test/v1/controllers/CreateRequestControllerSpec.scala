@@ -20,12 +20,9 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers._
 import v1.mocks.services.{MockEnrolmentsAuthService, _}
 import v1.models.audit._
-import v1.models.hateoas.Method.POST
-import v1.models.hateoas.Link
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
@@ -41,7 +38,6 @@ class CreateRequestControllerSpec
     with MockMtdIdLookupService
     with MockCreateRequestParser
     with MockCreateService
-    with MockHateoasFactory
     with MockAuditService {
 
   trait Test {
@@ -52,7 +48,6 @@ class CreateRequestControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestDataParser,
       service = mockService,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc
     )
@@ -74,14 +69,6 @@ class CreateRequestControllerSpec
   private val missingOptionalCreateRequest = CreateRequestData(Nino(nino), missingOptionalRequestObj)
 
   val response = CreateResponseModel(responseId)
-
-  val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/deductions/cis/$nino/amendments",
-      method = POST,
-      rel = "self"
-    )
-  )
 
   def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
     AuditEvent(
@@ -258,6 +245,12 @@ class CreateRequestControllerSpec
         (RuleTaxYearNotSupportedError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (RuleTaxYearRangeExceededError, BAD_REQUEST),
+        (DeductionFromDateFormatError, BAD_REQUEST),
+        (DeductionToDateFormatError, BAD_REQUEST),
+        (FromDateFormatError, BAD_REQUEST),
+        (ToDateFormatError, BAD_REQUEST),
+        (RuleToDateBeforeFromDateError, BAD_REQUEST),
+        (RuleDateRangeInvalidError, BAD_REQUEST),
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }
