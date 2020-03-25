@@ -50,7 +50,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.get(
           url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-            s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}",
+            s"?fromDate=${request.fromDate}&toDate=${request.toDate}",
           requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
         ).returns(Future.successful(outcome))
 

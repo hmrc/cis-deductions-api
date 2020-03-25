@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.audit
 
-import config.AppConfig
-import play.api.libs.json._
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
+import play.api.libs.json.{Json, OWrites}
 
-case class CreateResponseModel(id: String)
+case class CreateAuditDetail(
+                             userType: String,
+                             agentReferenceNumber: Option[String],
+                             nino: String,
+                             `X-CorrelationId`: String,
+                             response: CreateAuditResponse
+                           )
 
-object CreateResponseModel {
-  implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
-  implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
+object CreateAuditDetail {
+  implicit val writes: OWrites[CreateAuditDetail] = Json.writes[CreateAuditDetail]
 }
+
