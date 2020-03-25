@@ -25,26 +25,46 @@ import support.IntegrationBaseSpec
 import v1.models.requestData.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
+
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
     val nino          = "AA123456A"
     val taxYear       = "2017-18"
-    val data        = "someData"
+    val data          = "someData"
     val correlationId = "X-123"
 
     val requestJson: String =
       s"""
-         |{
-         |"data": "$data"
-         |}
-    """.stripMargin
+        |{
+        |  "fromDate": "2019-04-06" ,
+        |  "toDate": "2020-04-05",
+        |  "contractorName": "Bovis",
+        |  "employerRef": "BV40092",
+        |  "periodData": [
+        |      {
+        |      "deductionAmount": 355.00,
+        |      "deductionFromDate": "2019-06-06",
+        |      "deductionToDate": "2019-07-05",
+        |      "costOfMaterials": 35.00,
+        |      "grossAmountPaid": 1457.00
+        |    },
+        |    {
+        |      "deductionAmount": 355.00,
+        |      "deductionFromDate": "2019-07-06",
+        |      "deductionToDate": "2019-08-05",
+        |      "costOfMaterials": 35.00,
+        |      "grossAmountPaid": 1457.00
+        |    }
+        |  ]
+        |}
+        |""".stripMargin
 
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/$taxYear/sampleEndpoint")
+      buildRequest(s"/deductions/cis/$nino/amendments")
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
   }
@@ -73,11 +93,11 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.serviceSuccess(nino, DesTaxYear.fromMtd(taxYear).toString)
+          DesStub.deductionsServiceSuccess(nino)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))
-        response.status shouldBe Status.CREATED
+        response.status shouldBe Status.OK
       }
     }
 
