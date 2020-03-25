@@ -46,7 +46,7 @@ class ListService @Inject()(connector: ListConnector) extends DesResponseMapping
     result.value
   }
 
-  private def mappingDesToMtdError =
+  private def mappingDesToMtdError: Map[String, MtdError] =
     Map(
       "INVALID_IDVALUE" -> NinoFormatError,
       "INVALID_DATE_FROM" -> FromDateFormatError,

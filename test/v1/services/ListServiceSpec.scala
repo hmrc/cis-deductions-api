@@ -17,6 +17,7 @@
 package v1.services
 
 import support.UnitSpec
+import uk.gov.hmrc.api.controllers.ErrorInternalServerError
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
@@ -25,64 +26,60 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRequestData, CreateRequestModel, ListDeductionsRequest, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
-import v1.models.responseData.listDeductions.ListResponseModel
+import v1.models.responseData.listDeductions.{ListResponseModel, PeriodDeductions}
+import v1.fixtures.CreateRequestFixtures._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ListServiceSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
+  private val nino = Nino("AA123456A")
   private val correlationId = "X-123"
+  private val fromDate = "2019-04-06"
+  private val toDate = "2020-04-05"
+  private val source = Some("Contractor")
 
-  private val requestData = ListDeductionsRequest(Nino(nino),"2019-04-05","2020-04-06", Some("all"))
+  val request: ListDeductionsRequest = ListDeductionsRequest(nino, fromDate, toDate, source)
+  val response: ListResponseModel = listCisDeductionsModel
 
   trait Test extends MockListConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+    implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "listcis")
 
-    val service = new ListService(
-      connector = mockListConnector
-    )
+    val service = new ListService(mockListConnector)
   }
 
-  "service" when {
-    "service call successsful" must {
-      "return mapped result" in new Test {
-        MockListCisDeductionsConnector.listCisDeduction(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId,ListResponseModel(id)))))
+  "ListDeductions" should {
+    "return a valid response" when {
+      "a valid request is supplied" in new Test {
+        MockListCisDeductionsConnector.listCisDeduction(request)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateResponseModel(id)))
+        await(service.listDeductions(request)) shouldBe Right(ResponseWrapper(correlationId,response))
       }
     }
 
-    "unsuccessful" must {
-      "map errors according to spec" when {
+    "return error response" when {
 
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+      def serviceError(desErrorCode: String, error: MtdError): Unit =
+        s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockCreateCisDeductionsConnector.createCisDeduction(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+          MockListCisDeductionsConnector.listCisDeduction(request)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
-          }
+          await(service.listDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
+        }
+      val input = Seq(
+        ("INVALID_IDVALUE" , NinoFormatError),
+        ("INVALID_DATE_FROM", FromDateFormatError),
+        ("INVALID_DATE_TO", ToDateFormatError),
+        ("NOT_FOUND", NotFoundError),
+        ("SERVER_ERROR", DownstreamError),
+        ("SERVICE_UNAVAILABLE", DownstreamError)
+      )
 
-        val input = Seq(
-          ("INVALID_IDVALUE" , NinoFormatError),
-          ("INVALID_DEDUCTION_DATE_FROM" , DeductionFromDateFormatError),
-          ("INVALID_DEDUCTION_DATE_TO" , DeductionToDateFormatError),
-          ("INVALID_DATE_FROM" , FromDateFormatError),
-          ("INVALID_DATE_TO" , ToDateFormatError),
-          ("INVALID_DEDUCTIONS_DATE_RANGE" , RuleDateRangeInvalidError),
-          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" , RuleToDateBeforeFromDateError),
-          ("NOT_FOUND", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
-        )
-
-        input.foreach(args => (serviceError _).tupled(args))
-      }
+      input.foreach(args => (serviceError _).tupled(args))
     }
   }
 }
