@@ -17,16 +17,14 @@
 package v1.services
 
 import support.UnitSpec
-import uk.gov.hmrc.api.controllers.ErrorInternalServerError
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.{MockCreateConnector, MockListConnector}
+import v1.mocks.connectors.MockListConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRequestData, CreateRequestModel, ListDeductionsRequest, PeriodDetails}
-import v1.models.responseData.CreateResponseModel
-import v1.models.responseData.listDeductions.{ListResponseModel, PeriodDeductions}
+import v1.models.request.ListDeductionsRequest
+import v1.models.responseData.listDeductions.ListResponseModel
 import v1.fixtures.CreateRequestFixtures._
 
 import scala.concurrent.ExecutionContext.Implicits.global
