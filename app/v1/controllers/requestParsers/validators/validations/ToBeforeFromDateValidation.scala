@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators.validations
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import v1.models.errors.MtdError
+import v1.models.errors.{FromDateFormatError, MtdError, ToDateFormatError}
 
 object ToBeforeFromDateValidation {
 
@@ -27,11 +27,17 @@ object ToBeforeFromDateValidation {
 
   def validate(fromDate: String, toDate: String, error: MtdError): List[MtdError] = {
 
-    val fromDateEpochTime = LocalDate.parse(fromDate, dateTimeFormatter).toEpochDay
-    val toDateEpochTime = LocalDate.parse (toDate, dateTimeFormatter).toEpochDay
+    val dateFormatErrs = DateValidation.validate(FromDateFormatError)(fromDate) ++
+    DateValidation.validate(ToDateFormatError)(toDate)
 
-    val diff = toDateEpochTime - fromDateEpochTime
+    if (dateFormatErrs.isEmpty) {
+      val fromDateEpochTime = LocalDate.parse(fromDate, dateTimeFormatter).toEpochDay
+      val toDateEpochTime = LocalDate.parse(toDate, dateTimeFormatter).toEpochDay
 
-    if(diff < 1 || diff > 366) List(error) else List()
+      val diff = toDateEpochTime - fromDateEpochTime
+
+      if (diff < 1 || diff > 366) List(error) else List()
+    } else {dateFormatErrs}
+
   }
 }

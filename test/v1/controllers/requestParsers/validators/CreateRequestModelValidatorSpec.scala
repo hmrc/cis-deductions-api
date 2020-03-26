@@ -55,12 +55,89 @@ class CreateRequestModelValidatorSpec extends UnitSpec{
         result.length shouldBe 1
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-      "invalid nino is provided" in new SetUp{
+      "invalid nino is provided" in new SetUp {
         private val result = validator.validate(
           CreateRawData(invalidNino,requestJson)
         )
         result.length shouldBe 1
         result shouldBe List(NinoFormatError)
+      }
+      "invalid fromDate format is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidFromDateFormatRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(FromDateFormatError)
+      }
+      "invalid toDate format is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidToDateFormatRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(ToDateFormatError)
+      }
+      "invalid Deduction fromDate format is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidDeductionFromDateFormatRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(DeductionFromDateFormatError)
+      }
+      "invalid Deduction toDate format is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidDeductionToDateFormatRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(DeductionToDateFormatError)
+      }
+      "invalid deductionAmount too high is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidDeductionAmountTooHighRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleDeductionAmountError)
+      }
+      "invalid deductionAmount negative is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidDeductionAmountNegativeRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleDeductionAmountError)
+      }
+      "invalid CostOfMaterials too high is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidCostOfMaterialsTooHighRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleCostOfMaterialsError)
+      }
+      "invalid CostOfMaterials negative is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidCostOfMaterialsNegativeRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleCostOfMaterialsError)
+      }
+      "invalid GrossAmount too high is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidGrossAmountTooHighRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleGrossAmountError)
+      }
+      "invalid GrossAmount negative is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidGrossAmountNegativeRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleGrossAmountError)
+      }
+      "invalid toDate before fromDate is provided" in new SetUp {
+        private val result = validator.validate(
+          CreateRawData(nino, invalidToDateBeforeFromDateRequestJson)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleDateRangeInvalidError)
       }
     }
   }
