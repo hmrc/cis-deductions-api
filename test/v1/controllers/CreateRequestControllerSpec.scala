@@ -155,6 +155,9 @@ class CreateRequestControllerSpec
         (RuleToDateBeforeFromDateError, BAD_REQUEST),
         (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+        (RuleDeductionAmountError, BAD_REQUEST),
+        (RuleCostOfMaterialsError, BAD_REQUEST),
+        (RuleGrossAmountError, BAD_REQUEST),
         (DownstreamError, INTERNAL_SERVER_ERROR),
       )
 
