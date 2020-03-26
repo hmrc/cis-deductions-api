@@ -48,6 +48,9 @@ object RuleDateRangeInvalidError
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 
+object RuleSourceError
+  extends MtdError("RULE_SOURCE_INVALID","The source is invalid" )
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 
