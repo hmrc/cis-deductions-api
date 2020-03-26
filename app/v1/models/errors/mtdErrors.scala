@@ -42,11 +42,23 @@ object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_B
 object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
 
-object RuleDateRangeInvalidError
+object RuleDeductionsDateRangeInvalidError
     extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The specified date range is invalid")
+
+object RuleDateRangeInvalidError
+    extends MtdError("RULE_DATE_RANGE_INVALID", "The specified date range is invalid")
 
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
+
+object RuleDeductionAmountError
+    extends MtdError("RULE_DEDUCTION_AMOUNT", "The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places")
+
+object RuleCostOfMaterialsError
+    extends MtdError("RULE_COST_OF_MATERIALS", "The contractor deductions should be a positive number less than 99999999999.99 up to 2 decimal places")
+
+object RuleGrossAmountError
+    extends MtdError("RULE_GROSS_AMOUNT_PAID", "The amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

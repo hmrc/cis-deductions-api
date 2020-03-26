@@ -17,14 +17,15 @@
 package v1.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v1.controllers.requestParsers.validators.validations.{JsonFormatValidation, NinoValidation}
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.controllers.requestParsers.validators.validations._
+import v1.models.errors._
 import v1.models.request.{CreateRawData, CreateRequestModel}
 
 class CreateRequestModelValidator extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
     parameterFormatValidator,
-    bodyFormatValidator
+    bodyFormatValidator,
+    bodyRuleValidator
   )
 
   private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
@@ -33,10 +34,24 @@ class CreateRequestModelValidator extends Validator[CreateRawData] with FixedCon
     )
   }
 
-
   private def bodyFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[CreateRequestModel](data.body, RuleIncorrectOrEmptyBodyError)
+    )
+  }
+
+  private def bodyRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+    val req = data.body.as[CreateRequestModel]
+
+    List(
+      PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),
+      PeriodDataPositiveAmountValidation.validate(data.body, "costOfMaterials", RuleCostOfMaterialsError),
+      PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
+      PeriodDataDeductionDateValidation.validate(data.body, "deductionFromDate", DeductionFromDateFormatError),
+      PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError),
+      DateValidation.validate(FromDateFormatError)(req.fromDate),
+      DateValidation.validate(ToDateFormatError)(req.toDate),
+      ToBeforeFromDateValidation.validate(req.fromDate, req.toDate, RuleDateRangeInvalidError)
     )
   }
 
