@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.controllers.requestParsers.validators.validations
 
-import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.CreateRequestModelValidator
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
+import play.api.libs.json.JsValue
+import v1.models.errors.MtdError
 
-class CreateRequestModelParser @Inject()(val validator: CreateRequestModelValidator)
-  extends RequestParser[CreateRawData, CreateRequestData] {
+object PeriodDataDeductionDateValidation {
 
-  override protected def requestFor(data: CreateRawData): CreateRequestData = {
-    val requestBody = data.body.as[CreateRequestModel]
-    CreateRequestData(Nino(data.nino), requestBody)
+  def validate(json: JsValue, fieldName: String, error: MtdError): List[MtdError] = {
+
+    val periodData = (json \ "periodData").as[List[JsValue]]
+
+    periodData.flatMap {
+      period => DateValidation.validate(error)((period \ fieldName).as[String])
+    }
   }
-
 }
+

@@ -87,7 +87,8 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
     (errorWrapper.errors.head: @unchecked) match {
       case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDateRangeInvalidError =>
+           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
+           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

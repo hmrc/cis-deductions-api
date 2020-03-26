@@ -53,7 +53,7 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
       "INVALID_DEDUCTION_DATE_TO" -> DeductionToDateFormatError,
       "INVALID_DATE_FROM" -> FromDateFormatError,
       "INVALID_DATE_TO" -> ToDateFormatError,
-      "INVALID_DEDUCTIONS_DATE_RANGE" -> RuleDateRangeInvalidError,
+      "INVALID_DEDUCTIONS_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
       "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" -> RuleToDateBeforeFromDateError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,

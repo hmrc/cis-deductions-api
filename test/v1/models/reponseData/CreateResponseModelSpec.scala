@@ -16,7 +16,7 @@
 
 package v1.models.reponseData
 
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.models.responseData.CreateResponseModel
 import v1.fixtures.CreateRequestFixtures._
