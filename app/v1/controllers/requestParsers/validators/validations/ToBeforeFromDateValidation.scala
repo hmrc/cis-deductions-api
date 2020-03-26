@@ -16,17 +16,22 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors._
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-object SourceValidation {
+import v1.models.errors.MtdError
 
-  private val sources = Seq("all","customer","contractor")
+object ToBeforeFromDateValidation {
 
-  def validate(source: Option[String]): List[MtdError] = {
-    source match{
-      case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
-      case None => NoValidationErrors
-      case _ => List(RuleSourceError)
-    }
+  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+  def validate(fromDate: String, toDate: String, error: MtdError): List[MtdError] = {
+
+    val fromDateEpochTime = LocalDate.parse(fromDate, dateTimeFormatter).toEpochDay
+    val toDateEpochTime = LocalDate.parse (toDate, dateTimeFormatter).toEpochDay
+
+    val diff = toDateEpochTime - fromDateEpochTime
+
+    if(diff < 1 || diff > 366) List(error) else List()
   }
 }

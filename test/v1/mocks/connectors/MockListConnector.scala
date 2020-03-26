@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.mocks.connectors
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.CreateRequestModelParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.{CreateRawData, CreateRequestData}
+import uk.gov.hmrc.http.HeaderCarrier
+import v1.connectors.{DesOutcome, ListConnector}
+import v1.models.request.ListDeductionsRequest
+import v1.models.responseData.listDeductions.ListResponseModel
 
-trait MockCreateRequestParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockRequestDataParser: CreateRequestModelParser = mock[CreateRequestModelParser]
+trait MockListConnector extends MockFactory {
 
-  object MockCreateRequestDataParser {
-    def parse(data: CreateRawData): CallHandler[Either[ErrorWrapper, CreateRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: CreateRawData)).expects(data)
+  val mockListConnector: ListConnector = mock[ListConnector]
+
+  object MockListCisDeductionsConnector {
+
+    def listCisDeduction(requestData: ListDeductionsRequest): CallHandler[Future[DesOutcome[ListResponseModel]]] = {
+      (mockListConnector
+        .list(_: ListDeductionsRequest)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
   }
 

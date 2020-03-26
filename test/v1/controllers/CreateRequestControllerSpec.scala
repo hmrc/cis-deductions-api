@@ -153,8 +153,11 @@ class CreateRequestControllerSpec
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
         (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleDateRangeInvalidError, BAD_REQUEST),
+        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+        (RuleDeductionAmountError, BAD_REQUEST),
+        (RuleCostOfMaterialsError, BAD_REQUEST),
+        (RuleGrossAmountError, BAD_REQUEST),
         (DownstreamError, INTERNAL_SERVER_ERROR),
       )
 
@@ -250,7 +253,7 @@ class CreateRequestControllerSpec
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
         (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleDateRangeInvalidError, BAD_REQUEST),
+        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }

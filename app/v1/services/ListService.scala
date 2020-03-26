@@ -21,40 +21,36 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.CreateConnector
+import v1.connectors.ListConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.CreateRequestData
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.ListDeductionsRequest
+import v1.models.responseData.listDeductions.ListResponseModel
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject()(connector: CreateConnector) extends DesResponseMappingSupport with Logging {
+class ListService @Inject()(connector: ListConnector) extends DesResponseMappingSupport with Logging {
 
-  def createDeductions(request: CreateRequestData)(
+  def listDeductions(request: ListDeductionsRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.list(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper.map(des => des)
 
     result.value
   }
 
-  private def mappingDesToMtdError =
+  private def mappingDesToMtdError: Map[String, MtdError] =
     Map(
       "INVALID_IDVALUE" -> NinoFormatError,
-      "INVALID_DEDUCTION_DATE_FROM" -> DeductionFromDateFormatError,
-      "INVALID_DEDUCTION_DATE_TO" -> DeductionToDateFormatError,
       "INVALID_DATE_FROM" -> FromDateFormatError,
       "INVALID_DATE_TO" -> ToDateFormatError,
-      "INVALID_DEDUCTIONS_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
-      "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" -> RuleToDateBeforeFromDateError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
