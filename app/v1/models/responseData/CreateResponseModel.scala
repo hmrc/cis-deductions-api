@@ -16,10 +16,7 @@
 
 package v1.models.responseData
 
-import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
 
 case class CreateResponseModel(id: String)
 

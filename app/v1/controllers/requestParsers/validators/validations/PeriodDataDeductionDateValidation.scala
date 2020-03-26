@@ -21,27 +21,13 @@ import v1.models.errors.MtdError
 
 object PeriodDataDeductionDateValidation {
 
-  private val minValue = BigDecimal(0)
-  private val maxValue = BigDecimal(99999999999.99)
-
   def validate(json: JsValue, fieldName: String, error: MtdError): List[MtdError] = {
 
     val periodData = (json \ "periodData").as[List[JsValue]]
 
-    periodData.map {
-      period => amountValidation(period, fieldName, error)
-    }.filter(_.isDefined).map(_.get)
-
-  }
-
-  private def amountValidation(json: JsValue, fieldName: String, error: MtdError): Option[MtdError] = {
-    val amount = (json \ fieldName).asOpt[BigDecimal]
-
-    amount match {
-      case Some(value) if value > maxValue || value < minValue  => Some(error)
-      case _ => None
+    periodData.flatMap {
+      period => DateValidation.validate(error)((period \ fieldName).as[String])
     }
-
   }
 }
 
