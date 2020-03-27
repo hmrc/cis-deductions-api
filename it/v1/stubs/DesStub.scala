@@ -37,10 +37,6 @@ object DesStub extends WireMockMethods {
       | }
     """.stripMargin)
 
-
-//  private def url(nino: String, taxYear: String): String =
-//    s"/income-tax/nino/$nino/taxYear/$taxYear/someService"
-
   private def deductionsUrl(nino: String): String =
     s"/cross-regime/deductions-placeholder/CIS/$nino"
 

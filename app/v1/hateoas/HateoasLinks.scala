@@ -21,11 +21,4 @@ import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
 
-trait HateoasLinks {
-
-  //Domain URIs
- // private def sampleUri(appConfig: AppConfig, nino: String): String =
-   // s"/${appConfig.apiGatewayContext}/$nino/sample-endpoint"
-
-
-}
+trait HateoasLinks
