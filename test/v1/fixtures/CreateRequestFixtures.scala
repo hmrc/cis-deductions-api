@@ -16,7 +16,9 @@
 
 package v1.fixtures
 
+import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
+import v1.models.audit.{AuditError, CreateAuditResponse}
 import v1.models.request.{CreateRequestModel, PeriodDetails}
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 import v1.models.responseData.CreateResponseModel
@@ -526,4 +528,44 @@ object CreateRequestFixtures {
   )
 
   val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
+
+
+  val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
+  val auditErrors: Seq[AuditError] = Seq(AuditError(errorCode = "FORMAT_NINO"))
+
+  val auditResponseModelWithBody: CreateAuditResponse =
+    CreateAuditResponse(
+      httpStatus = OK,
+      response = Right(Some(body))
+    )
+
+  val auditResponseJsonWithBody: JsValue = Json.parse(
+    s"""
+       |{
+       |  "httpStatus": $OK,
+       |  "body" : $body
+       |}
+    """.stripMargin
+  )
+
+  val auditResponseModelWithErrors: CreateAuditResponse =
+    CreateAuditResponse(
+      httpStatus = BAD_REQUEST,
+      response = Left(auditErrors)
+    )
+
+  val auditResponseJsonWithErrors: JsValue = Json.parse(
+    s"""
+       |{
+       |  "httpStatus": $BAD_REQUEST,
+       |  "errors" : [
+       |    {
+       |      "errorCode" : "FORMAT_NINO"
+       |    }
+       |  ]
+       |}
+    """.stripMargin
+  )
+
+
 }

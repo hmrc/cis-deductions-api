@@ -16,18 +16,4 @@
 
 package v1.hateoas
 
-import config.AppConfig
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method._
-import v1.models.hateoas.RelType._
-
-trait HateoasLinks {
-
-  //Domain URIs
-  private def sampleUri(appConfig: AppConfig, nino: String): String =
-    s"/${appConfig.apiGatewayContext}/$nino/sample-endpoint"
-
-  //API resource links
-  def sampleLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = sampleUri(appConfig, nino), method = GET, rel = SAMPLE_ENDPOINT_REL)
-}
+trait HateoasLinks

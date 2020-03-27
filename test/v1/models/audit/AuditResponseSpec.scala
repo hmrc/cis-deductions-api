@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.audit
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.SampleRequestBody
+import play.api.libs.json.Json
+import support.UnitSpec
+import v1.fixtures.CreateRequestFixtures._
 
-case class SampleRequestData(nino: Nino, desTaxYear: DesTaxYear, body: SampleRequestBody)
+class AuditResponseSpec extends UnitSpec {
+
+  "AuditResponse" when {
+    "written to JSON with a body" should {
+      "produce the expected JsObject" in {
+        Json.toJson(auditResponseModelWithBody) shouldBe auditResponseJsonWithBody
+      }
+    }
+  }
+  "written to JSON with Audit Errors" should {
+    "produce the expected JsObject" in {
+      Json.toJson(auditResponseModelWithErrors) shouldBe auditResponseJsonWithErrors
+    }
+  }
+}
