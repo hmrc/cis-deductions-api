@@ -63,7 +63,6 @@ object RuleCostOfMaterialsError
 object RuleGrossAmountError
     extends MtdError("RULE_GROSS_AMOUNT_PAID", "The amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
-
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 

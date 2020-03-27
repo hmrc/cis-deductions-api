@@ -55,5 +55,5 @@ class CreateRequestModelValidator extends Validator[CreateRawData] with FixedCon
     )
   }
 
-  override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data).distinct
 }
