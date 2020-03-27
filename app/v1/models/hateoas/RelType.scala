@@ -18,5 +18,5 @@ package v1.models.hateoas
 
 object RelType {
 
-  val SELF = "self"
+  //val SELF = "self"
 }

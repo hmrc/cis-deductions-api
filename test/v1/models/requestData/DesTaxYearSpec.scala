@@ -16,6 +16,26 @@
 
 package v1.models.requestData
 
-import play.api.libs.json.JsValue
+import support.UnitSpec
 
-case class SampleRawData(nino: String, taxYear: String, body: JsValue) extends RawData
+class DesTaxYearSpec extends UnitSpec {
+
+  val mtdValue = "2018-19"
+  val desValue = "2019"
+
+  "DesTaxYear" when {
+    "toString is called" should {
+      "return the value instead of a String representation of the case class" in {
+        DesTaxYear(desValue).toString shouldBe desValue
+      }
+    }
+
+    "fromMtd is called" should {
+      "return the DES representation of the tax year" in {
+        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
+      }
+    }
+  }
+
+
+}
