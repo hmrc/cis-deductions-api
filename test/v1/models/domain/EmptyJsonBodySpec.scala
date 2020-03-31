@@ -16,10 +16,19 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class SampleRequestBody(data: String)
+class EmptyJsonBodySpec extends UnitSpec {
 
-object SampleRequestBody {
-  implicit val reads: Reads[SampleRequestBody] = Json.reads[SampleRequestBody]
+
+  "EmptyJsonBody.writes" should {
+    "return an empty JSON body" when {
+      "called" in {
+        val json = EmptyJsonBody
+        Json.toJson(json)(EmptyJsonBody.writes) shouldBe Json.obj()
+      }
+    }
+  }
+
 }

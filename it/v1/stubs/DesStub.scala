@@ -30,16 +30,23 @@ object DesStub extends WireMockMethods {
       | }
     """.stripMargin)
 
-  private def url(nino: String, taxYear: String): String =
-    s"/income-tax/nino/$nino/taxYear/$taxYear/someService"
+  private val deductionsResponseBody = Json.parse(
+    """
+      | {
+      | "id" : "someResponse"
+      | }
+    """.stripMargin)
 
-  def serviceSuccess(nino: String, taxYear: String): StubMapping = {
-    when(method = POST, uri = url(nino, taxYear))
-      .thenReturn(status = OK, responseBody)
+  private def deductionsUrl(nino: String): String =
+    s"/cross-regime/deductions-placeholder/CIS/$nino"
+
+  def deductionsServiceSuccess(nino: String): StubMapping = {
+    when(method = POST, uri = deductionsUrl(nino))
+      .thenReturn(status = OK, deductionsResponseBody)
   }
 
-  def serviceError(nino: String, taxYear: String, errorStatus: Int, errorBody: String): StubMapping = {
-    when(method = POST, uri = url(nino, taxYear))
+  def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
+    when(method = POST, uri = deductionsUrl(nino))
       .thenReturn(status = errorStatus, errorBody)
   }
 }
