@@ -51,6 +51,9 @@ object RuleDateRangeInvalidError
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 
+object RuleSourceError
+  extends MtdError("RULE_SOURCE_INVALID","The source is invalid" )
+
 object RuleDeductionAmountError
     extends MtdError("RULE_DEDUCTION_AMOUNT", "The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
