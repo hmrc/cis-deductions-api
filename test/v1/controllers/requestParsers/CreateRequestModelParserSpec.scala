@@ -59,8 +59,8 @@ class CreateRequestModelParserSpec extends UnitSpec{
       }
     }
     "Reject invalid input" when {
-      "mandatory field is given invalid data type" in new Test {
-        val inputData = CreateRawData(nino,invalidRequestJson)
+      "mandatory field is given invalid data" in new Test {
+        val inputData = CreateRawData(nino, invalidRequestJson)
 
         MockValidator
           .validate(inputData)
