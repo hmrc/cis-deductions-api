@@ -20,10 +20,10 @@ import v1.models.errors._
 
 object SourceValidation {
 
-  private val sources = Seq("all","customer","contractor")
+  private val sources = Seq("all", "customer", "contractor")
 
   def validate(source: Option[String]): List[MtdError] = {
-    source match{
+    source match {
       case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
       case None => NoValidationErrors
       case _ => List(RuleSourceError)

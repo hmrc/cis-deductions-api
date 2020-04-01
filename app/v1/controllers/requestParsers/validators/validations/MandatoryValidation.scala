@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers.validators.validations
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.models.errors.MtdError
 
-case class ListDeductionsRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = None) extends RawData
+object MandatoryValidation {
 
-case class ListDeductionsRequest(nino: Nino, fromDate: Option[String], toDate: Option[String], source: Option[String] = None)
+  def validate(error: MtdError)(date: Option[String]): List[MtdError] = {
+    date match {
+      case Some(x) => NoValidationErrors
+      case _ => List(error)
+    }
+  }
+}
