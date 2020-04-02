@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers.validators.validations
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.models.errors._
 
-case class ListDeductionsRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = None) extends RawData
+object SourceValidation {
 
-case class ListDeductionsRequest(nino: Nino, fromDate: String, toDate: String, source: Option[String] = None)
+  private val sources = Seq("all", "customer", "contractor")
+
+  def validate(source: Option[String]): List[MtdError] = {
+    source match {
+      case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
+      case None => NoValidationErrors
+      case _ => List(RuleSourceError)
+    }
+  }
+}

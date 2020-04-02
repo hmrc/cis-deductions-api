@@ -51,6 +51,9 @@ object RuleDateRangeInvalidError
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 
+object RuleSourceError
+  extends MtdError("RULE_SOURCE_INVALID","The source is invalid" )
+
 object RuleDeductionAmountError
     extends MtdError("RULE_DEDUCTION_AMOUNT", "The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
@@ -59,6 +62,12 @@ object RuleCostOfMaterialsError
 
 object RuleGrossAmountError
     extends MtdError("RULE_GROSS_AMOUNT_PAID", "The amount should be a positive number less than 99999999999.99 up to 2 decimal places")
+
+object RuleMissingFromDateError
+  extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing")
+
+object RuleMissingToDateError
+  extends MtdError("MISSING_TO_DATE", "The To date parameter is missing")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

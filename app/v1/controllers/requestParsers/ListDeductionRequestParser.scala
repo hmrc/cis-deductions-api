@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers
 
+import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.controllers.requestParsers.validators.ListDeductionsValidator
+import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
 
-case class ListDeductionsRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = None) extends RawData
+class ListDeductionRequestParser @Inject()(val validator: ListDeductionsValidator)
+  extends RequestParser[ListDeductionsRawData, ListDeductionsRequest] {
 
-case class ListDeductionsRequest(nino: Nino, fromDate: String, toDate: String, source: Option[String] = None)
+  override protected def requestFor(data: ListDeductionsRawData): ListDeductionsRequest = {
+    ListDeductionsRequest(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source)
+  }
+}
