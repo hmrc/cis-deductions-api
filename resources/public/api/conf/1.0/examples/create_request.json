@@ -1,0 +1,9 @@
+{
+  "fromDate": "2019-04-06",
+  "toDate": "2019-07-06",
+  "periodData": [
+    {
+      "deductionAmount": 1.23
+    }
+  ]
+}

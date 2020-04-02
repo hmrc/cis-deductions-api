@@ -1,0 +1,18 @@
+#%RAML 1.0 Library
+
+uses:
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+traits:
+  from:
+    queryParameters:
+      from:
+        description: 'From date to return payments.<br><br> Date in the format: YYYY-MM-DD'
+        example: "2019-05-04"
+        required: true
+  to:
+    queryParameters:
+      to:
+        description: 'To date to return payments.<br><br> Date in the format: YYYY-MM-DD'
+        example: "2019-06-12"
+        required: true
