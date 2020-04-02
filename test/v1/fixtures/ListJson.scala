@@ -16,9 +16,12 @@
 
 package v1.fixtures
 
+import play.api.libs.json.{JsValue, Json}
+
+
 object ListJson {
 
-  val multipleDeductionsJson =
+  val multipleDeductionsJson: JsValue = Json.parse(
     """
       |{
       | "cisDeductions" : [
@@ -97,7 +100,9 @@ object ListJson {
       |}
       |""".stripMargin
 
-  val singleDeductionJson =
+  )
+
+  val singleDeductionJson : JsValue = Json.parse{
     """
       |{
       | "cisDeductions" : [
@@ -131,6 +136,8 @@ object ListJson {
       |]
       |}
       |""".stripMargin
+  }
+
 
   val errorJson =
     """

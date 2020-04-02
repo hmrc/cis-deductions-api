@@ -17,18 +17,23 @@
 package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
-import v1.models.errors.{NinoFormatError, RuleDateRangeInvalidError, RuleSourceError}
+import v1.models.errors._
 import v1.models.request.ListDeductionsRawData
 
 class ListDeductionsValidatorSpec extends UnitSpec {
 
-  val nino = "AA123456A"
-  val invalidNino = "GHFG197854"
-  val validListRawData = ListDeductionsRawData(nino, "2019-04-06", "2020-04-05", Some("all"))
-  val validOptianListRawData = ListDeductionsRawData(nino, "2019-04-06", "2020-04-05", None)
 
-  val invalidListRawData = ListDeductionsRawData(invalidNino, "2019-04-06", "2020-04-05", Some("All"))
-  val invalidDateListData = ListDeductionsRawData(nino, "2018-04-06", "2020-04-05", Some("contractor"))
+
+  private val nino = "AA123456A"
+  private val invalidNino = "GHFG197854"
+  private val validListRawData = ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
+  private val validOptionalListRawData = ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
+
+  private val invalidListRawData = ListDeductionsRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All"))
+  private val invalidDateListData = ListDeductionsRawData(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor"))
+
+  private val missingDatesRawData = ListDeductionsRawData(nino, None, None, Some("customer"))
+  private val invalidDateFormatData = ListDeductionsRawData(nino, Some("06-04-2019"), Some("05-04-2020"), Some("customer"))
 
   class SetUp {
     val validator = new ListDeductionsValidator
@@ -44,24 +49,35 @@ class ListDeductionsValidatorSpec extends UnitSpec {
 
       "an optional field returns None" in new SetUp {
         validator
-          .validate(validOptianListRawData)
+          .validate(validOptionalListRawData)
           .isEmpty shouldBe true
       }
     }
 
     "return errors" when {
-      "invalid nino and source data is passed in the request" in new SetUp{
+      "invalid nino and source data is passed in the request" in new SetUp {
         private val result = validator.validate(invalidListRawData)
         result.length shouldBe 2
-        result shouldBe List(NinoFormatError,RuleSourceError)
+        result shouldBe List(NinoFormatError, RuleSourceError)
       }
 
-      "invalid dates are provided in the request" in new SetUp{
+      "invalid dates are provided in the request" in new SetUp {
         private val result = validator.validate(invalidDateListData)
         result.length shouldBe 1
         result shouldBe List(RuleDateRangeInvalidError)
       }
+
+      "from and to date are not provided" in new SetUp {
+        private val result = validator.validate(missingDatesRawData)
+        result.length shouldBe 2
+        result shouldBe List(RuleMissingFromDateError, RuleMissingToDateError)
+      }
+
+      "the from and to date are not in the correct format" in new SetUp {
+        private val result = validator.validate(invalidDateFormatData)
+        result.length shouldBe 2
+        result shouldBe List(FromDateFormatError, ToDateFormatError)
+      }
     }
   }
-
 }

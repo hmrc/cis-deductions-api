@@ -44,7 +44,7 @@ class ListConnectorSpec extends ConnectorSpec {
         val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06")
 
         val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
-          Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
+          Seq(DeductionsDetails(Some(""),request.fromDate, request.toDate,"","",
             Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source.getOrElse("all")))))
         )))
 

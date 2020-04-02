@@ -16,18 +16,14 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors._
+import v1.models.errors.MtdError
 
-object SourceValidation {
+object MandatoryValidation {
 
-
-  private val sources = Seq("all", "customer", "contractor")
-
-  def validate(source: Option[String]): List[MtdError] = {
-    source match {
-      case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
-      case None => NoValidationErrors
-      case _ => List(RuleSourceError)
+  def validate[A](error: MtdError)(input: Option[A]): List[MtdError] = {
+    input match {
+      case Some(_) => NoValidationErrors
+      case _ => List(error)
     }
   }
 }

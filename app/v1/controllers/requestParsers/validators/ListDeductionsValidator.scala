@@ -17,21 +17,25 @@
 package v1.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v1.controllers.requestParsers.validators.validations.{DateValidation, NinoValidation, SourceValidation, ToBeforeFromDateValidation}
-import v1.models.errors.{FromDateFormatError, MtdError, RuleDateRangeInvalidError, ToDateFormatError}
+import v1.controllers.requestParsers.validators.validations.{DateValidation, MandatoryValidation, NinoValidation, SourceValidation, ToBeforeFromDateValidation}
+import v1.models.errors.{FromDateFormatError, MtdError, RuleDateRangeInvalidError, RuleMissingFromDateError, RuleMissingToDateError, ToDateFormatError}
 import v1.models.request.ListDeductionsRawData
 
 class ListDeductionsValidator extends Validator[ListDeductionsRawData] with FixedConfig{
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation)
 
   private def parameterFormatValidation: ListDeductionsRawData => List[List[MtdError]] = (data: ListDeductionsRawData) => List(
     NinoValidation.validate(data.nino),
     SourceValidation.validate(data.source),
-    DateValidation.validate(FromDateFormatError)(data.fromDate),
-    DateValidation.validate(ToDateFormatError)(data.toDate),
-    ToBeforeFromDateValidation.validate(data.fromDate, data.toDate, RuleDateRangeInvalidError)
+    DateValidation.validate(FromDateFormatError)(data.fromDate.get),
+    DateValidation.validate(ToDateFormatError)(data.toDate.get),
+    ToBeforeFromDateValidation.validate(data.fromDate.get, data.toDate.get, RuleDateRangeInvalidError)
   )
+
+  private def mandatoryFieldValidation: ListDeductionsRawData => List[List[MtdError]] = (data: ListDeductionsRawData) => List(
+    MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
+    MandatoryValidation.validate(RuleMissingToDateError)(data.toDate))
 
   override def validate(data: ListDeductionsRawData): List[MtdError] = run(validationSet, data).distinct
 }

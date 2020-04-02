@@ -70,18 +70,18 @@ class CreateRequestControllerSpec
 
   val response = CreateResponseModel(responseId)
 
-  def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
-    AuditEvent(
-      auditType = "createCisDeductionsAuditType",
-      transactionName = "create-cis-deductions-transaction-type",
-      detail = CreateAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        nino,
-        `X-CorrelationId` = correlationId,
-        auditResponse
+    def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
+      AuditEvent(
+        auditType = "createCisDeductionsAuditType",
+        transactionName = "create-cis-deductions-transaction-type",
+        detail = CreateAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          nino,
+          `X-CorrelationId` = correlationId,
+          auditResponse
+        )
       )
-    )
 
   "createRequest" should {
     "return a successful response with status 200 (OK)" when {
