@@ -34,8 +34,8 @@ class ListServiceSpec extends UnitSpec {
 
   private val nino = Nino("AA123456A")
   private val correlationId = "X-123"
-  private val fromDate = Some("2019-04-06")
-  private val toDate = Some("2020-04-05")
+  private val fromDate = "2019-04-06"
+  private val toDate = "2020-04-05"
   private val source = Some("Contractor")
 
   val request: ListDeductionsRequest = ListDeductionsRequest(nino, fromDate, toDate, source)

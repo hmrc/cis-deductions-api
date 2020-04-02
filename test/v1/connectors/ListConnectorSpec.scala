@@ -41,10 +41,10 @@ class ListConnectorSpec extends ConnectorSpec {
 
   "list" should {
       "return a List Deductions response when no source is supplied" in new Test {
-        val request = ListDeductionsRequest(nino, Some("2019-04-05"), Some("2020-04-06"))
+        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06")
 
         val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
-          Seq(DeductionsDetails(Some(""),request.fromDate.get,request.toDate.get,"","",
+          Seq(DeductionsDetails(Some(""),request.fromDate, request.toDate,"","",
             Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source.getOrElse("all")))))
         )))
 
@@ -58,10 +58,10 @@ class ListConnectorSpec extends ConnectorSpec {
       }
 
     "return a List Deductions response when a source is supplied" in new Test {
-      val request = ListDeductionsRequest(nino, Some("2019-04-05"), Some("2020-04-06"), Some("contractor"))
+      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", Some("contractor"))
 
       val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
-        Seq(DeductionsDetails(Some(""),request.fromDate.get,request.toDate.get,"","",
+        Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
           Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source.getOrElse("all")))))
       )))
 
@@ -76,7 +76,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
     "return a Des Error code" when {
       "the http client returns a Des Error code" in new Test {
-        val request = ListDeductionsRequest(nino, Some("2019-04-05"), Some("2020-04-06"), Some("contractor"))
+        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", Some("contractor"))
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 

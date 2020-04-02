@@ -20,9 +20,9 @@ import v1.models.errors.MtdError
 
 object MandatoryValidation {
 
-  def validate(error: MtdError)(date: Option[String]): List[MtdError] = {
-    date match {
-      case Some(x) => NoValidationErrors
+  def validate[A](error: MtdError)(input: Option[A]): List[MtdError] = {
+    input match {
+      case Some(_) => NoValidationErrors
       case _ => List(error)
     }
   }
