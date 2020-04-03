@@ -43,7 +43,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
       ),
       api = APIDefinition(
         name = "CIS Deductions (MTD)",
-        description = "TBC",
+        description = "An API for providing Construction industry scheme data",
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
