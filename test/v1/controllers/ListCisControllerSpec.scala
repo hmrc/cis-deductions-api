@@ -65,7 +65,7 @@ class ListCisControllerSpec extends ControllerBaseSpec
     private val correlationId = "X-123"
     private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, source)
     private val listRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, source)
-    private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
+    private val optionalFieldMissingRawData = ListDeductionsRawData(nino, None, None, None)
     private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, None)
 
     val response: ListResponseModel =
@@ -143,7 +143,7 @@ class ListCisControllerSpec extends ControllerBaseSpec
                   .listCisDeductions(optionalFieldMissingRequestData)
                   .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-                val result: Future[Result] = controller.listCisDeductions(nino, fromDate, toDate, None)(fakeGetRequest)
+                val result: Future[Result] = controller.listCisDeductions(nino, None, None, None)(fakeGetRequest)
 
                 status(result) shouldBe OK
                 contentAsJson(result) shouldBe singleDeductionJson
@@ -209,6 +209,10 @@ class ListCisControllerSpec extends ControllerBaseSpec
                         DeductionFromDateFormatError,
                         ToDateFormatError,
                         FromDateFormatError,
+                        RuleMissingToDateError,
+                        RuleMissingFromDateError,
+                        RuleSourceError,
+                        RuleDateRangeInvalidError,
                         TaxYearFormatError
                     )
                 )
@@ -230,7 +234,12 @@ class ListCisControllerSpec extends ControllerBaseSpec
                         AuditError(DeductionFromDateFormatError.code),
                         AuditError(ToDateFormatError.code),
                         AuditError(FromDateFormatError.code),
+                        AuditError(RuleMissingToDateError.code),
+                        AuditError(RuleMissingFromDateError.code),
+                        AuditError(RuleSourceError.code),
+                        AuditError(RuleDateRangeInvalidError.code),
                         AuditError(TaxYearFormatError.code))),
+
                     None
                 )
 
@@ -265,14 +274,13 @@ class ListCisControllerSpec extends ControllerBaseSpec
                 (NotFoundError, NOT_FOUND),
                 (DownstreamError, INTERNAL_SERVER_ERROR),
                 (RuleTaxYearNotSupportedError, BAD_REQUEST),
-                (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
                 (RuleTaxYearRangeExceededError, BAD_REQUEST),
                 (DeductionFromDateFormatError, BAD_REQUEST),
                 (DeductionToDateFormatError, BAD_REQUEST),
                 (FromDateFormatError, BAD_REQUEST),
                 (ToDateFormatError, BAD_REQUEST),
                 (RuleToDateBeforeFromDateError, BAD_REQUEST),
-                (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
+                (RuleDeductionsDateRangeInvalidError, BAD_REQUEST)
             )
             input.foreach(args => (serviceErrors _).tupled(args))
 

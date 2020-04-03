@@ -49,7 +49,7 @@ with BaseController
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "ListCisController",
-      endpointName = "listCis"
+      endpointName = "listEndpoint"
     )
 
   def listCisDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
@@ -86,10 +86,10 @@ with BaseController
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
+      case  BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
            ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError =>
+           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | RuleMissingToDateError | RuleMissingFromDateError=>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
