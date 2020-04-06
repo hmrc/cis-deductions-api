@@ -23,12 +23,6 @@ import support.WireMockMethods
 
 object DesStub extends WireMockMethods {
 
-  private val responseBody = Json.parse(
-    """
-      | {
-      | "responseData" : "someResponse"
-      | }
-    """.stripMargin)
 
   private val deductionsResponseBody = Json.parse(
     """
