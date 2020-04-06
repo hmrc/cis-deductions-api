@@ -18,18 +18,10 @@ package v1.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status.OK
-import play.api.libs.json.Json
+import data.CreateDataExamples._
 import support.WireMockMethods
 
 object DesStub extends WireMockMethods {
-
-
-  private val deductionsResponseBody = Json.parse(
-    """
-      | {
-      | "id" : "someResponse"
-      | }
-    """.stripMargin)
 
   private def deductionsUrl(nino: String): String =
     s"/cross-regime/deductions-placeholder/CIS/$nino"
