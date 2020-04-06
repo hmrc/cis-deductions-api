@@ -138,6 +138,11 @@ object ListJson {
       |""".stripMargin
   }
 
+  val singleDeductionRequestJson =
+    """
+      |
+      |""".stripMargin
+
 
   val errorJson =
     """

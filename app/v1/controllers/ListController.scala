@@ -23,7 +23,6 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
-import v1.hateoas.HateoasFactory
 import v1.controllers.requestParsers._
 import v1.models.audit.{AuditEvent, CreateAuditDetail, CreateAuditResponse}
 import v1.models.auth.UserDetails
@@ -35,16 +34,14 @@ import v1.services.{AuditService, EnrolmentsAuthService, ListService, MtdIdLooku
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ListCisController @Inject()(val authService: EnrolmentsAuthService,
+class ListController @Inject()(val authService: EnrolmentsAuthService,
                                   val lookupService: MtdIdLookupService,
                                   requestParser: ListDeductionRequestParser,
                                   service: ListService,
                                   auditService: AuditService,
                                   cc: ControllerComponents)
                                  (implicit ec: ExecutionContext)
-extends AuthorisedController(cc)
-with BaseController
-  with Logging {
+extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(

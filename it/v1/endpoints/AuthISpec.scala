@@ -25,6 +25,7 @@ import support.IntegrationBaseSpec
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 
+
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {

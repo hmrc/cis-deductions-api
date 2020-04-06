@@ -16,7 +16,7 @@
 
 package v1.mocks.services
 
-import org.scalamock.handlers.{CallHandler, CallHandler4}
+import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext

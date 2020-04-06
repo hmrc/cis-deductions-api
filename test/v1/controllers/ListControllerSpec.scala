@@ -33,7 +33,7 @@ import v1.models.outcomes.ResponseWrapper
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListCisControllerSpec extends ControllerBaseSpec
+class ListControllerSpec extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockListDeductionRequestParser
@@ -44,7 +44,7 @@ class ListCisControllerSpec extends ControllerBaseSpec
     trait Test {
         val hc = HeaderCarrier()
 
-        val controller = new ListCisController(
+        val controller = new ListController(
             authService = mockEnrolmentsAuthService,
             lookupService = mockMtdIdLookupService,
             requestParser = mockRequestParser,

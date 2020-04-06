@@ -18,10 +18,17 @@ package v1.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status.OK
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.WireMockMethods
+import v1.fixtures.ListJson.singleDeductionJson
 
 object DesStub extends WireMockMethods {
+
+  def onSuccess(method: HTTPMethod, uri: String,  nino: String, fromDate: Option[String],
+                toDate: Option[String], source: Option[String]): StubMapping = {
+    when(method = method, uri =  listdeductionsUrl("AA123456A",Some("2019-04-06"),Some("2020-04-05"),Some("all")))
+      .thenReturn(status = OK, singleDeductionJson)
+  }
 
   private val responseBody = Json.parse(
     """
@@ -40,13 +47,17 @@ object DesStub extends WireMockMethods {
   private def deductionsUrl(nino: String): String =
     s"/cross-regime/deductions-placeholder/CIS/$nino"
 
-  def deductionsServiceSuccess(nino: String): StubMapping = {
-    when(method = POST, uri = deductionsUrl(nino))
-      .thenReturn(status = OK, deductionsResponseBody)
+  private def listdeductionsUrl(nino: String, toDate : Option[String], fromDate: Option[String], source: Option[String]): String = {
+    s"/deductions/cis/$nino/current-position?fromDate=$fromDate&toDate=$toDate?&source=$source"
   }
 
-  def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
-    when(method = POST, uri = deductionsUrl(nino))
-      .thenReturn(status = errorStatus, errorBody)
+    def deductionsServiceSuccess(nino: String): StubMapping = {
+      when(method = POST, uri = deductionsUrl(nino))
+        .thenReturn(status = OK, deductionsResponseBody)
+    }
+
+    def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
+      when(method = POST, uri = deductionsUrl(nino))
+        .thenReturn(status = errorStatus, errorBody)
+    }
   }
-}
