@@ -8,7 +8,7 @@ import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, 
 import play.api.libs.json.Json
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 import v1.fixtures.ListJson.singleDeductionJson
-import v1.models.errors.{MtdError, NinoFormatError}
+import v1.models.errors.{FromDateFormatError, MtdError, NinoFormatError, ToDateFormatError}
 
 // scalastyle:off
 
@@ -46,7 +46,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
   }
 
 
-  "Calling the list Cis endpoint" should {
+  "Calling the list endpoint" should {
 
     "return a valid response with status OK" when {
 
@@ -91,9 +91,8 @@ class ListControllerISpec extends IntegrationBaseSpec {
             response.header("Content-Type") shouldBe Some("application/json")
           }
         }
-
         val input = Seq(
-          ("AA1234", Some("2019-04-06"), Some("2020-04-05"), Some("Customer"), BAD_REQUEST, NinoFormatError)
+          ("AA12345", Some("2019-04-06"), Some("2020-04-05"), Some("Customer"), BAD_REQUEST, NinoFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

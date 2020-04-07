@@ -65,7 +65,7 @@ class ListControllerSpec extends ControllerBaseSpec
     private val correlationId = "X-123"
     private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, source)
     private val listRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, source)
-    private val optionalFieldMissingRawData = ListDeductionsRawData(nino, None, None, None)
+    private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
     private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, None)
 
     val response: ListResponseModel =
@@ -123,7 +123,7 @@ class ListControllerSpec extends ControllerBaseSpec
                   .listCisDeductions(listRequestData)
                   .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-                val result: Future[Result] = controller.listCisDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
 
                 status(result) shouldBe OK
                 contentAsJson(result) shouldBe singleDeductionJson
@@ -143,7 +143,7 @@ class ListControllerSpec extends ControllerBaseSpec
                   .listCisDeductions(optionalFieldMissingRequestData)
                   .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-                val result: Future[Result] = controller.listCisDeductions(nino, None, None, None)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,None)(fakeGetRequest)
 
                 status(result) shouldBe OK
                 contentAsJson(result) shouldBe singleDeductionJson
@@ -152,6 +152,9 @@ class ListControllerSpec extends ControllerBaseSpec
                 val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(singleDeductionJson))
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once()
             }
+
+
+
         }
 
         "return the error as per spec" when {
@@ -162,7 +165,7 @@ class ListControllerSpec extends ControllerBaseSpec
                       .parse(listRawData)
                       .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
 
-                    val result: Future[Result] = controller.listCisDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                    val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
 
 
                     status(result) shouldBe expectedStatus
@@ -178,7 +181,6 @@ class ListControllerSpec extends ControllerBaseSpec
             val input = Seq(
                 (BadRequestError, BAD_REQUEST),
                 (NinoFormatError, BAD_REQUEST),
-                (RuleTaxYearNotSupportedError, BAD_REQUEST),
                 (DownstreamError, INTERNAL_SERVER_ERROR),
             )
             input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -190,7 +192,7 @@ class ListControllerSpec extends ControllerBaseSpec
                   .parse(listRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.listCisDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -205,23 +207,20 @@ class ListControllerSpec extends ControllerBaseSpec
                     Some(correlationId),
                     Seq(
                         BadRequestError,
-                        DeductionToDateFormatError,
-                        DeductionFromDateFormatError,
+                        RuleDateRangeInvalidError,
                         ToDateFormatError,
                         FromDateFormatError,
+                        ToDateFormatError,
                         RuleMissingToDateError,
                         RuleMissingFromDateError,
-                        RuleSourceError,
-                        RuleDateRangeInvalidError,
-                        TaxYearFormatError
-                    )
+                        RuleSourceError)
                 )
 
                 MockListDeductionRequestParser
                   .parse(listRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.listCisDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -230,16 +229,13 @@ class ListControllerSpec extends ControllerBaseSpec
                 val auditResponse: CreateAuditResponse = CreateAuditResponse(BAD_REQUEST, Some(
                     Seq(
                         AuditError(BadRequestError.code),
-                        AuditError(DeductionToDateFormatError.code),
-                        AuditError(DeductionFromDateFormatError.code),
+                        AuditError(RuleDateRangeInvalidError.code),
                         AuditError(ToDateFormatError.code),
                         AuditError(FromDateFormatError.code),
+                        AuditError(ToDateFormatError.code),
                         AuditError(RuleMissingToDateError.code),
                         AuditError(RuleMissingFromDateError.code),
-                        AuditError(RuleSourceError.code),
-                        AuditError(RuleDateRangeInvalidError.code),
-                        AuditError(TaxYearFormatError.code))),
-
+                        AuditError(RuleSourceError.code))),
                     None
                 )
 
@@ -259,7 +255,7 @@ class ListControllerSpec extends ControllerBaseSpec
                       .listCisDeductions(listRequestData)
                       .returns(Future.successful(Left(ErrorWrapper(Some(correlationId),Seq(mtdError)))))
 
-                    val result: Future[Result] = controller.listCisDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+                    val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
 
                     status(result) shouldBe expectedStatus
                     contentAsJson(result) shouldBe Json.toJson(mtdError)
@@ -273,14 +269,8 @@ class ListControllerSpec extends ControllerBaseSpec
                 (NinoFormatError, BAD_REQUEST),
                 (NotFoundError, NOT_FOUND),
                 (DownstreamError, INTERNAL_SERVER_ERROR),
-                (RuleTaxYearNotSupportedError, BAD_REQUEST),
-                (RuleTaxYearRangeExceededError, BAD_REQUEST),
-                (DeductionFromDateFormatError, BAD_REQUEST),
-                (DeductionToDateFormatError, BAD_REQUEST),
                 (FromDateFormatError, BAD_REQUEST),
                 (ToDateFormatError, BAD_REQUEST),
-                (RuleToDateBeforeFromDateError, BAD_REQUEST),
-                (RuleDeductionsDateRangeInvalidError, BAD_REQUEST)
             )
             input.foreach(args => (serviceErrors _).tupled(args))
 

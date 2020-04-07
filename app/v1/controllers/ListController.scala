@@ -45,11 +45,11 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
-      controllerName = "ListCisController",
+      controllerName = "ListController",
       endpointName = "listEndpoint"
     )
 
-  def listCisDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
+  def listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
   authorisedAction(nino).async { implicit request =>
     val rawData = ListDeductionsRawData(nino,fromDate,toDate,source)
     val parseResponse: Either[ErrorWrapper, ListDeductionsRequest] = requestParser.parseRequest(rawData)
@@ -83,10 +83,8 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
-      case  BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | RuleMissingToDateError | RuleMissingFromDateError=>
+      case BadRequestError | NinoFormatError | RuleDateRangeInvalidError | FromDateFormatError | RuleMissingFromDateError |
+           ToDateFormatError | RuleMissingToDateError | RuleSourceError | UnauthorisedError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
