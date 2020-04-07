@@ -23,10 +23,10 @@ import support.WireMockMethods
 import v1.fixtures.ListJson.singleDeductionJson
 
 object DesStub extends WireMockMethods {
+  def onSuccess(method: HTTPMethod, uri: String,  nino: String, fromDate: String,
+                toDate: String, source: String): StubMapping = {
 
-  def onSuccess(method: HTTPMethod, uri: String,  nino: String, fromDate: Option[String],
-                toDate: Option[String], source: Option[String]): StubMapping = {
-    when(method = method, uri =  listdeductionsUrl("AA123456A",Some("2019-04-06"),Some("2020-04-05"),Some("all")))
+    when(method = method, uri =  listdeductionsUrl(nino,fromDate,toDate,source))
       .thenReturn(status = OK, singleDeductionJson)
   }
 
@@ -47,8 +47,8 @@ object DesStub extends WireMockMethods {
   private def deductionsUrl(nino: String): String =
     s"/cross-regime/deductions-placeholder/CIS/$nino"
 
-  private def listdeductionsUrl(nino: String, toDate : Option[String], fromDate: Option[String], source: Option[String]): String = {
-    s"/deductions/cis/$nino/current-position?fromDate=$fromDate&toDate=$toDate?&source=$source"
+  private def listdeductionsUrl(nino: String, fromDate : String, toDate: String, source: String): String = {
+    s"cross-regime/deductions-placeholder/CIS/$nino/current-position?fromDate=$fromDate&toDate=$toDate&source=$source"
   }
 
     def deductionsServiceSuccess(nino: String): StubMapping = {

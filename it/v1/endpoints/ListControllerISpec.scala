@@ -18,16 +18,15 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456B"
     val correlationId = "X-123"
-    val fromDate: Option[String] = Some("2019-04-06")
-    val toDate: Option[String] = Some("2020-04-05")
-    val source: Option[String] = Some("Customer")
+    val fromDate = "2019-04-06"
+    val toDate = "2020-04-05"
+    val source = "customer"
 
 
-    def uri: String = s"/deductions/cis/$nino/current-position"
+    def uri: String = s"/deductions/cis/$nino/current-position?fromDate=$fromDate&toDate=$toDate&source=$source"
 
 
-
-    def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino"
+    def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
 
     def setupStubs(): StubMapping
 
@@ -35,11 +34,10 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
       val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
         .collect {
-          case (k, Some(v)) => (k, v)
+          case (k, v) => (k, v)
         }
       setupStubs()
       buildRequest(uri)
-        .addQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
 
@@ -68,15 +66,15 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
       "return error according to spec" when {
 
-        def validationErrorTest(requestNino: String, requestFromDate: Option[String],
-                                requestToDate: Option[String], requestSource: Option[String],
+        def validationErrorTest(requestNino: String, requestFromDate: String,
+                                requestToDate: String, requestSource: String,
                                 expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
-            override val fromDate: Option[String] = requestFromDate
-            override val toDate: Option[String] = requestToDate
-            override val source: Option[String] = requestSource
+            override val fromDate: String = requestFromDate
+            override val toDate: String = requestToDate
+            override val source: String = requestSource
 
 
             override def setupStubs(): StubMapping = {
@@ -92,7 +90,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
           }
         }
         val input = Seq(
-          ("AA12345", Some("2019-04-06"), Some("2020-04-05"), Some("Customer"), BAD_REQUEST, NinoFormatError)
+          ("AA12345","2019-04-06", "2020-04-05","Customer", BAD_REQUEST, NinoFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
