@@ -3,8 +3,18 @@ is:
   - headers.testScenarioHeader
   - headers.contentTypeJson
   - errors.formatNino
+  - errors.incorrectOrEmptyBody
+  - errors.formatDeductionFromDate
+  - errors.formatDeductionToDate
+  - errors.ruleDeductionAmount
+  - errors.formatFromDate
+  - errors.formatToDate
+  - errors.ruleCostOfMaterials
+  - errors.ruleGrossAmountPaid
+  - errors.ruleDateRangeInvalid
+  - errors.ruleDeductionsDateRangeInvalid
+  - errors.rangeDeductionToDateBeforeDeductionsFromDate
   - errors.clientOrAgentNotAuthorised
-  - queryParameters.to
 displayName: Create CIS Deductions for Subcontractor [test only]
 description: This endpoint allow a developer to create Construction Industry Scheme (CIS) deductions.
 (annotations.sandboxData): !include scenarios/create_scenarios.md
@@ -15,20 +25,14 @@ body:
     type: !include schemas/create_request.json
     examples:
      example-1:
-      description: Example request
+      description: Create CIS request
       value: !include examples/create_request.json
 responses:
   200:
     body:
       application/json:
-        type: !include schemas/sample_response.json
-        examples:
-          example-1:
-            description: Sample example 1
-            value: !include examples/example_1.json
-          example-2:
-            description: Sample example 2
-            value: !include examples/example_2.json
+        type: !include schemas/create_response.json
+        example: !include examples/example_1.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
