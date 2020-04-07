@@ -10,8 +10,6 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 import v1.fixtures.ListJson.singleDeductionJson
 import v1.models.errors.{FromDateFormatError, MtdError, NinoFormatError, ToDateFormatError}
 
-// scalastyle:off
-
 class ListControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
@@ -22,10 +20,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
     val toDate = "2020-04-05"
     val source = "customer"
 
-
-    def uri: String = s"/deductions/cis/$nino/current-position?fromDate=$fromDate&toDate=$toDate&source=$source"
-
-
+    def uri: String = s"/deductions/cis/$nino/current-position"
     def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
 
     def setupStubs(): StubMapping
@@ -33,16 +28,13 @@ class ListControllerISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
 
       val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
-        .collect {
-          case (k, v) => (k, v)
-        }
+
       setupStubs()
       buildRequest(uri)
+        .withQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
-
   }
-
 
   "Calling the list endpoint" should {
 
@@ -54,7 +46,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUrl, nino,fromDate, toDate,source)
+          DesStub.listServiceSuccess(nino, fromDate, toDate, source)
         }
 
         val response: WSResponse = await(request.get)
@@ -90,7 +82,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
           }
         }
         val input = Seq(
-          ("AA12345","2019-04-06", "2020-04-05","Customer", BAD_REQUEST, NinoFormatError)
+          ("AA12345","2019-04-06", "2020-04-05","customer", BAD_REQUEST, NinoFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

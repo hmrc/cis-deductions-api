@@ -18,37 +18,17 @@ package v1.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status.OK
-import play.api.libs.json.{JsValue, Json}
+import data.CreateDataExamples._
 import support.WireMockMethods
 import v1.fixtures.ListJson.singleDeductionJson
 
 object DesStub extends WireMockMethods {
-  def onSuccess(method: HTTPMethod, uri: String,  nino: String, fromDate: String,
-                toDate: String, source: String): StubMapping = {
-
-    when(method = method, uri =  listdeductionsUrl(nino,fromDate,toDate,source))
-      .thenReturn(status = OK, singleDeductionJson)
-  }
-
-  private val responseBody = Json.parse(
-    """
-      | {
-      | "responseData" : "someResponse"
-      | }
-    """.stripMargin)
-
-  private val deductionsResponseBody = Json.parse(
-    """
-      | {
-      | "id" : "someResponse"
-      | }
-    """.stripMargin)
 
   private def deductionsUrl(nino: String): String =
     s"/cross-regime/deductions-placeholder/CIS/$nino"
 
-  private def listdeductionsUrl(nino: String, fromDate : String, toDate: String, source: String): String = {
-    s"cross-regime/deductions-placeholder/CIS/$nino/current-position?fromDate=$fromDate&toDate=$toDate&source=$source"
+  private def listdeductionsUrl(nino: String): String = {
+    s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
   }
 
     def deductionsServiceSuccess(nino: String): StubMapping = {
@@ -56,8 +36,14 @@ object DesStub extends WireMockMethods {
         .thenReturn(status = OK, deductionsResponseBody)
     }
 
+    def listServiceSuccess(nino: String, fromDate : String, toDate: String, source: String): StubMapping = {
+      val queryParams = Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+      when(method = GET, uri = listdeductionsUrl(nino), queryParams)
+        .thenReturn(status = OK, singleDeductionJson)
+    }
+
     def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
       when(method = POST, uri = deductionsUrl(nino))
         .thenReturn(status = errorStatus, errorBody)
     }
-  }
+}
