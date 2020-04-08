@@ -3,12 +3,12 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import support.IntegrationBaseSpec
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SERVICE_UNAVAILABLE}
+import play.api.http.HeaderNames._
+import play.api.http.Status._
 import play.api.libs.json.Json
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 import v1.fixtures.ListJson.singleDeductionJson
-import v1.models.errors.{FromDateFormatError, MtdError, NinoFormatError, ToDateFormatError}
+import v1.models.errors._
 
 class ListControllerISpec extends IntegrationBaseSpec {
 
@@ -82,11 +82,52 @@ class ListControllerISpec extends IntegrationBaseSpec {
           }
         }
         val input = Seq(
-          ("AA12345","2019-04-06", "2020-04-05","customer", BAD_REQUEST, NinoFormatError)
+          ("AA12345","2019-04-06", "2020-04-05","customer", BAD_REQUEST, NinoFormatError),
+          ("AA123456B","2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError),
+          ("AA123456B","2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError),
+          ("AA123456B","2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError),
+          ("AA123456B","2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
     }
+
+    "des service error" when {
+
+      def errorBody(code: String): String =
+        s"""{
+           |  "code": "$code",
+           |  "reason": "des message"
+           |}""".stripMargin
+
+      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"des returns an $desCode error and status $desStatus" in new Test {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            DesStub.onError(DesStub.GET, desUrl, desStatus, errorBody(desCode))
+          }
+
+          val response: WSResponse = await(request.get)
+          response.status shouldBe expectedStatus
+          response.json shouldBe Json.toJson(expectedBody)
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      val input = Seq(
+        (BAD_REQUEST, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError)
+      )
+
+      input.foreach(args => (serviceErrorTest _).tupled(args))
+    }
+
+
   }
 }

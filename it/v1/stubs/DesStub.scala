@@ -46,4 +46,9 @@ object DesStub extends WireMockMethods {
       when(method = POST, uri = deductionsUrl(nino))
         .thenReturn(status = errorStatus, errorBody)
     }
+
+  def onError(method: HTTPMethod, uri: String, errorStatus: Int, errorBody: String): StubMapping = {
+    when(method = method, uri = uri)
+      .thenReturn(status = errorStatus, errorBody)
+  }
 }
