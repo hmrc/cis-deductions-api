@@ -20,7 +20,6 @@ import v1.models.errors._
 
 object SourceValidation {
 
-
   private val sources = Seq("all", "customer", "contractor")
 
   def validate(source: Option[String]): List[MtdError] = {

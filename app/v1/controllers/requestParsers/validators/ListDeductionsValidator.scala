@@ -35,7 +35,8 @@ class ListDeductionsValidator extends Validator[ListDeductionsRawData] with Fixe
 
   private def mandatoryFieldValidation: ListDeductionsRawData => List[List[MtdError]] = (data: ListDeductionsRawData) => List(
     MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
-    MandatoryValidation.validate(RuleMissingToDateError)(data.toDate))
+    MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
+  )
 
   override def validate(data: ListDeductionsRawData): List[MtdError] = run(validationSet, data).distinct
 }

@@ -40,14 +40,4 @@ trait MockListService extends MockFactory{
         .expects(requestData, *, *, *)
     }
   }
-
-
-
-
-
-
-
-
-
-
 }

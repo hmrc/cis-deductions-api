@@ -25,7 +25,6 @@ class ListDeductionRequestParser @Inject()(val validator: ListDeductionsValidato
   extends RequestParser[ListDeductionsRawData, ListDeductionsRequest] {
 
   override protected def requestFor(data: ListDeductionsRawData): ListDeductionsRequest = {
-
     ListDeductionsRequest(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source)
   }
 }

@@ -22,8 +22,6 @@ import v1.models.request.ListDeductionsRawData
 
 class ListDeductionsValidatorSpec extends UnitSpec {
 
-
-
   private val nino = "AA123456A"
   private val invalidNino = "GHFG197854"
   private val validListRawData = ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
