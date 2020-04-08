@@ -18,7 +18,7 @@ package v1.fixtures
 
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
-import v1.models.audit.{AuditError, CreateAuditResponse}
+import v1.models.audit.{AuditError, AuditResponse}
 import v1.models.request.{CreateRequestModel, PeriodDetails}
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 import v1.models.responseData.CreateResponseModel
@@ -533,8 +533,8 @@ object CreateRequestFixtures {
   val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
   val auditErrors: Seq[AuditError] = Seq(AuditError(errorCode = "FORMAT_NINO"))
 
-  val auditResponseModelWithBody: CreateAuditResponse =
-    CreateAuditResponse(
+  val auditResponseModelWithBody: AuditResponse =
+    AuditResponse(
       httpStatus = OK,
       response = Right(Some(body))
     )
@@ -548,8 +548,8 @@ object CreateRequestFixtures {
     """.stripMargin
   )
 
-  val auditResponseModelWithErrors: CreateAuditResponse =
-    CreateAuditResponse(
+  val auditResponseModelWithErrors: AuditResponse =
+    AuditResponse(
       httpStatus = BAD_REQUEST,
       response = Left(auditErrors)
     )

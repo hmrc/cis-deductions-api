@@ -19,6 +19,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
     val fromDate = "2019-04-06"
     val toDate = "2020-04-05"
     val source = "customer"
+    val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
     def uri: String = s"/deductions/cis/$nino/current-position"
     def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
@@ -26,8 +27,6 @@ class ListControllerISpec extends IntegrationBaseSpec {
     def setupStubs(): StubMapping
 
     def request: WSRequest = {
-
-      val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
       setupStubs()
       buildRequest(uri)
@@ -46,7 +45,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.listServiceSuccess(nino, fromDate, toDate, source)
+          DesStub.mockDes(DesStub.GET,desUrl, OK, singleDeductionJson, Some(queryParams))
         }
 
         val response: WSResponse = await(request.get)

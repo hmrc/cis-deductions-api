@@ -100,17 +100,17 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
                                  correlationId: String,
                                  userDetails: UserDetails,
                                  errorWrapper: Option[ErrorWrapper] = None,
-                                 responseBody: Option[JsValue] = None): CreateAuditDetail = {
+                                 responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>
-        CreateAuditResponse(statusCode, Some(wrapper.auditErrors), None)
+        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       }
-      .getOrElse(CreateAuditResponse(statusCode, None, responseBody ))
+      .getOrElse(AuditResponse(statusCode, None, responseBody ))
 
-    CreateAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
+    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
   }
 
-  private def auditSubmission(details: CreateAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
+  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("createCisDeductionsAuditType", "create-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }

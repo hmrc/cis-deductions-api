@@ -18,7 +18,7 @@ package v1.controllers
 
 import mocks.MockAppConfig
 import v1.mocks.requestParsers.MockListDeductionRequestParser
-import v1.models.audit.{AuditError, AuditEvent, CreateAuditDetail, CreateAuditResponse}
+import v1.models.audit.{AuditError, AuditEvent, GenericAuditDetail, AuditResponse}
 import v1.models.request._
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 import play.api.libs.json.{JsValue, Json}
@@ -99,11 +99,11 @@ class ListControllerSpec extends ControllerBaseSpec
             )
         )
 
-    def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
+    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
             auditType = "listCisDeductionsAuditType",
             transactionName = "list-cis-deductions-transaction-type",
-            detail = CreateAuditDetail(
+            detail = GenericAuditDetail(
                 userType = "Individual",
                 agentReferenceNumber = None,
                 nino,
@@ -129,7 +129,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 contentAsJson(result) shouldBe singleDeductionJson
                 header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(singleDeductionJson))
+                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJson))
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once()
             }
 
@@ -149,7 +149,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 contentAsJson(result) shouldBe singleDeductionJson
                 header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(singleDeductionJson))
+                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJson))
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once()
             }
 
@@ -172,7 +172,7 @@ class ListControllerSpec extends ControllerBaseSpec
                     contentAsJson(result) shouldBe Json.toJson(error)
                     header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                    val auditResponse: CreateAuditResponse = CreateAuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+                    val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
                     MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
 
                 }
@@ -198,7 +198,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 contentAsJson(result) shouldBe Json.toJson(error)
                 header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                val auditResponse: CreateAuditResponse = CreateAuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+                val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
             }
 
@@ -226,7 +226,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 contentAsJson(result) shouldBe Json.toJson(error)
                 header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                val auditResponse: CreateAuditResponse = CreateAuditResponse(BAD_REQUEST, Some(
+                val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
                     Seq(
                         AuditError(BadRequestError.code),
                         AuditError(RuleDateRangeInvalidError.code),
@@ -261,7 +261,7 @@ class ListControllerSpec extends ControllerBaseSpec
                     contentAsJson(result) shouldBe Json.toJson(mtdError)
                     header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                    val auditResponse: CreateAuditResponse = CreateAuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+                    val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
                     MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
                 }
             }

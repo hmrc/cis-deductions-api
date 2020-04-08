@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
 import v1.controllers.requestParsers._
-import v1.models.audit.{AuditEvent, CreateAuditDetail, CreateAuditResponse}
+import v1.models.audit.{AuditEvent, GenericAuditDetail, AuditResponse}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -96,17 +96,17 @@ extends AuthorisedController(cc) with BaseController with Logging {
                                  correlationId: String,
                                  userDetails: UserDetails,
                                  errorWrapper: Option[ErrorWrapper] = None,
-                                 responseBody: Option[JsValue] = None): CreateAuditDetail = {
+                                 responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>
-        CreateAuditResponse(statusCode, Some(wrapper.auditErrors), None)
+        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       }
-      .getOrElse(CreateAuditResponse(statusCode, None, responseBody ))
+      .getOrElse(AuditResponse(statusCode, None, responseBody ))
 
-    CreateAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
+    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
   }
 
-  private def auditSubmission(details: CreateAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
+  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("listCisDeductionsAuditType", "list-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
