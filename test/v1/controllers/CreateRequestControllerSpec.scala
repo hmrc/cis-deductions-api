@@ -70,18 +70,18 @@ class CreateRequestControllerSpec
 
   val response = CreateResponseModel(responseId)
 
-  def event(auditResponse: CreateAuditResponse, requestBody: Option[JsValue]): AuditEvent[CreateAuditDetail] =
-    AuditEvent(
-      auditType = "createCisDeductionsAuditType",
-      transactionName = "create-cis-deductions-transaction-type",
-      detail = CreateAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        nino,
-        `X-CorrelationId` = correlationId,
-        auditResponse
+    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "createCisDeductionsAuditType",
+        transactionName = "create-cis-deductions-transaction-type",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          nino,
+          `X-CorrelationId` = correlationId,
+          auditResponse
+        )
       )
-    )
 
   "createRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -101,7 +101,7 @@ class CreateRequestControllerSpec
         contentAsJson(result) shouldBe responseJson
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(responseJson))
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseJson))
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
       }
 
@@ -121,7 +121,7 @@ class CreateRequestControllerSpec
         contentAsJson(result) shouldBe responseJson
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: CreateAuditResponse = CreateAuditResponse(OK, None, Some(responseJson))
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseJson))
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
       }
     }
@@ -140,7 +140,7 @@ class CreateRequestControllerSpec
           contentAsJson(result) shouldBe Json.toJson(error)
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-          val auditResponse: CreateAuditResponse = CreateAuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
         }
       }
@@ -176,7 +176,7 @@ class CreateRequestControllerSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: CreateAuditResponse = CreateAuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
       }
 
@@ -203,7 +203,7 @@ class CreateRequestControllerSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: CreateAuditResponse = CreateAuditResponse(BAD_REQUEST, Some(
+        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
           Seq(
             AuditError(BadRequestError.code),
             AuditError(DeductionToDateFormatError.code),
@@ -236,7 +236,7 @@ class CreateRequestControllerSpec
           contentAsJson(result) shouldBe Json.toJson(mtdError)
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-          val auditResponse: CreateAuditResponse = CreateAuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
           MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
         }
       }

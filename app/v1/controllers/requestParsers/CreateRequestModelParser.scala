@@ -28,5 +28,4 @@ class CreateRequestModelParser @Inject()(val validator: CreateRequestModelValida
     val requestBody = data.body.as[CreateRequestModel]
     CreateRequestData(Nino(data.nino), requestBody)
   }
-
 }

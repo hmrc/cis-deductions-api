@@ -17,13 +17,13 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import data.CreateDataExamples.deductionsResponseBody
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
-
 
 class AuthISpec extends IntegrationBaseSpec {
 
@@ -32,6 +32,8 @@ class AuthISpec extends IntegrationBaseSpec {
     val taxYear       = "2017-18"
     val data          = "someData"
     val correlationId = "X-123"
+
+    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino"
 
     val requestJson: String =
       s"""
@@ -87,12 +89,12 @@ class AuthISpec extends IntegrationBaseSpec {
 
     "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
 
-      "return 201" in new Test {
+      "return 200" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.deductionsServiceSuccess(nino)
+          DesStub.mockDes(DesStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))

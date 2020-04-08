@@ -34,22 +34,19 @@ class CreateControllerISpec extends IntegrationBaseSpec {
     val data = "someData"
     val correlationId = "X-123"
 
+    def uri: String = s"/deductions/cis/$nino/amendments"
+    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino"
+
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"/deductions/cis/$nino/amendments")
+      buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
   }
 
   "Calling the create endpoint" should {
-
-    trait CreateTest extends Test {
-      def uri: String = s"/$nino/amendments"
-
-      def desUri: String = s"/dummy/endpoint/$nino/amendments"
-    }
 
     "return a 200 status code" when {
 
@@ -58,9 +55,8 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.deductionsServiceSuccess(nino)
+          DesStub.mockDes(DesStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
-
         val response: WSResponse = await(request().post(Json.parse(requestJson)))
         response.status shouldBe Status.OK
       }
@@ -69,7 +65,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
       "validation error" when {
         def validationErrorTest(requestNino: String, body: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new CreateTest {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
 
@@ -97,12 +93,12 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
       "des service error" when {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new CreateTest {
+          s"des returns an $desCode error and status $desStatus" in new Test {
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.serviceError(nino, desStatus, errorBody(desCode))
+              DesStub.mockDes(DesStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))

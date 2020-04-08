@@ -17,22 +17,15 @@
 package v1.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status.OK
-import data.CreateDataExamples._
+import play.api.libs.json.JsValue
 import support.WireMockMethods
 
 object DesStub extends WireMockMethods {
 
-  private def deductionsUrl(nino: String): String =
-    s"/cross-regime/deductions-placeholder/CIS/$nino"
-
-  def deductionsServiceSuccess(nino: String): StubMapping = {
-    when(method = POST, uri = deductionsUrl(nino))
-      .thenReturn(status = OK, deductionsResponseBody)
-  }
-
-  def serviceError(nino: String, errorStatus: Int, errorBody: String): StubMapping = {
-    when(method = POST, uri = deductionsUrl(nino))
-      .thenReturn(status = errorStatus, errorBody)
+  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String,String)]]): StubMapping = {
+    method match {
+      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
+      case _ => when(method, uri).thenReturn(status, body)
+    }
   }
 }
