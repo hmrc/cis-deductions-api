@@ -5,7 +5,7 @@ import support.IntegrationBaseSpec
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.http.HeaderNames._
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 import v1.fixtures.ListJson.singleDeductionJson
 import v1.models.errors._
@@ -66,6 +66,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
             override val fromDate: String = requestFromDate
             override val toDate: String = requestToDate
             override val source: String = requestSource
+            override val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
 
             override def setupStubs(): StubMapping = {
@@ -94,11 +95,11 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
     "des service error" when {
 
-      def errorBody(code: String): String =
-        s"""{
+      def errorBody(code: String): JsValue =
+        Json.parse(s"""{
            |  "code": "$code",
            |  "reason": "des message"
-           |}""".stripMargin
+           |}""".stripMargin)
 
       def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"des returns an $desCode error and status $desStatus" in new Test {
@@ -107,7 +108,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.onError(DesStub.GET, desUrl, desStatus, errorBody(desCode))
+            DesStub.mockDes(DesStub.GET, desUrl, desStatus, errorBody(desCode), None)
           }
 
           val response: WSResponse = await(request.get)
