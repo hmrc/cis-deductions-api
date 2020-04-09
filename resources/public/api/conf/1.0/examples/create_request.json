@@ -1,8 +1,8 @@
 {
   "fromDate": "2019-04-06",
   "toDate": "2019-07-06",
-  "contractorName": "Bovis",
-  "employerRef": "BV40092",
+  "contractorName": "ContractorA",
+  "employerRef": "CA40092",
   "periodData": [
     {
       "deductionAmount": 355.00,
