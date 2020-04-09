@@ -18,7 +18,6 @@ package definition
 
 import com.typesafe.config.ConfigFactory
 import definition.APIStatus.{ALPHA, BETA}
-import definition.Versions.VERSION_1
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
@@ -28,7 +27,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
     val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
-    MockedAppConfig.apiGatewayContext returns "mtd/template"
+    MockedAppConfig.apiGatewayContext returns "api.gateway.context"
   }
 
   "definition" when {
@@ -45,26 +44,26 @@ class ApiDefinitionFactorySpec extends UnitSpec {
           Definition(
             scopes = Seq(
               Scope(
-                key = readScope,
-                name = "#name#",
-                description = "#desc#"
+                key = "read:self-assessment",
+                name = "View your Self Assessment information",
+                description = "Allow read access to self assessment data"
               ),
               Scope(
-                key = writeScope,
-                name = "#name#",
-                description = "#desc#"
+                key = "write:self-assessment",
+                name = "Change your Self Assessment information",
+                description = "Allow write access to self assessment data"
               )
             ),
             api = APIDefinition(
-              name = "#mtd-api# (MTD)",
-              description = "#desc#",
-              context = "mtd/template",
+              name = "CIS Deductions (MTD)",
+              description = "An API for providing Construction industry scheme data",
+              context = "api.gateway.context",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
                 APIVersion(
-                  version = VERSION_1,
+                  version = "1.0",
                   access = None,
-                  status = ALPHA,
+                  status = APIStatus.ALPHA,
                   endpointsEnabled = true
                 )
               ),
