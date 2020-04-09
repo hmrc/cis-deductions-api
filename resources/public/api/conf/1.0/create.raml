@@ -1,0 +1,39 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - headers.contentTypeJson
+  - errors.formatNino
+  - errors.incorrectOrEmptyBody
+  - errors.formatDeductionFromDate
+  - errors.formatDeductionToDate
+  - errors.ruleDeductionAmount
+  - errors.formatFromDate
+  - errors.formatToDate
+  - errors.ruleCostOfMaterials
+  - errors.ruleGrossAmountPaid
+  - errors.ruleDateRangeInvalid
+  - errors.ruleDeductionsDateRangeInvalid
+  - errors.rangeDeductionToDateBeforeDeductionsFromDate
+  - errors.clientOrAgentNotAuthorised
+displayName: Create CIS Deductions for Subcontractor [test only]
+description: This endpoint allow a developer to create Construction Industry Scheme (CIS) deductions.
+(annotations.sandboxData): !include scenarios/create_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include schemas/create_request.json
+    examples:
+     example-1:
+      description: Create CIS request
+      value: !include examples/create_request.json
+responses:
+  200:
+    body:
+      application/json:
+        type: !include schemas/create_response.json
+        example: !include examples/example_1.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

@@ -1,10 +1,11 @@
 #%RAML 1.0
 ---
-title: Hello World
+title: CIS Deductions (MTD)
+description:
 version: 1.0
 
 protocols: [ HTTPS ]
-baseUri: https://helloworld.service.hmrc.gov.uk/
+baseUri: https://api.service.hmrc.gov.uk/
 
 documentation:
  - title: Overview
@@ -28,21 +29,15 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
   errors: errors.raml
   headers: headers.raml
+  queryParameters: queryParameters.raml
 
-'/mtd/template':
+'/deductions/cis':
   /{nino}:
     uriParameters:
       nino:
-        description: National Insurance number, in the format AA999999A.
+        description: 'National Insurance number, in the format AA999999A.'
         type: string
         example: TC663795B
-    /{taxYear}:
-      uriParameters:
-        taxYear:
-          description: 'The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid.'
-          example: "2017-18"
-      /sampleEndpoint:
-        (annotations.group):
-          name: Sample Endpoint
-          description: This is a sample endpoint
-        post: !include sample_post.raml
+    /current-position:
+    /amendments:
+      post: !include create.raml

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Sample Endpoint",
-  "description": "Sample Endpoint",
+  "title": "Create CIS Deduction",
+  "description": "Create CIS Deduction",
   "type": "object",
   "properties": {
     "id": { "$ref": "definitions.json#/definitions/uid" }
