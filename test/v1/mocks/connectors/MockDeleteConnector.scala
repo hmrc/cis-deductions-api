@@ -15,15 +15,18 @@
  */
 
 package v1.mocks.connectors
+
 import org.scalamock.handlers.{CallHandler}
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DeleteConnector, DesOutcome}
+
 import v1.models.request.DeleteRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteConnector extends MockFactory{
+trait MockDeleteConnector extends MockFactory {
+
   val mockDeleteConnector: DeleteConnector = mock[DeleteConnector]
 
   object MockDeleteConnector {
@@ -34,5 +37,5 @@ trait MockDeleteConnector extends MockFactory{
         .expects(requestData, *, *)
     }
   }
-  }
 
+}
