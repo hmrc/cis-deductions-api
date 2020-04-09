@@ -78,5 +78,4 @@ class ListDeductionsValidatorSpec extends UnitSpec {
       }
     }
   }
-
 }
