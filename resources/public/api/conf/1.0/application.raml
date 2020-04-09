@@ -35,9 +35,15 @@ uses:
   /{nino}:
     uriParameters:
       nino:
-        description: 'National Insurance number, in the format AA999999A.'
+        description: 'National Insurance number in the format AA999999A.'
         type: string
         example: TC663795B
-    /current-position:
     /amendments:
       post: !include create.raml
+      /{id}:
+        delete: !include delete.raml
+        uriParameters:
+          id:
+           description: 'Unique identifier for the CIS deduction.'
+           type: string
+           example: S4636A77V5KB8625U
