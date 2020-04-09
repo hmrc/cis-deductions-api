@@ -20,19 +20,19 @@ import org.scalatest.Inside
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.models.errors.NinoFormatError
-import v1.models.request.DeleteRequestModel
+import v1.models.request.{DeleteRequest}
 
-class DeleteRequestModelSpec extends Inside with UnitSpec {
+class DeleteRequestSpec extends Inside with UnitSpec {
 
   val nino = "AA123456A"
   val id = "S4636A77V5KB8625U"
 
 
-  val deleteRequest = DeleteRequestModel(Nino(nino), id)
+  val deleteRequest = DeleteRequest(Nino(nino), id)
 
   "DeleteRequest" should {
       "should equal the correct representation of the case class given the parameters" in {
-        inside(deleteRequest) { case DeleteRequestModel(nino, id) =>
+        inside(deleteRequest) { case DeleteRequest(nino, id) =>
           nino shouldBe (Nino("AA123456A"))
           id shouldBe ("S4636A77V5KB8625U")
         }
