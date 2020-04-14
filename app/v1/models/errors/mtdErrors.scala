@@ -31,6 +31,7 @@ object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided Fr
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
 object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTION_FROM_DATE", "The provided deductions From date is invalid")
 object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTION_TO_DATE", "The provided deductions To date is invalid")
+object DeductionIdFormatError extends MtdError("FORMAT_CIS_DEDUCTION_ID", "The provided CIS deduction ID is invalid")
 
 
 // Rule Errors
