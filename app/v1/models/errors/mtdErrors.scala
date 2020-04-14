@@ -31,6 +31,7 @@ object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided Fr
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
 object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTION_FROM_DATE", "The provided deductions From date is invalid")
 object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTION_TO_DATE", "The provided deductions To date is invalid")
+object DeductionIdFormatError extends MtdError("FORMAT_DEDUCTION_ID", "The provided cis-deduction id is invalid")
 
 
 // Rule Errors
@@ -90,3 +91,5 @@ object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The 
 object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
+
+

@@ -16,7 +16,8 @@
 
 package v1.controllers
 
-import javax.inject.Inject
+import
+javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
