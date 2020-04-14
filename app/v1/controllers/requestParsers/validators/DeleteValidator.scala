@@ -30,10 +30,7 @@ class DeleteValidator extends Validator[DeleteRawData] {
     )
   }
 
-
-
   override def validate(data: DeleteRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
-
 }
