@@ -15,32 +15,24 @@
  */
 
 package v1.connectors
-
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
-
+import v1.models.request.DeleteRequest
+import v1.connectors.httpparsers.StandardDesHttpParser._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListConnector @Inject()(val http: HttpClient,
-                              val appConfig: AppConfig
-                                      ) extends BaseDesConnector {
+class DeleteConnector @Inject()(val http: HttpClient,
+                                val appConfig: AppConfig
+                               ) extends BaseDesConnector {
 
-  def list(request: ListDeductionsRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[ListResponseModel]] = {
-
-    import v1.connectors.httpparsers.StandardDesHttpParser._
-
-    val sourceParam = request.source.map(src => s"&source=${src}")
-
-    get(
-      DesUri[ListResponseModel](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
-        s"?fromDate=${request.fromDate}&toDate=${request.toDate}${sourceParam.getOrElse("")}")
+ def delete(request: DeleteRequest)(
+  implicit hc: HeaderCarrier,
+  ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    delete(
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
     )
   }
 }
