@@ -32,9 +32,9 @@ class IdValidationSpec extends UnitSpec {
     }
 
     "return an error" when {
-      "when an ivalid id is supplied" in {
-        val validId = "contractor1"
-        val validationResult = IdValidation.validate(validId)
+      "when an invalid id is supplied" in {
+        val invalidId = "contractor1"
+        val validationResult = IdValidation.validate(invalidId)
         validationResult.isEmpty shouldBe false
         validationResult.head shouldBe DeductionIdFormatError
       }
