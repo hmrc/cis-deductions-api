@@ -6,13 +6,19 @@ uses:
 traits:
   from:
     queryParameters:
-      from:
-        description: 'From date to return payments.<br><br> Date in the format: YYYY-MM-DD'
-        example: "2019-05-04"
+      fromDate:
+        description: 'The CIS start date of a tax year.<br><br> Date in the format: YYYY-MM-DD'
+        example: "2019-04-06"
         required: true
   to:
     queryParameters:
-      to:
-        description: 'To date to return payments.<br><br> Date in the format: YYYY-MM-DD'
-        example: "2019-06-12"
+      toDate:
+        description: 'The CIS end date of a tax year.<br><br> Date in the format: YYYY-MM-DD'
+        example: "2020-04-05"
         required: true
+  source:
+    queryParameters:
+      source:
+        description: 'Any source of amended data.'
+        example: 'customer'
+        required: false
