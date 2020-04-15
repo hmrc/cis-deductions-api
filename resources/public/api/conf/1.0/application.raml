@@ -42,10 +42,3 @@ uses:
       post: !include create.raml
     /current-position:
       post: !include list.raml
-      /{id}:
-        delete: !include delete.raml
-        uriParameters:
-          id:
-           description: 'Unique identifier for the CIS deduction.'
-           type: string
-           example: S4636A77V5KB8625U
