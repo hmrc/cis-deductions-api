@@ -31,14 +31,12 @@ class DeleteConnector @Inject()(val http: HttpClient,
                                 val appConfig: AppConfig
                                ) extends BaseDesConnector {
 
-  def delete(request: DeleteRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
-
-
+ def delete(request: DeleteRequest)(
+  implicit hc: HeaderCarrier,
+  ec: ExecutionContext): Future[DesOutcome[Unit]] = {
 
     delete(
-      DesUri[Unit](s"dummy/endpoint/${request.nino}/amendments/${request.id}")
+      DesUri[Unit](s"cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
     )
   }
 }

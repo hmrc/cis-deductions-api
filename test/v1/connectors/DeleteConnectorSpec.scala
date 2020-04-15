@@ -19,8 +19,10 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.DeleteRequest
+import v1.models.responseData.listDeductions.ListResponseModel
 
 import scala.concurrent.Future
 
@@ -47,12 +49,24 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           delete(
-            url = s"$baseUrl/dummy/endpoint/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
 
         await(connector.delete(request)) shouldBe outcome
       }
     }
+
+ /* "return a DES error code" when {
+    "the http client returns a Des Error code" in new Test {
+      val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
+
+      MockedHttpClient.get[DesOutcome[DeleteRequest]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
+        .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
+
+      await(connector.delete(request)) shouldBe outcome
+    }
   }
+
+*/  }
 }
