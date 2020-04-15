@@ -40,6 +40,8 @@ uses:
         example: TC663795B
     /amendments:
       post: !include create.raml
+    /current-position:
+      post: !include list.raml
       /{id}:
         delete: !include delete.raml
         uriParameters:
