@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.requestData
 
-import javax.inject.Inject
+import org.scalatest.Inside
+import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.CreateRequestModelValidator
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
+import v1.models.errors.NinoFormatError
+import v1.models.request.{DeleteRequest}
 
-class CreateRequestModelParser @Inject()(val validator: CreateRequestModelValidator)
-  extends RequestParser[CreateRawData, CreateRequestData] {
+class DeleteRequestSpec extends Inside with UnitSpec {
 
-  override protected def requestFor(data: CreateRawData): CreateRequestData = {
-    val requestBody = data.body.as[CreateRequestModel]
-    CreateRequestData(Nino(data.nino), requestBody)
-  }
+  val nino = "AA123456A"
+  val id = "S4636A77V5KB8625U"
+
+
+  val deleteRequest = DeleteRequest(Nino(nino), id)
+
+  "DeleteRequest" should {
+      "should equal the correct representation of the case class given the parameters" in {
+        inside(deleteRequest) { case DeleteRequest(nino, id) =>
+          nino shouldBe (Nino("AA123456A"))
+          id shouldBe ("S4636A77V5KB8625U")
+        }
+      }
+    }
 }

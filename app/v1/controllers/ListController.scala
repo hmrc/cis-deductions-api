@@ -19,46 +19,44 @@ package v1.controllers
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
-import v1.controllers.requestParsers.CreateRequestModelParser
-import v1.models.audit._
+import v1.controllers.requestParsers._
+import v1.models.audit.{AuditEvent, GenericAuditDetail, AuditResponse}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.models.responseData.CreateResponseModel
-import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
+import v1.models.responseData.listDeductions.ListResponseModel
+import v1.services.{AuditService, EnrolmentsAuthService, ListService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
-                                        val lookupService: MtdIdLookupService,
-                                        requestParser: CreateRequestModelParser,
-                                        service: CreateService,
-                                        auditService: AuditService,
-                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
-    with BaseController
-    with Logging {
+class ListController @Inject()(val authService: EnrolmentsAuthService,
+                                  val lookupService: MtdIdLookupService,
+                                  requestParser: ListDeductionRequestParser,
+                                  service: ListService,
+                                  auditService: AuditService,
+                                  cc: ControllerComponents)
+                                 (implicit ec: ExecutionContext)
+extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
-      controllerName = "CreateRequestController",
-      endpointName = "createEndpoint"
+      controllerName = "ListController",
+      endpointName = "listEndpoint"
     )
 
-
-  def createRequest(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-    val rawData = CreateRawData(nino, request.body)
-    val parseResponse: Either[ErrorWrapper, CreateRequestData] = requestParser.parseRequest(rawData)
-
+  def listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
+  authorisedAction(nino).async { implicit request =>
+    val rawData = ListDeductionsRawData(nino,fromDate,toDate,source)
+    val parseResponse: Either[ErrorWrapper, ListDeductionsRequest] = requestParser.parseRequest(rawData)
     val serviceResponse = parseResponse match {
-      case Right(data) => service.createDeductions(data)
+      case Right(data) => service.listDeductions(data)
       case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] =
+        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel]]] =
           Future.successful(Left(errorWrapper))
         futureError
     }
@@ -71,31 +69,29 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
         auditSubmission(
           createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
-
         Ok(Json.toJson(responseWrapper.responseData)).withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
+
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
         auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
         result
     }
+
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-
     (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError =>
+      case BadRequestError | NinoFormatError | RuleDateRangeInvalidError | FromDateFormatError | RuleMissingFromDateError |
+           ToDateFormatError | RuleMissingToDateError | RuleSourceError | UnauthorisedError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def createAuditDetails(rawData: CreateRawData,
+  private def createAuditDetails(rawData: ListDeductionsRawData,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
@@ -111,7 +107,7 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("createCisDeductionsAuditType", "create-cis-deductions-transaction-type", details)
+    val event = AuditEvent("listCisDeductionsAuditType", "list-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
 }

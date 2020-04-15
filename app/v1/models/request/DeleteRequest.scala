@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package v1.models.audit
+package v1.models.request
 
-import play.api.libs.json.{Json, OWrites}
+import uk.gov.hmrc.domain.Nino
+import v1.models.requestData.RawData
 
-case class CreateAuditDetail(
-                             userType: String,
-                             agentReferenceNumber: Option[String],
-                             nino: String,
-                             `X-CorrelationId`: String,
-                             response: CreateAuditResponse
-                           )
+case class DeleteRawData(nino: String, id: String) extends RawData
 
-object CreateAuditDetail {
-  implicit val writes: OWrites[CreateAuditDetail] = Json.writes[CreateAuditDetail]
-}
-
+case class DeleteRequest(nino: Nino, id: String)

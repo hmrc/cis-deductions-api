@@ -16,16 +16,17 @@
 
 package v1.models.audit
 
-import play.api.libs.json.{JsValue, Json, OWrites}
+import play.api.libs.json.{Json, OWrites}
 
-case class CreateAuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
+case class GenericAuditDetail(
+                             userType: String,
+                             agentReferenceNumber: Option[String],
+                             nino: String,
+                             `X-CorrelationId`: String,
+                             response: AuditResponse
+                           )
 
-object CreateAuditResponse {
-  implicit val writes: OWrites[CreateAuditResponse] = Json.writes[CreateAuditResponse]
-
-  def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): CreateAuditResponse =
-    response match {
-      case Right(body) => CreateAuditResponse(httpStatus, None, body)
-      case Left(errs)  => CreateAuditResponse(httpStatus, Some(errs), None)
-    }
+object GenericAuditDetail {
+  implicit val writes: OWrites[GenericAuditDetail] = Json.writes[GenericAuditDetail]
 }
+

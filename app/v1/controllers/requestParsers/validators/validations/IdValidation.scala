@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package v1.controllers.requestParsers.validators.validations
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
-import support.WireMockMethods
+import v1.models.errors.{DeductionIdFormatError, MtdError}
 
-object DesStub extends WireMockMethods {
+object IdValidation {
 
-  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String,String)]]): StubMapping = {
-    method match {
-      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
-      case _ => when(method, uri).thenReturn(status, body)
-    }
+  private val idRegex = "^.{17}$"
+  def validate(id: String): List[MtdError] = {
+    if (id.matches(idRegex)) NoValidationErrors else List(DeductionIdFormatError)
   }
+
+
 }

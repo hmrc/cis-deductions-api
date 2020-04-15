@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package v1.models.audit
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
-import support.WireMockMethods
+import play.api.libs.json.{JsValue, Json, OWrites}
 
-object DesStub extends WireMockMethods {
+case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
 
-  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String,String)]]): StubMapping = {
-    method match {
-      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
-      case _ => when(method, uri).thenReturn(status, body)
+object AuditResponse {
+  implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
+
+  def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
+    response match {
+      case Right(body) => AuditResponse(httpStatus, None, body)
+      case Left(errs)  => AuditResponse(httpStatus, Some(errs), None)
     }
-  }
 }

@@ -26,6 +26,8 @@ object CodeCoverageSettings {
     "v1.hateoas.HateoasLinks",
     "com.kenshoo.*",
     ".*.ReverseSampleController.*",
+    ".*.ReverseCreateRequestController.*",
+    ".*.ReverseListController.*",
     "v1.controllers.javascript",
     "app.*",
     "prod.*",
