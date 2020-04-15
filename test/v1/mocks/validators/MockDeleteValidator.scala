@@ -34,9 +34,5 @@ class MockDeleteValidator extends MockFactory{
         .validate(_: DeleteRawData))
         .expects(data)
     }
-
-
-
   }
-
 }
