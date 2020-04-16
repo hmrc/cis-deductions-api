@@ -38,7 +38,7 @@ class CreateConnector @Inject()(val http: HttpClient,
 
     post(
       body = request.body,
-      DesUri[CreateResponseModel](s"cross-regime/deductions-placeholder/CIS/${request.nino}")
+      DesUri[CreateResponseModel](s"${appConfig.desCisUrl}/${request.nino}")
     )
   }
 }

@@ -15,8 +15,7 @@
  */
 
 package v1.mocks.connectors
-
-import org.scalamock.handlers.CallHandler3
+import org.scalamock.handlers.{CallHandler, CallHandler3}
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DeleteConnector, DesOutcome}
@@ -29,11 +28,11 @@ trait MockDeleteConnector extends MockFactory{
 
   object MockDeleteConnector {
 
-    def deleteDeduction(requestData: DeleteRequest):
-    CallHandler3[DeleteRequest, HeaderCarrier, ExecutionContext, Future[DesOutcome[Unit]]] = {
+    def deleteDeduction(requestData: DeleteRequest): CallHandler[Future[DesOutcome[DeleteRequest]]] = {
       (mockDeleteConnector
         .delete(_: DeleteRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }
-}
+  }
+

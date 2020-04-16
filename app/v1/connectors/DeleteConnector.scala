@@ -21,9 +21,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.models.request.DeleteRequest
 import v1.connectors.httpparsers.StandardDesHttpParser._
-
-
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,10 +30,9 @@ class DeleteConnector @Inject()(val http: HttpClient,
 
  def delete(request: DeleteRequest)(
   implicit hc: HeaderCarrier,
-  ec: ExecutionContext): Future[DesOutcome[Unit]] = {
-
+  ec: ExecutionContext): Future[DesOutcome[DeleteRequest]] = {
     delete(
-      DesUri[Unit](s"cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
+      DesUri[DeleteRequest](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
     )
   }
 }

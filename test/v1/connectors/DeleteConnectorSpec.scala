@@ -38,10 +38,11 @@ class DeleteConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desCisUrl returns "cross-regime/deductions-placeholder/CIS"
   }
 
   "delete" should {
-    val request = DeleteRequest(nino, id)
+    val request: DeleteRequest = DeleteRequest(nino, id)
 
     "return a result" when {
       "the downstream call is successful" in new Test {
@@ -57,16 +58,17 @@ class DeleteConnectorSpec extends ConnectorSpec {
       }
     }
 
- /* "return a DES error code" when {
+  "return a DES error code" when {
     "the http client returns a Des Error code" in new Test {
       val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.get[DesOutcome[DeleteRequest]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
+      MockedHttpClient.delete[DesOutcome[DeleteRequest]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-      await(connector.delete(request)) shouldBe outcome
+      val result: DesOutcome[DeleteRequest] = await(connector.delete(request))
+      result shouldBe outcome
     }
   }
 
-*/  }
+  }
 }
