@@ -61,7 +61,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     "the http client returns a Des Error code" in new Test {
       val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.delete[DesOutcome[DeleteRequest]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
+      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
       val result: DesOutcome[Unit] = await(connector.delete(request))
