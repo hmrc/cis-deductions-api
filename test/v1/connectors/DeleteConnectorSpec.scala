@@ -22,7 +22,6 @@ import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.DeleteRequest
-import v1.models.responseData.listDeductions.ListResponseModel
 
 import scala.concurrent.Future
 
@@ -65,7 +64,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
       MockedHttpClient.delete[DesOutcome[DeleteRequest]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-      val result: DesOutcome[DeleteRequest] = await(connector.delete(request))
+      val result: DesOutcome[Unit] = await(connector.delete(request))
       result shouldBe outcome
     }
   }

@@ -16,7 +16,6 @@
 
 package v1.models.request
 
-import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.domain.Nino
 import v1.models.requestData.RawData
 
@@ -24,7 +23,3 @@ case class DeleteRawData(nino: String, id: String) extends RawData
 
 case class DeleteRequest(nino: Nino, id: String)
 
-object DeleteRequest {
-  implicit val reads: Reads[DeleteRequest] = Json.reads[DeleteRequest]
-  implicit val writes: Writes[DeleteRequest] = Json.writes[DeleteRequest]
-}

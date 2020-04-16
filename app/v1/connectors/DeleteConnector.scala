@@ -30,9 +30,9 @@ class DeleteConnector @Inject()(val http: HttpClient,
 
  def delete(request: DeleteRequest)(
   implicit hc: HeaderCarrier,
-  ec: ExecutionContext): Future[DesOutcome[DeleteRequest]] = {
+  ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     delete(
-      DesUri[DeleteRequest](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
     )
   }
 }
