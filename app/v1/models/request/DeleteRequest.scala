@@ -22,3 +22,4 @@ import v1.models.requestData.RawData
 case class DeleteRawData(nino: String, id: String) extends RawData
 
 case class DeleteRequest(nino: Nino, id: String)
+
