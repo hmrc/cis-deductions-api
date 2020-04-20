@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.validators
 
-import org.scalamock.handlers.{CallHandler}
+import org.scalamock.handlers._
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DeleteConnector, DesOutcome}
-import v1.models.request.DeleteRequest
+import v1.controllers.requestParsers.DeleteRequestParser
+import v1.controllers.requestParsers.validators.DeleteValidator
+import v1.models.errors.MtdError
+import v1.models.request.DeleteRawData
 
-import scala.concurrent.{ExecutionContext, Future}
+class MockDeleteValidator extends MockFactory{
 
-trait MockDeleteConnector extends MockFactory {
+  val mockValidator: DeleteValidator = mock[DeleteValidator]
 
-  val mockDeleteConnector: DeleteConnector = mock[DeleteConnector]
+  object MockDeleteValidator {
 
-  object MockDeleteConnector {
-
-    def deleteDeduction(requestData: DeleteRequest): CallHandler[Future[DesOutcome[Unit]]] = {
-
-      (mockDeleteConnector
-        .delete(_: DeleteRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+    def validate(data: DeleteRawData): CallHandler1[DeleteRawData, List[MtdError]] = {
+      (mockValidator
+        .validate(_: DeleteRawData))
+        .expects(data)
     }
   }
-
 }

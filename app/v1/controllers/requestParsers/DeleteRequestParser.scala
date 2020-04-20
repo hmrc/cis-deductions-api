@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers
 
+import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.controllers.requestParsers.validators.DeleteValidator
+import v1.models.request.{DeleteRawData, DeleteRequest}
 
-case class DeleteRawData(nino: String, id: String) extends RawData
+class DeleteRequestParser@Inject()(val validator: DeleteValidator)
+  extends RequestParser[DeleteRawData,DeleteRequest]{
 
-case class DeleteRequest(nino: Nino, id: String)
-
+  override protected def requestFor(data: DeleteRawData): DeleteRequest =
+    DeleteRequest(Nino(data.nino), data.id)
+}

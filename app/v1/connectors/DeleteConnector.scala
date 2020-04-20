@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.connectors
 
-import org.scalamock.handlers.{CallHandler}
-import org.scalamock.scalatest.MockFactory
+import config.AppConfig
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DeleteConnector, DesOutcome}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.models.request.DeleteRequest
-
+import v1.connectors.httpparsers.StandardDesHttpParser._
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteConnector extends MockFactory {
+@Singleton
+class DeleteConnector @Inject()(val http: HttpClient,
+                                val appConfig: AppConfig
+                               ) extends BaseDesConnector {
 
-  val mockDeleteConnector: DeleteConnector = mock[DeleteConnector]
-
-  object MockDeleteConnector {
-
-    def deleteDeduction(requestData: DeleteRequest): CallHandler[Future[DesOutcome[Unit]]] = {
-
-      (mockDeleteConnector
-        .delete(_: DeleteRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
-    }
+  def delete(request: DeleteRequest)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    delete(
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
+    )
   }
-
 }
