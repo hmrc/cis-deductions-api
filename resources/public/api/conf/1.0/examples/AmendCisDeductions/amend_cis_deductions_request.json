@@ -1,0 +1,15 @@
+{
+  "fromDate": "2020-01-01",
+  "toDate": "2020-02-01",
+  "contractorName": "contractor1",
+  "employeeRef": "135/AB56789",
+  "periodData": [
+    {
+      "deductionAmount": 1025.10,
+      "deductionFromDate": "2020-01-01",
+      "deductionToDate": "2020-02-01",
+      "costOfMaterials": 1024.10,
+      "grossAmountPaid": 5000.99
+    }
+  ]
+}

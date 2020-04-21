@@ -440,3 +440,69 @@ traits:
                 description: There is no accounting period for the year of the claim.
                 value:
                   code: RULE_NO_ACCOUNTING_PERIOD
+  missingFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              missingFromDate:
+                description: The From date parameter is missing
+                value:
+                  code: MISSING_FROM_DATE
+  missingToDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              missingToDate:
+                description: The To date parameter is missing
+                value:
+                  code: MISSING_TO_DATE
+  ruleSourceInvalid:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleSourceInvalid:
+                description: The source of data should be one of these All (Blended view), Customer or Contractor
+                value:
+                  code: RULE_SOURCE_INVALID
+  ruleFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleFromDate:
+                description: The from date is not the start of the tax year
+                value:
+                  code: RULE_FROM_DATE
+  ruleToDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleToDate:
+                description: The to date is not the end of the tax year
+                value:
+                  code: RULE_TO_DATE
+  formatCisSubmissionID:
+     responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                formatCisSubmissionID:
+                  description: The format of the CIS deduction submission ID is not valid
+                  value:
+                    code: FORMAT_CIS_SUBMISSION_ID

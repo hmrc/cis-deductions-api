@@ -40,8 +40,11 @@ uses:
         example: TC663795B
     /amendments:
       post: !include create.raml
-      /{id}:
+    /current-position:
+      get: !include list.raml
+    /amendments/{id}:
         delete: !include delete.raml
+        put: !include amend.raml
         uriParameters:
           id:
            description: 'Unique identifier for the CIS deduction.'
