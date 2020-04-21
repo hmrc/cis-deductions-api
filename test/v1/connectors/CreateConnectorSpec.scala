@@ -38,6 +38,7 @@ class CreateConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desCisUrl returns "cross-regime/deductions-placeholder/CIS"
   }
 
   "create" must {
