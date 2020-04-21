@@ -42,9 +42,8 @@ uses:
       post: !include create.raml
     /current-position:
       get: !include list.raml
-    /{id}:
-        delete: !include delete.raml
     /amendments/{id}:
+        delete: !include delete.raml
         put: !include amend.raml
         uriParameters:
           id:
