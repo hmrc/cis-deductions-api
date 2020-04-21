@@ -24,6 +24,4 @@ object IdValidation {
   def validate(id: String): List[MtdError] = {
     if (id.matches(idRegex)) NoValidationErrors else List(DeductionIdFormatError)
   }
-
-
 }

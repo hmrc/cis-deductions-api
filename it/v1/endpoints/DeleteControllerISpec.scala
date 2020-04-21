@@ -54,35 +54,17 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.DELETE, desUri, Status.NO_CONTENT, deductionsResponseBody, None)
+          DesStub.mockDes(DesStub.DELETE, desUri, Status.NO_CONTENT, Json.obj(), None)
         }
         val response: WSResponse = await(request().delete())
         response.status shouldBe Status.NO_CONTENT
       }
     }
 
-//    "handleRequest" should {
-//      "return NoContent" when {
-//        "the request received is valid" in new Test {
-//
-//          MockDeleteRequestParser
-//            .parse(rawData)
-//            .returns(Right(requestData))
-//
-//          MockDeleteService
-//            .delete(requestData)
-//            .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-//
-//          val result: Future[Result] = controller.handleRequest(nino, id)(fakeRequest)
-//
-//          status(result) shouldBe NO_CONTENT
-//          header("X-CorrelationId", result) shouldBe Some(correlationId)
-//        }
-//      }
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, body: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String, requestId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
@@ -93,18 +75,15 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request().post(body))
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
         }
 
         val input = Seq(
-          ("AA1123A", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError)
+          ("AA1123A", "S4636A77V5KB8625U", Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "123456789123456789123456", Status.BAD_REQUEST, DeductionIdFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -116,10 +95,10 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.mockDes(DesStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+              DesStub.mockDes(DesStub.DELETE, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
-            val response: WSResponse = await(request().post(requestBodyJson))
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }

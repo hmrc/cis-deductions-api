@@ -16,7 +16,6 @@
 
 package v1.controllers
 
-import cats.data.EitherT
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -29,8 +28,7 @@ import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRawData, CreateRequestData, DeleteRawData, DeleteRequest}
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.{DeleteRawData, DeleteRequest}
 import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,12 +51,16 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
 
   def deleteRequest(nino: String, id: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      // scalastyle:off
+      println(s"================$request")
       val rawData = DeleteRawData(nino, id)
       val parseResponse: Either[ErrorWrapper, DeleteRequest] = requestParser.parseRequest(rawData)
+      // scalastyle:off
+      println(s"************$parseResponse")
 
       val serviceResponse = parseResponse match {
         case Right(data) => service.deleteDeductions(data)
-        case Left(errorWrapper) => val futureError: Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] =
+        case Left(errorWrapper) => val futureError: Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] =
           Future.successful(Left(errorWrapper))
           futureError
       }
