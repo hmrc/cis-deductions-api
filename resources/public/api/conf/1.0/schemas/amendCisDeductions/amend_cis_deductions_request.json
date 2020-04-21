@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "AMEND CIS Deductions for Subcontractor\n",
+  "title": "Amend CIS Deductions for Subcontractor\n",
   "description": "This endpoint allows as developer to amend a CIS deductions which has been previously populated",
   "type": "object",
   "properties": {
