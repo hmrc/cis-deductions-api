@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.CreateRequestModelParser
+import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
-import v1.models.request.{CreateRawData, CreateRequestData}
+import v1.models.outcomes.ResponseWrapper
+import v1.models.request.{DeleteRequest}
+import v1.services.DeleteService
 
-trait MockCreateRequestParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockRequestDataParser: CreateRequestModelParser = mock[CreateRequestModelParser]
+trait MockDeleteService extends MockFactory {
 
-  object MockCreateRequestDataParser {
-    def parse(data: CreateRawData): CallHandler[Either[ErrorWrapper, CreateRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: CreateRawData)).expects(data)
+  val mockDeleteService: DeleteService = mock[DeleteService]
+
+  object MockDeleteService {
+
+    def deleteRequest(requestData: DeleteRequest):
+    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockDeleteService
+        .deleteDeductions(_: DeleteRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .expects(requestData, *, *, *)
     }
   }
 }
