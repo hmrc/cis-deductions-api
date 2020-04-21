@@ -18,8 +18,8 @@ package v1.models.responseData
 
 import play.api.libs.json.{Json, OFormat}
 
-case class AmendResponseModel(id: String)
+case class AmendResponse(id: String)
 
-object AmendResponseModel {
-  implicit val format: OFormat[AmendResponseModel] = Json.format[AmendResponseModel]
+object AmendResponse {
+  implicit val format: OFormat[AmendResponse] = Json.format[AmendResponse]
 }

@@ -16,10 +16,18 @@
 
 package v1.models.request
 
-import play.api.libs.json.JsValue
-import v1.models.requestData.RawData
-import uk.gov.hmrc.domain.Nino
+import play.api.libs.json.{Json, Reads, Writes}
 
+  case class AmendRequest(
+                                 fromDate: String,
+                                 toDate: String,
+                                 contractorName: String,
+                                 employerRef: String,
+                                 periodData: Seq[PeriodDetails]
+                               )
 
-case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData
-case class AmendRequest(nino: Nino, id: String, body: AmendRequestModel)
+  object AmendRequest {
+    implicit val reads: Reads[AmendRequest] = Json.reads[AmendRequest]
+    implicit val writes: Writes[AmendRequest] = Json.writes[AmendRequest]
+  }
+

@@ -17,13 +17,14 @@
 package v1.models.reponseData
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import v1.fixtures.CreateRequestFixtures.{amendResponseObj, invalidResponseJson, missingMandatoryResponseJson, responseJson}
+import v1.fixtures.CreateRequestFixtures.{ invalidResponseJson, missingMandatoryResponseJson, responseJson}
+import v1.fixtures.AmendRequestFixtures.amendResponseObj
 import support.UnitSpec
-import v1.models.responseData.AmendResponseModel
+import v1.models.responseData.AmendResponse
 
 
 
-class AmendResponseModelSpec extends UnitSpec {
+class AmendResponseSpec extends UnitSpec {
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
       "return the expected CisDeductionsResponseBody" in {
@@ -34,17 +35,17 @@ class AmendResponseModelSpec extends UnitSpec {
 
   "Read from valid JSON" should {
     "Return the expected CisReductionsResponseBody" in {
-      responseJson.validate[AmendResponseModel] shouldBe JsSuccess(amendResponseObj)
+      responseJson.validate[AmendResponse] shouldBe JsSuccess(amendResponseObj)
     }
   }
 
   "Read from invalid JSON" should {
     "return the expected error when invalid data type is used" in {
-      invalidResponseJson.validate[AmendResponseModel] shouldBe a[JsError]
+      invalidResponseJson.validate[AmendResponse] shouldBe a[JsError]
     }
 
     "return the expected error when id field is missing" in {
-      missingMandatoryResponseJson.validate[AmendResponseModel] shouldBe a[JsError]
+      missingMandatoryResponseJson.validate[AmendResponse] shouldBe a[JsError]
     }
   }
 }

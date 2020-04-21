@@ -19,9 +19,9 @@ package v1.fixtures
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import v1.models.audit.{AuditError, AuditResponse}
-import v1.models.request.{AmendRequestModel, CreateRequestModel, PeriodDetails}
+import v1.models.request.{AmendRequest, CreateRequestModel, PeriodDetails}
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
-import v1.models.responseData.{AmendResponseModel, CreateResponseModel}
+import v1.models.responseData.{AmendResponse, CreateResponseModel}
 
 object CreateRequestFixtures {
 
@@ -566,20 +566,4 @@ object CreateRequestFixtures {
        |}
     """.stripMargin
   )
-
-  val amendRequestObj: AmendRequestModel = AmendRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
-    Seq(
-      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
-      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
-    )
-  )
-
-  val amendMissingOptionalRequestObj: AmendRequestModel = AmendRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
-    Seq(
-      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
-      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
-    )
-  )
-
-  val amendResponseObj: AmendResponseModel = AmendResponseModel("S4636A77V5KB8625U")
 }
