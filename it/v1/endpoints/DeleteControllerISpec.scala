@@ -68,6 +68,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
+            override val id: String = requestId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -80,10 +81,9 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
             response.json shouldBe Json.toJson(expectedBody)
           }
         }
-
         val input = Seq(
           ("AA1123A", "S4636A77V5KB8625U", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "123456789123456789123456", Status.BAD_REQUEST, DeductionIdFormatError)
+          ("AA123456A", "S4636A77V5KB8625U12121", Status.BAD_REQUEST, DeductionIdFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
