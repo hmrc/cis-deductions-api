@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.requestParsers
 
-import v1.models.errors.{DeductionIdFormatError, MtdError}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.DeleteRequestParser
+import v1.models.errors.ErrorWrapper
+import v1.models.request.{DeleteRawData, DeleteRequest}
 
-object IdValidation {
+trait MockDeleteRequestParser extends MockFactory {
 
-  private val idRegex = "^.{17}$"
-  def validate(id: String): List[MtdError] = {
-    if (id.matches(idRegex)) NoValidationErrors else List(DeductionIdFormatError)
+  val mockRequestParser: DeleteRequestParser = mock[DeleteRequestParser]
+
+  object MockDeleteRequestDataParser {
+    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequest]] = {
+      (mockRequestParser.parseRequest(_: DeleteRawData)).expects(data)
+    }
   }
 }
