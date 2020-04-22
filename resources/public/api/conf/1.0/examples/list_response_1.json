@@ -1,0 +1,75 @@
+{
+  "cisDeductions": [
+    {
+      "submissionId": "54759eb3c090d83494e2d804",
+      "fromDate": "2019-04-06",
+      "toDate": "2020-04-05",
+      "contractorName": "Bovis",
+      "employerRef": "BV40092",
+      "periodData": [
+        {
+          "deductionAmount": 355,
+          "deductionFromDate": "2019-04-06",
+          "deductionToDate": "2019-05-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2019-04-03",
+          "submittedBy": "contractor"
+        },
+        {
+          "deductionAmount": 355,
+          "deductionFromDate": "2019-05-06",
+          "deductionToDate": "2019-06-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2019-05-03",
+          "submittedBy": "contractor"
+        },
+        {
+          "deductionAmount": 355,
+          "deductionFromDate": "2019-06-06",
+          "deductionToDate": "2019-07-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2020-01-14",
+          "submittedBy": "customer"
+        },
+        {
+          "deductionAmount": 355,
+          "deductionFromDate": "2019-07-06",
+          "deductionToDate": "2019-08-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2020-01-14",
+          "submittedBy": "customer"
+        }
+      ]
+    },
+    {
+      "fromDate": "2019-04-06",
+      "toDate": "2020-04-05",
+      "contractorName": "Taylor Wimpy",
+      "employerRef": "TW44355",
+      "periodData": [
+        {
+          "deductionAmount": 60,
+          "deductionFromDate": "2019-07-06",
+          "deductionToDate": "2019-08-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2019-08-05",
+          "submittedBy": "contractor"
+        },
+        {
+          "deductionAmount": 60,
+          "deductionFromDate": "2019-09-06",
+          "deductionToDate": "2019-10-05",
+          "costOfMaterials": 35,
+          "grossAmountPaid": 1457,
+          "submissionDate": "2019-08-05",
+          "submittedBy": "contractor"
+        }
+      ]
+    }
+  ]
+}

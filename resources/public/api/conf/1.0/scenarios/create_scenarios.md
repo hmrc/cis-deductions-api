@@ -39,5 +39,9 @@
             <td><p>RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE</p></td>
             <td><p>Simulate the scenario where the deductions To date must be after the Deductions From date</p></td>
         </tr>                
+        <tr>
+            <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
+            <td><p>Simulate the scenario where The remote endpoint has indicated that no data can be found for the given period</p></td>
+        </tr>
     </tbody>
 </table>
