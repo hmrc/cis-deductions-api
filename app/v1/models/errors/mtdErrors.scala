@@ -70,6 +70,12 @@ object RuleMissingFromDateError
 object RuleMissingToDateError
   extends MtdError("MISSING_TO_DATE", "The To date parameter is missing")
 
+object RuleFromDateError
+  extends MtdError("FROM_DATE_NOT_IN_TAX_YEAR", "The from date is not the start of the tax year")
+
+object RuleToDateError
+  extends MtdError("TO_DATE_NOT_IN_TAX_YEAR", "The to date is not the end of the tax year")
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 

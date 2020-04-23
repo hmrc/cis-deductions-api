@@ -37,5 +37,3 @@ object AmendRequestFixtures {
 
   val amendResponseObj: AmendResponse = AmendResponse("S4636A77V5KB8625U")
 }
-
-
