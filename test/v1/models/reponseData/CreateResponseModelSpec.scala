@@ -19,7 +19,7 @@ package v1.models.reponseData
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.models.responseData.CreateResponseModel
-import v1.fixtures.CreateRequestFixtures._
+import v1.fixtures.RequestFixtures._
 
 class CreateResponseModelSpec extends UnitSpec {
 

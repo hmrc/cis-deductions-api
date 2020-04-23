@@ -23,7 +23,7 @@ import v1.models.request.{ CreateRequestModel, PeriodDetails}
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 import v1.models.responseData.{ CreateResponseModel}
 
-object CreateRequestFixtures {
+object RequestFixtures {
 
   val requestJson: JsValue = Json.parse {
     """

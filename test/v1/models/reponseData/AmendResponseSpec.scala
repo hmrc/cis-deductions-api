@@ -17,7 +17,7 @@
 package v1.models.reponseData
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import v1.fixtures.CreateRequestFixtures.{ invalidResponseJson, missingMandatoryResponseJson, responseJson}
+import v1.fixtures.RequestFixtures.{ invalidResponseJson, missingMandatoryResponseJson, responseJson}
 import v1.fixtures.AmendRequestFixtures.amendResponseObj
 import support.UnitSpec
 import v1.models.responseData.AmendResponse

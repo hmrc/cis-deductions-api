@@ -25,7 +25,7 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
 import v1.models.responseData.listDeductions.ListResponseModel
-import v1.fixtures.CreateRequestFixtures._
+import v1.fixtures.RequestFixtures._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

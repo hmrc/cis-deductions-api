@@ -24,7 +24,7 @@ import v1.mocks.requestParsers._
 import v1.mocks.services.{MockEnrolmentsAuthService, _}
 import v1.models.audit._
 import v1.models.request._
-import v1.fixtures.CreateRequestFixtures._
+import v1.fixtures.RequestFixtures._
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.responseData.CreateResponseModel
