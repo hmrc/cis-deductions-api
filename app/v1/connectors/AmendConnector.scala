@@ -28,8 +28,6 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-
 class AmendConnector @Inject()(val http: HttpClient,
                                val appConfig: AppConfig) extends BaseDesConnector  {
 
