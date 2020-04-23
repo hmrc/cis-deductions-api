@@ -22,7 +22,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser.SuccessCode
 import play.api.http.Status.CREATED
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.{AmendRequest, AmendRequestData}
+import v1.models.request.AmendRequestData
 import v1.models.responseData.AmendResponse
 import v1.connectors.httpparsers.StandardDesHttpParser._
 
