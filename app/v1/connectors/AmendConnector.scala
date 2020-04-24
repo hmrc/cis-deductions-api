@@ -19,11 +19,6 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.Inject
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-<<<<<<< HEAD
-import v1.connectors.httpparsers.StandardDesHttpParser.SuccessCode
-import play.api.http.Status.CREATED
-=======
->>>>>>> da53354d6cc336ef8ad77a35d455e0332979d865
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.AmendRequestData
 import v1.models.responseData.AmendResponse
