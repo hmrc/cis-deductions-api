@@ -19,8 +19,6 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.Inject
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.connectors.httpparsers.StandardDesHttpParser.SuccessCode
-import play.api.http.Status.CREATED
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.AmendRequestData
 import v1.models.responseData.AmendResponse
@@ -33,9 +31,6 @@ class AmendConnector @Inject()(val http: HttpClient,
 
   def amendDeduction(request: AmendRequestData)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[AmendResponse]] = {
-
-    implicit val successCode: SuccessCode = SuccessCode(CREATED)
-
     put(
       body = request.body,
       DesUri[AmendResponse](s"deductions/cis/${request.nino}/amendments/${request.id}")
