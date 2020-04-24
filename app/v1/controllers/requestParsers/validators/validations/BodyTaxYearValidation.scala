@@ -27,8 +27,8 @@ object BodyTaxYearValidation {
     }
   }
 
-  val fromDateFormat = "[0-9][0-9][0-9][0-9]-[0][4]-[0][6]"
-  val toDateFormat = "[0-9][0-9][0-9][0-9]-[0][4]-[0][5]"
+  val fromDateFormat = "[0-9]{4}-04-06"
+  val toDateFormat = "[0-9]{4}-04-05"
 
   def validateFromDate(error: MtdError)(date: String): List[MtdError] = {
     if (date.matches(fromDateFormat)) NoValidationErrors else List(error)
