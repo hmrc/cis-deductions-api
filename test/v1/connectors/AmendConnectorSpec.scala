@@ -23,10 +23,8 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request.AmendRequestData
 import v1.models.responseData.AmendResponse
 import v1.fixtures.AmendRequestFixtures._
-<<<<<<< HEAD
-=======
 import v1.models.errors.{DesErrorCode, DesErrors}
->>>>>>> da53354d6cc336ef8ad77a35d455e0332979d865
+
 
 import scala.concurrent.Future
 
@@ -57,29 +55,22 @@ class AmendConnectorSpec extends ConnectorSpec {
           ).returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
-<<<<<<< HEAD
     }
-  }
-}
-=======
+    "return a Des Error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-      "return a Des Error code" when {
-        "the http client returns a Des Error code" in new Test {
-          val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
+        MockedHttpClient
+          .put(
+            url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
+            body = request.body,
+            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          )
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-          MockedHttpClient
-            .put(
-              url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
-              body = request.body,
-              requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
-            )
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
-
-          val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
-          result shouldBe outcome
-        }
+        val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
+        result shouldBe outcome
       }
     }
   }
 }
->>>>>>> da53354d6cc336ef8ad77a35d455e0332979d865
