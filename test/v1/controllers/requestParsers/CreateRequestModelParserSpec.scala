@@ -69,7 +69,7 @@ class CreateRequestModelParserSpec extends UnitSpec{
         private val result = parser.parseRequest(inputData)
         result shouldBe Left(ErrorWrapper(None,List(BadRequestError)))
       }
-      "Nino format is inccorrect" in new Test {
+      "Nino format is incorrect" in new Test {
         val inputData = CreateRawData(nino,requestJson)
 
         MockValidator
