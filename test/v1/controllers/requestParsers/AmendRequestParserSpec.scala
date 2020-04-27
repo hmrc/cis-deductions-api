@@ -22,14 +22,14 @@ import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
 import v1.models.request.AmendRawData
 import v1.fixtures.AmendRequestFixtures._
 
-class AmendRequestModelParserSpec extends UnitSpec {
+class AmendRequestParserSpec extends UnitSpec {
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
   val id = "S4636A77V5KB8625U"
 
   trait Test extends MockAmendValidator {
-    lazy val parser = new AmendRequestModelParser(mockValidator)
+    lazy val parser = new AmendRequestParser(mockValidator)
   }
 
   "parser" should {
