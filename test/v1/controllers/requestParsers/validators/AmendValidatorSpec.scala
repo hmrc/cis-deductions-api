@@ -101,9 +101,13 @@ class AmendValidatorSpec extends UnitSpec {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidFromDateForTaxYear))
         result shouldBe List(RuleFromDateError)
       }
-      "invalid request body toDate not valid end  of tax year" in new AmendValidator {
+      "invalid request body toDate not valid end of tax year" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidToDateForTaxYear))
         result shouldBe List(RuleToDateError)
+      }
+      "invalid request date range " in new AmendValidator {
+        private val result = validator.validate(AmendRawData(validNino, validId, invalidDateRange))
+        result shouldBe List(RuleDateRangeInvalidError)
       }
     }
   }
