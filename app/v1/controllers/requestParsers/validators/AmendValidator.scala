@@ -59,8 +59,7 @@ class AmendValidator extends Validator[AmendRawData] {
     val req = data.body.as[AmendRequest]
 
     List(
-      BodyTaxYearValidation.validate(req.fromDate,"fromDate", RuleFromDateError),
-      BodyTaxYearValidation.validate(req.toDate,"toDate", RuleToDateError)
+      TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
     )
   }
   override def validate(data: AmendRawData): List[MtdError] = {

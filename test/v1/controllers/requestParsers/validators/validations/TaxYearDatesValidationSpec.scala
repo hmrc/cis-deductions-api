@@ -17,31 +17,30 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{RuleFromDateError, RuleToDateError}
+import v1.models.errors.{RuleDateRangeInvalidError, RuleFromDateError, RuleToDateError}
 import v1.models.utils.JsonErrorValidators
-import v1.fixtures.CreateRequestFixtures._
 
-class BodyTaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
+class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
 
   "validate" should {
     "return no errors" when {
-      "a request body with valid toDate" in {
-        val validationResult = BodyTaxYearValidation.validate("2019-04-05", "toDate", RuleToDateError)
-        validationResult.isEmpty shouldBe true
-      }
-      "a request body with valid fromDate" in {
-        val validationResult = BodyTaxYearValidation.validate("2019-04-06", "fromDate", RuleFromDateError)
+      "a request body with valid toDate & fromDate" in {
+        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-05", Some(1))
         validationResult.isEmpty shouldBe true
       }
     }
     "return errors" when {
       "a request body with invalid toDate" in {
-        val validationResult = BodyTaxYearValidation.validate("2019-04-06", "toDate", RuleToDateError)
+        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-06", None)
         validationResult shouldBe List(RuleToDateError)
       }
       "a request body with invalid fromDate" in {
-        val validationResult = BodyTaxYearValidation.validate("2019-04-05", "fromDate", RuleFromDateError)
+        val validationResult = TaxYearDatesValidation.validate("2019-04-07", "2020-04-05", None)
         validationResult shouldBe List(RuleFromDateError)
+      }
+      "a request body with invalid date range" in {
+        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2021-04-05", Some(1))
+        validationResult shouldBe List(RuleDateRangeInvalidError)
       }
     }
   }
