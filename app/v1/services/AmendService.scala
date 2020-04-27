@@ -21,12 +21,12 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.{AmendConnector, CreateConnector}
+import v1.connectors.AmendConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{AmendRequestData, CreateRequestData}
-import v1.models.responseData.{AmendResponse, CreateResponseModel}
+import v1.models.request.AmendRequestData
+import v1.models.responseData.AmendResponse
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}

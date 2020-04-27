@@ -33,7 +33,6 @@ class AmendServiceSpec extends UnitSpec{
 
   val validNino = Nino("AA123456A")
   val id = "S4636A77V5KB8625U"
-  private val correlationId = "X-123"
 
   val requestData = AmendRequestData(validNino,id,amendRequestObj)
 
@@ -72,7 +71,6 @@ class AmendServiceSpec extends UnitSpec{
           ("FORMAT_NINO", NinoFormatError),
           ("FORMAT_FROM_DATE", FromDateFormatError),
           ("FORMAT_TO_DATE", ToDateFormatError),
-          ("RULE_COST_OF_MATERIALS", RuleCostOfMaterialsError),
           ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" , RuleToDateBeforeFromDateError),
           ("RULE_GROSS_AMOUNT_PAID" , RuleGrossAmountError),
           ("RULE_DEDUCTIONS_DATE_RANGE_INVALID", RuleDeductionsDateRangeInvalidError)
