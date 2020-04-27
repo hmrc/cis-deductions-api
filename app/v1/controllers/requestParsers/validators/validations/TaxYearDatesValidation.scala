@@ -25,8 +25,7 @@ object TaxYearDatesValidation {
   def validate(fromDate: String, toDate: String, numYears: Option[Int]): List[MtdError] = {
     val dateFormatErrs = validateFromDate(fromDate) ++
     validateToDate(toDate)
-    if(numYears.isDefined & dateFormatErrs.isEmpty)
-      validateYears(numYears.get, fromDate, toDate) else dateFormatErrs
+    if(numYears.isDefined & dateFormatErrs.isEmpty) validateYears(numYears.get, fromDate, toDate) else dateFormatErrs
   }
 
   val fromDateFormat = "[0-9]{4}-04-06"
