@@ -45,7 +45,7 @@ object TaxYearDatesValidation {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val startDate = LocalDate.parse(fromDate, formatter)
     val endDate = LocalDate.parse(toDate, formatter)
-    val diff = endDate.toEpochDay - startDate.toEpochDay
-    if (diff != 365) List(RuleDateRangeInvalidError) else List()
+    val diff = endDate.getYear - startDate.getYear
+    if (diff != numYears) List(RuleDateRangeInvalidError) else List()
   }
 }
