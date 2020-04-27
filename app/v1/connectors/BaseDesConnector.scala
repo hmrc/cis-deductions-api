@@ -64,4 +64,13 @@ trait BaseDesConnector {
 
     doDelete(desHeaderCarrier(hc))
   }
+
+  def put[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
+                                   hc: HeaderCarrier,
+                                   httpReads: HttpReads[DesOutcome[Resp]]): Future[DesOutcome[Resp]] = {
+    def doPut(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] =
+      http.PUT(s"${appConfig.desBaseUrl}/${uri.value}", body)
+
+    doPut(desHeaderCarrier(hc))
+  }
 }

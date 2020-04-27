@@ -53,6 +53,15 @@ trait MockHttpClient extends MockFactory {
           url == actualUrl && body == actualBody && requiredHeaders.forall(h => hc.headers.contains(h))
         })
     }
+
+    def put[I, T](url: String, body: I, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
+      (mockHttpClient
+        .PUT[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
+        .expects(where { (actualUrl, actualBody, _, _, _, hc, _) =>
+          url == actualUrl && body == actualBody && requiredHeaders.forall(h => hc.headers.contains(h))
+        })
+    }
+
   }
 
 }
