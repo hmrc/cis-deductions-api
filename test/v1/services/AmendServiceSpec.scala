@@ -64,16 +64,16 @@ class AmendServiceSpec extends UnitSpec{
           }
 
         val input = Seq(
-          ("NOT_FOUND", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError),
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-          ("FORMAT_NINO", NinoFormatError),
+          ("FORMAT_DEDUCTION_FROM_DATE",DeductionFromDateFormatError),
+          ("FORMAT_DEDUCTION_TO_DATE", DeductionToDateFormatError),
           ("FORMAT_FROM_DATE", FromDateFormatError),
           ("FORMAT_TO_DATE", ToDateFormatError),
-          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" , RuleToDateBeforeFromDateError),
-          ("RULE_GROSS_AMOUNT_PAID" , RuleGrossAmountError),
-          ("RULE_DEDUCTIONS_DATE_RANGE_INVALID", RuleDeductionsDateRangeInvalidError)
+          ("RULE_DEDUCTIONS_DATE_RANGE_INVALID",RuleDeductionsDateRangeInvalidError),
+          ("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE",RuleToDateBeforeFromDateError),
+          ("NOT_FOUND", NotFoundError),
+          ("SERVER_ERROR", DownstreamError),
+          ("SERVICE_UNAVAILABLE", DownstreamError)
         )
         input.foreach(args => (serviceError _).tupled(args))
       }
