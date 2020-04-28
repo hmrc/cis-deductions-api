@@ -28,6 +28,7 @@ object CodeCoverageSettings {
     ".*.ReverseSampleController.*",
     ".*.ReverseCreateRequestController.*",
     ".*.ReverseListController.*",
+    ".*.ReverseDeleteController.*",
     "v1.controllers.javascript",
     "app.*",
     "prod.*",

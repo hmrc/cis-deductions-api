@@ -25,6 +25,7 @@ import v1.models.responseData.AmendResponse
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.errors.{DesErrorCode, DesErrors}
 
+
 import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
@@ -54,22 +55,21 @@ class AmendConnectorSpec extends ConnectorSpec {
           ).returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
+    }
+    "return a Des Error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-      "return a Des Error code" when {
-        "the http client returns a Des Error code" in new Test {
-          val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
+        MockedHttpClient
+          .put(
+            url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
+            body = request.body,
+            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          )
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-          MockedHttpClient
-            .put(
-              url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
-              body = request.body,
-              requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
-            )
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
-
-          val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
-          result shouldBe outcome
-        }
+        val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
+        result shouldBe outcome
       }
     }
   }

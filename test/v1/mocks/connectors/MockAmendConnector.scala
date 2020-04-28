@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package v1.mocks.connectors
 
-import config.AppConfig
-import javax.inject.Inject
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import org.scalamock.handlers.CallHandler3
+import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.connectors.{AmendConnector, DesOutcome}
 import v1.models.request.AmendRequestData
 import v1.models.responseData.AmendResponse
-import v1.connectors.httpparsers.StandardDesHttpParser._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject()(val http: HttpClient,
-                               val appConfig: AppConfig) extends BaseDesConnector  {
+trait MockAmendConnector extends MockFactory{
 
-  def amendDeduction(request: AmendRequestData)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[AmendResponse]] = {
+  val mockAmendConnector : AmendConnector = mock[AmendConnector]
 
-    put(
-      body = request.body,
-      DesUri[AmendResponse](s"deductions/cis/${request.nino}/amendments/${request.id}")
-    )
+  object MockAmendConnector {
+
+    def amendDeduction(requestData: AmendRequestData):
+    CallHandler3[AmendRequestData, HeaderCarrier, ExecutionContext, Future[DesOutcome[AmendResponse]]] = {
+      (mockAmendConnector
+        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(requestData, *, *)
+    }
+
   }
+
 }
