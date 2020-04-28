@@ -24,9 +24,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
 import v1.controllers.requestParsers.CreateRequestModelParser
+import v1.hateoas.HateoasFactory
 import v1.models.audit._
 import v1.models.auth.UserDetails
 import v1.models.errors._
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRawData, CreateRequestData}
 import v1.models.responseData.CreateResponseModel
@@ -38,6 +40,7 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
                                         requestParser: CreateRequestModelParser,
                                         service: CreateService,
+                                        hateoasFactory: HateoasFactory,
                                         auditService: AuditService,
                                         cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
@@ -49,7 +52,6 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
       controllerName = "CreateRequestController",
       endpointName = "createEndpoint"
     )
-
 
   def createRequest(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
     val rawData = CreateRawData(nino, request.body)
@@ -66,13 +68,17 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
     serviceResponse.map {
       case Right(responseWrapper) =>
 
+        val hateoasWrappedResponse: HateoasWrapper[CreateResponseModel] =
+          hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino))
+
+
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
         auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
+          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasWrappedResponse))))
 
-        Ok(Json.toJson(responseWrapper.responseData)).withApiHeaders(responseWrapper.correlationId)
+        Ok(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
