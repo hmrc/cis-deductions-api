@@ -64,13 +64,13 @@ class AmendServiceSpec extends UnitSpec{
           }
 
         val input = Seq(
-          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-          ("FORMAT_DEDUCTION_FROM_DATE",DeductionFromDateFormatError),
-          ("FORMAT_DEDUCTION_TO_DATE", DeductionToDateFormatError),
-          ("FORMAT_FROM_DATE", FromDateFormatError),
-          ("FORMAT_TO_DATE", ToDateFormatError),
-          ("RULE_DEDUCTIONS_DATE_RANGE_INVALID",RuleDeductionsDateRangeInvalidError),
-          ("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE",RuleToDateBeforeFromDateError),
+          ("INVALID_IDVALUE", NinoFormatError),
+          ("INVALID_DEDUCTION_DATE_FROM",DeductionFromDateFormatError),
+          ("INVALID_DEDUCTION_DATE_TO", DeductionToDateFormatError),
+          ("INVALID_DATE_FROM", FromDateFormatError),
+          ("INVALID_DATE_TO", ToDateFormatError),
+          ("INVALID_DEDUCTIONS_DATE_RANGE",RuleDeductionsDateRangeInvalidError),
+          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE",RuleToDateBeforeFromDateError),
           ("NOT_FOUND", NotFoundError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
