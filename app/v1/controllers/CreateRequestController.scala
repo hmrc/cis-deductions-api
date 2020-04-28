@@ -31,7 +31,7 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.models.responseData.CreateResponseModel
+import v1.models.responseData.{CreateHateoasData ,CreateResponseModel}
 import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -71,15 +71,16 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
         val hateoasWrappedResponse: HateoasWrapper[CreateResponseModel] =
           hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino))
 
-
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
         auditSubmission(
           createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasWrappedResponse))))
 
-        Ok(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
+        Ok(Json.toJson(hateoasWrappedResponse))
+          .withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
+
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
