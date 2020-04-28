@@ -16,4 +16,39 @@
 
 package v1.hateoas
 
-trait HateoasLinks
+import com.sun.org.apache.bcel.internal.generic.PUTFIELD
+import config.AppConfig
+import play.api.libs.json.JsValue
+import v1.models.hateoas.Link
+import v1.models.hateoas.Method._
+import v1.models.hateoas.RelType._
+
+trait HateoasLinks {
+
+  private def baseUri(appConfig: AppConfig, nino: String) =
+    s"/${appConfig.apiGatewayContext}/$nino"
+
+  private def createUri(appConfig: AppConfig, nino: String, id: String): String =
+    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
+  private def deleteUri(appConfig: AppConfig, nino: String, id: String): String =
+    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
+  private def amendUri(appConfig: AppConfig, nino: String, id: String): String =
+    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
+
+
+
+  //API resource links
+  //L1
+  def createCISDeduction(appConfig: AppConfig, nino: String, id: String) : Link =
+    Link (href = createUri(appConfig, nino, id), method = POST, rel = CREATE_CIS)
+
+  //L2
+  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String):
+  Link =
+    Link (href = deleteUri(appConfig, nino, id), method = DELETE, rel = DELETE_CIS)
+
+  //L3
+  def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, body: JsValue):
+  Link =
+    Link (href = amendUri(appConfig, nino, id), method = PUT, rel = AMEND_CIS)
+}
