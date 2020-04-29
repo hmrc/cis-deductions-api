@@ -28,7 +28,7 @@ import v1.fixtures.CreateRequestFixtures._
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method.POST
+import v1.models.hateoas.Method.{GET, POST}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
 
@@ -77,9 +77,9 @@ class CreateRequestControllerSpec
 
   val testHatoeasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/deductions/cis/$nino/amendments",
-      rel = "create-cis-deductions-for-subcontractor",
-      method = POST
+      href = s"/deductions/cis/$nino/current-position",
+      rel = "list-cis-deductions-for-subcontractor",
+      method = GET
     )
   )
 

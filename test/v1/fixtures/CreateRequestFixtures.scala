@@ -573,9 +573,9 @@ object CreateRequestFixtures {
        |  "id": "$responseId",
        |  "links":[
        |    {
-       |      "href":"/deductions/cis/$nino/amendments",
-       |      "rel":"create-cis-deductions-for-subcontractor",
-       |      "method":"POST"
+       |      "href":"/deductions/cis/$nino/current-position",
+       |      "rel":"list-cis-deductions-for-subcontractor",
+       |      "method":"GET"
        |     }
        |  ]
        |}

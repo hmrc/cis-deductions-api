@@ -30,7 +30,7 @@ object CreateResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
     override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
       import data._
-      Seq(createLink(appConfig, nino))
+      Seq(listLink(appConfig, nino))
     }
   }
 

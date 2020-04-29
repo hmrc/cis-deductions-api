@@ -24,11 +24,19 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   //Domain URIs
-  private def createUri(appConfig: AppConfig, nino: String): String =
-    s"/${appConfig.apiGatewayContext}/$nino/amendments"
+  private def baseUri(appConfig: AppConfig, nino: String) =
+    s"/${appConfig.apiGatewayContext}/$nino"
 
+  private def createUri(appConfig: AppConfig, nino: String): String =
+    baseUri(appConfig, nino) + s"/deductions/cis//$nino/amendments"
+
+  private def listUri(appConfig: AppConfig, nino: String): String =
+    baseUri(appConfig, nino) + s"/deductions/cis/$nino/current-position"
 
   //API resource links
   def createLink(appConfig: AppConfig, nino: String): Link =
     Link(href = createUri(appConfig, nino), method = GET, rel = CREATE_DEDUCTION)
+
+  def listLink(appConfig: AppConfig, nino: String): Link =
+    Link(href = listUri(appConfig, nino), method = GET, rel = LIST_CIS)
 }
