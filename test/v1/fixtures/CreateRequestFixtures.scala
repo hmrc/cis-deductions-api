@@ -566,4 +566,18 @@ object CreateRequestFixtures {
        |}
     """.stripMargin
   )
+
+  val hateoasResponse: (String,String) => String = (nino: String, responseId: String) =>
+    s"""
+       |{
+       |  "id": "$responseId",
+       |  "links":[
+       |    {
+       |      "href":"/deductions/cis/$nino/amendments",
+       |      "rel":"create-cis-deductions-for-subcontractor",
+       |      "method":"POST"
+       |     }
+       |  ]
+       |}
+    """.stripMargin
 }

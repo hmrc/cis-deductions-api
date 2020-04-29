@@ -17,8 +17,7 @@
 package v1.models.hateoas
 
 object RelType {
+  val CREATE_DEDUCTION = "create-cis-deduction"
 
   val SELF = "self"
-
-
 }

@@ -16,4 +16,19 @@
 
 package v1.hateoas
 
-trait HateoasLinks
+import config.AppConfig
+import v1.models.hateoas.Link
+import v1.models.hateoas.Method._
+import v1.models.hateoas.RelType._
+
+trait HateoasLinks {
+
+  //Domain URIs
+  private def createUri(appConfig: AppConfig, nino: String): String =
+    s"/${appConfig.apiGatewayContext}/$nino/amendments"
+
+
+  //API resource links
+  def createLink(appConfig: AppConfig, nino: String): Link =
+    Link(href = createUri(appConfig, nino), method = GET, rel = CREATE_DEDUCTION)
+}
