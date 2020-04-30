@@ -18,7 +18,7 @@ package v1.controllers
 
 import mocks.MockAppConfig
 import v1.mocks.requestParsers.MockListDeductionRequestParser
-import v1.models.audit.{AuditError, AuditEvent, GenericAuditDetail, AuditResponse}
+import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.request._
 import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 import play.api.libs.json.{JsValue, Json}
@@ -27,7 +27,10 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListService, _}
 import v1.fixtures.ListJson._
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.models.errors._
+import v1.models.hateoas.Link
+import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,6 +41,7 @@ class ListControllerSpec extends ControllerBaseSpec
     with MockMtdIdLookupService
     with MockListDeductionRequestParser
     with MockListService
+    with MockHateoasFactory
     with MockAppConfig
     with MockAuditService {
 
@@ -49,6 +53,7 @@ class ListControllerSpec extends ControllerBaseSpec
             lookupService = mockMtdIdLookupService,
             requestParser = mockRequestParser,
             service = mockService,
+            hateoasFactory = mockHateoasFactory,
             auditService = mockAuditService,
             cc = cc
         )

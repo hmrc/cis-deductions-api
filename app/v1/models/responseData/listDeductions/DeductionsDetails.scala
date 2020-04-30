@@ -17,6 +17,8 @@
 package v1.models.responseData.listDeductions
 
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
 
 case class DeductionsDetails(submissionId: Option[String],
                              fromDate: String,
@@ -27,6 +29,16 @@ case class DeductionsDetails(submissionId: Option[String],
                             )
 
 object DeductionsDetails {
-  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
-  implicit val writes: Writes[DeductionsDetails] = Json.writes[DeductionsDetails]
+//  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
+
+  implicit val reads: Reads[DeductionsDetails] = (
+    (JsPath \ "submissionId").readNullable[String] and
+      (JsPath \ "fromDate").read[String] and
+      (JsPath \ "toDate").read[String] and
+      (JsPath \ "contractorName").read[String] and
+      (JsPath \ "employerRef").read[String] and
+      (JsPath \ "periodData").read[Seq[PeriodDeductions]]
+    ) (DeductionsDetails.apply _)
+
+  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
 }

@@ -16,7 +16,6 @@
 
 package v1.hateoas
 
-import com.sun.org.apache.bcel.internal.generic.PUTFIELD
 import config.AppConfig
 import play.api.libs.json.JsValue
 import v1.models.hateoas.Link
@@ -28,27 +27,48 @@ trait HateoasLinks {
   private def baseUri(appConfig: AppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
 
-  private def createUri(appConfig: AppConfig, nino: String, id: String): String =
-    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
+  private def createUri(appConfig: AppConfig, nino: String): String =
+    baseUri(appConfig, nino) + s"/amendments"
   private def deleteUri(appConfig: AppConfig, nino: String, id: String): String =
-    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
-  private def amendUri(appConfig: AppConfig, nino: String, id: String): String =
-    baseUri(appConfig, nino) + s"/deductions/cis/$nino/amendments/$id"
-
-
+    baseUri(appConfig, nino) + s"/amendments/$id"
+  private def amendUri(appConfig: AppConfig, nino: String, id: Option[String]): String =
+    baseUri(appConfig, nino) + s"/amendments/$id"
+  private def listUri(appConfig: AppConfig, nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): String = {
+    val sourceStr = source.getOrElse()
+    val sourceParam = if (sourceStr == "None") "" else s"&source=$sourceStr"
+    baseUri(appConfig, nino) + s"/current-position?fromDate=${fromDate.getOrElse()}" +
+      s"&toDate=${toDate.getOrElse()}$sourceParam"
+  }
 
   //API resource links
   //L1
-  def createCISDeduction(appConfig: AppConfig, nino: String, id: String) : Link =
-    Link (href = createUri(appConfig, nino, id), method = POST, rel = CREATE_CIS)
+  def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean) : Link =
+    Link (
+      href = createUri(appConfig, nino),
+      method = POST,
+      rel = if(isSelf) SELF else CREATE_CIS)
 
   //L2
-  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String):
+  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean):
   Link =
-    Link (href = deleteUri(appConfig, nino, id), method = DELETE, rel = DELETE_CIS)
+    Link (
+      href = deleteUri(appConfig, nino, id),
+      method = DELETE,
+      rel = if(isSelf) SELF else DELETE_CIS)
 
   //L3
-  def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, body: JsValue):
+  def amendCISDeduction(appConfig: AppConfig, nino:String, id: Option[String], body: JsValue, isSelf: Boolean):
   Link =
-    Link (href = amendUri(appConfig, nino, id), method = PUT, rel = AMEND_CIS)
+    Link (
+      href = amendUri(appConfig, nino, id),
+      method = PUT,
+      rel = if(isSelf) SELF else AMEND_CIS)
+
+  //L4
+  def listCISDeduction(appConfig: AppConfig, nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String], isSelf: Boolean):
+  Link =
+    Link (
+      href = listUri(appConfig, nino, fromDate, toDate, source),
+      method = GET,
+      rel = if(isSelf) SELF else LIST_CIS)
 }
