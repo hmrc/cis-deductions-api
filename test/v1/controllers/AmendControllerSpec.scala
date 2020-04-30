@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.fixtures.CreateRequestFixtures.{missingOptionalRequestJson, requestJson, responseJson}
+import v1.fixtures.AmendRequestFixtures.{missingOptionalRequestJson, requestJson, responseJson}
 import v1.mocks.requestParsers.MockAmendRequestParser
 import v1.mocks.services.{MockAmendService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
@@ -163,6 +163,9 @@ class AmendControllerSpec extends ControllerBaseSpec
         (RuleCostOfMaterialsError, BAD_REQUEST),
         (RuleGrossAmountError, BAD_REQUEST),
         (DownstreamError, INTERNAL_SERVER_ERROR),
+        (RuleFromDateError,BAD_REQUEST),
+        (RuleToDateError,BAD_REQUEST),
+        (DeductionIdFormatError,BAD_REQUEST),
       )
 
       input.foreach(args => (errorsFromParserTester _).tupled(args))

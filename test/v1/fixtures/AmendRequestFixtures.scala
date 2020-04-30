@@ -559,5 +559,13 @@ object AmendRequestFixtures {
       |}
       |""".stripMargin
   }
+
+  val   responseJson: JsValue = Json.parse(
+    """
+      |{
+      |"id": "S4636A77V5KB8625U"
+      |}
+      |""".stripMargin
+  )
 }
 

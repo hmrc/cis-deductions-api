@@ -67,14 +67,14 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
         auditSubmission(
-          amendAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
+          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
 
         Ok(Json.toJson(responseWrapper.responseData)).withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
         val result = errorResult(errorWrapper).withApiHeaders(correlationId)
-        auditSubmission(amendAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
+        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
         result
     }
   }
@@ -85,14 +85,14 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
            ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError =>
+           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | RuleFromDateError | RuleToDateError | DeductionIdFormatError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def amendAuditDetails(rawData: AmendRawData,
+  private def createAuditDetails(rawData: AmendRawData,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
