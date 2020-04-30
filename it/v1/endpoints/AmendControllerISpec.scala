@@ -58,7 +58,7 @@ class AmendControllerISpec extends IntegrationBaseSpec{
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request().post(body))
+            val response: WSResponse = await(request().put(body))
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
