@@ -26,7 +26,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
+import v1.models.responseData.listDeductions.{ListResponseModel, PeriodDeductions}
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ class ListService @Inject()(connector: ListConnector) extends DesResponseMapping
   def listDeductions(request: ListDeductionsRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel]]] = {
+    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[PeriodDeductions]]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.list(request)).leftMap(mapDesErrors(mappingDesToMtdError))

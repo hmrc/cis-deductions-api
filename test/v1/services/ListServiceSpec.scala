@@ -24,7 +24,7 @@ import v1.mocks.connectors.MockListConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
+import v1.models.responseData.listDeductions.{ListResponseModel, PeriodDeductions}
 import v1.fixtures.CreateRequestFixtures._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,7 +39,7 @@ class ListServiceSpec extends UnitSpec {
   private val source = Some("Contractor")
 
   val request: ListDeductionsRequest = ListDeductionsRequest(nino, fromDate, toDate, source)
-  val response: ListResponseModel = listCisDeductionsModel
+  val response: ListResponseModel[PeriodDeductions] = listCisDeductionsModel
 
   trait Test extends MockListConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

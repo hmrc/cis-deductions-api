@@ -73,7 +73,7 @@ class ListControllerSpec extends ControllerBaseSpec
     private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
     private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, None)
 
-    val response: ListResponseModel =
+    val response: ListResponseModel[PeriodDeductions] =
         ListResponseModel(
             Seq(DeductionsDetails(
                 submissionId = Some("54759eb3c090d83494e2d804"),

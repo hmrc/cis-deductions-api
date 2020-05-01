@@ -81,11 +81,12 @@ class ListConnectorSpec extends ConnectorSpec {
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[ListResponseModel]](s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
+        MockedHttpClient.get[DesOutcome[ListResponseModel[PeriodDeductions]]](s"$baseUrl/cross-regime/deductions-placeholder/CIS" +
+          s"/${nino.nino}/current-position" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[ListResponseModel] = await(connector.list(request))
+        val result: DesOutcome[ListResponseModel[PeriodDeductions]] = await(connector.list(request))
         result shouldBe outcome
       }
     }

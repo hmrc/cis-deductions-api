@@ -30,7 +30,7 @@ import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
-import v1.models.responseData.listDeductions.{ListHateoasData, ListResponseModel}
+import v1.models.responseData.listDeductions.{ListHateoasData, ListResponseModel, PeriodDeductions}
 import v1.services.{AuditService, EnrolmentsAuthService, ListService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,7 +59,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
       case Right(data) =>
         service.listDeductions(data)
       case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel]]] =
+        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[PeriodDeductions]]]] =
           Future.successful(Left(errorWrapper))
         futureError
     }
@@ -69,10 +69,10 @@ extends AuthorisedController(cc) with BaseController with Logging {
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
 
-        val hateoasResponse = hateoasFactory.wrapList(responseWrapper.responseData.cisDeductions, ListHateoasData(nino, fromDate, toDate, source))
+        val hateoasResponse = hateoasFactory.wrapList(responseWrapper.responseData, ListHateoasData(nino, fromDate, toDate, source))
 
         auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.responseData))))
+          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasResponse))))
 
         Ok(Json.toJson(hateoasResponse))
           .withApiHeaders(responseWrapper.correlationId)

@@ -29,5 +29,5 @@ case class PeriodDeductions(deductionAmount: BigDecimal,
 
 object PeriodDeductions {
   implicit val reads: Reads[PeriodDeductions] = Json.reads[PeriodDeductions]
-  implicit val writes: Writes[PeriodDeductions] = Json.writes[PeriodDeductions]
+  implicit val writes: OWrites[PeriodDeductions] = Json.writes[PeriodDeductions]
 }

@@ -19,31 +19,32 @@ package v1.models.responseData.listDeductions
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory, HateoasListLinksFactory}
+import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class ListResponseModel(cisDeductions: Seq[DeductionsDetails])
+case class ListResponseModel[I](cisDeductions: Seq[DeductionsDetails[I]])
 
 object ListResponseModel extends HateoasLinks {
 
-  implicit val reads: Reads[ListResponseModel] = implicitly(Json.reads[ListResponseModel])
+  implicit def reads[I: Reads]: Reads[ListResponseModel[I]] = implicitly(Json.reads[ListResponseModel[I]])
+  implicit def writes[I: Writes]: OWrites[ListResponseModel[I]] = Json.writes[ListResponseModel[I]]
 
-  implicit val writes: OWrites[ListResponseModel] = Json.writes[ListResponseModel]
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, PeriodDeductions, ListHateoasData] {
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, DeductionsDetails, ListHateoasData] {
-
-    override def itemLinks(appConfig: AppConfig, data: ListHateoasData, item: DeductionsDetails): Seq[Link] = {
-      val id = item.submissionId.getOrElse("")
-      Seq(deleteCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false))
+    override def itemLinks(appConfig: AppConfig, data: ListHateoasData, item: PeriodDeductions): Seq[Link] = {
+      Seq(deleteCISDeduction(appConfig, data.nino, data.nino, isSelf = false))
     }
     override def links(appConfig: AppConfig, data: ListHateoasData): Seq[Link] = {
       Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
       createCISDeduction(appConfig, data.nino, isSelf = false))
     }
+  }
 
-    implicit object ResponseFunctor extends Functor[ListResponseModel] {
-      override def map[A, B](fa: ListResponseModel)(f: A => B): ListResponseModel = ListResponseModel(fa.cisDeductions)
-    }
+  implicit object ResponseFunctor extends Functor[ListResponseModel] {
+    override def map[A, B](fa: ListResponseModel[A])(f: A => B): ListResponseModel[B] =
+      ListResponseModel(fa.cisDeductions.map {
+        summary => summary.copy(periodData = summary.periodData.map(f))
+      })
   }
 }
 case class ListHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) extends HateoasData
