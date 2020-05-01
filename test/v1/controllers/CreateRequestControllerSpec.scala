@@ -25,9 +25,12 @@ import v1.mocks.services.{MockEnrolmentsAuthService, _}
 import v1.models.audit._
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
+import v1.mocks.hateoas.MockHateoasFactory
 import v1.models.errors._
+import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.{GET, POST}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.responseData.CreateResponseModel
+import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,6 +41,7 @@ class CreateRequestControllerSpec
     with MockMtdIdLookupService
     with MockCreateRequestParser
     with MockCreateService
+    with MockHateoasFactory
     with MockAuditService {
 
   trait Test {
@@ -48,6 +52,7 @@ class CreateRequestControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestDataParser,
       service = mockService,
+      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc
     )
@@ -70,18 +75,28 @@ class CreateRequestControllerSpec
 
   val response = CreateResponseModel(responseId)
 
-    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-      AuditEvent(
-        auditType = "createCisDeductionsAuditType",
-        transactionName = "create-cis-deductions-transaction-type",
-        detail = GenericAuditDetail(
-          userType = "Individual",
-          agentReferenceNumber = None,
-          nino,
-          `X-CorrelationId` = correlationId,
-          auditResponse
-        )
+  val testHatoeasLinks: Seq[Link] = Seq(
+    Link(
+      href = s"/deductions/cis/$nino/current-position",
+      rel = "list-cis-deductions-for-subcontractor",
+      method = GET
+    )
+  )
+
+  private val parsedHateoas = Json.parse(hateoasResponse(nino, responseId))
+
+  def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "createCisDeductionsAuditType",
+      transactionName = "create-cis-deductions-transaction-type",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        nino,
+        `X-CorrelationId` = correlationId,
+        auditResponse
       )
+    )
 
   "createRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -95,14 +110,18 @@ class CreateRequestControllerSpec
           .submitCreateRequest(createRequest)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
+        MockHateoasFactory
+          .wrap(response, CreateHateoasData(nino))
+          .returns(HateoasWrapper(response, testHatoeasLinks))
+
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseJson
+        contentAsJson(result) shouldBe parsedHateoas
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseJson))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
@@ -115,14 +134,18 @@ class CreateRequestControllerSpec
           .submitCreateRequest(missingOptionalCreateRequest)
           .returns(Future.successful((Right(ResponseWrapper(correlationId, response)))))
 
+        MockHateoasFactory
+          .wrap(response, CreateHateoasData(nino))
+          .returns(HateoasWrapper(response, testHatoeasLinks))
+
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe responseJson
+        contentAsJson(result) shouldBe parsedHateoas
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(responseJson))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
       }
     }
 
@@ -141,7 +164,7 @@ class CreateRequestControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
         }
       }
 
@@ -177,7 +200,7 @@ class CreateRequestControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -214,7 +237,7 @@ class CreateRequestControllerSpec
           None
         )
 
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
       }
     }
 
@@ -237,7 +260,7 @@ class CreateRequestControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(responseJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
         }
       }
 
