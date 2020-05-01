@@ -28,15 +28,15 @@ trait HateoasLinks {
     s"/${appConfig.apiGatewayContext}/$nino"
 
   private def createUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + s"/deductions/cis//$nino/amendments"
+    baseUri(appConfig, nino) + "/amendments"
 
   private def listUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + s"/deductions/cis/$nino/current-position"
+    baseUri(appConfig, nino) + "/current-position"
 
   //API resource links
   def createLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = createUri(appConfig, nino), method = GET, rel = CREATE_DEDUCTION)
+    Link(href = createUri(appConfig, nino), method = GET, rel = CREATE)
 
   def listLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = listUri(appConfig, nino), method = GET, rel = LIST_CIS)
+    Link(href = listUri(appConfig, nino), method = GET, rel = LIST)
 }
