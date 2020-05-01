@@ -75,7 +75,7 @@ class CreateRequestControllerSpec
 
   val response = CreateResponseModel(responseId)
 
-  val testHatoeasLinks: Seq[Link] = Seq(
+  val testHateoasLinks: Seq[Link] = Seq(
     Link(
       href = s"/deductions/cis/$nino/current-position",
       rel = "list-cis-deductions-for-subcontractor",
@@ -112,7 +112,7 @@ class CreateRequestControllerSpec
 
         MockHateoasFactory
           .wrap(response, CreateHateoasData(nino))
-          .returns(HateoasWrapper(response, testHatoeasLinks))
+          .returns(HateoasWrapper(response, testHateoasLinks))
 
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
 
@@ -136,7 +136,7 @@ class CreateRequestControllerSpec
 
         MockHateoasFactory
           .wrap(response, CreateHateoasData(nino))
-          .returns(HateoasWrapper(response, testHatoeasLinks))
+          .returns(HateoasWrapper(response, testHateoasLinks))
 
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
 
