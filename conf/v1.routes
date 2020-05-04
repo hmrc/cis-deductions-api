@@ -3,3 +3,5 @@ POST       /deductions/cis/:nino/amendments                v1.controllers.Create
 GET        /deductions/cis/:nino/current-position          v1.controllers.ListController.listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String])
 
 DELETE     /deductions/cis/:nino/amendments/:id            v1.controllers.DeleteController.deleteRequest(nino: String, id: String)
+
+PUT        /deductions/cis/:nino/amendments/:id            v1.controllers.AmendController.amendRequest(nino: String, id: String)

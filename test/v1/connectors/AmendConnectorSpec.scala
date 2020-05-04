@@ -25,6 +25,7 @@ import v1.models.responseData.AmendResponse
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.errors.{DesErrorCode, DesErrors}
 
+
 import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
@@ -38,6 +39,8 @@ class AmendConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desCisUrl returns "cross-regime/deductions-placeholder/CIS"
+
   }
 
   "amend" should {
@@ -48,28 +51,27 @@ class AmendConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, AmendResponse(id)))
         MockedHttpClient.
           put(
-            url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
             body = request.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
+    }
+    "return a Des Error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-      "return a Des Error code" when {
-        "the http client returns a Des Error code" in new Test {
-          val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
+        MockedHttpClient
+          .put(
+            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
+            body = request.body,
+            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          )
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-          MockedHttpClient
-            .put(
-              url = s"$baseUrl/deductions/cis/${request.nino}/amendments/${request.id}",
-              body = request.body,
-              requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
-            )
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
-
-          val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
-          result shouldBe outcome
-        }
+        val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
+        result shouldBe outcome
       }
     }
   }

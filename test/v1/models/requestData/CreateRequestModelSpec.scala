@@ -48,7 +48,4 @@ class CreateRequestModelSpec extends UnitSpec {
       Json.toJson(requestObj) shouldBe requestJson
     }
   }
-
 }
-
-

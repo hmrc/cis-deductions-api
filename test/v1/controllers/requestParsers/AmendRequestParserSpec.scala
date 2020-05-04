@@ -16,68 +16,75 @@
 
 package v1.controllers.requestParsers
 
-import v1.mocks.validators.MockCreateRequestModelValidator
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
-import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.fixtures.CreateRequestFixtures._
-import v1.models.errors._
+import v1.mocks.validators.MockAmendValidator
+import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
+import v1.models.request.AmendRawData
+import v1.fixtures.AmendRequestFixtures._
 
-
-class CreateRequestModelParserSpec extends UnitSpec{
+class AmendRequestParserSpec extends UnitSpec {
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
+  val id = "S4636A77V5KB8625U"
 
-  trait Test extends  MockCreateRequestModelValidator{
-    lazy val parser = new CreateRequestModelParser(mockValidator)
+  trait Test extends MockAmendValidator {
+    lazy val parser = new AmendRequestParser(mockValidator)
   }
 
   "parser" should {
     "accept a valid input" when {
       "a cis deduction has been passed" in new Test {
-        val inputData = CreateRawData(nino, requestJson)
+        val inputData = AmendRawData(nino, id, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(CreateRequestData(Nino(nino), requestObj))
 
       }
 
       "Missing option field has passed" in new Test {
-        val inputData = CreateRawData(nino, missingOptionalRequestJson)
+        val inputData = AmendRawData(nino, id, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(CreateRequestData(Nino(nino), missingOptionalRequestObj))
       }
     }
     "Reject invalid input" when {
       "mandatory field is given invalid data" in new Test {
-        val inputData = CreateRawData(nino, invalidRequestJson)
+        val inputData = AmendRawData(nino, id, invalidRequestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None,List(BadRequestError)))
+        result shouldBe Left(ErrorWrapper(None, List(BadRequestError)))
       }
       "Nino format is incorrect" in new Test {
-        val inputData = CreateRawData(nino,requestJson)
+        val inputData = AmendRawData(invalidNino, id, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None,List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(None, List(NinoFormatError)))
+      }
+      "Id format is incorrect" in new Test {
+        val inputData = AmendRawData(nino, "id", requestJson)
+
+        MockValidator
+          .validate(inputData)
+          .returns(List(NinoFormatError))
+
+        private val result = parser.parseRequest(inputData)
+        result shouldBe Left(ErrorWrapper(None, List(NinoFormatError)))
       }
     }
   }
