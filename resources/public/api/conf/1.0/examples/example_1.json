@@ -1,3 +1,10 @@
 {
-  "id": "S4636A77V5KB862"
+  "id": "S4636A77V5KB862",
+  "links": [
+    {
+      "href": "/deductions/cis/AA123456A/current-position",
+      "rel": "list-cis-deduction",
+      "method": "GET"
+    }
+  ]
 }
