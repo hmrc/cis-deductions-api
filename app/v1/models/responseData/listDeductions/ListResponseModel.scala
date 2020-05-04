@@ -27,16 +27,24 @@ case class ListResponseModel[I](cisDeductions: Seq[DeductionsDetails[I]])
 object ListResponseModel extends HateoasLinks {
 
   implicit def reads[I: Reads]: Reads[ListResponseModel[I]] = implicitly(Json.reads[ListResponseModel[I]])
+
   implicit def writes[I: Writes]: OWrites[ListResponseModel[I]] = Json.writes[ListResponseModel[I]]
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, PeriodDeductions, ListHateoasData] {
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, PeriodDeductions, ListResponseHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: ListHateoasData, item: PeriodDeductions): Seq[Link] = {
-      Seq(deleteCISDeduction(appConfig, data.nino, data.nino, isSelf = false))
+    override def itemLinks(appConfig: AppConfig, data: ListResponseHateoasData, item: PeriodDeductions): Seq[Link] = {
+//        val subId = data.listResponse.cisDeductions.map()
+
+        data.source match {
+          case Some("customer") => Seq(deleteCISDeduction(appConfig, data.nino, "subId", isSelf = false),
+            amendCISDeduction(appConfig, data.nino, "subId", isSelf = false))
+          case _ => Seq()
+        }
     }
-    override def links(appConfig: AppConfig, data: ListHateoasData): Seq[Link] = {
+
+    override def links(appConfig: AppConfig, data: ListResponseHateoasData): Seq[Link] = {
       Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
-      createCISDeduction(appConfig, data.nino, isSelf = false))
+        createCISDeduction(appConfig, data.nino, isSelf = false))
     }
   }
 
@@ -46,6 +54,8 @@ object ListResponseModel extends HateoasLinks {
         summary => summary.copy(periodData = summary.periodData.map(f))
       })
   }
-}
-case class ListHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) extends HateoasData
 
+}
+
+case class ListResponseHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String],
+                                   listResponse: ListResponseModel[PeriodDeductions]) extends HateoasData

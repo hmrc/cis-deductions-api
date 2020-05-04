@@ -31,7 +31,7 @@ trait HateoasLinks {
     baseUri(appConfig, nino) + s"/amendments"
   private def deleteUri(appConfig: AppConfig, nino: String, id: String): String =
     baseUri(appConfig, nino) + s"/amendments/$id"
-  private def amendUri(appConfig: AppConfig, nino: String, id: Option[String]): String =
+  private def amendUri(appConfig: AppConfig, nino: String, id: String): String =
     baseUri(appConfig, nino) + s"/amendments/$id"
   private def listUri(appConfig: AppConfig, nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): String = {
     val sourceStr = source.getOrElse()
@@ -57,7 +57,7 @@ trait HateoasLinks {
       rel = if(isSelf) SELF else DELETE_CIS)
 
   //L3
-  def amendCISDeduction(appConfig: AppConfig, nino:String, id: Option[String], body: JsValue, isSelf: Boolean):
+  def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, isSelf: Boolean):
   Link =
     Link (
       href = amendUri(appConfig, nino, id),
