@@ -6,9 +6,16 @@ object CreateDataExamples {
 
   val deductionsResponseBody = Json.parse(
     """
-      | {
-      | "id" : "someResponse"
-      | }
+      |{
+      |   "id":"someResponse",
+      |   "links":[
+      |      {
+      |         "href":"/deductions/cis/AA123456A/current-position",
+      |         "method":"GET",
+      |         "rel":"list-cis-deductions-for-subcontractor"
+      |      }
+      |   ]
+      |}
     """.stripMargin)
 
   def errorBody(code: String): String =

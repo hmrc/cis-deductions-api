@@ -17,11 +17,9 @@
 package v1.models.hateoas
 
 object RelType {
-
   val SELF = "self"
   val CREATE_CIS = "create-cis-deductions-for-subcontractor"
   val DELETE_CIS= "delete-cis-deductions-for-subcontractor"
   val AMEND_CIS = "amend-cis-deductions-for-subcontractor"
   val LIST_CIS = "list-cis-deductions-for-subcontractor"
-
 }
