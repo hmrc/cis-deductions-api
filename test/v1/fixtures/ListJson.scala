@@ -258,6 +258,53 @@ object ListJson {
       |""".stripMargin
   }
 
+  val singleDeductionJsonHateoasNoId : JsValue = Json.parse{
+    """
+      |{
+      | "cisDeductions" : [
+      |  {
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
+      |    "contractorName": "Bovis",
+      |    "employerRef": "BV40092",
+      |    "periodData": [
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "contractor"
+      |      },
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "contractor"
+      |      }
+      |    ]
+      |  }
+      |],
+      |    "links": [
+      |        {
+      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "method": "GET",
+      |            "rel": "self"
+      |        },
+      |        {
+      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "method": "POST",
+      |            "rel": "create-cis-deductions-for-subcontractor"
+      |        }
+      |    ]
+      |}
+      |""".stripMargin
+  }
+
   val singleDeductionRequestJson =
     """
       |

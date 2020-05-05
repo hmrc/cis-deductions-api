@@ -52,5 +52,5 @@ object ListResponseModel extends HateoasLinks {
   }
 }
 
-case class ListResponseHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String],
+case class ListResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
                                    listResponse: ListResponseModel[DeductionsDetails]) extends HateoasData

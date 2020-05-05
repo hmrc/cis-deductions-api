@@ -104,6 +104,37 @@ class ListControllerSpec extends ControllerBaseSpec
           )
         )
 
+    val responseNoId: ListResponseModel[DeductionsDetails] =
+        ListResponseModel(
+            Seq(DeductionsDetails(
+                submissionId = None,
+                fromDate = "2019-04-06",
+                toDate = "2020-04-05",
+                contractorName = "Bovis",
+                employerRef = "BV40092",
+                Seq(
+                    PeriodDeductions(
+                        deductionAmount = 355.00,
+                        deductionFromDate = "2019-06-06",
+                        deductionToDate = "2019-07-05",
+                        costOfMaterials = Some(35.00),
+                        grossAmountPaid = 1457.00,
+                        submissionDate = "2020-01-14",
+                        submittedBy = "customer"),
+                    PeriodDeductions(
+                        deductionAmount = 355.00,
+                        deductionFromDate = "2019-07-06",
+                        deductionToDate = "2019-08-05",
+                        costOfMaterials = Some(35.00),
+                        grossAmountPaid = 1457.00,
+                        submissionDate = "2020-01-14",
+                        submittedBy = "customer"
+                    )
+                )
+            )
+            )
+        )
+
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
@@ -165,11 +196,11 @@ class ListControllerSpec extends ControllerBaseSpec
                             ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
                                 amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate, toDate, source, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, source, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
                 MockHateoasFactory
-                  .wrapList(response, ListResponseHateoasData(nino, fromDate, toDate, source, response))
+                  .wrapList(response, ListResponseHateoasData(nino, fromDate.get, toDate.get, source, response))
                   .returns(responseWithHateoas)
 
                 val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
@@ -225,12 +256,12 @@ class ListControllerSpec extends ControllerBaseSpec
                             ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
                                 amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate, toDate, None, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, None, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
 
                 MockHateoasFactory
-                  .wrapList(response, ListResponseHateoasData(nino, fromDate, toDate, None, response))
+                  .wrapList(response, ListResponseHateoasData(nino, fromDate.get, toDate.get, None, response))
                   .returns(responseWithHateoas)
 
                 val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,None)(fakeGetRequest)
@@ -241,6 +272,66 @@ class ListControllerSpec extends ControllerBaseSpec
 
                 val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasMissingOptionalField))
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasMissingOptionalField))).once()
+            }
+
+            "a valid request where response submission id is missing" in new Test {
+
+                MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
+
+                MockListDeductionRequestParser
+                  .parse(listRawData)
+                  .returns(Right(listRequestData))
+
+                MockListService
+                  .listCisDeductions(listRequestData)
+                  .returns(Future.successful(Right(ResponseWrapper(correlationId, responseNoId))))
+
+                val responseWithHateoas: HateoasWrapper[ListResponseModel[HateoasWrapper[DeductionsDetails]]] = HateoasWrapper(
+                    ListResponseModel(
+                        Seq(HateoasWrapper(
+                            DeductionsDetails(
+                                submissionId = None,
+                                fromDate = "2019-04-06",
+                                toDate = "2020-04-05",
+                                contractorName = "Bovis",
+                                employerRef = "BV40092",
+                                Seq(
+                                    PeriodDeductions(
+                                        deductionAmount = 355.00,
+                                        deductionFromDate = "2019-06-06",
+                                        deductionToDate = "2019-07-05",
+                                        costOfMaterials = Some(35.00),
+                                        grossAmountPaid = 1457.00,
+                                        submissionDate = "2020-01-14",
+                                        submittedBy = "contractor"),
+                                    PeriodDeductions(
+                                        deductionAmount = 355.00,
+                                        deductionFromDate = "2019-07-06",
+                                        deductionToDate = "2019-08-05",
+                                        costOfMaterials = Some(35.00),
+                                        grossAmountPaid = 1457.00,
+                                        submissionDate = "2020-01-14",
+                                        submittedBy = "contractor"
+                                    )
+                                )
+                            ),Seq()
+                        ))
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, source, isSelf = true),
+                        createCISDeduction(mockAppConfig, nino, isSelf = false))
+                )
+
+                MockHateoasFactory
+                  .wrapList(responseNoId, ListResponseHateoasData(nino, fromDate.get, toDate.get, source, responseNoId))
+                  .returns(responseWithHateoas)
+
+                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+
+                status(result) shouldBe OK
+                contentAsJson(result) shouldBe singleDeductionJsonHateoasNoId
+                header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasNoId))
+                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasNoId))).once()
             }
         }
 

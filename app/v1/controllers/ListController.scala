@@ -70,7 +70,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
 
         val hateoasResponse = hateoasFactory.wrapList(responseWrapper.responseData,
-          ListResponseHateoasData(nino, fromDate, toDate, source, responseWrapper.responseData))
+          ListResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, responseWrapper.responseData))
 
         auditSubmission(
           createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasResponse))))
