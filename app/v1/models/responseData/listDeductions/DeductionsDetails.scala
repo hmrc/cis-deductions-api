@@ -20,15 +20,15 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 
-case class DeductionsDetails[I](submissionId: Option[String],
+case class DeductionsDetails(submissionId: Option[String],
                              fromDate: String,
                              toDate: String,
                              contractorName: String,
                              employerRef: String,
-                             periodData: Seq[I]
+                             periodData: Seq[PeriodDeductions]
                             )
 
 object DeductionsDetails {
-  implicit def reads[I: Reads]: Reads[DeductionsDetails[I]] = implicitly(Json.reads[DeductionsDetails[I]])
-  implicit def writes[I: Writes]: OWrites[DeductionsDetails[I]] = Json.writes[DeductionsDetails[I]]
+  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
+  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
 }

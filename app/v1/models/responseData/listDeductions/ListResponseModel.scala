@@ -22,7 +22,7 @@ import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class ListResponseModel[I](cisDeductions: Seq[DeductionsDetails[I]])
+case class ListResponseModel[I](cisDeductions: Seq[I])
 
 object ListResponseModel extends HateoasLinks {
 
@@ -30,15 +30,13 @@ object ListResponseModel extends HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[ListResponseModel[I]] = Json.writes[ListResponseModel[I]]
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, PeriodDeductions, ListResponseHateoasData] {
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, DeductionsDetails, ListResponseHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: ListResponseHateoasData, item: PeriodDeductions): Seq[Link] = {
-//        val subId = data.listResponse.cisDeductions.map()
-
-        data.source match {
-          case Some("customer") => Seq(deleteCISDeduction(appConfig, data.nino, "subId", isSelf = false),
-            amendCISDeduction(appConfig, data.nino, "subId", isSelf = false))
-          case _ => Seq()
+    override def itemLinks(appConfig: AppConfig, data: ListResponseHateoasData, item: DeductionsDetails): Seq[Link] = {
+      item.submissionId match {
+          case None => Seq()
+          case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false))
         }
     }
 
@@ -50,12 +48,10 @@ object ListResponseModel extends HateoasLinks {
 
   implicit object ResponseFunctor extends Functor[ListResponseModel] {
     override def map[A, B](fa: ListResponseModel[A])(f: A => B): ListResponseModel[B] =
-      ListResponseModel(fa.cisDeductions.map {
-        summary => summary.copy(periodData = summary.periodData.map(f))
-      })
+      ListResponseModel(fa.cisDeductions.map(f))
   }
 
 }
 
 case class ListResponseHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String],
-                                   listResponse: ListResponseModel[PeriodDeductions]) extends HateoasData
+                                   listResponse: ListResponseModel[DeductionsDetails]) extends HateoasData

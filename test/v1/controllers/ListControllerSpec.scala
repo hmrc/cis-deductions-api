@@ -73,7 +73,7 @@ class ListControllerSpec extends ControllerBaseSpec
     private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
     private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, None)
 
-    val response: ListResponseModel[PeriodDeductions] =
+    val response: ListResponseModel[DeductionsDetails] =
         ListResponseModel(
             Seq(DeductionsDetails(
                 submissionId = Some("54759eb3c090d83494e2d804"),
@@ -103,6 +103,14 @@ class ListControllerSpec extends ControllerBaseSpec
             )
             )
         )
+
+    val testHatoeasLinks: Seq[Link] = Seq(
+        Link(
+            href = s"/deductions/cis/$nino/current-position",
+            rel = "list-cis-deductions-for-subcontractor",
+            method = GET
+        )
+    )
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
