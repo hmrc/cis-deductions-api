@@ -50,7 +50,6 @@ object ListResponseModel extends HateoasLinks {
     override def map[A, B](fa: ListResponseModel[A])(f: A => B): ListResponseModel[B] =
       ListResponseModel(fa.cisDeductions.map(f))
   }
-
 }
 
 case class ListResponseHateoasData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String],

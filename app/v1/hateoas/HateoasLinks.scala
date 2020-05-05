@@ -17,7 +17,6 @@
 package v1.hateoas
 
 import config.AppConfig
-import play.api.libs.json.JsValue
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
@@ -27,12 +26,6 @@ trait HateoasLinks {
   private def baseUri(appConfig: AppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
 
-  private def createUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + s"/amendments"
-  private def deleteUri(appConfig: AppConfig, nino: String, id: String): String =
-    baseUri(appConfig, nino) + s"/amendments/$id"
-  private def amendUri(appConfig: AppConfig, nino: String, id: String): String =
-    baseUri(appConfig, nino) + s"/amendments/$id"
   private def listUri(appConfig: AppConfig, nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): String = {
     val sourceStr = source.getOrElse()
     val sourceParam = if (sourceStr == "None") "" else s"&source=$sourceStr"
@@ -44,7 +37,7 @@ trait HateoasLinks {
   //L1
   def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean) : Link =
     Link (
-      href = createUri(appConfig, nino),
+      href = baseUri(appConfig, nino) + s"/amendments",
       method = POST,
       rel = if(isSelf) SELF else CREATE_CIS)
 
@@ -52,7 +45,7 @@ trait HateoasLinks {
   def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean):
   Link =
     Link (
-      href = deleteUri(appConfig, nino, id),
+      href = baseUri(appConfig, nino) + s"/amendments/$id",
       method = DELETE,
       rel = if(isSelf) SELF else DELETE_CIS)
 
@@ -60,7 +53,7 @@ trait HateoasLinks {
   def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, isSelf: Boolean):
   Link =
     Link (
-      href = amendUri(appConfig, nino, id),
+      href = baseUri(appConfig, nino) + s"/amendments/$id",
       method = PUT,
       rel = if(isSelf) SELF else AMEND_CIS)
 
