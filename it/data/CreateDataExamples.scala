@@ -12,7 +12,7 @@ object CreateDataExamples {
       |      {
       |         "href":"/deductions/cis/AA123456A/current-position",
       |         "method":"GET",
-      |         "rel":"list-cis-deduction"
+      |         "rel":"list-cis-deductions"
       |      }
       |   ]
       |}
