@@ -33,8 +33,6 @@ trait HateoasLinks {
   private def listUri(appConfig: AppConfig, nino: String): String =
     baseUri(appConfig, nino) + "/current-position"
 
-  private def amendUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + "/amendments"
 
   //API resource links
   def createLink(appConfig: AppConfig, nino: String): Link =
@@ -43,7 +41,6 @@ trait HateoasLinks {
   def listLink(appConfig: AppConfig, nino: String): Link =
     Link(href = listUri(appConfig, nino), method = GET, rel = LIST)
 
-  def amendLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = amendUri(appConfig, nino), method = GET, rel = AMEND)
+
 
 }

@@ -31,7 +31,7 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{AmendRawData, AmendRequestData}
-import v1.models.responseData.{AmendHateoasData, AmendResponse, CreateHateoasData, CreateResponseModel}
+import v1.models.responseData.{AmendHateoasData, AmendResponse}
 import v1.services.{AmendService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
