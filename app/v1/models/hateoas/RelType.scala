@@ -21,4 +21,6 @@ object RelType {
   val LIST = "list-cis-deduction"
   val AMEND = "amend-cis-deductions"
   val SELF = "self"
+
+
 }

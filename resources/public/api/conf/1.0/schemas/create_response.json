@@ -4,7 +4,35 @@
   "description": "Create CIS Deduction",
   "type": "object",
   "properties": {
-    "id": { "$ref": "definitions.json#/definitions/uid" }
+    "id": { "$ref": "definitions.json#/definitions/uid" },
+    "links": {
+      "description": "A list of endpoint links that indicate possible actions related to the current resource",
+      "type": "array",
+      "items": {
+        "title": "item",
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "/deductions/cis/{nino}/current-position"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "example": "list-cis-deductions"
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "example": "GET"
+          }
+        },
+        "required": [
+          "href", "rel", "method"
+        ]
+      }
+    }
   },
   "required": [
     "id"
