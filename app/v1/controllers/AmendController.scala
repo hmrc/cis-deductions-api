@@ -66,7 +66,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     serviceResponse.map {
       case Right(responseWrapper) =>
         val hateoasWrappedResponse: HateoasWrapper[AmendResponse] =
-          hateoasFactory.wrap(responseWrapper.responseData, AmendHateoasData(nino))
+          hateoasFactory.wrap(responseWrapper.responseData, AmendHateoasData(nino, parseResponse.right.get))
 
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -116,9 +116,4 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("amendCisDeductionsAuditType", "amend-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
-
-
 }
-
-
-

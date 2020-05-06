@@ -115,7 +115,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrap(response, AmendHateoasData(nino))
+          .wrap(response, AmendHateoasData(nino, amendRequest))
           .returns(HateoasWrapper(response, testHateoasLinks))
 
         val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
@@ -139,7 +139,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .returns(Future.successful((Right(ResponseWrapper(correlationId, response)))))
 
         MockHateoasFactory
-          .wrap(response, AmendHateoasData(nino))
+          .wrap(response, AmendHateoasData(nino, missingOptionalAmendRequest))
           .returns(HateoasWrapper(response, testHateoasLinks))
 
         val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
