@@ -20,6 +20,7 @@ import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
+import v1.models.request.CreateRequestData
 
 case class CreateResponseModel(id: String)
 
@@ -30,10 +31,8 @@ object CreateResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
     override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
       import data._
-      Seq(listLink(appConfig, nino))
+      Seq(listCISDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
     }
   }
-
 }
-
-case class CreateHateoasData(nino: String) extends HateoasData
+case class CreateHateoasData(nino: String, requestData: CreateRequestData) extends HateoasData

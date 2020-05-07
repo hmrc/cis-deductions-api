@@ -23,24 +23,43 @@ import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
 
-  //Domain URIs
   private def baseUri(appConfig: AppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
 
-  private def createUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + "/amendments"
-
-  private def listUri(appConfig: AppConfig, nino: String): String =
-    baseUri(appConfig, nino) + "/current-position"
-
+  private def listUri(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String]): String = {
+    val sourceParam = if (!source.isDefined) "" else s"&source=${source.get}"
+    s"${baseUri(appConfig, nino)}/current-position?fromDate=$fromDate&toDate=$toDate$sourceParam"
+  }
 
   //API resource links
-  def createLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = createUri(appConfig, nino), method = GET, rel = CREATE)
+  //L1
+  def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean) : Link =
+    Link (
+      href = baseUri(appConfig, nino) + s"/amendments",
+      method = POST,
+      rel = if(isSelf) SELF else CREATE_CIS)
 
-  def listLink(appConfig: AppConfig, nino: String): Link =
-    Link(href = listUri(appConfig, nino), method = GET, rel = LIST)
+  //L2
+  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean):
+  Link =
+    Link (
+      href = baseUri(appConfig, nino) + s"/amendments/$id",
+      method = DELETE,
+      rel = if(isSelf) SELF else DELETE_CIS)
 
+  //L3
+  def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, isSelf: Boolean):
+  Link =
+    Link (
+      href = baseUri(appConfig, nino) + s"/amendments/$id",
+      method = PUT,
+      rel = if(isSelf) SELF else AMEND_CIS)
 
-
+  //L4
+  def listCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean):
+  Link =
+    Link (
+      href = listUri(appConfig, nino, fromDate, toDate, source),
+      method = GET,
+      rel = if(isSelf) SELF else LIST_CIS)
 }

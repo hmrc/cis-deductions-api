@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
+import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel}
 import v1.services.ListService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ trait MockListService extends MockFactory{
 
   object MockListService {
     def listCisDeductions(requestData: ListDeductionsRequest): CallHandler4[ListDeductionsRequest, HeaderCarrier, ExecutionContext,
-      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel]]]] = {
+      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[DeductionsDetails]]]]] = {
       (mockService
         .listDeductions(_:ListDeductionsRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)
