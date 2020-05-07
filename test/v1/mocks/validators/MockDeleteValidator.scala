@@ -18,7 +18,6 @@ package v1.mocks.validators
 
 import org.scalamock.handlers._
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.DeleteRequestParser
 import v1.controllers.requestParsers.validators.DeleteValidator
 import v1.models.errors.MtdError
 import v1.models.request.DeleteRawData

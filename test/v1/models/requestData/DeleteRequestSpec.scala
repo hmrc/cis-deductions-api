@@ -19,7 +19,6 @@ package v1.models.requestData
 import org.scalatest.Inside
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.models.errors.NinoFormatError
 import v1.models.request.{DeleteRequest}
 
 class DeleteRequestSpec extends Inside with UnitSpec {

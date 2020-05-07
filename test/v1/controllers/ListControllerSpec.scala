@@ -66,12 +66,14 @@ class ListControllerSpec extends ControllerBaseSpec
     private val nino = "AA123456A"
     private val fromDate = Some("2019-04-06")
     private val toDate = Some("2020-04-05")
-    private val source = Some("customer")
+    private val sourceRaw = Some("customer")
+    private val source = "customer"
+    private val sourceAll = "all"
     private val correlationId = "X-123"
-    private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, source)
-    private val listRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, source)
+    private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, sourceRaw)
+    private val listRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, sourceAll)
     private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
-    private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, None)
+    private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, sourceAll)
 
     val response: ListResponseModel[DeductionsDetails] =
         ListResponseModel(
@@ -200,10 +202,10 @@ class ListControllerSpec extends ControllerBaseSpec
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
                 MockHateoasFactory
-                  .wrapList(response, ListResponseHateoasData(nino, fromDate.get, toDate.get, source, response))
+                  .wrapList(response, ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
                   .returns(responseWithHateoas)
 
-                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
                 status(result) shouldBe OK
                 contentAsJson(result) shouldBe singleDeductionJsonHateoas
@@ -256,7 +258,7 @@ class ListControllerSpec extends ControllerBaseSpec
                             ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
                                 amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, None, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceAll, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
 
@@ -321,10 +323,10 @@ class ListControllerSpec extends ControllerBaseSpec
                 )
 
                 MockHateoasFactory
-                  .wrapList(responseNoId, ListResponseHateoasData(nino, fromDate.get, toDate.get, source, responseNoId))
+                  .wrapList(responseNoId, ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
                   .returns(responseWithHateoas)
 
-                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
 
                 status(result) shouldBe OK
                 contentAsJson(result) shouldBe singleDeductionJsonHateoasNoId
@@ -343,7 +345,7 @@ class ListControllerSpec extends ControllerBaseSpec
                       .parse(listRawData)
                       .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
 
-                    val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                    val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
                     status(result) shouldBe expectedStatus
                     contentAsJson(result) shouldBe Json.toJson(error)
@@ -367,7 +369,7 @@ class ListControllerSpec extends ControllerBaseSpec
                   .parse(listRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -395,7 +397,7 @@ class ListControllerSpec extends ControllerBaseSpec
                   .parse(listRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+                val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -429,7 +431,7 @@ class ListControllerSpec extends ControllerBaseSpec
                       .listCisDeductions(listRequestData)
                       .returns(Future.successful(Left(ErrorWrapper(Some(correlationId),Seq(mtdError)))))
 
-                    val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,source)(fakeGetRequest)
+                    val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
 
                     status(result) shouldBe expectedStatus
                     contentAsJson(result) shouldBe Json.toJson(mtdError)

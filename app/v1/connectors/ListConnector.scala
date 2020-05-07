@@ -40,7 +40,7 @@ class ListConnector @Inject()(val http: HttpClient,
 
     get(
       DesUri[ListResponseModel[DeductionsDetails]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
-        s"?fromDate=${request.fromDate}&toDate=${request.toDate}${sourceParam.getOrElse("")}")
+        s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
     )
   }
 }
