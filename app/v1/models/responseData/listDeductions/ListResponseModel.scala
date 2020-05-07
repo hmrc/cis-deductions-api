@@ -41,7 +41,7 @@ object ListResponseModel extends HateoasLinks {
     }
 
     override def links(appConfig: AppConfig, data: ListResponseHateoasData): Seq[Link] = {
-      Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source.getOrElse("all"), isSelf = true),
+      Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
   }

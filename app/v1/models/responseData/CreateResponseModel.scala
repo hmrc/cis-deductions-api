@@ -31,7 +31,7 @@ object CreateResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
     override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
       import data._
-      Seq(listCISDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, "all", false))
+      Seq(listCISDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
     }
   }
 }

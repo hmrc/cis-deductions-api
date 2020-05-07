@@ -36,8 +36,6 @@ class ListConnector @Inject()(val http: HttpClient,
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
-    val sourceParam = request.source.map(src => s"&source=${src}")
-
     get(
       DesUri[ListResponseModel[DeductionsDetails]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
         s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")

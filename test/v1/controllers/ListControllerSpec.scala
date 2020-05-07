@@ -67,7 +67,7 @@ class ListControllerSpec extends ControllerBaseSpec
     private val fromDate = Some("2019-04-06")
     private val toDate = Some("2020-04-05")
     private val sourceRaw = Some("customer")
-    private val source = "customer"
+    private val sourceRawAll = Some("all")
     private val sourceAll = "all"
     private val correlationId = "X-123"
     private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, sourceRaw)
@@ -198,7 +198,7 @@ class ListControllerSpec extends ControllerBaseSpec
                             ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
                                 amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, source, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
                 MockHateoasFactory
@@ -258,7 +258,7 @@ class ListControllerSpec extends ControllerBaseSpec
                             ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
                                 amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceAll, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRawAll, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
 
@@ -318,7 +318,7 @@ class ListControllerSpec extends ControllerBaseSpec
                                 )
                             ),Seq()
                         ))
-                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, source, isSelf = true),
+                    ),Seq(listCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
 

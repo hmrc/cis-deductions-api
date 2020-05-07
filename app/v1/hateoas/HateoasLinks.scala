@@ -26,8 +26,9 @@ trait HateoasLinks {
   private def baseUri(appConfig: AppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
 
-  private def listUri(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: String): String = {
-    s"${baseUri(appConfig, nino)}/current-position?fromDate=$fromDate&toDate=$toDate&source=$source"
+  private def listUri(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String]): String = {
+    val sourceParam = if (!source.isDefined) "" else s"&source=${source.get}"
+    s"${baseUri(appConfig, nino)}/current-position?fromDate=$fromDate&toDate=$toDate$sourceParam"
   }
 
   //API resource links
@@ -55,7 +56,7 @@ trait HateoasLinks {
       rel = if(isSelf) SELF else AMEND_CIS)
 
   //L4
-  def listCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: String, isSelf: Boolean):
+  def listCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean):
   Link =
     Link (
       href = listUri(appConfig, nino, fromDate, toDate, source),

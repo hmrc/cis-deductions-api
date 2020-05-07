@@ -42,7 +42,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
   "list" should {
     "return a List Deductions response when a source is supplied" in new Test {
-      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "all")
+      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
         Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
