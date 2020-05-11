@@ -43,28 +43,6 @@
           "submissionDate": "2020-01-14",
           "submittedBy": "customer"
         }
-      ],
-      "links": [
-        {
-          "href": "/deductions/cis/AA123456A/current-position",
-          "rel": "list-cis-deductions-for-subcontractor",
-          "method": "GET"
-        },
-        {
-          "href": "/deductions/cis/AA123456A/amendments",
-          "rel":  "create-cis-deductions-for-subcontractor",
-          "method": "POST"
-        },
-        {
-          "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
-          "rel": "delete-cis-deductions-for-subcontractor",
-          "method": "DELETE"
-        },
-        {
-          "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
-          "rel" : "amend-cis-deductions-for-subcontractor",
-          "method": "PUT"
-        }
       ]
     },
     {
@@ -94,8 +72,8 @@
       ],
       "links":[
         {
-          "href": "/deductions/cis/AA123456A/current-position",
-          "rel": "list-cis-deductions-for-subcontractor",
+          "href": "/deductions/cis/AA123456A/current-position?toDate&fromDate&source",
+          "rel": "SELF",
           "method": "GET"
         },
         {
