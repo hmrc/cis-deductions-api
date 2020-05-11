@@ -25,7 +25,6 @@ import v1.mocks.connectors.MockAmendConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.AmendRequestData
-import v1.models.responseData.AmendResponse
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -48,9 +47,9 @@ class AmendServiceSpec extends UnitSpec{
       "a service call is successful" should {
         "return a mapped result" in new Test {
           MockAmendConnector.amendDeduction(requestData)
-            .returns(Future.successful(Right(ResponseWrapper("resultId", AmendResponse("amendResponseId")))))
+            .returns(Future.successful(Right(ResponseWrapper("resultId",()))))
 
-          await(service.amendDeductions(requestData)) shouldBe Right(ResponseWrapper("resultId", AmendResponse("amendResponseId")))
+          await(service.amendDeductions(requestData)) shouldBe Right(ResponseWrapper("resultId", ()))
         }
       }
       "a service call is unsuccessful" should {

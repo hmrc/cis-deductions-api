@@ -27,11 +27,7 @@ import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetai
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{AmendRawData, AmendRequestData}
-import v1.models.responseData.{AmendHateoasData, AmendResponse}
 import v1.fixtures.AmendRequestFixtures._
-import v1.mocks.hateoas.MockHateoasFactory
-import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method.GET
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,7 +37,6 @@ class AmendControllerSpec extends ControllerBaseSpec
   with MockMtdIdLookupService
   with MockAmendRequestParser
   with MockAmendService
-  with MockHateoasFactory
   with MockAuditService
   {
 
@@ -53,7 +48,7 @@ class AmendControllerSpec extends ControllerBaseSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockAmendRequestParser,
       service = mockAmendService,
-      hateoasFactory = mockHateoasFactory,
+
       auditService = mockAuditService,
       cc = cc
     )
@@ -67,27 +62,11 @@ class AmendControllerSpec extends ControllerBaseSpec
   private val id = "S4636A77V5KB8625U"
   private val correlationId = "X-123"
 
-
-  private val responseId = "S4636A77V5KB8625U"
-
   private val rawAmendRequest = AmendRawData(nino,id ,requestJson)
   private val amendRequest = AmendRequestData(Nino(nino),id, amendRequestObj)
 
   private val rawMissingOptionalAmendRequest = AmendRawData(nino,id, missingOptionalRequestJson)
   private val missingOptionalAmendRequest = AmendRequestData(Nino(nino),id, amendMissingOptionalRequestObj)
-
-  val response = AmendResponse(responseId)
-
-    val testHateoasLinks: Seq[Link] = Seq(
-      Link(
-        href = s"/deductions/cis/$nino/current-position",
-        rel = "list-cis-deductions-for-subcontractor",
-        method = GET
-      )
-    )
-
-    private val parsedHateoas = Json.parse(hateoasResponse(nino, responseId))
-
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
@@ -103,7 +82,7 @@ class AmendControllerSpec extends ControllerBaseSpec
     )
 
   "amendRequest" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (NO CONTENT)" when {
       "a valid request is supplied for a cis post request" in new Test {
 
         MockAmendRequestDataParser
@@ -112,21 +91,15 @@ class AmendControllerSpec extends ControllerBaseSpec
 
         MockAmendService
           .submitAmendRequest(amendRequest)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrap(response, AmendHateoasData(nino, amendRequest))
-          .returns(HateoasWrapper(response, testHateoasLinks))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
         val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
 
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe parsedHateoas
+        status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
-      }
+        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()      }
 
       "a valid request is supplied when an optional field is missing" in new Test {
 
@@ -136,20 +109,17 @@ class AmendControllerSpec extends ControllerBaseSpec
 
         MockAmendService
           .submitAmendRequest(missingOptionalAmendRequest)
-          .returns(Future.successful((Right(ResponseWrapper(correlationId, response)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-        MockHateoasFactory
-          .wrap(response, AmendHateoasData(nino, missingOptionalAmendRequest))
-          .returns(HateoasWrapper(response, testHateoasLinks))
 
         val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
 
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe parsedHateoas
+        status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
+        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
+      }
       }
     }
 
@@ -168,7 +138,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
         }
       }
 
@@ -207,7 +177,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -244,7 +214,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           None
         )
 
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
       }
     }
 
@@ -267,7 +237,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(parsedHateoas))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
         }
       }
 
@@ -287,5 +257,4 @@ class AmendControllerSpec extends ControllerBaseSpec
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }
-  }
 }

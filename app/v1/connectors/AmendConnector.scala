@@ -21,7 +21,6 @@ import javax.inject.Inject
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.AmendRequestData
-import v1.models.responseData.AmendResponse
 import v1.connectors.httpparsers.StandardDesHttpParser._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,11 +29,11 @@ class AmendConnector @Inject()(val http: HttpClient,
                                val appConfig: AppConfig) extends BaseDesConnector  {
 
   def amendDeduction(request: AmendRequestData)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[AmendResponse]] = {
+                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
 
     put(
       body = request.body,
-      DesUri[AmendResponse](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
     )
   }
 }
