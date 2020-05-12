@@ -2,8 +2,8 @@
   "id": "S4636A77V5KB862",
   "links": [
     {
-      "href": "/deductions/cis/AA123456A/current-position?toDate&fromDate&source",
-      "rel": "list-cis-deductions",
+      "href": "/deductions/cis/AA123456A/current-position/2019-04-06/2020-04-05/customer",
+      "rel": "list-cis-deductions-for-subcontractor",
       "method": "GET"
     }
   ]
