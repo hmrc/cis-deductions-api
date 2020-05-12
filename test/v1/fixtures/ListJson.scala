@@ -138,6 +138,173 @@ object ListJson {
       |""".stripMargin
   }
 
+  val singleDeductionJsonHateoas : JsValue = Json.parse{
+    """
+      |{
+      | "cisDeductions" : [
+      |  {
+      |    "submissionId": "54759eb3c090d83494e2d804",
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
+      |    "contractorName": "Bovis",
+      |    "employerRef": "BV40092",
+      |    "periodData": [
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "customer"
+      |      },
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "customer"
+      |      }
+      |    ],
+      |    "links": [
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "method": "DELETE",
+      |                    "rel": "delete-cis-deductions-for-subcontractor"
+      |                },
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "method": "PUT",
+      |                    "rel": "amend-cis-deductions-for-subcontractor"
+      |                }
+      |            ]
+      |  }
+      |],
+      |    "links": [
+      |        {
+      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "method": "GET",
+      |            "rel": "self"
+      |        },
+      |        {
+      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "method": "POST",
+      |            "rel": "create-cis-deductions-for-subcontractor"
+      |        }
+      |    ]
+      |}
+      |""".stripMargin
+  }
+
+  val singleDeductionJsonHateoasMissingOptionalField : JsValue = Json.parse{
+    """
+      |{
+      | "cisDeductions" : [
+      |  {
+      |    "submissionId": "54759eb3c090d83494e2d804",
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
+      |    "contractorName": "Bovis",
+      |    "employerRef": "BV40092",
+      |    "periodData": [
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "customer"
+      |      },
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "customer"
+      |      }
+      |    ],
+      |    "links": [
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "method": "DELETE",
+      |                    "rel": "delete-cis-deductions-for-subcontractor"
+      |                },
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "method": "PUT",
+      |                    "rel": "amend-cis-deductions-for-subcontractor"
+      |                }
+      |            ]
+      |  }
+      |],
+      |    "links": [
+      |        {
+      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=all",
+      |            "method": "GET",
+      |            "rel": "self"
+      |        },
+      |        {
+      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "method": "POST",
+      |            "rel": "create-cis-deductions-for-subcontractor"
+      |        }
+      |    ]
+      |}
+      |""".stripMargin
+  }
+
+  val singleDeductionJsonHateoasNoId : JsValue = Json.parse{
+    """
+      |{
+      | "cisDeductions" : [
+      |  {
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
+      |    "contractorName": "Bovis",
+      |    "employerRef": "BV40092",
+      |    "periodData": [
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "contractor"
+      |      },
+      |      {
+      |        "deductionAmount": 355.00,
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
+      |        "submissionDate": "2020-01-14",
+      |        "submittedBy": "contractor"
+      |      }
+      |    ]
+      |  }
+      |],
+      |    "links": [
+      |        {
+      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "method": "GET",
+      |            "rel": "self"
+      |        },
+      |        {
+      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "method": "POST",
+      |            "rel": "create-cis-deductions-for-subcontractor"
+      |        }
+      |    ]
+      |}
+      |""".stripMargin
+  }
+
   val singleDeductionRequestJson =
     """
       |
@@ -177,6 +344,4 @@ object ListJson {
       |]
       |}
       |""".stripMargin
-
-
 }

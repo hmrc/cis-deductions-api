@@ -7,14 +7,14 @@ import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
-import v1.fixtures.ListJson.singleDeductionJson
+import v1.fixtures.ListJson._
 import v1.models.errors._
 
 class ListControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456B"
+    val nino = "AA123456A"
     val correlationId = "X-123"
     val fromDate = "2019-04-06"
     val toDate = "2020-04-05"
@@ -22,6 +22,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
     val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
     def uri: String = s"/deductions/cis/$nino/current-position"
+
     def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
 
     def setupStubs(): StubMapping
@@ -45,14 +46,14 @@ class ListControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET,desUrl, OK, singleDeductionJson, Some(queryParams))
+          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionJson, Some(queryParams))
         }
 
         val response: WSResponse = await(request.get)
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson
+        response.json shouldBe singleDeductionJsonHateoas
       }
 
       "return error according to spec" when {
@@ -81,25 +82,26 @@ class ListControllerISpec extends IntegrationBaseSpec {
             response.header("Content-Type") shouldBe Some("application/json")
           }
         }
+
         val input = Seq(
-          ("AA12345","2019-04-06", "2020-04-05","customer", BAD_REQUEST, NinoFormatError),
-          ("AA123456B","2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError),
-          ("AA123456B","2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError),
-          ("AA123456B","2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError),
-          ("AA123456B","2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA12345", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, NinoFormatError),
+          ("AA123456B", "2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError),
+          ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError),
+          ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError),
+          ("AA123456B", "2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
-
     }
 
     "des service error" when {
 
       def errorBody(code: String): JsValue =
-        Json.parse(s"""{
-           |  "code": "$code",
-           |  "reason": "des message"
-           |}""".stripMargin)
+        Json.parse(
+          s"""{
+             |  "code": "$code",
+             |  "reason": "des message"
+             |}""".stripMargin)
 
       def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"des returns an $desCode error and status $desStatus" in new Test {
@@ -127,7 +129,5 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
-
-
   }
 }

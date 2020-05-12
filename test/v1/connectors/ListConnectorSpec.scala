@@ -41,34 +41,17 @@ class ListConnectorSpec extends ConnectorSpec {
   }
 
   "list" should {
-      "return a List Deductions response when no source is supplied" in new Test {
-        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06")
-
-        val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
-          Seq(DeductionsDetails(Some(""),request.fromDate, request.toDate,"","",
-            Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source.getOrElse("all")))))
-        )))
-
-        MockedHttpClient.get(
-          url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-            s"?fromDate=${request.fromDate}&toDate=${request.toDate}",
-          requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
-        ).returns(Future.successful(outcome))
-
-        await(connector.list(request)) shouldBe outcome
-      }
-
     "return a List Deductions response when a source is supplied" in new Test {
-      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", Some("contractor"))
+      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
         Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
-          Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source.getOrElse("all")))))
+          Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source))))
       )))
 
       MockedHttpClient.get(
         url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}",
+          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}",
         requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
       ).returns(Future.successful(outcome))
 
@@ -77,15 +60,16 @@ class ListConnectorSpec extends ConnectorSpec {
 
     "return a Des Error code" when {
       "the http client returns a Des Error code" in new Test {
-        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", Some("contractor"))
+        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "contractor")
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[ListResponseModel]](s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
-          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source.getOrElse("all")}")
+        MockedHttpClient.get[DesOutcome[ListResponseModel[DeductionsDetails]]](s"$baseUrl/cross-regime/deductions-placeholder/CIS" +
+          s"/${nino.nino}/current-position" +
+          s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[ListResponseModel] = await(connector.list(request))
+        val result: DesOutcome[ListResponseModel[DeductionsDetails]] = await(connector.list(request))
         result shouldBe outcome
       }
     }

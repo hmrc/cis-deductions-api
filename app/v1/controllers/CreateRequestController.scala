@@ -69,7 +69,7 @@ class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
       case Right(responseWrapper) =>
 
         val hateoasWrappedResponse: HateoasWrapper[CreateResponseModel] =
-          hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino))
+          hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino, parseResponse.right.get))
 
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
