@@ -17,10 +17,11 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
+import uk.gov.hmrc.domain.Nino
+import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.validators.MockAmendValidator
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
-import v1.models.request.AmendRawData
-import v1.fixtures.AmendRequestFixtures._
+import v1.models.request.{AmendRawData, AmendRequestData}
 
 class AmendRequestParserSpec extends UnitSpec {
 
@@ -42,17 +43,18 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-
+        result shouldBe Right(AmendRequestData(Nino(nino), id, amendRequestObj))
       }
 
       "Missing option field has passed" in new Test {
-        val inputData = AmendRawData(nino, id, requestJson)
+        val inputData = AmendRawData(nino, id, missingOptionalRequestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
+        result shouldBe Right(AmendRequestData(Nino(nino), id, amendMissingOptionalRequestObj))
       }
     }
     "Reject invalid input" when {

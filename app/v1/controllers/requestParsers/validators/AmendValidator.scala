@@ -57,7 +57,6 @@ class AmendValidator extends Validator[AmendRawData] {
 
   private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
     val req = data.body.as[AmendRequest]
-
     List(
       TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
     )
