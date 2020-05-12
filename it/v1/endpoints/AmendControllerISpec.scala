@@ -41,6 +41,7 @@ class AmendControllerISpec extends IntegrationBaseSpec{
         }
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
         response.status shouldBe Status.OK
+        response.json shouldBe deductionsResponseBody
       }
     }
     "return error according to spec" when {

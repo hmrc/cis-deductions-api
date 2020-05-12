@@ -20,12 +20,12 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
+import v1.fixtures.CreateRequestFixtures._
 import v1.mocks.connectors.MockListConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
-import v1.fixtures.CreateRequestFixtures._
+import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,10 +36,10 @@ class ListServiceSpec extends UnitSpec {
   private val correlationId = "X-123"
   private val fromDate = "2019-04-06"
   private val toDate = "2020-04-05"
-  private val source = Some("Contractor")
+  private val source = "Contractor"
 
   val request: ListDeductionsRequest = ListDeductionsRequest(nino, fromDate, toDate, source)
-  val response: ListResponseModel = listCisDeductionsModel
+  val response: ListResponseModel[DeductionsDetails] = listCisDeductionsModel
 
   trait Test extends MockListConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

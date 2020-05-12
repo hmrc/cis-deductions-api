@@ -16,10 +16,22 @@
 
 package v1.models.responseData
 
+import config.AppConfig
 import play.api.libs.json.{Json, OFormat}
+import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
+import v1.models.request.AmendRequestData
 
 case class AmendResponse(id: String)
 
-object AmendResponse {
+object AmendResponse extends HateoasLinks {
   implicit val format: OFormat[AmendResponse] = Json.format[AmendResponse]
+
+  implicit object AmendLinksFactory extends HateoasLinksFactory[AmendResponse, AmendHateoasData] {
+    override def links(appConfig: AppConfig, data: AmendHateoasData): Seq[Link] = {
+      import data._
+      Seq(listCISDeduction(appConfig, nino, data.requestData.body.fromDate , data.requestData.body.toDate, None, false))
+    }
+  }
 }
+case class AmendHateoasData(nino: String, requestData: AmendRequestData) extends HateoasData

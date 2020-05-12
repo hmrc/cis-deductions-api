@@ -17,9 +17,9 @@ object CreateDataExamples {
       |   "id":"someResponse",
       |   "links":[
       |      {
-      |         "href":"/deductions/cis/AA123456A/current-position",
+      |         "href":"/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
       |         "method":"GET",
-      |         "rel":"list-cis-deductions"
+      |         "rel":"list-cis-deductions-for-subcontractor"
       |      }
       |   ]
       |}

@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, ListConnector}
 import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.ListResponseModel
+import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,7 @@ trait MockListConnector extends MockFactory {
 
   object MockListCisDeductionsConnector {
 
-    def listCisDeduction(requestData: ListDeductionsRequest): CallHandler[Future[DesOutcome[ListResponseModel]]] = {
+    def listCisDeduction(requestData: ListDeductionsRequest): CallHandler[Future[DesOutcome[ListResponseModel[DeductionsDetails]]]] = {
       (mockListConnector
         .list(_: ListDeductionsRequest)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)

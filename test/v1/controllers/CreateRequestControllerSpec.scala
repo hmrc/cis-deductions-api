@@ -111,7 +111,7 @@ class CreateRequestControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrap(response, CreateHateoasData(nino))
+          .wrap(response, CreateHateoasData(nino, createRequest))
           .returns(HateoasWrapper(response, testHatoeasLinks))
 
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
@@ -135,7 +135,7 @@ class CreateRequestControllerSpec
           .returns(Future.successful((Right(ResponseWrapper(correlationId, response)))))
 
         MockHateoasFactory
-          .wrap(response, CreateHateoasData(nino))
+          .wrap(response, CreateHateoasData(nino, missingOptionalCreateRequest))
           .returns(HateoasWrapper(response, testHatoeasLinks))
 
         val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))

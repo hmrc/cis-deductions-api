@@ -16,11 +16,41 @@
 
 package v1.models.responseData.listDeductions
 
+import cats.Functor
+import config.AppConfig
 import play.api.libs.json._
+import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
-case class ListResponseModel(cisDeductions: Seq[DeductionsDetails])
+case class ListResponseModel[I](cisDeductions: Seq[I])
 
-object ListResponseModel {
-  implicit val reads: Reads[ListResponseModel] = Json.reads[ListResponseModel]
-  implicit val writes: Writes[ListResponseModel] = Json.writes[ListResponseModel]
+object ListResponseModel extends HateoasLinks {
+
+  implicit def reads[I: Reads]: Reads[ListResponseModel[I]] = implicitly(Json.reads[ListResponseModel[I]])
+
+  implicit def writes[I: Writes]: OWrites[ListResponseModel[I]] = Json.writes[ListResponseModel[I]]
+
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, DeductionsDetails, ListResponseHateoasData] {
+
+    override def itemLinks(appConfig: AppConfig, data: ListResponseHateoasData, item: DeductionsDetails): Seq[Link] = {
+      item.submissionId match {
+          case None => Seq()
+          case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false))
+        }
+    }
+
+    override def links(appConfig: AppConfig, data: ListResponseHateoasData): Seq[Link] = {
+      Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
+        createCISDeduction(appConfig, data.nino, isSelf = false))
+    }
+  }
+
+  implicit object ResponseFunctor extends Functor[ListResponseModel] {
+    override def map[A, B](fa: ListResponseModel[A])(f: A => B): ListResponseModel[B] =
+      ListResponseModel(fa.cisDeductions.map(f))
+  }
 }
+
+case class ListResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
+                                   listResponse: ListResponseModel[DeductionsDetails]) extends HateoasData
