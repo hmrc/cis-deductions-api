@@ -4,6 +4,13 @@ import play.api.libs.json.Json
 
 object CreateDataExamples {
 
+  val emptyRequest = Json.parse(
+    s"""
+      |{
+      |}
+      |""".stripMargin
+  )
+
   val deductionsResponseBody = Json.parse(
     """
       |{
@@ -12,7 +19,7 @@ object CreateDataExamples {
       |      {
       |         "href":"/deductions/cis/AA123456A/current-position",
       |         "method":"GET",
-      |         "rel":"list-cis-deduction"
+      |         "rel":"list-cis-deductions"
       |      }
       |   ]
       |}
@@ -168,6 +175,58 @@ object CreateDataExamples {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "07-05-2019",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+        """.stripMargin
+  )
+  val requestBodyJsonErrorInvalidDateRangeMin = Json.parse(
+    """
+      |{
+      |  "fromDate" : "2019-04-06",
+      |  "toDate" : "2019-04-06",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "07-05-2019",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+        """.stripMargin
+  )
+  val requestBodyJsonErrorInvalidDateRangeMax = Json.parse(
+    """
+      |{
+      |  "fromDate" : "2019-04-06",
+      |  "toDate" : "2021-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },

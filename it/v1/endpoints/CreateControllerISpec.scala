@@ -84,10 +84,13 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", emptyRequest, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
           ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
           ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError)
+          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
+          ("AA123456A", requestBodyJsonErrorInvalidDateRangeMax, Status.BAD_REQUEST, RuleDateRangeInvalidError)
+//          ("AA123456A", requestBodyJsonErrorInvalidDateRangeMin, Status.BAD_REQUEST, RuleDateRangeInvalidError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
