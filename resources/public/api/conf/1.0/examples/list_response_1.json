@@ -1,5 +1,5 @@
 {
-  "cisDeductions": [
+  "cisDeductions" : [
     {
       "submissionId": "54759eb3c090d83494e2d804",
       "fromDate": "2019-04-06",
@@ -14,34 +14,19 @@
           "costOfMaterials": 35,
           "grossAmountPaid": 1457,
           "submissionDate": "2019-04-03",
-          "submittedBy": "contractor"
-        },
-        {
-          "deductionAmount": 355,
-          "deductionFromDate": "2019-05-06",
-          "deductionToDate": "2019-06-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
-          "submissionDate": "2019-05-03",
-          "submittedBy": "contractor"
-        },
-        {
-          "deductionAmount": 355,
-          "deductionFromDate": "2019-06-06",
-          "deductionToDate": "2019-07-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
-          "submissionDate": "2020-01-14",
           "submittedBy": "customer"
+        }
+      ],
+      "links":[
+        {
+          "href":"/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+          "rel":"delete-cis-deductions-for-subcontractor",
+          "method":"DELETE"
         },
         {
-          "deductionAmount": 355,
-          "deductionFromDate": "2019-07-06",
-          "deductionToDate": "2019-08-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
-          "submissionDate": "2020-01-14",
-          "submittedBy": "customer"
+          "href":"/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+          "rel":"amend-cis-deductions-for-subcontractor",
+          "method":"PUT"
         }
       ]
     },
@@ -59,29 +44,20 @@
           "grossAmountPaid": 1457,
           "submissionDate": "2019-08-05",
           "submittedBy": "contractor"
-        },
-        {
-          "deductionAmount": 60,
-          "deductionFromDate": "2019-09-06",
-          "deductionToDate": "2019-10-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
-          "submissionDate": "2019-08-05",
-          "submittedBy": "contractor"
-        }
-      ],
-      "links":[
-        {
-          "href": "/deductions/cis/AA123456A/current-position?toDate&fromDate&source",
-          "rel": "SELF",
-          "method": "GET"
-        },
-        {
-          "href": "/deductions/cis/AA123456A/amendments",
-          "rel":  "create-cis-deductions-for-subcontractor",
-          "method": "POST"
         }
       ]
+    }
+  ],
+  "links":[
+    {
+      "href": "/deductions/cis/AA123456A/current-position/2019-04-06/2020-04-05/customer",
+      "rel": "list-cis-deductions-for-subcontractor",
+      "method": "GET"
+    },
+    {
+      "href":"/deductions/cis/AA123456A/amendments",
+      "rel":"create-cis-deductions-for-subcontractor",
+      "method":"POST"
     }
   ]
 }
