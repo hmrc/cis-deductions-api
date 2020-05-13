@@ -139,6 +139,20 @@ class CreateRequestModelValidatorSpec extends UnitSpec{
         result.length shouldBe 1
         result shouldBe List(RuleDateRangeInvalidError)
       }
+      "invalid date range above the maximum threshold is provided" in new SetUp {
+        private val result = validator.validate(
+        CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMax)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleDateRangeInvalidError)
+      }
+      "invalid date range below the threshold is provided" in new SetUp {
+        private val result = validator.validate(
+        CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMin)
+        )
+        result.length shouldBe 1
+        result shouldBe List(RuleDateRangeInvalidError)
+      }
     }
   }
 }

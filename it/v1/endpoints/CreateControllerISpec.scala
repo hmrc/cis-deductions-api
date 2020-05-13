@@ -84,6 +84,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", emptyRequest, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
           ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
           ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
