@@ -60,14 +60,9 @@ class ListDeductionsValidatorSpec extends UnitSpec {
         result shouldBe List(RuleMissingFromDateError, RuleMissingToDateError)
       }
 
-      "the from date is not in the correct format" in new SetUp {
-        private val result = validator.validate(ListDeductionsRawData(nino, Some("last week"), Some("2020-04-05"), Some("customer")))
-        result shouldBe List(FromDateFormatError)
-      }
-
-      "the to date is not in the correct format" in new SetUp {
-        private val result = validator.validate(ListDeductionsRawData(nino, Some("2019-04-06"), Some("this week"), Some("customer")))
-        result shouldBe List(ToDateFormatError)
+      "the from & to date are not in the correct format" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("last week"), Some("this week"), Some("customer")))
+        result shouldBe List(FromDateFormatError, ToDateFormatError)
       }
 
       "the from date is not the start of the tax year" in new SetUp {

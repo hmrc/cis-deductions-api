@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import config.FixedConfig
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{FromDateFormatError, MtdError, RuleDateRangeInvalidError, RuleMissingFromDateError, RuleMissingToDateError, ToDateFormatError}
+import v1.models.errors._
 import v1.models.request.ListDeductionsRawData
 
 class ListDeductionsValidator extends Validator[ListDeductionsRawData] with FixedConfig{

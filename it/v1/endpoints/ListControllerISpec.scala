@@ -60,14 +60,14 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
         def validationErrorTest(requestNino: String, requestFromDate: String,
                                 requestToDate: String, requestSource: String,
-                                expectedStatus: Int, expectedBody: MtdError): Unit = {
+                                expectedStatus: Int, expectedBody: MtdError, qParams: Option[Seq[(String, String)]]): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
             override val fromDate: String = requestFromDate
             override val toDate: String = requestToDate
             override val source: String = requestSource
-            override val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+            override val queryParams = if(qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
 
             override def setupStubs(): StubMapping = {
@@ -84,11 +84,15 @@ class ListControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA12345", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, NinoFormatError),
-          ("AA123456B", "2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError),
-          ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError),
-          ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError),
-          ("AA123456B", "2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA12345", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
+          ("AA123456B", "2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
+          ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError, None),
+          ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
+          ("AA123456B", "2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
+          ("AA123456B", "2019-04-06", "2020-04-06", "customer", BAD_REQUEST, RuleToDateError, None),
+          ("AA123456B", "2019-04-05", "2020-04-05", "customer", BAD_REQUEST, RuleFromDateError, None),
+          ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2019-04-06", "source" -> "all"))),
+          ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2020-04-05", "source" -> "all")))
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -124,9 +128,11 @@ class ListControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "NOT_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError)
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError),
+        (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, FromDateFormatError),
+        (BAD_REQUEST, "INVALID_DATE_TO", BAD_REQUEST, ToDateFormatError)
       )
-
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
