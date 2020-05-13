@@ -69,7 +69,6 @@ class ListControllerISpec extends IntegrationBaseSpec {
             override val source: String = requestSource
             override val queryParams = if(qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
-
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
