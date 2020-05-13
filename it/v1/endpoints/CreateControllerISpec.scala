@@ -88,9 +88,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
           ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
           ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorInvalidDateRangeMax, Status.BAD_REQUEST, RuleDateRangeInvalidError)
-//          ("AA123456A", requestBodyJsonErrorInvalidDateRangeMin, Status.BAD_REQUEST, RuleDateRangeInvalidError)
+          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
