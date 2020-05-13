@@ -8,6 +8,15 @@
       "employerRef": "BV40092",
       "periodData": [
         {
+          "deductionAmount": 350,
+          "deductionFromDate": "2019-05-06",
+          "deductionToDate": "2019-06-05",
+          "costOfMaterials": 30,
+          "grossAmountPaid": 1200,
+          "submissionDate": "2019-05-03",
+          "submittedBy": "contractor"
+        },
+        {
           "deductionAmount": 355,
           "deductionFromDate": "2019-04-06",
           "deductionToDate": "2019-05-05",
@@ -50,12 +59,12 @@
   ],
   "links":[
     {
-      "href": "/deductions/cis/AA123456A/current-position/2019-04-06/2020-04-05/customer",
-      "rel": "list-cis-deductions-for-subcontractor",
+      "href": "/deductions/cis/{nino}/current-position?fromDate={fromDate}&toDate={toDate}&source={source}",
+      "rel": "self",
       "method": "GET"
     },
     {
-      "href":"/deductions/cis/AA123456A/amendments",
+      "href":"/deductions/cis/{nino}/amendments",
       "rel":"create-cis-deductions-for-subcontractor",
       "method":"POST"
     }
