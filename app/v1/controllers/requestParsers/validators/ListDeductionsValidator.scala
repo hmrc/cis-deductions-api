@@ -17,19 +17,17 @@
 package v1.controllers.requestParsers.validators
 
 import config.FixedConfig
-import v1.controllers.requestParsers.validators.validations.{DateValidation, MandatoryValidation, NinoValidation, SourceValidation, ToBeforeFromDateValidation}
+import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.{FromDateFormatError, MtdError, RuleDateRangeInvalidError, RuleMissingFromDateError, RuleMissingToDateError, ToDateFormatError}
 import v1.models.request.ListDeductionsRawData
 
 class ListDeductionsValidator extends Validator[ListDeductionsRawData] with FixedConfig{
 
-  private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation)
+  private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
 
   private def parameterFormatValidation: ListDeductionsRawData => List[List[MtdError]] = (data: ListDeductionsRawData) => List(
     NinoValidation.validate(data.nino),
     SourceValidation.validate(data.source),
-    DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-    DateValidation.validate(ToDateFormatError)(data.toDate.get),
     ToBeforeFromDateValidation.validate(data.fromDate.get, data.toDate.get, RuleDateRangeInvalidError)
   )
 
@@ -37,6 +35,12 @@ class ListDeductionsValidator extends Validator[ListDeductionsRawData] with Fixe
     MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
     MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
   )
+
+  private def businessRuleValidator: ListDeductionsRawData => List[List[MtdError]] = { data =>
+    List(
+      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, Some(1))
+    )
+  }
 
   override def validate(data: ListDeductionsRawData): List[MtdError] = run(validationSet, data).distinct
 }

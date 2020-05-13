@@ -24,14 +24,6 @@ class ListDeductionsValidatorSpec extends UnitSpec {
 
   private val nino = "AA123456A"
   private val invalidNino = "GHFG197854"
-  private val validListRawData = ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
-  private val validOptionalListRawData = ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
-
-  private val invalidListRawData = ListDeductionsRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All"))
-  private val invalidDateListData = ListDeductionsRawData(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor"))
-
-  private val missingDatesRawData = ListDeductionsRawData(nino, None, None, Some("customer"))
-  private val invalidDateFormatData = ListDeductionsRawData(nino, Some("06-04-2019"), Some("05-04-2020"), Some("customer"))
 
   class SetUp {
     val validator = new ListDeductionsValidator
@@ -41,40 +33,51 @@ class ListDeductionsValidatorSpec extends UnitSpec {
     "return no errors" when {
       "all query parameters are passed in the request" in new SetUp {
         validator
-          .validate(validListRawData)
+          .validate(ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")))
           .isEmpty shouldBe true
       }
 
       "an optional field returns None" in new SetUp {
         validator
-          .validate(validOptionalListRawData)
+          .validate(ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None))
           .isEmpty shouldBe true
       }
     }
 
     "return errors" when {
       "invalid nino and source data is passed in the request" in new SetUp {
-        private val result = validator.validate(invalidListRawData)
-        result.length shouldBe 2
+        private val result = validator.validate(ListDeductionsRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All")))
         result shouldBe List(NinoFormatError, RuleSourceError)
       }
 
       "invalid dates are provided in the request" in new SetUp {
-        private val result = validator.validate(invalidDateListData)
-        result.length shouldBe 1
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor")))
         result shouldBe List(RuleDateRangeInvalidError)
       }
 
-      "from and to date are not provided" in new SetUp {
-        private val result = validator.validate(missingDatesRawData)
-        result.length shouldBe 2
+      "the from and to date are not provided" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, None, None, Some("customer")))
         result shouldBe List(RuleMissingFromDateError, RuleMissingToDateError)
       }
 
-      "the from and to date are not in the correct format" in new SetUp {
-        private val result = validator.validate(invalidDateFormatData)
-        result.length shouldBe 2
-        result shouldBe List(FromDateFormatError, ToDateFormatError)
+      "the from date is not in the correct format" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("last week"), Some("2020-04-05"), Some("customer")))
+        result shouldBe List(FromDateFormatError)
+      }
+
+      "the to date is not in the correct format" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("2019-04-06"), Some("this week"), Some("customer")))
+        result shouldBe List(ToDateFormatError)
+      }
+
+      "the from date is not the start of the tax year" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")))
+        result shouldBe List(RuleFromDateError)
+      }
+
+      "the to date is not the end of the tax year" in new SetUp {
+        private val result = validator.validate(ListDeductionsRawData(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")))
+        result shouldBe List(RuleToDateError)
       }
     }
   }
