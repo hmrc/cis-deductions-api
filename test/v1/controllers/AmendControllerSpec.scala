@@ -159,6 +159,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         (RuleFromDateError,BAD_REQUEST),
         (RuleToDateError,BAD_REQUEST),
         (DeductionIdFormatError,BAD_REQUEST),
+        (RuleNoChangeError, FORBIDDEN)
       )
 
       input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -253,7 +254,10 @@ class AmendControllerSpec extends ControllerBaseSpec
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
         (RuleToDateBeforeFromDateError, BAD_REQUEST),
+        (RuleToDateError, BAD_REQUEST),
+        (RuleFromDateError,BAD_REQUEST),
         (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
+        (RuleNoChangeError, FORBIDDEN)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }

@@ -40,7 +40,7 @@ class ListDeductionsParserSpec extends UnitSpec {
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(ListDeductionsRequest(Nino(nino), "2019-04-06", "2020-04-05", Some("all")))
+        result shouldBe Right(ListDeductionsRequest(Nino(nino), "2019-04-06", "2020-04-05", "all"))
       }
 
       "a valid list deduction request has been made with the optional field returning none" in new Test {
@@ -50,7 +50,7 @@ class ListDeductionsParserSpec extends UnitSpec {
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(ListDeductionsRequest(Nino(nino), "2019-04-06", "2020-04-05", None))
+        result shouldBe Right(ListDeductionsRequest(Nino(nino), "2019-04-06", "2020-04-05", "all"))
       }
     }
 

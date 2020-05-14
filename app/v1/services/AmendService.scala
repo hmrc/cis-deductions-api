@@ -56,6 +56,7 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
       "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" -> RuleToDateBeforeFromDateError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVICE_UNAVAILABLE" -> DownstreamError,
+      "INVALID_NO_CHANGE" -> RuleNoChangeError
     )
 }

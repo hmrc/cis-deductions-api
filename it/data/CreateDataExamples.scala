@@ -4,6 +4,13 @@ import play.api.libs.json.Json
 
 object CreateDataExamples {
 
+  val emptyRequest = Json.parse(
+    s"""
+      |{
+      |}
+      |""".stripMargin
+  )
+
   val deductionsResponseBody = Json.parse(
     """
       |{

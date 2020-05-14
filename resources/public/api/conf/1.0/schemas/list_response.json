@@ -14,7 +14,7 @@
           "submissionId": {
             "description": "The unique identifier for submission by the contractor.",
             "type": "string",
-            "example": "54759eb3c090d83494e2d804"
+            "example": "db854aaa-65dc-488c-9120-e63fea14b9f1"
           },
           "fromDate": {
             "description": "The CIS start date within the tax year.",
@@ -24,7 +24,7 @@
           "toDate": {
             "description": "The CIS start date within the tax year.",
             "type": "string",
-            "example": "2019-04-06"
+            "example": "2020-04-05"
           },
           "contractorName": {
             "description": "The name of the contractor the subcontractor worked for.",
@@ -97,6 +97,34 @@
                 "submittedBy"
               ]
             }
+          },
+          "links": {
+            "description": "A list of endpoint links that indicate possible actions related to the current resource",
+            "type": "array",
+            "items": {
+              "title": "item",
+              "type": "object",
+              "properties": {
+                "href": {
+                  "description": "The relative url of the endpoint",
+                  "type": "string",
+                  "example": "/deductions/cis/{nino}/current-position"
+                },
+                "rel": {
+                  "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+                  "type": "string",
+                  "example": "list-cis-deductions"
+                },
+                "method": {
+                  "description": "The HTTP method type for the endpoint",
+                  "type": "string",
+                  "example": "GET"
+                }
+              },
+              "required": [
+                "href", "rel", "method"
+              ]
+            }
           }
         },
         "required": [
@@ -107,9 +135,38 @@
           "employerRef"
         ]
       }
+    },
+    "links": {
+      "description": "A list of endpoint links that indicate possible actions related to the current resource",
+      "type": "array",
+      "items": {
+        "title": "item",
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "/deductions/cis/{nino}/current-position"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "example": "list-cis-deductions"
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "example": "GET"
+          }
+        },
+        "required": [
+          "href", "rel", "method"
+        ]
+      }
     }
   },
   "required": [
-    "cisDeductions"
+    "cisDeductions",
+    "links"
   ]
 }
