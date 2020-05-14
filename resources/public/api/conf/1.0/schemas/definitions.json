@@ -39,7 +39,7 @@
     "uid": {
       "description": "A unique identifier",
       "type": "string",
-      "pattern": "^[A-Za-z0-9]{15}$",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
       "example": "123456879012345"
     }
   }
