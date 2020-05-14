@@ -18,7 +18,6 @@ package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
 import v1.models.request.{AmendRequest, PeriodDetails}
-import v1.models.responseData.AmendResponse
 
 object AmendRequestFixtures {
 
@@ -35,8 +34,6 @@ object AmendRequestFixtures {
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
     )
   )
-
-  val amendResponseObj: AmendResponse = AmendResponse("S4636A77V5KB8625U")
 
   val requestJson: JsValue = Json.parse {
     """

@@ -30,18 +30,17 @@ class AmendControllerISpec extends IntegrationBaseSpec{
 
   "Calling the amend endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.PUT, desUri, Status.OK, deductionsResponseBody, None)
+          DesStub.mockDes(DesStub.PUT, desUri, Status.NO_CONTENT, Json.obj(), None)
         }
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
-        response.status shouldBe Status.OK
-        response.json shouldBe deductionsResponseBody
+        response.status shouldBe Status.NO_CONTENT
       }
     }
     "return error according to spec" when {
