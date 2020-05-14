@@ -390,7 +390,9 @@ class ListControllerSpec extends ControllerBaseSpec
                         ToDateFormatError,
                         RuleMissingToDateError,
                         RuleMissingFromDateError,
-                        RuleSourceError)
+                        RuleSourceError,
+                        RuleFromDateError,
+                        RuleToDateError)
                 )
 
                 MockListDeductionRequestParser
@@ -412,7 +414,9 @@ class ListControllerSpec extends ControllerBaseSpec
                         AuditError(ToDateFormatError.code),
                         AuditError(RuleMissingToDateError.code),
                         AuditError(RuleMissingFromDateError.code),
-                        AuditError(RuleSourceError.code))),
+                        AuditError(RuleSourceError.code),
+                        AuditError(RuleFromDateError.code),
+                        AuditError(RuleToDateError.code))),
                     None
                 )
                 MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
@@ -446,7 +450,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 (NotFoundError, NOT_FOUND),
                 (DownstreamError, INTERNAL_SERVER_ERROR),
                 (FromDateFormatError, BAD_REQUEST),
-                (ToDateFormatError, BAD_REQUEST),
+                (ToDateFormatError, BAD_REQUEST)
             )
             input.foreach(args => (serviceErrors _).tupled(args))
         }

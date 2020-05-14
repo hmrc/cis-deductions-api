@@ -49,15 +49,12 @@ class AmendValidator extends Validator[AmendRawData] {
       PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
       PeriodDataDeductionDateValidation.validate(data.body, "deductionFromDate", DeductionFromDateFormatError),
       PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError),
-      DateValidation.validate(FromDateFormatError)(req.fromDate),
-      DateValidation.validate(ToDateFormatError)(req.toDate),
       ToBeforeFromDateValidation.validate(req.fromDate, req.toDate, RuleDateRangeInvalidError)
     )
   }
 
   private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
     val req = data.body.as[AmendRequest]
-
     List(
       TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
     )
