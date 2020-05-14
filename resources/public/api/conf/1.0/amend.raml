@@ -32,11 +32,7 @@ body:
       description: Amend CIS request
       value: !include examples/create_request.json
 responses:
-  200:
-    body:
-      application/json:
-        type: !include schemas/create_response.json
-        example: !include examples/example_1.json
+  204:
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
