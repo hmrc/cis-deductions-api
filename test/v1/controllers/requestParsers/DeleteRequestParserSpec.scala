@@ -19,14 +19,14 @@ package v1.controllers.requestParsers
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockDeleteValidator
-import v1.models.errors.{BadRequestError, DeductionIdFormatError, ErrorWrapper, NinoFormatError}
+import v1.models.errors._
 import v1.models.request.{DeleteRawData, DeleteRequest}
 
 class DeleteRequestParserSpec extends UnitSpec {
   val nino = "AA123456B"
-  val id = "S4636A77V5KB8625U"
+  val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-  val   inputData = DeleteRawData(nino, id)
+  val   inputData = DeleteRawData(nino, submissionId)
 
   trait Test extends MockDeleteValidator {
     lazy val parser = new DeleteRequestParser(mockValidator)
@@ -38,7 +38,7 @@ class DeleteRequestParserSpec extends UnitSpec {
         MockDeleteValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(DeleteRequest(Nino(nino), id))
+          Right(DeleteRequest(Nino(nino), submissionId))
       }
     }
     "return an error wrapper" when {
@@ -50,10 +50,10 @@ class DeleteRequestParserSpec extends UnitSpec {
       }
     }
     "multiple validation errors occur" in new Test {
-      MockDeleteValidator.validate(inputData).returns(List(NinoFormatError, DeductionIdFormatError))
+      MockDeleteValidator.validate(inputData).returns(List(NinoFormatError, SubmissionIdFormatError))
 
       parser.parseRequest(inputData) shouldBe
-        Left(ErrorWrapper(None ,Seq(BadRequestError, NinoFormatError, DeductionIdFormatError)))
+        Left(ErrorWrapper(None ,Seq(BadRequestError, NinoFormatError, SubmissionIdFormatError)))
     }
   }
 }

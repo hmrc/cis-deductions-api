@@ -17,13 +17,13 @@
 package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
-import v1.models.errors.{DeductionIdFormatError, NinoFormatError}
+import v1.models.errors._
 import v1.models.request.DeleteRawData
 
 class DeleteValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
-  private val validId = "S4636A77V5KB8625U"
+  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validator = new DeleteValidator()
 
@@ -37,13 +37,13 @@ class DeleteValidatorSpec extends UnitSpec {
       "an invalid nino is supplied" in {
         validator.validate(DeleteRawData("23456A", validId)) shouldBe List(NinoFormatError)
       }
-      "an invalid id is supplied" in {
-        validator.validate(DeleteRawData(validNino, "contractor1")) shouldBe List(DeductionIdFormatError)
+      "an invalid submission id is supplied" in {
+        validator.validate(DeleteRawData(validNino, "contractor1")) shouldBe List(SubmissionIdFormatError)
       }
     }
     "return multiple errors" when {
       "multiple wrong fields are supplied" in {
-        validator.validate(DeleteRawData("2sbt3456A", "idcontract123")) shouldBe List(NinoFormatError, DeductionIdFormatError)
+        validator.validate(DeleteRawData("2sbt3456A", "idcontract123")) shouldBe List(NinoFormatError, SubmissionIdFormatError)
       }
     }
   }

@@ -25,5 +25,5 @@ class DeleteRequestParser@Inject()(val validator: DeleteValidator)
   extends RequestParser[DeleteRawData,DeleteRequest]{
 
   override protected def requestFor(data: DeleteRawData): DeleteRequest =
-    DeleteRequest(Nino(data.nino), data.id)
+    DeleteRequest(Nino(data.nino), data.submissionId)
 }

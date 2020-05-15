@@ -31,9 +31,9 @@ import scala.concurrent.Future
 class DeleteServiceSpec extends UnitSpec {
 
   val nino = Nino("AA123456A")
-  val validId = "S4636A77V5KB8625U"
+  val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-  val requestData = DeleteRequest(nino, validId)
+  val requestData = DeleteRequest(nino, submissionId)
 
 
   trait Test extends MockDeleteConnector {
@@ -69,7 +69,9 @@ class DeleteServiceSpec extends UnitSpec {
       ("NOT_FOUND", NotFoundError),
       ("SERVER_ERROR", DownstreamError),
       ("SERVICE_UNAVAILABLE", DownstreamError),
-      ("INVALID_IDVALUE", NinoFormatError)
+      "INVALID_TAXABLE_ENTITY_ID " -> NinoFormatError,
+      "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
+      "INVALID_CORRELATION_ID" -> DownstreamError
     )
 
     input.foreach(args => (serviceError _).tupled(args))

@@ -26,7 +26,7 @@ class DeleteValidator extends Validator[DeleteRawData] {
   private def parameterFormatValidation: DeleteRawData => List[List[MtdError]] = (data: DeleteRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      IdValidation.validate(data.id)
+      IdValidation.validate(data.submissionId)
     )
   }
 

@@ -46,7 +46,9 @@ class DeleteService @Inject()(connector: DeleteConnector) extends DesResponseMap
 
   private def desErrorMap: Map[String, MtdError] =
     Map(
-      "INVALID_IDVALUE" -> NinoFormatError,
+      "INVALID_TAXABLE_ENTITY_ID " -> NinoFormatError,
+      "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
+      "INVALID_CORRELATION_ID" -> DownstreamError,
       "NOT_FOUND" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
