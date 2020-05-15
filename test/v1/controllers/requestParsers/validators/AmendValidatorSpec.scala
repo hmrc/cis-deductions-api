@@ -24,7 +24,7 @@ import v1.models.request.AmendRawData
 class AmendValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
-  private val validId = "S4636A77V5KB8625U"
+  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validator = new AmendValidator()
 
@@ -39,12 +39,12 @@ class AmendValidatorSpec extends UnitSpec {
         validator.validate(AmendRawData("23456A", validId, requestJson)) shouldBe List(NinoFormatError)
       }
       "an invalid id is supplied" in {
-        validator.validate(AmendRawData(validNino, "contractor1", requestJson)) shouldBe List(DeductionIdFormatError)
+        validator.validate(AmendRawData(validNino, "contractor1", requestJson)) shouldBe List(SubmissionIdFormatError)
       }
     }
     "return multiple errors" when {
       "multiple wrong fields are supplied" in {
-        validator.validate(AmendRawData("2sbt3456A", "idcontract123", requestJson)) shouldBe List(NinoFormatError, DeductionIdFormatError)
+        validator.validate(AmendRawData("2sbt3456A", "idcontract123", requestJson)) shouldBe List(NinoFormatError, SubmissionIdFormatError)
       }
     }
     "return a single error" when {

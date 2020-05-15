@@ -13,7 +13,7 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 class AmendControllerISpec extends IntegrationBaseSpec{
   private trait Test {
     val nino = "AA123456A"
-    val id = "S4636A77V5KB8625U"
+    val id = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
 
     def uri: String = s"/deductions/cis/$nino/amendments/$id"
@@ -66,19 +66,19 @@ class AmendControllerISpec extends IntegrationBaseSpec{
         }
 
         val input = Seq(
-          ("AA1123A","S4636A77V5KB8625U", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A","ID-SUB", requestBodyJson, Status.BAD_REQUEST, DeductionIdFormatError),
-          ("AA123456A", "S4636A77V5KB8625U", Json.parse("""{}"""), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorToDateInvalid, Status.BAD_REQUEST, RuleToDateError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorFromDateInvalid, Status.BAD_REQUEST, RuleFromDateError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorDateRangeInvalid, Status.BAD_REQUEST, RuleDateRangeInvalidError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorRuleCostOfMaterial, Status.BAD_REQUEST, RuleCostOfMaterialsError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorRuleGrossAmountPaid, Status.BAD_REQUEST, RuleGrossAmountError),
-          ("AA123456A","S4636A77V5KB8625U", requestBodyJsonErrorRuleDeductionAmount, Status.BAD_REQUEST, RuleDeductionAmountError)
+          ("AA1123A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A","ID-SUB", requestBodyJson, Status.BAD_REQUEST, SubmissionIdFormatError),
+          ("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Json.parse("""{}"""), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorToDateInvalid, Status.BAD_REQUEST, RuleToDateError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorFromDateInvalid, Status.BAD_REQUEST, RuleFromDateError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDateRangeInvalid, Status.BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleCostOfMaterial, Status.BAD_REQUEST, RuleCostOfMaterialsError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleGrossAmountPaid, Status.BAD_REQUEST, RuleGrossAmountError),
+          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleDeductionAmount, Status.BAD_REQUEST, RuleDeductionAmountError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
