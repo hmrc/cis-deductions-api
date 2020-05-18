@@ -42,11 +42,11 @@ uses:
       post: !include create.raml
     /current-position:
       get: !include list.raml
-    /amendments/{id}:
+    /amendments/{submissionId}:
         delete: !include delete.raml
         put: !include amend.raml
         uriParameters:
-          id:
-           description: 'Unique identifier for the CIS deduction.'
+          submissionId:
+           description: 'Unique identifier for the customer provided CIS deductions amendment.'
            type: string
            example: S4636A77V5KB8625U

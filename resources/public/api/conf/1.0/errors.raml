@@ -77,17 +77,17 @@ traits:
                 description: The format of the supplied NINO field is not valid
                 value:
                   code: FORMAT_NINO
-  formatCisId:
+  formatSubmissionId:
       responses:
         400:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                formatCisId:
-                  description: The format of the CIS deduction ID is not valid
+                formatSubmissionId:
+                  description: The format of the submission ID is not valid.
                   value:
-                    code: FORMAT_CIS_DEDUCTION_ID
+                    code: FORMAT_SUBMISSION_ID
   formatTaxYear:
     responses:
       400:
