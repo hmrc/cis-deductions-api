@@ -21,7 +21,6 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.AmendRequestData
-import v1.models.responseData.AmendResponse
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.errors.{DesErrorCode, DesErrors}
 
@@ -48,7 +47,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
     "return a result" when {
       "the downstream call is successful" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, AmendResponse(id)))
+        val outcome = Right(ResponseWrapper(correlationId, ()))
         MockedHttpClient.
           put(
             url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
@@ -70,7 +69,7 @@ class AmendConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[AmendResponse] = await(connector.amendDeduction(request))
+        val result: DesOutcome[Unit] = await(connector.amendDeduction(request))
         result shouldBe outcome
       }
     }

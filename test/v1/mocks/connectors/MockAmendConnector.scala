@@ -21,8 +21,6 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{AmendConnector, DesOutcome}
 import v1.models.request.AmendRequestData
-import v1.models.responseData.AmendResponse
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendConnector extends MockFactory{
@@ -32,7 +30,7 @@ trait MockAmendConnector extends MockFactory{
   object MockAmendConnector {
 
     def amendDeduction(requestData: AmendRequestData):
-    CallHandler3[AmendRequestData, HeaderCarrier, ExecutionContext, Future[DesOutcome[AmendResponse]]] = {
+    CallHandler3[AmendRequestData, HeaderCarrier, ExecutionContext, Future[DesOutcome[Unit]]] = {
       (mockAmendConnector
         .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)

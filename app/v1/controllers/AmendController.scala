@@ -24,14 +24,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
 import v1.controllers.requestParsers.AmendRequestParser
-import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{AmendRawData, AmendRequestData}
-import v1.models.responseData.{AmendHateoasData, AmendResponse}
 import v1.services.{AmendService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +38,6 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
                                 requestParser: AmendRequestParser,
                                 service: AmendService,
                                 auditService: AuditService,
-                                hateoasFactory: HateoasFactory,
                                 cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
@@ -59,22 +55,20 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val serviceResponse = parseResponse match {
       case Right(data) => service.amendDeductions(data)
       case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[AmendResponse]]] =
+        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] =
           Future.successful(Left(errorWrapper))
         futureError
     }
     serviceResponse.map {
       case Right(responseWrapper) =>
-        val hateoasWrappedResponse: HateoasWrapper[AmendResponse] =
-          hateoasFactory.wrap(responseWrapper.responseData, AmendHateoasData(nino, parseResponse.right.get))
 
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
         auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasWrappedResponse))))
+          createAuditDetails(rawData, NO_CONTENT, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(responseWrapper.correlationId))))
 
-        Ok(Json.toJson(hateoasWrappedResponse)).withApiHeaders(responseWrapper.correlationId)
+          NoContent.withApiHeaders(responseWrapper.correlationId)
           .as(MimeTypes.JSON)
       case Left(errorWrapper) =>
         val correlationId = getCorrelationId(errorWrapper)
@@ -108,7 +102,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       .map { wrapper =>
         AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       }
-      .getOrElse(AuditResponse(statusCode, None, responseBody ))
+      .getOrElse(AuditResponse(statusCode, None, None ))
 
     GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
   }
@@ -117,4 +111,9 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("amendCisDeductionsAuditType", "amend-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
+
+
 }
+
+
+

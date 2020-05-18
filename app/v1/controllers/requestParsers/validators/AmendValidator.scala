@@ -20,7 +20,7 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.{AmendRawData, AmendRequest}
 
-class AmendValidator extends Validator[AmendRawData] {
+class   AmendValidator extends Validator[AmendRawData] {
 
   private val validationSet = List(parameterFormatValidation,
       bodyFormatValidator,
