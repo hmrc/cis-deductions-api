@@ -16,28 +16,12 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import support.UnitSpec
-import v1.models.errors._
+import v1.models.errors.{SubmissionIdFormatError, MtdError}
 
-class IdValidationSpec extends UnitSpec {
+object SubmissionIdValidation {
 
-  "validate" should {
-    "return no errors" when {
-      "a valid id is supplied" in {
-
-        val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-        val validationResult = IdValidation.validate(validId)
-        validationResult.isEmpty shouldBe true
-      }
-    }
-
-    "return an error" when {
-      "when an invalid id is supplied" in {
-        val invalidId = "contractor1"
-        val validationResult = IdValidation.validate(invalidId)
-        validationResult.isEmpty shouldBe false
-        validationResult.head shouldBe SubmissionIdFormatError
-      }
-    }
+  private val idRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  def validate(id: String): List[MtdError] = {
+    if (id.matches(idRegex)) NoValidationErrors else List(SubmissionIdFormatError)
   }
 }

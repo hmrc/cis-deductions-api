@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.responseData.listDeductions
+package v1.models.responseData
 
 import cats.Functor
 import config.AppConfig

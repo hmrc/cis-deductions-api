@@ -36,13 +36,13 @@ import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLoo
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
-                                        val lookupService: MtdIdLookupService,
-                                        requestParser: CreateRequestParser,
-                                        service: CreateService,
-                                        hateoasFactory: HateoasFactory,
-                                        auditService: AuditService,
-                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
+class CreateController @Inject()(val authService: EnrolmentsAuthService,
+                                 val lookupService: MtdIdLookupService,
+                                 requestParser: CreateRequestParser,
+                                 service: CreateService,
+                                 hateoasFactory: HateoasFactory,
+                                 auditService: AuditService,
+                                 cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
     with Logging {

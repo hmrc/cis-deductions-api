@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package v1.models.responseData.listDeductions
+package v1.models.responseData
 
 import play.api.libs.json._
 
-
-case class DeductionsDetails(submissionId: Option[String],
-                             fromDate: String,
-                             toDate: String,
-                             contractorName: String,
-                             employerRef: String,
-                             periodData: Seq[PeriodDeductions]
+case class PeriodDeductions(deductionAmount: BigDecimal,
+                            deductionFromDate: String,
+                            deductionToDate: String,
+                            costOfMaterials: Option[BigDecimal],
+                            grossAmountPaid: BigDecimal,
+                            submissionDate: String,
+                            submittedBy: String
                             )
 
-object DeductionsDetails {
-  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
-  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
+object PeriodDeductions {
+  implicit val reads: Reads[PeriodDeductions] = Json.reads[PeriodDeductions]
+  implicit val writes: Writes[PeriodDeductions] = Json.writes[PeriodDeductions]
 }

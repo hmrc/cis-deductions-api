@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockDeleteConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRequest
+import v1.models.request.DeleteRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,7 +33,7 @@ class DeleteServiceSpec extends UnitSpec {
   val nino = Nino("AA123456A")
   val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-  val requestData = DeleteRequest(nino, submissionId)
+  val requestData = DeleteRequestData(nino, submissionId)
 
 
   trait Test extends MockDeleteConnector {

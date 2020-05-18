@@ -21,7 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
+import v1.models.request.{CreateRequestData, CreateRequest, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ class CreateConnectorSpec extends ConnectorSpec {
   }
 
   "create" must {
-    val request = CreateRequestData(nino, CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00))))
+    val request = CreateRequestData(nino, CreateRequest("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
       val outcome = Right(ResponseWrapper(id, CreateResponseModel(id)))

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.responseData
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json._
 
-case class CreateRequestModel(
-                               fromDate: String,
-                               toDate: String,
-                               contractorName: String,
-                               employerRef: String,
-                               periodData: Seq[PeriodDetails]
-                             )
 
-object CreateRequestModel {
-  implicit val reads: Reads[CreateRequestModel] = Json.reads[CreateRequestModel]
-  implicit val writes: Writes[CreateRequestModel] = Json.writes[CreateRequestModel]
+case class DeductionsDetails(submissionId: Option[String],
+                             fromDate: String,
+                             toDate: String,
+                             contractorName: String,
+                             employerRef: String,
+                             periodData: Seq[PeriodDeductions]
+                            )
+
+object DeductionsDetails {
+  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
+  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
 }

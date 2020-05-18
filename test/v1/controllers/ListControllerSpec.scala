@@ -30,8 +30,9 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request._
-import v1.models.responseData.listDeductions.ListResponseModel._
-import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseHateoasData, ListResponseModel, PeriodDeductions}
+import v1.models.responseData
+import v1.models.responseData.ListResponseModel._
+import v1.models.responseData.{DeductionsDetails, ListResponseHateoasData, ListResponseModel, PeriodDeductions}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -70,10 +71,10 @@ class ListControllerSpec extends ControllerBaseSpec
     private val sourceRawAll = Some("all")
     private val sourceAll = "all"
     private val correlationId = "X-123"
-    private val listRawData = ListDeductionsRawData(nino,fromDate, toDate, sourceRaw)
-    private val listRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, sourceAll)
-    private val optionalFieldMissingRawData = ListDeductionsRawData(nino, fromDate, toDate, None)
-    private val optionalFieldMissingRequestData = ListDeductionsRequest(Nino(nino), fromDate.get, toDate.get, sourceAll)
+    private val listRawData = ListRawData(nino,fromDate, toDate, sourceRaw)
+    private val listRequestData = ListRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+    private val optionalFieldMissingRawData = ListRawData(nino, fromDate, toDate, None)
+    private val optionalFieldMissingRequestData = ListRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
 
     val response: ListResponseModel[DeductionsDetails] =
         ListResponseModel(
@@ -202,7 +203,7 @@ class ListControllerSpec extends ControllerBaseSpec
                         createCISDeduction(mockAppConfig, nino, isSelf = false))
                 )
                 MockHateoasFactory
-                  .wrapList(response, ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
+                  .wrapList(response, responseData.ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
                   .returns(responseWithHateoas)
 
                 val result: Future[Result] = controller.listDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
@@ -323,7 +324,7 @@ class ListControllerSpec extends ControllerBaseSpec
                 )
 
                 MockHateoasFactory
-                  .wrapList(responseNoId, ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
+                  .wrapList(responseNoId, responseData.ListResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
                   .returns(responseWithHateoas)
 
                 val result: Future[Result] = controller.listDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)

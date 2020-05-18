@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.ListRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
+import v1.models.request.{ListRawData, ListRequestData}
 
 trait MockListRequestParser extends MockFactory{
 
@@ -28,8 +28,8 @@ trait MockListRequestParser extends MockFactory{
 
   object MockListDeductionRequestParser {
 
-    def parse(data: ListDeductionsRawData): CallHandler[Either[ErrorWrapper,ListDeductionsRequest]] = {
-      (mockRequestParser.parseRequest(_: ListDeductionsRawData)).expects(data)
+    def parse(data: ListRawData): CallHandler[Either[ErrorWrapper,ListRequestData]] = {
+      (mockRequestParser.parseRequest(_: ListRawData)).expects(data)
     }
   }
 }

@@ -41,8 +41,7 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
 
     val result = for {
       desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
-    } yield desResponseWrapper.map(des => des)
-
+    } yield desResponseWrapper
     result.value
   }
 

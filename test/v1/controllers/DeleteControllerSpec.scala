@@ -22,7 +22,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.ListJson._
-import v1.mocks.requestParsers.MockDeleteRequestParser
+import v1.mocks.requestParsers.MockDeleteRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, _}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class DeleteControllerSpec extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockDeleteRequestParser
+    with MockDeleteRequestDataParser
     with MockDeleteService
     with MockAppConfig
     with MockAuditService {
@@ -61,7 +61,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
     private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
     private val correlationId = "X-123"
     private val deleteRawData = DeleteRawData(nino, submissionId)
-    private val deleteRequestData = DeleteRequest(Nino(nino), submissionId)
+    private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId)
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(

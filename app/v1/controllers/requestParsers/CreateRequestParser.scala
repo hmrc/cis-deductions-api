@@ -19,13 +19,13 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.CreateValidator
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
+import v1.models.request.{CreateRawData, CreateRequestData, CreateRequest}
 
 class CreateRequestParser @Inject()(val validator: CreateValidator)
   extends RequestParser[CreateRawData, CreateRequestData] {
 
   override protected def requestFor(data: CreateRawData): CreateRequestData = {
-    val requestBody = data.body.as[CreateRequestModel]
+    val requestBody = data.body.as[CreateRequest]
     CreateRequestData(Nino(data.nino), requestBody)
   }
 }

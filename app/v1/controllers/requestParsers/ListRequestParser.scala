@@ -19,12 +19,12 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.ListValidator
-import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
+import v1.models.request.{ListRawData, ListRequestData}
 
 class ListRequestParser @Inject()(val validator: ListValidator)
-  extends RequestParser[ListDeductionsRawData, ListDeductionsRequest] {
+  extends RequestParser[ListRawData, ListRequestData] {
 
-  override protected def requestFor(data: ListDeductionsRawData): ListDeductionsRequest = {
-    ListDeductionsRequest(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
+  override protected def requestFor(data: ListRawData): ListRequestData = {
+    ListRequestData(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
   }
 }

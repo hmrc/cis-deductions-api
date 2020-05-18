@@ -19,6 +19,7 @@ package v1.models.request
 import uk.gov.hmrc.domain.Nino
 import v1.models.requestData.RawData
 
-case class ListDeductionsRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
+case class DeleteRawData(nino: String, submissionId: String) extends RawData
 
-case class ListDeductionsRequest(nino: Nino, fromDate: String, toDate: String, source: String)
+case class DeleteRequestData(nino: Nino, submissionId: String)
+

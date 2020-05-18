@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.request
 
-import v1.models.errors.{SubmissionIdFormatError, MtdError}
+import play.api.libs.json.{Json, Reads, Writes}
 
-object IdValidation {
+case class CreateRequest(
+                               fromDate: String,
+                               toDate: String,
+                               contractorName: String,
+                               employerRef: String,
+                               periodData: Seq[PeriodDetails]
+                             )
 
-  private val idRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-  def validate(id: String): List[MtdError] = {
-    if (id.matches(idRegex)) NoValidationErrors else List(SubmissionIdFormatError)
-  }
+object CreateRequest {
+  implicit val reads: Reads[CreateRequest] = Json.reads[CreateRequest]
+  implicit val writes: Writes[CreateRequest] = Json.writes[CreateRequest]
 }

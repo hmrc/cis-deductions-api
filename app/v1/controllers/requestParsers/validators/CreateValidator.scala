@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators
 import config.FixedConfig
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.{CreateRawData, CreateRequestModel}
+import v1.models.request.{CreateRawData, CreateRequest}
 
 class CreateValidator extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
@@ -36,12 +36,12 @@ class CreateValidator extends Validator[CreateRawData] with FixedConfig {
 
   private def bodyFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[CreateRequestModel](data.body, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[CreateRequest](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 
   private def bodyRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[CreateRequestModel]
+    val req = data.body.as[CreateRequest]
 
     List(
       PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),

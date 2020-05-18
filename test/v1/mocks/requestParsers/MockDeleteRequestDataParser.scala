@@ -20,14 +20,14 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.DeleteRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.{DeleteRawData, DeleteRequest}
+import v1.models.request.{DeleteRawData, DeleteRequestData}
 
-trait MockDeleteRequestParser extends MockFactory {
+trait MockDeleteRequestDataParser extends MockFactory {
 
   val mockRequestParser: DeleteRequestParser = mock[DeleteRequestParser]
 
   object MockDeleteRequestDataParser {
-    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequest]] = {
+    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequestData]] = {
       (mockRequestParser.parseRequest(_: DeleteRawData)).expects(data)
     }
   }

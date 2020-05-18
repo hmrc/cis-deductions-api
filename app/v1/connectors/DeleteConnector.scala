@@ -19,7 +19,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.models.request.DeleteRequest
+import v1.models.request.DeleteRequestData
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,7 +28,7 @@ class DeleteConnector @Inject()(val http: HttpClient,
                                 val appConfig: AppConfig
                                ) extends BaseDesConnector {
 
- def delete(request: DeleteRequest)(
+ def delete(request: DeleteRequestData)(
   implicit hc: HeaderCarrier,
   ec: ExecutionContext): Future[DesOutcome[Unit]] = {
     delete(
