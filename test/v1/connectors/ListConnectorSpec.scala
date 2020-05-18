@@ -37,7 +37,7 @@ class ListConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desCisUrl returns "cross-regime/deductions-placeholder/CIS"
+    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
   "list" should {
@@ -50,7 +50,7 @@ class ListConnectorSpec extends ConnectorSpec {
       )))
 
       MockedHttpClient.get(
-        url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${nino.nino}/current-position" +
+        url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}/current-position" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}",
         requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
       ).returns(Future.successful(outcome))
@@ -64,7 +64,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[ListResponseModel[DeductionsDetails]]](s"$baseUrl/cross-regime/deductions-placeholder/CIS" +
+        MockedHttpClient.get[DesOutcome[ListResponseModel[DeductionsDetails]]](s"$baseUrl/income-tax/cis/deductions" +
           s"/${nino.nino}/current-position" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))

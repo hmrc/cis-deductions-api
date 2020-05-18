@@ -38,7 +38,7 @@ class AmendConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desCisUrl returns "cross-regime/deductions-placeholder/CIS"
+    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
 
   }
 
@@ -50,7 +50,7 @@ class AmendConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
         MockedHttpClient.
           put(
-            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.id}",
             body = request.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
@@ -63,7 +63,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.id}",
             body = request.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           )

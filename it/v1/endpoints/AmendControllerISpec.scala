@@ -17,7 +17,7 @@ class AmendControllerISpec extends IntegrationBaseSpec{
 
 
     def uri: String = s"/deductions/cis/$nino/amendments/$id"
-    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino/amendments/$id"
+    def desUri: String = s"/income-tax/cis/deductions/$nino/amendments/$id"
 
     def setupStubs(): StubMapping
 
