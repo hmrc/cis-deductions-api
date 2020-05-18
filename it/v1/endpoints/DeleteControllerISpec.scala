@@ -105,9 +105,10 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "NO_DATA_FOUND", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

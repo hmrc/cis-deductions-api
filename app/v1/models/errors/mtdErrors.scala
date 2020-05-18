@@ -26,7 +26,7 @@ object MtdError {
 
 // Format Errors
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
-object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided SUBMISSION_ID is invalid") // Clarify with ZH
+object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")

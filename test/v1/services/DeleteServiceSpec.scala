@@ -66,12 +66,12 @@ class DeleteServiceSpec extends UnitSpec {
       }
 
     val input = Seq(
-      ("NOT_FOUND", NotFoundError),
+      ("NO_DATA_FOUND", NotFoundError),
       ("SERVER_ERROR", DownstreamError),
       ("SERVICE_UNAVAILABLE", DownstreamError),
-      "INVALID_TAXABLE_ENTITY_ID " -> NinoFormatError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
-      "INVALID_CORRELATION_ID" -> DownstreamError
+      "INVALID_CORRELATIONID" -> DownstreamError
     )
 
     input.foreach(args => (serviceError _).tupled(args))
