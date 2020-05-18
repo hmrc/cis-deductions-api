@@ -21,7 +21,7 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.ListDeductionsRawData
 
-class ListDeductionsValidator extends Validator[ListDeductionsRawData] with FixedConfig{
+class ListValidator extends Validator[ListDeductionsRawData] with FixedConfig{
 
   private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
 

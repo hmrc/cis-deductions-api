@@ -20,13 +20,13 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.ListDeductionsRawData
 
-class ListDeductionsValidatorSpec extends UnitSpec {
+class ListValidatorSpec extends UnitSpec {
 
   private val nino = "AA123456A"
   private val invalidNino = "GHFG197854"
 
   class SetUp {
-    val validator = new ListDeductionsValidator
+    val validator = new ListValidator
   }
 
   "running validation" should {

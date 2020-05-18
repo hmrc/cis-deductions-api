@@ -18,13 +18,14 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.ListDeductionsValidator
-import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
+import v1.controllers.requestParsers.validators.CreateValidator
+import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
 
-class ListDeductionRequestParser @Inject()(val validator: ListDeductionsValidator)
-  extends RequestParser[ListDeductionsRawData, ListDeductionsRequest] {
+class CreateRequestParser @Inject()(val validator: CreateValidator)
+  extends RequestParser[CreateRawData, CreateRequestData] {
 
-  override protected def requestFor(data: ListDeductionsRawData): ListDeductionsRequest = {
-    ListDeductionsRequest(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
+  override protected def requestFor(data: CreateRawData): CreateRequestData = {
+    val requestBody = data.body.as[CreateRequestModel]
+    CreateRequestData(Nino(data.nino), requestBody)
   }
 }

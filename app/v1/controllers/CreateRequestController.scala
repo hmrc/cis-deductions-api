@@ -23,7 +23,7 @@ import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
-import v1.controllers.requestParsers.CreateRequestModelParser
+import v1.controllers.requestParsers.CreateRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit._
 import v1.models.auth.UserDetails
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
                                         val lookupService: MtdIdLookupService,
-                                        requestParser: CreateRequestModelParser,
+                                        requestParser: CreateRequestParser,
                                         service: CreateService,
                                         hateoasFactory: HateoasFactory,
                                         auditService: AuditService,

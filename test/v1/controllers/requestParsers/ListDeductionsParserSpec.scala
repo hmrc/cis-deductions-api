@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockListDeductionsValidator
+import v1.mocks.validators.MockListValidator
 import v1.models.errors.{BadRequestError, ErrorWrapper, FromDateFormatError, NinoFormatError, RuleSourceError, RuleToDateBeforeFromDateError, ToDateFormatError}
 import v1.models.request._
 
@@ -27,8 +27,8 @@ class ListDeductionsParserSpec extends UnitSpec {
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
 
-  trait Test extends MockListDeductionsValidator {
-    lazy val parser = new ListDeductionRequestParser(mockValidator)
+  trait Test extends MockListValidator {
+    lazy val parser = new ListRequestParser(mockValidator)
   }
 
   "parser" should {

@@ -18,13 +18,13 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.ListDeductionRequestParser
+import v1.controllers.requestParsers.ListRequestParser
 import v1.models.errors.ErrorWrapper
 import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
 
-trait MockListDeductionRequestParser extends MockFactory{
+trait MockListRequestParser extends MockFactory{
 
-  val mockRequestParser = mock[ListDeductionRequestParser]
+  val mockRequestParser = mock[ListRequestParser]
 
   object MockListDeductionRequestParser {
 

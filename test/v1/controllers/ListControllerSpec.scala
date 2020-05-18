@@ -23,7 +23,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.ListJson._
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockListDeductionRequestParser
+import v1.mocks.requestParsers.MockListRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class ListControllerSpec extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockListDeductionRequestParser
+    with MockListRequestParser
     with MockListService
     with MockHateoasFactory
     with MockAppConfig

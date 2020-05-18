@@ -21,7 +21,7 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.{CreateRawData, CreateRequestModel}
 
-class CreateRequestModelValidator extends Validator[CreateRawData] with FixedConfig {
+class CreateValidator extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator,
