@@ -58,10 +58,10 @@ class DeleteControllerSpec extends ControllerBaseSpec
     }
 
     private val nino = "AA123456A"
-    private val id = "S4636A77V5KB8625U"
+    private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
     private val correlationId = "X-123"
-    private val deleteRawData = DeleteRawData(nino, id)
-    private val deleteRequestData = DeleteRequest(Nino(nino), id)
+    private val deleteRawData = DeleteRawData(nino, submissionId)
+    private val deleteRequestData = DeleteRequest(Nino(nino), submissionId)
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
@@ -88,7 +88,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
                   .deleteRequest(deleteRequestData)
                   .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-                val result: Future[Result] = controller.deleteRequest(nino, id)(fakeRequest)
+                val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
                 status(result) shouldBe NO_CONTENT
                 header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -107,7 +107,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
                       .parse(deleteRawData)
                       .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
 
-                    val result: Future[Result] = controller.deleteRequest(nino, id)(fakeRequest)
+                    val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
 
                     status(result) shouldBe expectedStatus
@@ -134,7 +134,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
                   .parse(deleteRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.deleteRequest(nino, id)(fakeRequest)
+                val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -156,7 +156,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
                   .parse(deleteRawData)
                   .returns(Left(error))
 
-                val result: Future[Result] = controller.deleteRequest(nino, id)(fakeRequest)
+                val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
                 status(result) shouldBe BAD_REQUEST
                 contentAsJson(result) shouldBe Json.toJson(error)
@@ -185,7 +185,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
                       .deleteRequest(deleteRequestData)
                       .returns(Future.successful(Left(ErrorWrapper(Some(correlationId),Seq(mtdError)))))
 
-                    val result: Future[Result] = controller.deleteRequest(nino, id)(fakeRequest)
+                    val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
                     status(result) shouldBe expectedStatus
                     contentAsJson(result) shouldBe Json.toJson(mtdError)
@@ -197,7 +197,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
             }
             val input = Seq(
                 (NinoFormatError, BAD_REQUEST),
-                (DeductionIdFormatError, BAD_REQUEST),
+                (SubmissionIdFormatError, BAD_REQUEST),
                 (NotFoundError, NOT_FOUND),
                 (DownstreamError, INTERNAL_SERVER_ERROR),
             )

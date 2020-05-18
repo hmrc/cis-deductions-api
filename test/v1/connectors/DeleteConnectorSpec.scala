@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class DeleteConnectorSpec extends ConnectorSpec {
 
   val nino = Nino("AA123456A")
-  val id = "S4636A77V5KB8625U"
+  val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -41,7 +41,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
   }
 
   "delete" should {
-    val request: DeleteRequest = DeleteRequest(nino, id)
+    val request: DeleteRequest = DeleteRequest(nino, submissionId)
 
     "return a result" when {
       "the downstream call is successful" in new Test {
@@ -49,7 +49,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           delete(
-            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.submissionId}",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
 
@@ -61,7 +61,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     "the http client returns a Des Error code" in new Test {
       val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.id}")
+      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/cross-regime/deductions-placeholder/CIS/${request.nino}/amendments/${request.submissionId}")
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
       val result: DesOutcome[Unit] = await(connector.delete(request))

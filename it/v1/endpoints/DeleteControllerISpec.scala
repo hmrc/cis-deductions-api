@@ -30,11 +30,11 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
     val nino = "AA123456A"
-    val id = "S4636A77V5KB8625U"
+    val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
     val correlationId = "X-123"
 
-    def uri: String = s"/deductions/cis/$nino/amendments/$id"
-    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino/amendments/$id"
+    def uri: String = s"/deductions/cis/$nino/amendments/$submissionId"
+    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino/amendments/$submissionId"
 
     def setupStubs(): StubMapping
 
@@ -68,7 +68,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
-            override val id: String = requestId
+            override val submissionId: String = requestId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -82,8 +82,8 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           }
         }
         val input = Seq(
-          ("AA1123A", "S4636A77V5KB8625U", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "S4636A77V5KB8625U12121", Status.BAD_REQUEST, DeductionIdFormatError)
+          ("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "4cc-81f5-e6acd1099f3c", Status.BAD_REQUEST, SubmissionIdFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -105,9 +105,13 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "NO_DATA_FOUND", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_SUBMISSION_ID", Status.BAD_REQUEST, SubmissionIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
+
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

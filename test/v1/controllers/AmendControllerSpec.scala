@@ -158,7 +158,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         (DownstreamError, INTERNAL_SERVER_ERROR),
         (RuleFromDateError,BAD_REQUEST),
         (RuleToDateError,BAD_REQUEST),
-        (DeductionIdFormatError,BAD_REQUEST),
+        (SubmissionIdFormatError,BAD_REQUEST),
         (RuleNoChangeError, FORBIDDEN)
       )
 

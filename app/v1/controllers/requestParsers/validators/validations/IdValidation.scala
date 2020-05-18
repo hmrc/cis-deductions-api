@@ -16,12 +16,12 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{DeductionIdFormatError, MtdError}
+import v1.models.errors.{SubmissionIdFormatError, MtdError}
 
 object IdValidation {
 
-  private val idRegex = "^.{17}$"
+  private val idRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
   def validate(id: String): List[MtdError] = {
-    if (id.matches(idRegex)) NoValidationErrors else List(DeductionIdFormatError)
+    if (id.matches(idRegex)) NoValidationErrors else List(SubmissionIdFormatError)
   }
 }

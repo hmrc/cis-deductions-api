@@ -85,7 +85,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
            RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
            ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
            RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | RuleFromDateError | RuleToDateError
-           | DeductionIdFormatError => BadRequest(Json.toJson(errorWrapper))
+           | SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case RuleNoChangeError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

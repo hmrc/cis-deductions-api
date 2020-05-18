@@ -49,9 +49,9 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
     )
 
 
-  def deleteRequest(nino: String, id: String): Action[AnyContent] =
+  def deleteRequest(nino: String, submissionId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = DeleteRawData(nino, id)
+      val rawData = DeleteRawData(nino, submissionId)
       val parseRequest: Either[ErrorWrapper, DeleteRequest] = requestParser.parseRequest(rawData)
 
       val serviceResponse = parseRequest match {
@@ -84,7 +84,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.errors.head: @unchecked) match {
-      case BadRequestError | NinoFormatError | DeductionIdFormatError =>
+      case BadRequestError | NinoFormatError | SubmissionIdFormatError  =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

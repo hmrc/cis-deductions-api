@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.DeductionIdFormatError
+import v1.models.errors._
 
 class IdValidationSpec extends UnitSpec {
 
@@ -25,7 +25,7 @@ class IdValidationSpec extends UnitSpec {
     "return no errors" when {
       "a valid id is supplied" in {
 
-        val validId = "S4636A77V5KB8625U"
+        val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
         val validationResult = IdValidation.validate(validId)
         validationResult.isEmpty shouldBe true
       }
@@ -36,7 +36,7 @@ class IdValidationSpec extends UnitSpec {
         val invalidId = "contractor1"
         val validationResult = IdValidation.validate(invalidId)
         validationResult.isEmpty shouldBe false
-        validationResult.head shouldBe DeductionIdFormatError
+        validationResult.head shouldBe SubmissionIdFormatError
       }
     }
   }
