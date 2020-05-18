@@ -20,8 +20,8 @@ import v1.models.errors.{SubmissionIdFormatError, MtdError}
 
 object SubmissionIdValidation {
 
-  private val idRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-  def validate(id: String): List[MtdError] = {
-    if (id.matches(idRegex)) NoValidationErrors else List(SubmissionIdFormatError)
+  private val submissionIdRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  def validate(submissionId: String): List[MtdError] = {
+    if (submissionId.matches(submissionIdRegex)) NoValidationErrors else List(SubmissionIdFormatError)
   }
 }

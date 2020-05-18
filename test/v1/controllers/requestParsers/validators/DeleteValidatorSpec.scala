@@ -23,19 +23,19 @@ import v1.models.request.DeleteRawData
 class DeleteValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
-  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val validSubmissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validator = new DeleteValidator()
 
   "running a delete validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(DeleteRawData(validNino, validId)) shouldBe Nil
+        validator.validate(DeleteRawData(validNino, validSubmissionId)) shouldBe Nil
       }
     }
     "return a single error" when {
       "an invalid nino is supplied" in {
-        validator.validate(DeleteRawData("23456A", validId)) shouldBe List(NinoFormatError)
+        validator.validate(DeleteRawData("23456A", validSubmissionId)) shouldBe List(NinoFormatError)
       }
       "an invalid submission id is supplied" in {
         validator.validate(DeleteRawData(validNino, "contractor1")) shouldBe List(SubmissionIdFormatError)
