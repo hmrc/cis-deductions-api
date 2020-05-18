@@ -42,6 +42,8 @@ uses:
       post: !include create.raml
     /current-position:
       get: !include list.raml
+'/individuals/deductions/cis':
+  /{nino}:
     /amendments/{submissionId}:
         delete: !include delete.raml
         put: !include amend.raml

@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{IdValidation, NinoValidation}
+import v1.controllers.requestParsers.validators.validations.{SubmissionIdValidation, NinoValidation}
 import v1.models.errors.MtdError
 import v1.models.request.DeleteRawData
 
@@ -26,7 +26,7 @@ class DeleteValidator extends Validator[DeleteRawData] {
   private def parameterFormatValidation: DeleteRawData => List[List[MtdError]] = (data: DeleteRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      IdValidation.validate(data.submissionId)
+      SubmissionIdValidation.validate(data.submissionId)
     )
   }
 

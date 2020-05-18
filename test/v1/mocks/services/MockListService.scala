@@ -22,8 +22,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel}
+import v1.models.request.ListRequestData
+import v1.models.responseData.{DeductionsDetails, ListResponseModel}
 import v1.services.ListService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,10 +33,10 @@ trait MockListService extends MockFactory{
   val mockService: ListService = mock[ListService]
 
   object MockListService {
-    def listCisDeductions(requestData: ListDeductionsRequest): CallHandler4[ListDeductionsRequest, HeaderCarrier, ExecutionContext,
+    def listCisDeductions(requestData: ListRequestData): CallHandler4[ListRequestData, HeaderCarrier, ExecutionContext,
       EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[DeductionsDetails]]]]] = {
       (mockService
-        .listDeductions(_:ListDeductionsRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .listDeductions(_:ListRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)
     }
   }

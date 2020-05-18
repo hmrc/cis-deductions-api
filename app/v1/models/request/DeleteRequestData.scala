@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.request
 
-import v1.models.errors.{SubmissionIdFormatError, MtdError}
+import uk.gov.hmrc.domain.Nino
+import v1.models.requestData.RawData
 
-object IdValidation {
+case class DeleteRawData(nino: String, submissionId: String) extends RawData
 
-  private val idRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-  def validate(id: String): List[MtdError] = {
-    if (id.matches(idRegex)) NoValidationErrors else List(SubmissionIdFormatError)
-  }
-}
+case class DeleteRequestData(nino: Nino, submissionId: String)
+

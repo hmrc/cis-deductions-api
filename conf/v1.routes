@@ -1,4 +1,4 @@
-POST       /deductions/cis/:nino/amendments                v1.controllers.CreateRequestController.createRequest(nino: String)
+POST       /deductions/cis/:nino/amendments                v1.controllers.CreateController.createRequest(nino: String)
 
 GET        /deductions/cis/:nino/current-position          v1.controllers.ListController.listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String])
 

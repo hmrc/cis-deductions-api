@@ -29,19 +29,19 @@ import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
-import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseHateoasData, ListResponseModel}
+import v1.models.request.{ListRawData, ListRequestData}
+import v1.models.responseData.{DeductionsDetails, ListResponseHateoasData, ListResponseModel}
 import v1.services.{AuditService, EnrolmentsAuthService, ListService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ListController @Inject()(val authService: EnrolmentsAuthService,
-                                  val lookupService: MtdIdLookupService,
-                                  requestParser: ListDeductionRequestParser,
-                                  service: ListService,
-                                  auditService: AuditService,
-                                  hateoasFactory: HateoasFactory,
-                                  cc: ControllerComponents)
+                               val lookupService: MtdIdLookupService,
+                               requestParser: ListRequestParser,
+                               service: ListService,
+                               auditService: AuditService,
+                               hateoasFactory: HateoasFactory,
+                               cc: ControllerComponents)
                                  (implicit ec: ExecutionContext)
 extends AuthorisedController(cc) with BaseController with Logging {
 
@@ -53,8 +53,8 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   def listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
   authorisedAction(nino).async { implicit request =>
-    val rawData = ListDeductionsRawData(nino,fromDate,toDate,source)
-    val parseResponse: Either[ErrorWrapper, ListDeductionsRequest] = requestParser.parseRequest(rawData)
+    val rawData = ListRawData(nino,fromDate,toDate,source)
+    val parseResponse: Either[ErrorWrapper, ListRequestData] = requestParser.parseRequest(rawData)
     val serviceResponse = parseResponse match {
       case Right(data) =>
         service.listDeductions(data)
@@ -97,7 +97,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
     }
   }
 
-  private def createAuditDetails(rawData: ListDeductionsRawData,
+  private def createAuditDetails(rawData: ListRawData,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,

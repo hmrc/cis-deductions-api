@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.mocks.requestParsers
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.ListRequestParser
+import v1.models.errors.ErrorWrapper
+import v1.models.request.{ListRawData, ListRequestData}
 
-case class ListDeductionsRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
+trait MockListRequestParser extends MockFactory{
 
-case class ListDeductionsRequest(nino: Nino, fromDate: String, toDate: String, source: String)
+  val mockRequestParser = mock[ListRequestParser]
+
+  object MockListDeductionRequestParser {
+
+    def parse(data: ListRawData): CallHandler[Either[ErrorWrapper,ListRequestData]] = {
+      (mockRequestParser.parseRequest(_: ListRawData)).expects(data)
+    }
+  }
+}

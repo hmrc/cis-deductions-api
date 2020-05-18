@@ -40,8 +40,7 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDesErrors(desErrorMap))
-    } yield desResponseWrapper.map(des => des)
-
+    } yield desResponseWrapper
     result.value
   }
 

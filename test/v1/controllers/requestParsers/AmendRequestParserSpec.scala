@@ -27,7 +27,7 @@ class AmendRequestParserSpec extends UnitSpec {
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
-  val id = "S4636A77V5KB8625U"
+  val submissionId = "S4636A77V5KB8625U"
 
   trait Test extends MockAmendValidator {
     lazy val parser = new AmendRequestParser(mockValidator)
@@ -36,30 +36,30 @@ class AmendRequestParserSpec extends UnitSpec {
   "parser" should {
     "accept a valid input" when {
       "a cis deduction has been passed" in new Test {
-        val inputData = AmendRawData(nino, id, requestJson)
+        val inputData = AmendRawData(nino, submissionId, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(AmendRequestData(Nino(nino), id, amendRequestObj))
+        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, amendRequestObj))
       }
 
       "Missing option field has passed" in new Test {
-        val inputData = AmendRawData(nino, id, missingOptionalRequestJson)
+        val inputData = AmendRawData(nino, submissionId, missingOptionalRequestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(AmendRequestData(Nino(nino), id, amendMissingOptionalRequestObj))
+        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, amendMissingOptionalRequestObj))
       }
     }
     "Reject invalid input" when {
       "mandatory field is given invalid data" in new Test {
-        val inputData = AmendRawData(nino, id, invalidRequestJson)
+        val inputData = AmendRawData(nino, submissionId, invalidRequestJson)
 
         MockValidator
           .validate(inputData)
@@ -69,7 +69,7 @@ class AmendRequestParserSpec extends UnitSpec {
         result shouldBe Left(ErrorWrapper(None, List(BadRequestError)))
       }
       "Nino format is incorrect" in new Test {
-        val inputData = AmendRawData(invalidNino, id, requestJson)
+        val inputData = AmendRawData(invalidNino, submissionId, requestJson)
 
         MockValidator
           .validate(inputData)

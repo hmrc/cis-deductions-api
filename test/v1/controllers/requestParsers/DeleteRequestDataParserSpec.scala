@@ -20,9 +20,9 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockDeleteValidator
 import v1.models.errors._
-import v1.models.request.{DeleteRawData, DeleteRequest}
+import v1.models.request.{DeleteRawData, DeleteRequestData}
 
-class DeleteRequestParserSpec extends UnitSpec {
+class DeleteRequestDataParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
@@ -38,7 +38,7 @@ class DeleteRequestParserSpec extends UnitSpec {
         MockDeleteValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(DeleteRequest(Nino(nino), submissionId))
+          Right(DeleteRequestData(Nino(nino), submissionId))
       }
     }
     "return an error wrapper" when {
