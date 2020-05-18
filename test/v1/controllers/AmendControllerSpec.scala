@@ -59,14 +59,14 @@ class AmendControllerSpec extends ControllerBaseSpec
   }
 
   private val nino = "AA123456A"
-  private val id = "S4636A77V5KB8625U"
+  private val submissionId = "S4636A77V5KB8625U"
   private val correlationId = "X-123"
 
-  private val rawAmendRequest = AmendRawData(nino,id ,requestJson)
-  private val amendRequest = AmendRequestData(Nino(nino),id, amendRequestObj)
+  private val rawAmendRequest = AmendRawData(nino,submissionId ,requestJson)
+  private val amendRequest = AmendRequestData(Nino(nino),submissionId, amendRequestObj)
 
-  private val rawMissingOptionalAmendRequest = AmendRawData(nino,id, missingOptionalRequestJson)
-  private val missingOptionalAmendRequest = AmendRequestData(Nino(nino),id, amendMissingOptionalRequestObj)
+  private val rawMissingOptionalAmendRequest = AmendRawData(nino,submissionId, missingOptionalRequestJson)
+  private val missingOptionalAmendRequest = AmendRequestData(Nino(nino),submissionId, amendMissingOptionalRequestObj)
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
@@ -93,7 +93,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .submitAmendRequest(amendRequest)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-        val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
+        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -112,7 +112,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
 
-        val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
+        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
 
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -131,7 +131,7 @@ class AmendControllerSpec extends ControllerBaseSpec
             .parse(rawAmendRequest)
             .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
 
-          val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(requestJson))
+          val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(requestJson))
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(error)
@@ -171,7 +171,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .parse(rawAmendRequest)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
+        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -198,7 +198,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .parse(rawAmendRequest)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
+        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -231,7 +231,7 @@ class AmendControllerSpec extends ControllerBaseSpec
             .submitAmendRequest(amendRequest)
             .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), Seq(mtdError)))))
 
-          val result: Future[Result] = controller.amendRequest(nino,id)(fakePostRequest(Json.toJson(requestJson)))
+          val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(mtdError)
