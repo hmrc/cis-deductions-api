@@ -35,7 +35,7 @@ import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CreateRequestControllerSpec
+class CreateControllerSpec
   extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
@@ -47,7 +47,7 @@ class CreateRequestControllerSpec
   trait Test {
     val hc = HeaderCarrier()
 
-    val controller = new CreateRequestController(
+    val controller = new CreateController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestDataParser,

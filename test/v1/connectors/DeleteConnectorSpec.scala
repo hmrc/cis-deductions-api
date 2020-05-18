@@ -21,7 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRequest
+import v1.models.request.DeleteRequestData
 
 import scala.concurrent.Future
 
@@ -41,7 +41,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
   }
 
   "delete" should {
-    val request: DeleteRequest = DeleteRequest(nino, submissionId)
+    val request: DeleteRequestData = DeleteRequestData(nino, submissionId)
 
     "return a result" when {
       "the downstream call is successful" in new Test {

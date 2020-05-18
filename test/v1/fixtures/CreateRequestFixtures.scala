@@ -19,9 +19,8 @@ package v1.fixtures
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import v1.models.audit.{AuditError, AuditResponse}
-import v1.models.request.{ CreateRequestModel, PeriodDetails}
-import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
-import v1.models.responseData.{ CreateResponseModel}
+import v1.models.request.{CreateRequest, PeriodDetails}
+import v1.models.responseData.CreateResponseModel
 
 object CreateRequestFixtures {
 
@@ -520,42 +519,19 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val requestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
     )
   )
 
-  val missingOptionalRequestObj: CreateRequestModel = CreateRequestModel("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val missingOptionalRequestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
     )
   )
-
-  val listCisDeductionsModel =
-    ListResponseModel(
-      Seq(DeductionsDetails(
-        submissionId = Some("12345678"),
-        fromDate = "2019-04-06",
-        toDate = "2020-04-05",
-        contractorName = "Bovis",
-        employerRef = "BV40092",
-        Seq(
-          PeriodDeductions(
-            deductionAmount = 355.00,
-            deductionFromDate = "2019-06-06",
-            deductionToDate = "2019-07-05",
-            costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
-            submissionDate = " 2019-04-06",
-            submittedBy = "2019-04-06"
-          )
-        )
-      )
-      )
-    )
   
   val   responseJson: JsValue = Json.parse(
     """

@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.request
 
-import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.CreateRequestModelValidator
-import v1.models.request.{CreateRawData, CreateRequestData, CreateRequestModel}
+import v1.models.requestData.RawData
 
-class CreateRequestModelParser @Inject()(val validator: CreateRequestModelValidator)
-  extends RequestParser[CreateRawData, CreateRequestData] {
+case class ListRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
 
-  override protected def requestFor(data: CreateRawData): CreateRequestData = {
-    val requestBody = data.body.as[CreateRequestModel]
-    CreateRequestData(Nino(data.nino), requestBody)
-  }
-}
+case class ListRequestData(nino: Nino, fromDate: String, toDate: String, source: String)

@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.mocks.validators
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.CreateValidator
+import v1.models.errors.MtdError
+import v1.models.request.CreateRawData
 
-case class DeleteRawData(nino: String, submissionId: String) extends RawData
+class MockCreateValidator extends MockFactory {
 
-case class DeleteRequest(nino: Nino, submissionId: String)
+  val mockValidator: CreateValidator =  mock[CreateValidator]
 
+  object MockValidator {
+
+    def validate(data: CreateRawData): CallHandler1[CreateRawData, List[MtdError]] = {
+      (mockValidator
+        .validate(_:CreateRawData))
+        .expects(data)
+    }
+  }
+}

@@ -25,7 +25,7 @@ import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRequest
+import v1.models.request.DeleteRequestData
 import v1.connectors.DeleteConnector
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteService @Inject()(connector: DeleteConnector) extends DesResponseMappingSupport with Logging {
 
-  def deleteDeductions(request: DeleteRequest)(
+  def deleteDeductions(request: DeleteRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {

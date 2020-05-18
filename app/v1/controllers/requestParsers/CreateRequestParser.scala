@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.controllers.requestParsers
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.DeleteRequestParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.{DeleteRawData, DeleteRequest}
+import javax.inject.Inject
+import uk.gov.hmrc.domain.Nino
+import v1.controllers.requestParsers.validators.CreateValidator
+import v1.models.request.{CreateRawData, CreateRequestData, CreateRequest}
 
-trait MockDeleteRequestParser extends MockFactory {
+class CreateRequestParser @Inject()(val validator: CreateValidator)
+  extends RequestParser[CreateRawData, CreateRequestData] {
 
-  val mockRequestParser: DeleteRequestParser = mock[DeleteRequestParser]
-
-  object MockDeleteRequestDataParser {
-    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequest]] = {
-      (mockRequestParser.parseRequest(_: DeleteRawData)).expects(data)
-    }
+  override protected def requestFor(data: CreateRawData): CreateRequestData = {
+    val requestBody = data.body.as[CreateRequest]
+    CreateRequestData(Nino(data.nino), requestBody)
   }
 }

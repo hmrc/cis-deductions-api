@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockCreateConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRequestData, CreateRequestModel, PeriodDetails}
+import v1.models.request.{CreateRequestData, CreateRequest, PeriodDetails}
 import v1.models.responseData.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,7 @@ class CreateServiceSpec extends UnitSpec {
   private val correlationId = "X-123"
   private val id = "123456789"
 
-  private val requestBody = CreateRequestModel("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00)))
+  private val requestBody = CreateRequest("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),0.00)))
 
   private val requestData = CreateRequestData(Nino(nino), requestBody)
 

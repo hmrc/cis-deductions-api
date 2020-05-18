@@ -19,11 +19,11 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteValidator
-import v1.models.request.{DeleteRawData, DeleteRequest}
+import v1.models.request.{DeleteRawData, DeleteRequestData}
 
 class DeleteRequestParser@Inject()(val validator: DeleteValidator)
-  extends RequestParser[DeleteRawData,DeleteRequest]{
+  extends RequestParser[DeleteRawData,DeleteRequestData]{
 
-  override protected def requestFor(data: DeleteRawData): DeleteRequest =
-    DeleteRequest(Nino(data.nino), data.submissionId)
+  override protected def requestFor(data: DeleteRawData): DeleteRequestData =
+    DeleteRequestData(Nino(data.nino), data.submissionId)
 }
