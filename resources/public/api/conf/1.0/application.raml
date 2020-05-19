@@ -42,11 +42,17 @@ uses:
       post: !include create.raml
     /current-position:
       get: !include list.raml
+'/individuals/deductions/cis':
+  /{nino}:
     /amendments/{submissionId}:
         delete: !include delete.raml
         put: !include amend.raml
         uriParameters:
-          submissionId:
-           description: 'Unique identifier for the CIS deduction.'
+         nino:
+           description: 'National Insurance number in the format AA999999A.'
            type: string
-           example: S4636A77V5KB8625U
+           example: TC663795B
+         submissionId:
+            description: 'Unique identifier for the customer provided CIS deductions amendment.'
+            type: string
+            example: 4557ecb5-fd32-48cc-81f5-e6acd1099f3c

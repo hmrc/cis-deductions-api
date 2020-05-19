@@ -3,10 +3,11 @@ is:
   - headers.testScenarioHeader
   - headers.contentTypeJson
   - errors.formatNino
-  - errors.formatCisId
+  - errors.formatSubmissionId
   - errors.clientOrAgentNotAuthorised
+  - errors.notFound
 displayName: Delete CIS Deductions for Subcontractor [test only]
-description: This endpoint allows a developer to remove Construction Industry Scheme deductions which have been previously populated.
+description: This endpoint allows a developer to remove customer CIS amendment deductions which have been previously populated. A National Insurance number and submission ID must be provided.
 (annotations.sandboxData): !include scenarios/delete_scenarios.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]

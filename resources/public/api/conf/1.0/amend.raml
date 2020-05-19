@@ -18,10 +18,10 @@ is:
   - errors.ruleNoChangeLossAmount
   - errors.ruleFromDate
   - errors.ruleToDate
-  - errors.formatCisSubmissionID
+  - errors.formatSubmissionId
 displayName: AMEND CIS Deductions for Subcontractor [test only]
 description: This endpoint allows a developer to amend a CIS deductions which has been previously populated.
-(annotations.sandboxData): !include scenarios/create_scenarios.md
+(annotations.sandboxData): !include scenarios/amend_scenarios.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:

@@ -15,6 +15,10 @@
             <td><p>FORMAT_NINO</p></td>
             <td><p>Simulate the scenario where the format of the supplied NINO field is not valid</p></td>
         </tr>
+        <tr>    
+            <td><p>FORMAT_SUBMISSION_ID</p></td>
+            <td><p>Simulate the scenario where the format of the  submission id is not valid</p></td>
+        </tr>  
         <tr>
             <td><p>FORMAT_DEDUCTION_FROM_DATE</p></td>
             <td><p>Simulate the scenario where he deductions From date is not a valid ISO format date</p></td>

@@ -18,6 +18,10 @@
         <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
             <td><p>Simulate the scenario where the supplied NINO is not found</p></td>        
-        </tr>                   
+        </tr>  
+        <tr>
+            <td><p>FORMAT_SUBMISSION_ID</p></td>
+            <td><p>Simulate the scenario where the supplied submissionId is not found</p></td>
+        </tr>                 
     </tbody>
 </table>
