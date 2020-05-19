@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class AmendConnectorSpec extends ConnectorSpec {
 
   val nino = Nino("AA123456A")
-  val id = "S4636A77V5KB8625U"
+  val submissionId = "S4636A77V5KB8625U"
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
@@ -43,7 +43,7 @@ class AmendConnectorSpec extends ConnectorSpec {
   }
 
   "amend" should {
-    val request = AmendRequestData(nino, id, amendRequestObj)
+    val request = AmendRequestData(nino, submissionId, amendRequestObj)
 
     "return a result" when {
       "the downstream call is successful" in new Test {

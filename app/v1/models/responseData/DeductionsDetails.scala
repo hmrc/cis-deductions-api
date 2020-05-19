@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.responseData
 
-import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.ListDeductionsValidator
-import v1.models.request.{ListDeductionsRawData, ListDeductionsRequest}
+import play.api.libs.json._
 
-class ListDeductionRequestParser @Inject()(val validator: ListDeductionsValidator)
-  extends RequestParser[ListDeductionsRawData, ListDeductionsRequest] {
 
-  override protected def requestFor(data: ListDeductionsRawData): ListDeductionsRequest = {
-    ListDeductionsRequest(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
-  }
+case class DeductionsDetails(submissionId: Option[String],
+                             fromDate: String,
+                             toDate: String,
+                             contractorName: String,
+                             employerRef: String,
+                             periodData: Seq[PeriodDeductions]
+                            )
+
+object DeductionsDetails {
+  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
+  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
 }

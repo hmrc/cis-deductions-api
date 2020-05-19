@@ -21,13 +21,13 @@ import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
 
-class CreateRequestModelValidatorSpec extends UnitSpec{
+class CreateValidatorSpec extends UnitSpec{
 
   val nino = "AA123456A"
   val invalidNino = "GHFG197854"
 
   class SetUp {
-    val validator = new CreateRequestModelValidator
+    val validator = new CreateValidator
   }
   "running validation" should {
     "return no errors" when {

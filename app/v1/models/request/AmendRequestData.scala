@@ -22,4 +22,5 @@ import uk.gov.hmrc.domain.Nino
 
 
 case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData
+
 case class AmendRequestData(nino: Nino, id: String, body: AmendRequest)

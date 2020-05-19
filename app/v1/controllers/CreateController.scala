@@ -23,7 +23,7 @@ import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.Logging
-import v1.controllers.requestParsers.CreateRequestModelParser
+import v1.controllers.requestParsers.CreateRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit._
 import v1.models.auth.UserDetails
@@ -36,13 +36,13 @@ import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLoo
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CreateRequestController @Inject()(val authService: EnrolmentsAuthService,
-                                        val lookupService: MtdIdLookupService,
-                                        requestParser: CreateRequestModelParser,
-                                        service: CreateService,
-                                        hateoasFactory: HateoasFactory,
-                                        auditService: AuditService,
-                                        cc: ControllerComponents)(implicit ec: ExecutionContext)
+class CreateController @Inject()(val authService: EnrolmentsAuthService,
+                                 val lookupService: MtdIdLookupService,
+                                 requestParser: CreateRequestParser,
+                                 service: CreateService,
+                                 hateoasFactory: HateoasFactory,
+                                 auditService: AuditService,
+                                 cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
     with Logging {

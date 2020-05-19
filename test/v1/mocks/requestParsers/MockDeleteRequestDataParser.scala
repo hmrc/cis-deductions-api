@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package v1.mocks.validators
+package v1.mocks.requestParsers
 
-import org.scalamock.handlers.CallHandler1
+import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.ListDeductionsValidator
-import v1.models.errors.MtdError
-import v1.models.request.ListDeductionsRawData
+import v1.controllers.requestParsers.DeleteRequestParser
+import v1.models.errors.ErrorWrapper
+import v1.models.request.{DeleteRawData, DeleteRequestData}
 
-class MockListDeductionsValidator extends MockFactory {
+trait MockDeleteRequestDataParser extends MockFactory {
 
-  val mockValidator: ListDeductionsValidator = mock[ListDeductionsValidator]
+  val mockRequestParser: DeleteRequestParser = mock[DeleteRequestParser]
 
-  object MockValidator {
-
-    def validate(data: ListDeductionsRawData): CallHandler1[ListDeductionsRawData, List[MtdError]] = {
-      (mockValidator
-        .validate(_: ListDeductionsRawData))
-        .expects(data)
+  object MockDeleteRequestDataParser {
+    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequestData]] = {
+      (mockRequestParser.parseRequest(_: DeleteRawData)).expects(data)
     }
   }
 }

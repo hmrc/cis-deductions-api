@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers
 
-import v1.mocks.validators.MockCreateRequestModelValidator
+import v1.mocks.validators.MockCreateValidator
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.models.request.{CreateRawData, CreateRequestData}
@@ -24,13 +24,13 @@ import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
 
 
-class CreateRequestModelParserSpec extends UnitSpec{
+class CreateRequestParserSpec extends UnitSpec{
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
 
-  trait Test extends  MockCreateRequestModelValidator{
-    lazy val parser = new CreateRequestModelParser(mockValidator)
+  trait Test extends  MockCreateValidator{
+    lazy val parser = new CreateRequestParser(mockValidator)
   }
 
   "parser" should {

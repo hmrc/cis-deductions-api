@@ -19,7 +19,7 @@ package v1.models.reponseData
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures._
-import v1.models.responseData.listDeductions._
+import v1.models.responseData.{DeductionsDetails, ListResponseModel}
 
 class ListResponseModelSpec extends UnitSpec {
 

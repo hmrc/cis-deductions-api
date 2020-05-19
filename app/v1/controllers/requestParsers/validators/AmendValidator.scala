@@ -30,7 +30,7 @@ class   AmendValidator extends Validator[AmendRawData] {
   private def parameterFormatValidation: AmendRawData => List[List[MtdError]] = (data: AmendRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      IdValidation.validate(data.id)
+      SubmissionIdValidation.validate(data.id)
     )
   }
 

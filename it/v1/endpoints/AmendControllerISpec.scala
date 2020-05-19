@@ -13,11 +13,10 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 class AmendControllerISpec extends IntegrationBaseSpec{
   private trait Test {
     val nino = "AA123456A"
-    val id = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+    val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-
-    def uri: String = s"/deductions/cis/$nino/amendments/$id"
-    def desUri: String = s"/income-tax/cis/deductions/$nino/amendments/$id"
+    def uri: String = s"/deductions/cis/$nino/amendments/$submissionId"
+    def desUri: String = s"/income-tax/cis/deductions/$nino/amendments/$submissionId"
 
     def setupStubs(): StubMapping
 
@@ -50,7 +49,7 @@ class AmendControllerISpec extends IntegrationBaseSpec{
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
-            override val id: String = requestId
+            override val submissionId: String = requestId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()

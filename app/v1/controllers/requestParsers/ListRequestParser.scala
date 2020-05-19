@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers
 
-import play.api.libs.json.JsValue
-import v1.models.requestData.RawData
+import javax.inject.Inject
+import uk.gov.hmrc.domain.Nino
+import v1.controllers.requestParsers.validators.ListValidator
+import v1.models.request.{ListRawData, ListRequestData}
 
-case class CreateRawData(nino: String, body: JsValue) extends RawData
+class ListRequestParser @Inject()(val validator: ListValidator)
+  extends RequestParser[ListRawData, ListRequestData] {
 
+  override protected def requestFor(data: ListRawData): ListRequestData = {
+    ListRequestData(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
+  }
+}

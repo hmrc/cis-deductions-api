@@ -31,9 +31,9 @@ import scala.concurrent.Future
 class AmendServiceSpec extends UnitSpec{
 
   val validNino = Nino("AA123456A")
-  val id = "S4636A77V5KB8625U"
+  val submissionId = "S4636A77V5KB8625U"
 
-  val requestData = AmendRequestData(validNino,id,amendRequestObj)
+  val requestData = AmendRequestData(validNino,submissionId,amendRequestObj)
 
   trait Test extends MockAmendConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

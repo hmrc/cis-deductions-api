@@ -28,7 +28,7 @@ import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{DeleteRawData, DeleteRequest}
+import v1.models.request.{DeleteRawData, DeleteRequestData}
 import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +52,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
   def deleteRequest(nino: String, submissionId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       val rawData = DeleteRawData(nino, submissionId)
-      val parseRequest: Either[ErrorWrapper, DeleteRequest] = requestParser.parseRequest(rawData)
+      val parseRequest: Either[ErrorWrapper, DeleteRequestData] = requestParser.parseRequest(rawData)
 
       val serviceResponse = parseRequest match {
         case Right(data) => service.deleteDeductions(data)

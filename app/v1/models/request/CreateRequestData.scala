@@ -16,6 +16,10 @@
 
 package v1.models.request
 
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Nino
+import v1.models.requestData.RawData
 
-case class CreateRequestData(nino: Nino, body: CreateRequestModel)
+case class CreateRawData(nino: String, body: JsValue) extends RawData
+
+case class CreateRequestData(nino: Nino, body: CreateRequest)

@@ -21,8 +21,8 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.ListDeductionsRequest
-import v1.models.responseData.listDeductions.{DeductionsDetails, ListResponseModel, PeriodDeductions}
+import v1.models.request.ListRequestData
+import v1.models.responseData.{DeductionsDetails, ListResponseModel, PeriodDeductions}
 
 import scala.concurrent.Future
 
@@ -42,7 +42,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
   "list" should {
     "return a List Deductions response when a source is supplied" in new Test {
-      val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "contractor")
+      val request = ListRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, ListResponseModel(
         Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
@@ -60,7 +60,7 @@ class ListConnectorSpec extends ConnectorSpec {
 
     "return a Des Error code" when {
       "the http client returns a Des Error code" in new Test {
-        val request = ListDeductionsRequest(nino, "2019-04-05", "2020-04-06", "contractor")
+        val request = ListRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
