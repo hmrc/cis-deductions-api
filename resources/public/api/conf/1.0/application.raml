@@ -48,7 +48,11 @@ uses:
         delete: !include delete.raml
         put: !include amend.raml
         uriParameters:
-          submissionId:
-           description: 'Unique identifier for the customer provided CIS deductions amendment.'
+         nino:
+           description: 'National Insurance number in the format AA999999A.'
            type: string
-           example: db854aaa-65dc-488c-9120-e63fea14b9f1
+           example: TC663795B
+         submissionId:
+            description: 'Unique identifier for the CIS deduction.'
+            type: string
+            example: db854aaa-65dc-488c-9120-e63fea14b9f1
