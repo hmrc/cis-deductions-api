@@ -33,7 +33,7 @@ class AuthISpec extends IntegrationBaseSpec {
     val data          = "someData"
     val correlationId = "X-123"
 
-    def desUri: String = s"/cross-regime/deductions-placeholder/CIS/$nino"
+    def desUri: String = s"/income-tax/cis/deductions/$nino"
 
     val requestJson: String =
       s"""

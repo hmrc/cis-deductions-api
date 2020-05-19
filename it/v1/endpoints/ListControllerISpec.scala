@@ -23,7 +23,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/deductions/cis/$nino/current-position"
 
-    def desUrl: String = s"/cross-regime/deductions-placeholder/CIS/$nino/current-position"
+    def desUrl: String = s"/income-tax/cis/deductions/$nino/current-position"
 
     def setupStubs(): StubMapping
 
