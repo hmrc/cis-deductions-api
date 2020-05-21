@@ -89,14 +89,12 @@ object CreateRequestFixtures {
       |      {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "grossAmountPaid": 1457.00
+      |      "deductionToDate": "2019-07-05"
       |    },
       |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "grossAmountPaid": 1457.00
+      |      "deductionToDate": "2019-08-05"
       |    }
       |  ]
       |}
@@ -521,15 +519,15 @@ object CreateRequestFixtures {
 
   val requestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
-      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00),
-      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00)
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
   val missingOptionalRequestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
     Seq(
-      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, 1457.00),
-      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, 1457.00)
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)
     )
   )
   

@@ -23,14 +23,14 @@ case class PeriodDetails(deductionAmount: BigDecimal,
                          deductionFromDate: String,
                          deductionToDate: String,
                          costOfMaterials: Option[BigDecimal],
-                         grossAmountPaid: BigDecimal)
+                         grossAmountPaid: Option[BigDecimal])
 object PeriodDetails {
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "deductionAmount").read[BigDecimal] and
       (JsPath \ "deductionFromDate").read[String] and
       (JsPath \ "deductionToDate").read[String] and
       (JsPath \ "costOfMaterials").readNullable[BigDecimal] and
-      (JsPath \ "grossAmountPaid").read[BigDecimal]
+      (JsPath \ "grossAmountPaid").readNullable[BigDecimal]
     )(PeriodDetails.apply _)
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 
