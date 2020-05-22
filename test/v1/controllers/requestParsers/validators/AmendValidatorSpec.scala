@@ -52,14 +52,6 @@ class AmendValidatorSpec extends UnitSpec {
         private val result = validator.validate(AmendRawData(validNino, validId, missingMandatoryFieldRequestJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-      "invalid request body fromDate format is provided" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidFromDateFormatRequestJson))
-        result shouldBe List(FromDateFormatError)
-      }
-      "invalid request body toDate format is provided" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidToDateFormatRequestJson))
-        result shouldBe List(ToDateFormatError)
-      }
       "invalid request body Deduction fromDate format is provided" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidDeductionFromDateFormatRequestJson))
         result shouldBe List(DeductionFromDateFormatError)
@@ -91,22 +83,6 @@ class AmendValidatorSpec extends UnitSpec {
       "invalid request body GrossAmount negative is provided" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidGrossAmountNegativeRequestJson))
         result shouldBe List(RuleGrossAmountError)
-      }
-      "invalid request body toDate before fromDate is provided" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidToDateBeforeFromDateRequestJson))
-        result shouldBe List(RuleDateRangeInvalidError)
-      }
-      "invalid request body fromDate not valid end valid tax year" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidFromDateForTaxYear))
-        result shouldBe List(RuleFromDateError)
-      }
-      "invalid request body toDate not valid end of tax year" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidToDateForTaxYear))
-        result shouldBe List(RuleToDateError)
-      }
-      "invalid request date range " in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidDateRange))
-        result shouldBe List(RuleDateRangeInvalidError)
       }
     }
   }
