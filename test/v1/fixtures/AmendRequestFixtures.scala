@@ -21,14 +21,14 @@ import v1.models.request.{AmendRequest, PeriodDetails}
 
 object AmendRequestFixtures {
 
-  val amendRequestObj: AmendRequest = AmendRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val amendRequestObj: AmendRequest = AmendRequest(
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val amendMissingOptionalRequestObj: AmendRequest = AmendRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val amendMissingOptionalRequestObj: AmendRequest = AmendRequest(
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)
@@ -38,10 +38,6 @@ object AmendRequestFixtures {
   val requestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -154,7 +150,7 @@ object AmendRequestFixtures {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
+      |      "costOfMaterials": false,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {

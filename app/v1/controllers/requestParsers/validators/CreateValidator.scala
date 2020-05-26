@@ -25,7 +25,8 @@ class CreateValidator extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator,
-    bodyRuleValidator
+    bodyRuleValidator,
+    businessRuleValidator
   )
 
   private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
@@ -51,8 +52,14 @@ class CreateValidator extends Validator[CreateRawData] with FixedConfig {
       PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError),
       DateValidation.validate(FromDateFormatError)(req.fromDate),
       DateValidation.validate(ToDateFormatError)(req.toDate),
-      ToBeforeFromDateValidation.validate(req.fromDate, req.toDate, RuleDateRangeInvalidError),
       EmployerRefValidation.validate(req.employerRef)
+    )
+  }
+
+  private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+    val req = data.body.as[CreateRequest]
+    List(
+      TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
     )
   }
 

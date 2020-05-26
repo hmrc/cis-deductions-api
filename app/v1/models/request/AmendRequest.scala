@@ -19,10 +19,6 @@ package v1.models.request
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class AmendRequest(
-                         fromDate: String,
-                         toDate: String,
-                         contractorName: String,
-                         employerRef: String,
                          periodData: Seq[PeriodDetails]
                        )
 

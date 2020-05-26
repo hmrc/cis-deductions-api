@@ -31,8 +31,8 @@ object EmployerRefFormatError extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
-object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTION_FROM_DATE", "The provided deductions From date is invalid")
-object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTION_TO_DATE", "The provided deductions To date is invalid")
+object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid")
+object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid")
 
 
 // Rule Errors
@@ -45,7 +45,7 @@ object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
 
 object RuleDeductionsDateRangeInvalidError
-    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The specified date range is invalid")
+    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align to the 6th of the month to the 5th of the tax year")
 
 object RuleDateRangeInvalidError
     extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")

@@ -88,8 +88,6 @@ class ListControllerISpec extends IntegrationBaseSpec {
           ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError, None),
           ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
           ("AA123456B", "2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
-          ("AA123456B", "2019-04-06", "2020-04-06", "customer", BAD_REQUEST, RuleToDateError, None),
-          ("AA123456B", "2019-04-05", "2020-04-05", "customer", BAD_REQUEST, RuleFromDateError, None),
           ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2019-04-06", "source" -> "all"))),
           ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2020-04-05", "source" -> "all")))
         )

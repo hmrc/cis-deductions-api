@@ -67,12 +67,12 @@ class ListValidatorSpec extends UnitSpec {
 
       "the from date is not the start of the tax year" in new SetUp {
         private val result = validator.validate(ListRawData(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")))
-        result shouldBe List(RuleFromDateError)
+        result shouldBe List(RuleDateRangeInvalidError)
       }
 
       "the to date is not the end of the tax year" in new SetUp {
         private val result = validator.validate(ListRawData(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")))
-        result shouldBe List(RuleToDateError)
+        result shouldBe List(RuleDateRangeInvalidError)
       }
     }
   }

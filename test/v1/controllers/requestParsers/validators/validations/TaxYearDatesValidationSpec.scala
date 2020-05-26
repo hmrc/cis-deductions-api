@@ -32,11 +32,11 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
     "return errors" when {
       "a request body with invalid toDate" in {
         val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-06", None)
-        validationResult shouldBe List(RuleToDateError)
+        validationResult shouldBe List(RuleDateRangeInvalidError)
       }
       "a request body with invalid fromDate" in {
         val validationResult = TaxYearDatesValidation.validate("2019-04-07", "2020-04-05", None)
-        validationResult shouldBe List(RuleFromDateError)
+        validationResult shouldBe List(RuleDateRangeInvalidError)
       }
       "a request body with invalid date range" in {
         val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2021-04-05", Some(1))
