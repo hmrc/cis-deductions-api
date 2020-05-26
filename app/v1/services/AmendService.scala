@@ -46,7 +46,7 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
 
   private def desErrorMap =
     Map(
-      "INVALID_IDVALUE" -> NinoFormatError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_DEDUCTION_DATE_FROM"->DeductionFromDateFormatError,
       "INVALID_DEDUCTION_DATE_TO"-> DeductionToDateFormatError,
       "INVALID_DATE_FROM"-> FromDateFormatError,
