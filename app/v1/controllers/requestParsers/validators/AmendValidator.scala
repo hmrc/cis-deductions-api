@@ -40,8 +40,6 @@ class   AmendValidator extends Validator[AmendRawData] {
   }
 
   private def bodyRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[AmendRequest]
-
     List(
       PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),
       PeriodDataPositiveAmountValidation.validate(data.body, "costOfMaterials", RuleCostOfMaterialsError),
