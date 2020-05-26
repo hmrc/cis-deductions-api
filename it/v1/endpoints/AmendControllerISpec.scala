@@ -67,13 +67,8 @@ class AmendControllerISpec extends IntegrationBaseSpec{
           ("AA1123A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A","ID-SUB", requestBodyJson, Status.BAD_REQUEST, SubmissionIdFormatError),
           ("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Json.parse("""{}"""), Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
-          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
           ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
           ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
-          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorToDateInvalid, Status.BAD_REQUEST, RuleToDateError),
-          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorFromDateInvalid, Status.BAD_REQUEST, RuleFromDateError),
-          ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorDateRangeInvalid, Status.BAD_REQUEST, RuleDateRangeInvalidError),
           ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleCostOfMaterial, Status.BAD_REQUEST, RuleCostOfMaterialsError),
           ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleGrossAmountPaid, Status.BAD_REQUEST, RuleGrossAmountError),
           ("AA123456A","4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleDeductionAmount, Status.BAD_REQUEST, RuleDeductionAmountError)

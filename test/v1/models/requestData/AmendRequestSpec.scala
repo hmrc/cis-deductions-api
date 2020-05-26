@@ -19,8 +19,7 @@ package v1.models.requestData
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.models.request.AmendRequest
-import v1.fixtures.CreateRequestFixtures._
-import v1.fixtures.AmendRequestFixtures.{amendMissingOptionalRequestObj,amendRequestObj}
+import v1.fixtures.AmendRequestFixtures._
 
 
 
