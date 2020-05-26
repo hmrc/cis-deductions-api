@@ -79,6 +79,12 @@ object RuleToDateError
 object RuleNoChangeError
   extends MtdError("RULE_NO_CHANGE", "The deducted amount has not changed")
 
+object RuleUnalignedDeductionsPeriodError
+  extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
+
+object RuleDuplicatePeriodError
+  extends MtdError("RULE_DUPLICATE_PERIOD","More than one deduction period has been supplied for the same month or period")
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 
@@ -100,3 +106,4 @@ object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The 
 object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")
+
