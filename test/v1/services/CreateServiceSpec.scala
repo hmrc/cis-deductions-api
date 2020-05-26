@@ -71,16 +71,17 @@ class CreateServiceSpec extends UnitSpec {
           }
 
         val input = Seq(
-          ("INVALID_IDVALUE" , NinoFormatError),
-          ("INVALID_DEDUCTION_DATE_FROM" , DeductionFromDateFormatError),
-          ("INVALID_DEDUCTION_DATE_TO" , DeductionToDateFormatError),
-          ("INVALID_DATE_FROM" , FromDateFormatError),
-          ("INVALID_DATE_TO" , ToDateFormatError),
-          ("INVALID_DEDUCTIONS_DATE_RANGE" , RuleDeductionsDateRangeInvalidError),
-          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" , RuleToDateBeforeFromDateError),
-          ("NOT_FOUND", NotFoundError),
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
+          ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
+          ("INVALID_EMPREF", EmployerRefFormatError),
+          ("INVALID_REQUEST_TAX_YEAR_ALIGN", RuleUnalignedDeductionPeriodError),
+          ("INVALID_REQUEST_DATE_RANGE", RuleDeductionDateRangeError),
+          ("INVALID_REQUEST_BEFORE_TAX_YEAR", RuleTaxYearNotEndedError),
+          ("CONFLICT", RuleDuplicateSubmissionError),
+          ("DUPLICATE_MONTH", RuleDuplicatePeriodError),
           ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("SERVICE_UNAVAILABLE", DownstreamError),
+          ("INVALID_CORRELATIONID", DownstreamError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

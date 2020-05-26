@@ -51,7 +51,8 @@ class CreateValidator extends Validator[CreateRawData] with FixedConfig {
       PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError),
       DateValidation.validate(FromDateFormatError)(req.fromDate),
       DateValidation.validate(ToDateFormatError)(req.toDate),
-      ToBeforeFromDateValidation.validate(req.fromDate, req.toDate, RuleDateRangeInvalidError)
+      ToBeforeFromDateValidation.validate(req.fromDate, req.toDate, RuleDateRangeInvalidError),
+      EmployerRefValidation.validate(req.employerRef)
     )
   }
 

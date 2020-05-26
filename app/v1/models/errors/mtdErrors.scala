@@ -27,6 +27,7 @@ object MtdError {
 // Format Errors
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid")
+object EmployerRefFormatError extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
@@ -47,7 +48,7 @@ object RuleDeductionsDateRangeInvalidError
     extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The specified date range is invalid")
 
 object RuleDateRangeInvalidError
-    extends MtdError("RULE_DATE_RANGE_INVALID", "The specified date range is invalid")
+    extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")
 
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
@@ -78,6 +79,21 @@ object RuleToDateError
 
 object RuleNoChangeError
   extends MtdError("RULE_NO_CHANGE", "The deducted amount has not changed")
+
+object RuleUnalignedDeductionPeriodError
+  extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
+
+object RuleDeductionDateRangeError
+  extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align to the 6th of the month to the 5th of the tax year")
+
+object RuleTaxYearNotEndedError
+  extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The submission has been made before the tax year has ended")
+
+object RuleDuplicateSubmissionError
+  extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for this tax year")
+
+object RuleDuplicatePeriodError
+  extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

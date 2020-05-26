@@ -171,12 +171,11 @@ class CreateControllerSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
+        (EmployerRefFormatError, BAD_REQUEST),
         (DeductionFromDateFormatError, BAD_REQUEST),
         (DeductionToDateFormatError, BAD_REQUEST),
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
-        (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (RuleDeductionAmountError, BAD_REQUEST),
         (RuleCostOfMaterialsError, BAD_REQUEST),
@@ -207,6 +206,8 @@ class CreateControllerSpec
         val error = ErrorWrapper(
           Some(correlationId),
           Seq(
+            EmployerRefFormatError,
+            NinoFormatError,
             BadRequestError,
             DeductionToDateFormatError,
             DeductionFromDateFormatError,
@@ -228,6 +229,8 @@ class CreateControllerSpec
 
         val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
           Seq(
+            AuditError(EmployerRefFormatError.code),
+            AuditError(NinoFormatError.code),
             AuditError(BadRequestError.code),
             AuditError(DeductionToDateFormatError.code),
             AuditError(DeductionFromDateFormatError.code),
@@ -266,17 +269,14 @@ class CreateControllerSpec
 
       val input = Seq(
         (NinoFormatError, BAD_REQUEST),
-        (NotFoundError, NOT_FOUND),
         (DownstreamError, INTERNAL_SERVER_ERROR),
-        (RuleTaxYearNotSupportedError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-        (RuleTaxYearRangeExceededError, BAD_REQUEST),
-        (DeductionFromDateFormatError, BAD_REQUEST),
-        (DeductionToDateFormatError, BAD_REQUEST),
-        (FromDateFormatError, BAD_REQUEST),
-        (ToDateFormatError, BAD_REQUEST),
-        (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
+        (EmployerRefFormatError, BAD_REQUEST),
+        (RuleUnalignedDeductionPeriodError, FORBIDDEN),
+        (RuleDeductionDateRangeError, FORBIDDEN),
+        (RuleTaxYearNotEndedError, FORBIDDEN),
+        (RuleDuplicateSubmissionError, FORBIDDEN),
+        (RuleDuplicatePeriodError, FORBIDDEN)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }

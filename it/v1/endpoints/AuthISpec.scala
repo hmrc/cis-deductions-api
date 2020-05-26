@@ -41,7 +41,7 @@ class AuthISpec extends IntegrationBaseSpec {
         |  "fromDate": "2019-04-06" ,
         |  "toDate": "2020-04-05",
         |  "contractorName": "Bovis",
-        |  "employerRef": "BV40092",
+        |  "employerRef": "123/AB56797",
         |  "periodData": [
         |      {
         |      "deductionAmount": 355.00,
