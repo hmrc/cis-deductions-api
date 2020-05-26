@@ -30,8 +30,8 @@ object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The pro
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
 object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
-object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The deductions From date is not a valid date format")
-object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The deductions To date is not a valid date format")
+object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid")
+object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid")
 
 
 // Rule Errors
@@ -62,7 +62,7 @@ object RuleCostOfMaterialsError
     extends MtdError("RULE_COST_OF_MATERIALS", "The cost of materials should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 object RuleGrossAmountError
-    extends MtdError("RULE_GROSS_AMOUNT_PAID", "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places")
+    extends MtdError("RULE_GROSS_AMOUNT_PAID",  "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 object RuleMissingFromDateError
   extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing")
