@@ -90,7 +90,6 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-
     (errorWrapper.errors.head: @unchecked) match {
       case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError |
            DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |

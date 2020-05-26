@@ -57,13 +57,13 @@ object RuleSourceError
   extends MtdError("RULE_SOURCE_INVALID","The source is invalid" )
 
 object RuleDeductionAmountError
-    extends MtdError("RULE_DEDUCTION_AMOUNT", "The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places")
+    extends MtdError("RULE_DEDUCTIONS_AMOUNT", "The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 object RuleCostOfMaterialsError
-    extends MtdError("RULE_COST_OF_MATERIALS", "The contractor deductions should be a positive number less than 99999999999.99 up to 2 decimal places")
+    extends MtdError("RULE_COST_OF_MATERIALS", "The cost of materials should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 object RuleGrossAmountError
-    extends MtdError("RULE_GROSS_AMOUNT_PAID", "The amount should be a positive number less than 99999999999.99 up to 2 decimal places")
+    extends MtdError("RULE_GROSS_AMOUNT_PAID", "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
 object RuleMissingFromDateError
   extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing")
