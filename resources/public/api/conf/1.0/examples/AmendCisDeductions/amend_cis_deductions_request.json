@@ -1,8 +1,4 @@
 {
-  "fromDate": "2020-01-01",
-  "toDate": "2020-02-01",
-  "contractorName": "contractor1",
-  "employeeRef": "135/AB56789",
   "periodData": [
     {
       "deductionAmount": 1025.10,
