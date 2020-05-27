@@ -17,39 +17,23 @@
         </tr>
         <tr>    
             <td><p>FORMAT_SUBMISSION_ID</p></td>
-            <td><p>Simulate the scenario where the format of the  submission id is not valid</p></td>
-        </tr>  
-        <tr>
-            <td><p>FORMAT_DEDUCTION_FROM_DATE</p></td>
-            <td><p>Simulate the scenario where he deductions From date is not a valid ISO format date</p></td>
-        </tr>
-        <tr>
-            <td><p>FORMAT_DEDUCTION_TO_DATE</p></td>
-            <td><p>Simulate the scenario where the deductions To date is not a valid ISO format date</p></td>
-        </tr>
-        <tr>
-            <td><p>FORMAT_FROM_DATE</p></td>
-            <td><p>Simulate the scenario where the From date is not a valid ISO format date</p></td>
-        </tr>
-        <tr>
-            <td><p>FORMAT_TO_DATE</p></td>
-            <td><p>Simulate the scenario where the To date is not a valid ISO format date</p></td>
+            <td><p>Simulate the scenario where the format of the submission id is not valid</p></td>
         </tr>
         <tr>
             <td><p>RULE_DEDUCTIONS_DATE_RANGE_INVALID</p></td>
-            <td><p>Simulate the scenario where the deductions date range is longer than 366 or less than a day</p></td>
+            <td><p>Simulate the scenario where the deductions period must align from the 6th of one month to the 5th of the following month</p></td>
         </tr>
         <tr>
-            <td><p>RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE</p></td>
-            <td><p>Simulate the scenario where the deductions To date must be after the Deductions From date</p></td>
-        </tr>                
-        <tr>
-            <td><p>RULE_NO_CHANGE</p></td>
-            <td><p>Simulate the scenario where the deducted amount supplied is the same as the existing amount</p></td>
-        </tr>                
-        <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
-            <td><p>Simulate the scenario where The remote endpoint has indicated that no data can be found for the given period</p></td>
+            <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period</p></td>
+        </tr>
+        <tr>
+            <td><p>RULE_UNALIGNED_DEDUCTIONS_PERIOD</p></td>
+            <td><p>Simulate the scenario where the deductions periods do not align with the tax year supplied</p></td>
+        </tr>                
+        <tr>
+            <td><p>RULE_DUPLICATE_PERIOD</p></td>
+            <td><p>Simulate the scenario where more than one deduction period has been supplied for the same month or period</p></td>
         </tr>
    </tbody>
 </table>
