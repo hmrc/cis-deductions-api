@@ -122,7 +122,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (Status.BAD_REQUEST, "INVALID_EMPREF", Status.BAD_REQUEST, EmployerRefFormatError),
           (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_TAX_YEAR_ALIGN", Status.FORBIDDEN, RuleUnalignedDeductionPeriodError),
-          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DATE_RANGE", Status.FORBIDDEN, RuleDeductionDateRangeError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DATE_RANGE", Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError),
           (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_BEFORE_TAX_YEAR", Status.FORBIDDEN, RuleTaxYearNotEndedError),
           (Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDuplicateSubmissionError),
           (Status.UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", Status.FORBIDDEN, RuleDuplicatePeriodError)

@@ -273,7 +273,7 @@ class CreateControllerSpec
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (EmployerRefFormatError, BAD_REQUEST),
         (RuleUnalignedDeductionPeriodError, FORBIDDEN),
-        (RuleDeductionDateRangeError, FORBIDDEN),
+        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
         (RuleTaxYearNotEndedError, FORBIDDEN),
         (RuleDuplicateSubmissionError, FORBIDDEN),
         (RuleDuplicatePeriodError, FORBIDDEN)

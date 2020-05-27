@@ -83,9 +83,6 @@ object RuleNoChangeError
 object RuleUnalignedDeductionPeriodError
   extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
 
-object RuleDeductionDateRangeError
-  extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align to the 6th of the month to the 5th of the tax year")
-
 object RuleTaxYearNotEndedError
   extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The submission has been made before the tax year has ended")
 

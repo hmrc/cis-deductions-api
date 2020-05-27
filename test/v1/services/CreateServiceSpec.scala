@@ -75,7 +75,7 @@ class CreateServiceSpec extends UnitSpec {
           ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
           ("INVALID_EMPREF", EmployerRefFormatError),
           ("INVALID_REQUEST_TAX_YEAR_ALIGN", RuleUnalignedDeductionPeriodError),
-          ("INVALID_REQUEST_DATE_RANGE", RuleDeductionDateRangeError),
+          ("INVALID_REQUEST_DATE_RANGE", RuleDeductionsDateRangeInvalidError),
           ("INVALID_REQUEST_BEFORE_TAX_YEAR", RuleTaxYearNotEndedError),
           ("CONFLICT", RuleDuplicateSubmissionError),
           ("DUPLICATE_MONTH", RuleDuplicatePeriodError),
