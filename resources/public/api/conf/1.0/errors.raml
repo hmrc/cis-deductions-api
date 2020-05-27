@@ -190,6 +190,17 @@ traits:
                 description: The deductions period must align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
+  rangeDeductionsToDateBeforeDeductionsFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rangeDeductionsToDateBeforeDeductionsFromDate:
+                description: The deductions To date must be after the Deductions From date
+                value:
+                  code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
   ruleTaxYearNotEnded:
       responses:
         403:
@@ -267,17 +278,28 @@ traits:
                 description: The to date is not the end of the tax year
                 value:
                   code: RULE_TO_DATE
+  formatCisSubmissionID:
+     responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                formatCisSubmissionID:
+                  description: The format of the CIS deductions submission ID is not valid
+                  value:
+                    code: FORMAT_CIS_SUBMISSION_ID
   ruleUnalignedDeductionsPeriod:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleUnalignedDeductionsPeriod:
-                description: The deductions periods do not align with the tax year supplied
-                value:
-                  code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
+     responses:
+        403:
+         body:
+           application/json:
+             type: types.errorResponse
+             examples:
+               ruleUnalignedDeductionsPeriod:
+                 description: The deductions periods do not align with the tax year supplied
+                 value:
+                   code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
   ruleDuplicatePeriod:
     responses:
       403:
