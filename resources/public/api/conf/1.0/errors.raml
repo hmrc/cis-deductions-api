@@ -118,7 +118,7 @@ traits:
             type: types.errorResponse
             examples:
               formatDeductionFromDate:
-                description: The deductions From date is not a valid ISO format date
+                description: The deductions From date is not a valid date format
                 value:
                   code: FORMAT_DEDUCTION_FROM_DATE
   formatDeductionToDate:
@@ -129,7 +129,7 @@ traits:
             type: types.errorResponse
             examples:
               formatDeductionToDate:
-                description: The deductions To date is not a valid ISO format date
+                description: The deductions To date is not a valid date format
                 value:
                   code: FORMAT_DEDUCTION_TO_DATE
   ruleDeductionAmount:
@@ -173,7 +173,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleCostOfMaterials:
-                description: The contractor deductions should be a positive number less than 99999999999.99 up to 2 decimal places
+                description: The cost of materials should be a positive number less than 99999999999.99  up to 2 decimal places
                 value:
                   code: RULE_COST_OF_MATERIALS
   ruleGrossAmountPaid:
@@ -184,7 +184,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleGrossAmountPaid:
-                description: The amount should be a positive number less than 99999999999.99 up to 2 decimal places
+                description: The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places
                 value:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
@@ -206,7 +206,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions date range is longer than 366 or less than a day
+                description: The deductions period must align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionToDateBeforeDeductionsFromDate:

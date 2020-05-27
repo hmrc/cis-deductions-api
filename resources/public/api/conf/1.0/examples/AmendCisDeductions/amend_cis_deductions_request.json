@@ -1,11 +1,18 @@
 {
   "periodData": [
     {
-      "deductionAmount": 1025.10,
-      "deductionFromDate": "2020-01-01",
-      "deductionToDate": "2020-02-01",
-      "costOfMaterials": 1024.10,
-      "grossAmountPaid": 5000.99
+      "deductionAmount": 355.00,
+      "deductionFromDate": "2019-06-06",
+      "deductionToDate": "2019-07-05",
+      "costOfMaterials": 35.00,
+      "grossAmountPaid": 1457.00
+    },
+    {
+      "deductionAmount": 355.00,
+      "deductionFromDate": "2019-07-06",
+      "deductionToDate": "2019-08-05",
+      "costOfMaterials": 35.00,
+      "grossAmountPaid": 1457.00
     }
   ]
 }
