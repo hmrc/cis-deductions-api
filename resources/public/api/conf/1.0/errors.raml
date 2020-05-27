@@ -110,36 +110,36 @@ traits:
                 description: An empty or non-matching body was submitted
                 value:
                   code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
-  formatDeductionFromDate:
+  formatDeductionsFromDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              formatDeductionFromDate:
+              formatDeductionsFromDate:
                 description: The deductions From date is not a valid date format
                 value:
                   code: FORMAT_DEDUCTIONS_FROM_DATE
-  formatDeductionToDate:
+  formatDeductionsToDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              formatDeductionToDate:
+              formatDeductionsToDate:
                 description: The deductions To date is not a valid date format
                 value:
                   code: FORMAT_DEDUCTIONS_TO_DATE
-  ruleDeductionAmount:
+  ruleDeductionsAmount:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleDeductionAmount:
+              ruleDeductionsAmount:
                 description: The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places.
                 value:
                   code: RULE_DEDUCTIONS_AMOUNT
@@ -209,14 +209,14 @@ traits:
                 description: The deductions date range is longer than 366 or less than a day
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
-  rangeDeductionToDateBeforeDeductionsFromDate:
+  rangeDeductionsToDateBeforeDeductionsFromDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              rangeDeductionToDateBeforeDeductionsFromDate:
+              rangeDeductionsToDateBeforeDeductionsFromDate:
                 description: The deductions To date must be after the Deductions From date
                 value:
                   code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
