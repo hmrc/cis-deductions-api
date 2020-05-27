@@ -120,7 +120,7 @@ traits:
               formatDeductionFromDate:
                 description: The deductions From date is not a valid date format
                 value:
-                  code: FORMAT_DEDUCTION_FROM_DATE
+                  code: FORMAT_DEDUCTIONS_FROM_DATE
   formatDeductionToDate:
     responses:
       400:
@@ -131,7 +131,7 @@ traits:
               formatDeductionToDate:
                 description: The deductions To date is not a valid date format
                 value:
-                  code: FORMAT_DEDUCTION_TO_DATE
+                  code: FORMAT_DEDUCTIONS_TO_DATE
   ruleDeductionAmount:
     responses:
       400:
@@ -200,13 +200,13 @@ traits:
                   code: RULE_DATE_RANGE_INVALID
   ruleDeductionsDateRangeInvalid:
     responses:
-      400:
+      403:
         body:
           application/json:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions period must align from the 6th of one month to the 5th of the following month
+                description: The deductions date range is longer than 366 or less than a day
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionToDateBeforeDeductionsFromDate:
@@ -506,3 +506,25 @@ traits:
                   description: The format of the CIS deduction submission ID is not valid
                   value:
                     code: FORMAT_CIS_SUBMISSION_ID
+  ruleUnalginedDeductionsPeriod:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleUnalginedDeductionsPeriod:
+                description: The deductions periods do not align with the tax year supplied
+                value:
+                  code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
+  ruleDuplicatePeriod:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicatePeriod:
+                description: More than one deduction period has been supplied for the same month or period
+                value:
+                  code: RULE_DUPLICATE_PERIOD
