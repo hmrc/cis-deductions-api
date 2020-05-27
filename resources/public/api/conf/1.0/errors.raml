@@ -140,7 +140,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsAmount:
-                description: The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places.
+                description: The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places.
                 value:
                   code: RULE_DEDUCTIONS_AMOUNT
   formatFromDate:
@@ -206,7 +206,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions date range is longer than 366 or less than a day
+                description: The deductions period must align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionsToDateBeforeDeductionsFromDate:
@@ -503,7 +503,7 @@ traits:
               type: types.errorResponse
               examples:
                 formatCisSubmissionID:
-                  description: The format of the CIS deduction submission ID is not valid
+                  description: The format of the CIS deductions submission ID is not valid
                   value:
                     code: FORMAT_CIS_SUBMISSION_ID
   ruleUnalginedDeductionsPeriod:
@@ -525,6 +525,6 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicatePeriod:
-                description: More than one deduction period has been supplied for the same month or period
+                description: More than one deductions period has been supplied for the same month or period
                 value:
                   code: RULE_DUPLICATE_PERIOD
