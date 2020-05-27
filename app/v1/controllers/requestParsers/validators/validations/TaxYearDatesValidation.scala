@@ -32,11 +32,11 @@ object TaxYearDatesValidation {
   val toDateFormat = "[0-9]{4}-04-05"
 
   private def validateFromDate(date: String): List[MtdError] = {
-    if (date.matches(fromDateFormat)) NoValidationErrors else List(RuleFromDateError)
+    if (date.matches(fromDateFormat)) NoValidationErrors else List(RuleDateRangeInvalidError)
   }
 
   private def validateToDate(date: String): List[MtdError] = {
-    if (date.matches(toDateFormat)) NoValidationErrors else List(RuleToDateError)
+    if (date.matches(toDateFormat)) NoValidationErrors else List(RuleDateRangeInvalidError)
   }
 
   private def validateYears(numYears: Int, fromDate: String, toDate: String): List[MtdError] = {

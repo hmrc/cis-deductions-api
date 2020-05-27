@@ -57,7 +57,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
           DesStub.mockDes(DesStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
-        val response: WSResponse = await(request().post(Json.parse(requestJson)))
+        val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe Status.OK
         response.json shouldBe deductionsResponseBody
       }
@@ -85,6 +85,11 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA1123A", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", emptyRequest, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", requestInvalidEmpRef, Status.BAD_REQUEST, EmployerRefFormatError),
+          ("AA123456A", requestRuleDeductionAmountJson, Status.BAD_REQUEST, RuleDeductionAmountError),
+          ("AA123456A", requestInvalidRuleCostOfMaterialsJson, Status.BAD_REQUEST, RuleCostOfMaterialsError),
+          ("AA123456A", requestInvalidGrossAmountJson, Status.BAD_REQUEST, RuleGrossAmountError),
+          ("AA123456A", requestInvalidDateRangeJson, Status.FORBIDDEN, RuleDateRangeInvalidError),
           ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
           ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
           ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
@@ -110,9 +115,17 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
+          (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          (Status.BAD_REQUEST, "INVALID_EMPREF", Status.BAD_REQUEST, EmployerRefFormatError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_TAX_YEAR_ALIGN", Status.FORBIDDEN, RuleUnalignedDeductionPeriodError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DATE_RANGE", Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_BEFORE_TAX_YEAR", Status.FORBIDDEN, RuleTaxYearNotEndedError),
+          (Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDuplicateSubmissionError),
+          (Status.UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", Status.FORBIDDEN, RuleDuplicatePeriodError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

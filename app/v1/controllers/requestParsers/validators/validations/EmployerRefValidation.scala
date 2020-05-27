@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json.{Json, Reads, Writes}
+import v1.models.errors.{EmployerRefFormatError, MtdError}
 
-case class AmendRequest(
-                         periodData: Seq[PeriodDetails]
-                       )
+object EmployerRefValidation {
 
-object AmendRequest {
-  implicit val reads: Reads[AmendRequest] = Json.reads[AmendRequest]
-  implicit val writes: Writes[AmendRequest] = Json.writes[AmendRequest]
+  val empRefFormat = "[0-9]{3}\\/[A-Z][A-Z 0-9]{0,6}"
+  def validate(empRef: String): List[MtdError] = {
+    if (empRef.matches(empRefFormat)) NoValidationErrors else List(EmployerRefFormatError)
+  }
 }
