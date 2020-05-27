@@ -66,7 +66,7 @@ class AmendServiceSpec extends UnitSpec{
           ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
           ("INVALID_SUBMISSION_ID"-> SubmissionIdFormatError),
           ("INVALID_CORRELATIONID"-> DownstreamError),
-          ("NO_DATA_FOUND"-> NotFoundgit Error),
+          ("NO_DATA_FOUND"-> NotFoundError),
           ("INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError),
           ("INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError),
           ("DUPLICATE_MONTH" -> RuleDuplicatePeriodError),
