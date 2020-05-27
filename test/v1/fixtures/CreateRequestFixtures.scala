@@ -30,7 +30,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -84,7 +84,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -107,7 +107,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionFromDate": "2019-06-06",
@@ -133,7 +133,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |  ]
       |}
@@ -146,7 +146,7 @@ object CreateRequestFixtures {
       |  "fromDate": "last week" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -173,7 +173,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "yesterday",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -200,7 +200,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -227,7 +227,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -254,7 +254,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 99999999999999999999.00,
@@ -281,7 +281,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": -19.00,
@@ -308,7 +308,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -335,7 +335,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -362,7 +362,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -389,7 +389,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -416,7 +416,7 @@ object CreateRequestFixtures {
       |  "fromDate": "2020-04-06" ,
       |  "toDate": "2019-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -470,7 +470,7 @@ object CreateRequestFixtures {
       |  "fromDate" : "2019-04-06",
       |  "toDate" : "2019-04-06",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -496,7 +496,7 @@ object CreateRequestFixtures {
       |  "fromDate" : "2019-04-06",
       |  "toDate" : "2021-04-05",
       |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
+      |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
@@ -517,14 +517,41 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val requestBodyJsonErrorInvalidEmpRef = Json.parse(
+    """
+      |{
+      |  "fromDate" : "2019-04-06",
+      |  "toDate" : "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "123AB56797",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+        """.stripMargin
+  )
+
+  val requestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val missingOptionalRequestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "BV40092",
+  val missingOptionalRequestObj: CreateRequest = CreateRequest("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)

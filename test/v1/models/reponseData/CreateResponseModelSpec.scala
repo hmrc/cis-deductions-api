@@ -42,7 +42,7 @@ class CreateResponseModelSpec extends UnitSpec {
       invalidResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
 
-    "return the expected error when id field is missing" in {
+    "return the expected error when submission id field is missing" in {
       missingMandatoryResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
   }
