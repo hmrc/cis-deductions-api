@@ -110,39 +110,39 @@ traits:
                 description: An empty or non-matching body was submitted
                 value:
                   code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
-  formatDeductionFromDate:
+  formatDeductionsFromDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              formatDeductionFromDate:
-                description: The deductions From date is not a valid ISO format date
+              formatDeductionsFromDate:
+                description: The deductions From date is not a valid date format
                 value:
-                  code: FORMAT_DEDUCTION_FROM_DATE
-  formatDeductionToDate:
+                  code: FORMAT_DEDUCTIONS_FROM_DATE
+  formatDeductionsToDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              formatDeductionToDate:
-                description: The deductions To date is not a valid ISO format date
+              formatDeductionsToDate:
+                description: The deductions To date is not a valid date format
                 value:
-                  code: FORMAT_DEDUCTION_TO_DATE
-  ruleDeductionAmount:
+                  code: FORMAT_DEDUCTIONS_TO_DATE
+  ruleDeductionsAmount:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              ruleDeductionAmount:
-                description: The deduction amount should be a positive number less than 99999999999.99 up to 2 decimal places.
+              ruleDeductionsAmount:
+                description: The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places.
                 value:
-                  code: RULE_DEDUCTION_AMOUNT
+                  code: RULE_DEDUCTIONS_AMOUNT
   formatFromDate:
     responses:
       400:
@@ -173,7 +173,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleCostOfMaterials:
-                description: The contractor deductions should be a positive number less than 99999999999.99 up to 2 decimal places
+                description: The cost of materials should be a positive number less than 99999999999.99  up to 2 decimal places
                 value:
                   code: RULE_COST_OF_MATERIALS
   ruleGrossAmountPaid:
@@ -184,7 +184,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleGrossAmountPaid:
-                description: The amount should be a positive number less than 99999999999.99 up to 2 decimal places
+                description: The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places
                 value:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
@@ -200,23 +200,23 @@ traits:
                   code: RULE_DATE_RANGE_INVALID
   ruleDeductionsDateRangeInvalid:
     responses:
-      400:
+      403:
         body:
           application/json:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions date range is longer than 366 or less than a day
+                description: The deductions period must align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
-  rangeDeductionToDateBeforeDeductionsFromDate:
+  rangeDeductionsToDateBeforeDeductionsFromDate:
     responses:
       400:
         body:
           application/json:
             type: types.errorResponse
             examples:
-              rangeDeductionToDateBeforeDeductionsFromDate:
+              rangeDeductionsToDateBeforeDeductionsFromDate:
                 description: The deductions To date must be after the Deductions From date
                 value:
                   code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
@@ -503,6 +503,28 @@ traits:
               type: types.errorResponse
               examples:
                 formatCisSubmissionID:
-                  description: The format of the CIS deduction submission ID is not valid
+                  description: The format of the CIS deductions submission ID is not valid
                   value:
                     code: FORMAT_CIS_SUBMISSION_ID
+  ruleUnalginedDeductionsPeriod:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleUnalginedDeductionsPeriod:
+                description: The deductions periods do not align with the tax year supplied
+                value:
+                  code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
+  ruleDuplicatePeriod:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicatePeriod:
+                description: More than one deductions period has been supplied for the same month or period
+                value:
+                  code: RULE_DUPLICATE_PERIOD

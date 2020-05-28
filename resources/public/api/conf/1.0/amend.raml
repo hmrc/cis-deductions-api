@@ -4,21 +4,16 @@ is:
   - headers.contentTypeJson
   - errors.formatNino
   - errors.incorrectOrEmptyBody
-  - errors.formatDeductionFromDate
-  - errors.formatDeductionToDate
-  - errors.ruleDeductionAmount
-  - errors.formatFromDate
-  - errors.formatToDate
+  - errors.formatDeductionsFromDate
+  - errors.formatDeductionsToDate
+  - errors.ruleDeductionsAmount
   - errors.ruleCostOfMaterials
   - errors.ruleGrossAmountPaid
-  - errors.ruleDateRangeInvalid
   - errors.ruleDeductionsDateRangeInvalid
-  - errors.rangeDeductionToDateBeforeDeductionsFromDate
-  - errors.clientOrAgentNotAuthorised
-  - errors.ruleNoChangeLossAmount
-  - errors.ruleFromDate
-  - errors.ruleToDate
   - errors.formatSubmissionId
+  - errors.notFound
+  - errors.ruleUnalginedDeductionsPeriod
+  - errors.ruleDuplicatePeriod
 displayName: AMEND CIS Deductions for Subcontractor [test only]
 description: This endpoint allows a developer to amend customer CIS deductions which have been previously populated. A National Insurance number and submission ID must be provided.
 (annotations.sandboxData): !include scenarios/amend_scenarios.md
@@ -30,7 +25,7 @@ body:
     examples:
      example-1:
       description: Amend CIS request
-      value: !include examples/create_request.json
+      value: !include examples/AmendCisDeductions/amend_cis_deductions_request.json
 responses:
   204:
     headers:

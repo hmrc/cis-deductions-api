@@ -38,7 +38,6 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
-
     val result = for {
       desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper
@@ -47,15 +46,16 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
 
   private def mappingDesToMtdError =
     Map(
-      "INVALID_IDVALUE" -> NinoFormatError,
-      "INVALID_DEDUCTION_DATE_FROM" -> DeductionFromDateFormatError,
-      "INVALID_DEDUCTION_DATE_TO" -> DeductionToDateFormatError,
-      "INVALID_DATE_FROM" -> FromDateFormatError,
-      "INVALID_DATE_TO" -> ToDateFormatError,
-      "INVALID_DEDUCTIONS_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
-      "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" -> RuleToDateBeforeFromDateError,
-      "NOT_FOUND" -> NotFoundError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_PAYLOAD" -> RuleIncorrectOrEmptyBodyError,
+      "INVALID_EMPREF" -> EmployerRefFormatError,
+      "INVALID_REQUEST_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
+      "INVALID_REQUEST_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
+      "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
+      "CONFLICT" -> RuleDuplicateSubmissionError,
+      "DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
       "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVICE_UNAVAILABLE" -> DownstreamError,
+      "INVALID_CORRELATIONID" -> DownstreamError
     )
 }

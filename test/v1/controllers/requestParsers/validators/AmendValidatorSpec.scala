@@ -38,7 +38,7 @@ class AmendValidatorSpec extends UnitSpec {
       "an invalid nino is supplied" in {
         validator.validate(AmendRawData("23456A", validId, requestJson)) shouldBe List(NinoFormatError)
       }
-      "an invalid id is supplied" in {
+      "an invalid submission id is supplied" in {
         validator.validate(AmendRawData(validNino, "contractor1", requestJson)) shouldBe List(SubmissionIdFormatError)
       }
     }
