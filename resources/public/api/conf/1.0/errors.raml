@@ -170,7 +170,7 @@ traits:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
     responses:
-      400:
+      403:
         body:
           application/json:
             type: types.errorResponse
@@ -187,7 +187,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions period must align from the 6th of one month to the 5th of the following month
+                description: The deductions period does not align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionsToDateBeforeDeductionsFromDate:

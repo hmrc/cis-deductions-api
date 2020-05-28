@@ -6,9 +6,10 @@ is:
   - errors.incorrectOrEmptyBody
   - errors.formatDeductionsFromDate
   - errors.formatDeductionsToDate
-  - errors.ruleDeductionsAmount
+  - errors.formatEmployerReference
   - errors.formatFromDate
   - errors.formatToDate
+  - errors.ruleDeductionsAmount
   - errors.ruleCostOfMaterials
   - errors.ruleGrossAmountPaid
   - errors.ruleDateRangeInvalid
@@ -19,7 +20,7 @@ is:
   - errors.ruleDuplicatePeriod
   - errors.clientOrAgentNotAuthorised
 displayName: Create CIS Deductions for Subcontractor [test only]
-description: This endpoint allow a developer to create Construction Industry Scheme (CIS) deductions.
+description: This endpoint allows a developer to create customer CIS amendment deductions which have been previously populated. A National Insurance number must be provided.
 (annotations.sandboxData): !include scenarios/create_scenarios.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
