@@ -81,12 +81,11 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeExceededError | DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleToDateBeforeFromDateError | RuleDeductionsDateRangeInvalidError | RuleDateRangeInvalidError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | RuleFromDateError | RuleToDateError
-           | SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleNoChangeError => Forbidden(Json.toJson(errorWrapper))
+      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
+           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
+           SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
+      case RuleDeductionsDateRangeInvalidError |
+           RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
@@ -111,9 +110,4 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("amendCisDeductionsAuditType", "amend-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
-
-
 }
-
-
-

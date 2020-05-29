@@ -93,18 +93,15 @@ class AmendControllerISpec extends IntegrationBaseSpec{
         }
 
         val input = Seq(
-          (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "NO_DATA_FOUND", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "INVALID_IDVALUE", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_DEDUCTION_DATE_FROM", Status.BAD_REQUEST, DeductionFromDateFormatError),
-          (Status.BAD_REQUEST, "INVALID_DEDUCTION_DATE_TO", Status.BAD_REQUEST, DeductionToDateFormatError),
-          (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, FromDateFormatError),
-          (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, ToDateFormatError),
-          (Status.BAD_REQUEST, "INVALID_DEDUCTIONS_DATE_RANGE", Status.BAD_REQUEST, RuleDeductionsDateRangeInvalidError),
-          (Status.BAD_REQUEST, "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", Status.BAD_REQUEST, RuleToDateBeforeFromDateError),
-          (Status.FORBIDDEN, "INVALID_NO_CHANGE", Status.FORBIDDEN, RuleNoChangeError)
-
+          (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
+          (Status.BAD_REQUEST,"INVALID_SUBMISSION_ID", Status.BAD_REQUEST, SubmissionIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_TAX_YEAR_ALIGN", Status.FORBIDDEN, RuleUnalignedDeductionsPeriodError),
+          (Status.UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError),
+          (Status.UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", Status.FORBIDDEN, RuleDuplicatePeriodError),
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

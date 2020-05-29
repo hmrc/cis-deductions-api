@@ -46,16 +46,14 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
 
   private def desErrorMap =
     Map(
-      "INVALID_IDVALUE" -> NinoFormatError,
-      "INVALID_DEDUCTION_DATE_FROM"->DeductionFromDateFormatError,
-      "INVALID_DEDUCTION_DATE_TO"-> DeductionToDateFormatError,
-      "INVALID_DATE_FROM"-> FromDateFormatError,
-      "INVALID_DATE_TO"-> ToDateFormatError,
-      "INVALID_DEDUCTIONS_DATE_RANGE"-> RuleDeductionsDateRangeInvalidError,
-      "INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE" -> RuleToDateBeforeFromDateError,
-      "NOT_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_SUBMISSION_ID"-> SubmissionIdFormatError,
+      "INVALID_CORRELATIONID"-> DownstreamError,
+      "NO_DATA_FOUND"-> NotFoundError,
+      "INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError,
+      "INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
+      "DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
       "SERVICE_UNAVAILABLE" -> DownstreamError,
-      "INVALID_NO_CHANGE" -> RuleNoChangeError
+      "SERVICE_ERROR" -> DownstreamError
     )
 }

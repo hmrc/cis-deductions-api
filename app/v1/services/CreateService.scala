@@ -49,7 +49,7 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_PAYLOAD" -> RuleIncorrectOrEmptyBodyError,
       "INVALID_EMPREF" -> EmployerRefFormatError,
-      "INVALID_REQUEST_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionPeriodError,
+      "INVALID_REQUEST_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
       "INVALID_REQUEST_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
       "CONFLICT" -> RuleDuplicateSubmissionError,

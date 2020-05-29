@@ -29,12 +29,8 @@ object AmendDataExamples {
   val requestJson: String =
     s"""
        |{
-       |  "fromDate": "2019-04-06" ,
-       |  "toDate": "2020-04-05",
-       |  "contractorName": "Bovis",
-       |  "employerRef": "BV40092",
        |  "periodData": [
-       |      {
+       |    {
        |      "deductionAmount": 355.00,
        |      "deductionFromDate": "2019-06-06",
        |      "deductionToDate": "2019-07-05",
@@ -55,12 +51,8 @@ object AmendDataExamples {
   val requestBodyJson: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",

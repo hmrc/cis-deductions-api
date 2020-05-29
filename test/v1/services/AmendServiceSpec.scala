@@ -63,17 +63,15 @@ class AmendServiceSpec extends UnitSpec{
           }
 
         val input = Seq(
-          ("INVALID_IDVALUE", NinoFormatError),
-          ("INVALID_DEDUCTION_DATE_FROM",DeductionFromDateFormatError),
-          ("INVALID_DEDUCTION_DATE_TO", DeductionToDateFormatError),
-          ("INVALID_DATE_FROM", FromDateFormatError),
-          ("INVALID_DATE_TO", ToDateFormatError),
-          ("INVALID_DEDUCTIONS_DATE_RANGE",RuleDeductionsDateRangeInvalidError),
-          ("INVALID_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE",RuleToDateBeforeFromDateError),
-          ("NOT_FOUND", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError),
-          ("INVALID_NO_CHANGE", RuleNoChangeError)
+          ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
+          ("INVALID_SUBMISSION_ID"-> SubmissionIdFormatError),
+          ("INVALID_CORRELATIONID"-> DownstreamError),
+          ("NO_DATA_FOUND"-> NotFoundError),
+          ("INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError),
+          ("INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError),
+          ("DUPLICATE_MONTH" -> RuleDuplicatePeriodError),
+          ("SERVICE_UNAVAILABLE" -> DownstreamError),
+          ("SERVICE_ERROR" -> DownstreamError)
         )
         input.foreach(args => (serviceError _).tupled(args))
       }
