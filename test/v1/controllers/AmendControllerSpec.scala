@@ -147,18 +147,15 @@ class AmendControllerSpec extends ControllerBaseSpec
         (NinoFormatError, BAD_REQUEST),
         (DeductionFromDateFormatError, BAD_REQUEST),
         (DeductionToDateFormatError, BAD_REQUEST),
-        (FromDateFormatError, BAD_REQUEST),
-        (ToDateFormatError, BAD_REQUEST),
-        (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
         (RuleDeductionAmountError, BAD_REQUEST),
         (RuleCostOfMaterialsError, BAD_REQUEST),
         (RuleGrossAmountError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
-        (RuleFromDateError,BAD_REQUEST),
-        (RuleToDateError,BAD_REQUEST),
+        (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
+        (RuleDuplicatePeriodError, FORBIDDEN),
         (SubmissionIdFormatError,BAD_REQUEST),
+        (DownstreamError, INTERNAL_SERVER_ERROR),
         (RuleNoChangeError, FORBIDDEN)
       )
 
@@ -243,20 +240,20 @@ class AmendControllerSpec extends ControllerBaseSpec
       }
 
       val input = Seq(
-        (NinoFormatError, BAD_REQUEST),
+        (BadRequestError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
-        (RuleTaxYearNotSupportedError, BAD_REQUEST),
-        (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-        (RuleTaxYearRangeExceededError, BAD_REQUEST),
+        (NinoFormatError, BAD_REQUEST),
         (DeductionFromDateFormatError, BAD_REQUEST),
         (DeductionToDateFormatError, BAD_REQUEST),
-        (FromDateFormatError, BAD_REQUEST),
-        (ToDateFormatError, BAD_REQUEST),
-        (RuleToDateBeforeFromDateError, BAD_REQUEST),
-        (RuleToDateError, BAD_REQUEST),
-        (RuleFromDateError,BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
+        (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
+        (RuleDeductionAmountError, BAD_REQUEST),
+        (RuleCostOfMaterialsError, BAD_REQUEST),
+        (RuleGrossAmountError, BAD_REQUEST),
+        (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
+        (RuleDuplicatePeriodError, FORBIDDEN),
+        (SubmissionIdFormatError,BAD_REQUEST),
+        (DownstreamError, INTERNAL_SERVER_ERROR),
         (RuleNoChangeError, FORBIDDEN)
       )
       input.foreach(args => (serviceErrors _).tupled(args))

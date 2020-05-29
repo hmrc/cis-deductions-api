@@ -27,15 +27,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendConnector @Inject()(val http: HttpClient,
                                val appConfig: AppConfig) extends BaseDesConnector  {
-  // scalastyle:off
+
   def amendDeduction(request: AmendRequestData)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
 
-    val result = put(
+    put(
       body = request.body,
       DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
     )
-    result.map(x => println(s"*** $x"))
-    result
   }
 }

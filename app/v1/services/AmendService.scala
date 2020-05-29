@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappingSupport with Logging {
-  // scalastyle:off
+
   def amendDeductions(request: AmendRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
@@ -41,7 +41,6 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
     val result = for {
       desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDesErrors(desErrorMap))
     } yield desResponseWrapper
-    result.value.map(x => println(s"===$x"))
     result.value
   }
 
