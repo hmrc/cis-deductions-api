@@ -84,7 +84,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
            RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
            SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleNoChangeError | RuleDeductionsDateRangeInvalidError |
+      case RuleDeductionsDateRangeInvalidError |
            RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

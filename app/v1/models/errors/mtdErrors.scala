@@ -77,9 +77,6 @@ object RuleFromDateError
 object RuleToDateError
   extends MtdError("TO_DATE_NOT_IN_TAX_YEAR", "The to date is not the end of the tax year")
 
-object RuleNoChangeError
-  extends MtdError("RULE_NO_CHANGE", "The deducted amount has not changed")
-
 object RuleUnalignedDeductionsPeriodError
   extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
 
