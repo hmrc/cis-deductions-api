@@ -15,16 +15,6 @@ traits:
               description: The remote endpoint has indicated that no data can be found for the given period.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
-  notFoundIncomeSource:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: The remote endpoint has indicated that the given income source could not be found
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
   notFoundNino:
     responses:
       404:
@@ -33,26 +23,6 @@ traits:
             type: types.errorResponse
             example:
               description: The remote endpoint has indicated that no data can be found for the given NINO
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
-  notFoundLossId:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: The remote endpoint has indicated that no data can be found for the given loss ID
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
-  notFoundClaimId:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            example:
-              description: The remote endpoint has indicated that no data can be found for the given claim ID
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -88,6 +58,17 @@ traits:
                   description: The format of the submission ID is not valid.
                   value:
                     code: FORMAT_SUBMISSION_ID
+  formatEmployerReference:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                formatSubmissionId:
+                  description: The format of the Employer Reference number is invalid
+                  value:
+                    code: FORMAT_EMPLOYER_REFERENCE
   formatTaxYear:
     responses:
       400:
@@ -151,7 +132,7 @@ traits:
             type: types.errorResponse
             examples:
               formatFromDate:
-                description: The From date is not a valid ISO format date
+                description: The From date is not a valid format
                 value:
                   code: FORMAT_FROM_DATE
   formatToDate:
@@ -162,7 +143,7 @@ traits:
             type: types.errorResponse
             examples:
               formatToDate:
-                description: The To date is not a valid ISO format date
+                description: The To date is not a valid format
                 value:
                   code: FORMAT_TO_DATE
   ruleCostOfMaterials:
@@ -189,13 +170,13 @@ traits:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
     responses:
-      400:
+      403:
         body:
           application/json:
             type: types.errorResponse
             examples:
               ruleDateRangeInvalid:
-                description: The date range is outside a tax year
+                description: The specified date range is invalid
                 value:
                   code: RULE_DATE_RANGE_INVALID
   ruleDeductionsDateRangeInvalid:
@@ -206,7 +187,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions period must align from the 6th of one month to the 5th of the following month
+                description: The deductions period does not align from the 6th of one month to the 5th of the following month
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionsToDateBeforeDeductionsFromDate:
@@ -220,171 +201,17 @@ traits:
                 description: The deductions To date must be after the Deductions From date
                 value:
                   code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
-  ruleTaxYearNotSupported:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              rule_TaxYearNotSupported:
-                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
-                value:
-                  code: RULE_TAX_YEAR_NOT_SUPPORTED
-  ruleTaxYearRangeExceeded:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleTaxYearRangeExceeded:
-                description: Tax year range exceeded. A tax year range of one year is required.
-                value:
-                  code: RULE_TAX_YEAR_RANGE_EXCEEDED
   ruleTaxYearNotEnded:
       responses:
-        400:
+        403:
           body:
             application/json:
               type: types.errorResponse
               examples:
                 ruleTaxYearNotEnded:
-                  description: A brought forward loss is entered before the end of the tax year in which it was generated.
+                  description: The submission has been made before the tax year has ended
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
-  ruleNoChangeTypeOfClaim:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleNoChangeTypeOfClaim:
-                description: The remote endpoint has indicated that the requested type of claim is already active.
-                value:
-                  code: RULE_ALREADY_EXISTS
-  formatLossType:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatLossType:
-                description: The format of the loss type is not valid.
-                value:
-                  code: FORMAT_TYPE_OF_LOSS
-  formatSelfEmploymentId:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatSelfEmploymentId:
-                description: The format of the self-employment ID is not valid.
-                value:
-                  code: FORMAT_SELF_EMPLOYMENT_ID
-  ruleSelfEmploymentId:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleSelfEmploymentId:
-                description: A self-employment ID can only be supplied for a self-employment business type
-                value:
-                  code: RULE_SELF_EMPLOYMENT_ID
-  formatLossId:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatLossId:
-                description: The format of the loss ID is not valid.
-                value:
-                  code: FORMAT_LOSS_ID
-  formatLossAmount:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatLossAmount:
-                description: The format of the loss amount is not valid.
-                value:
-                  code: FORMAT_LOSS_AMOUNT
-  ruleLossAmount:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleLossAmount:
-                description: Amounts should be a positive number less than 99999999999.99 with up to 2 decimal places.
-                value:
-                  code: RULE_LOSS_AMOUNT
-  formatTypeOfClaim:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatTypeOfClaim:
-                description: The format of the type of claim is not valid.
-                value:
-                  code: FORMAT_TYPE_OF_CLAIM
-  ruleTypeOfClaim400:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleTypeOfClaim:
-                description: The type of claim supplied is not valid.
-                value:
-                  code: RULE_TYPE_OF_CLAIM_INVALID
-  ruleTypeOfClaim403:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleTypeOfClaim:
-                description: The type of claim supplied is not valid.
-                value:
-                  code: RULE_TYPE_OF_CLAIM_INVALID
-  rulePeriodNotEnded:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              rulePeriodNotEnded:
-                description: The loss claim has been made too soon.
-                value:
-                  code: RULE_PERIOD_NOT_ENDED
-  formatClaimId:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              formatClaimId:
-                description: The format of the supplied claim ID is not valid.
-                value:
-                  code: FORMAT_CLAIM_ID
   ruleDuplicateSubmission:
     responses:
       403:
@@ -393,53 +220,9 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicateSubmission:
-                description: A brought forward loss already exists for this income source.
+                description: CIS deductions already exists for this tax year
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
-  ruleDuplicateClaimSubmission:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleDuplicateSubmission:
-                description: The type of claim is the same as a previous submission.
-                value:
-                  code: RULE_DUPLICATE_SUBMISSION
-  ruleDeleteAfterCrystallisation:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleDeleteAfterCrystallisation:
-                description: An existing brought forward loss cannot be deleted after it has been crystallised.  The requested resource is locked.
-                value:
-                  code: RULE_DELETE_AFTER_CRYSTALLISATION
-  ruleNoChangeLossAmount:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleNoChangeLossAmount:
-                description: The loss amount supplied is the same as the existing stored loss amount.
-                value:
-                  code: RULE_NO_CHANGE
-  ruleNoAccountingPeriod:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleNoAccountingPeriod:
-                description: There is no accounting period for the year of the claim.
-                value:
-                  code: RULE_NO_ACCOUNTING_PERIOD
   missingFromDate:
     responses:
       400:
@@ -506,17 +289,17 @@ traits:
                   description: The format of the CIS deductions submission ID is not valid
                   value:
                     code: FORMAT_CIS_SUBMISSION_ID
-  ruleUnalginedDeductionsPeriod:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleUnalginedDeductionsPeriod:
-                description: The deductions periods do not align with the tax year supplied
-                value:
-                  code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
+  ruleUnalignedDeductionsPeriod:
+     responses:
+        403:
+         body:
+           application/json:
+             type: types.errorResponse
+             examples:
+               ruleUnalignedDeductionsPeriod:
+                 description: The deductions periods do not align with the tax year supplied
+                 value:
+                   code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
   ruleDuplicatePeriod:
     responses:
       403:
@@ -525,6 +308,6 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicatePeriod:
-                description: More than one deductions period has been supplied for the same month or period
+                description: More than one deduction period has been supplied for the same month or period
                 value:
                   code: RULE_DUPLICATE_PERIOD

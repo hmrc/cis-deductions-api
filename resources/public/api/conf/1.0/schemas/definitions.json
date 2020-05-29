@@ -37,7 +37,7 @@
       }
     },
     "uid": {
-      "description": "A unique identifier",
+      "description": "A unique identifier for the customer provided CIS deduction amendment.",
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
       "example": "ab123aaa-65ab-488c-9120-f63abc14b9n1"

@@ -31,19 +31,17 @@ uses:
   headers: headers.raml
   queryParameters: queryParameters.raml
 
-'/deductions/cis':
+'/individuals/deductions/cis':
   /{nino}:
     uriParameters:
       nino:
         description: 'National Insurance number in the format AA999999A.'
         type: string
         example: TC663795B
-    /amendments:
-      post: !include create.raml
     /current-position:
       get: !include list.raml
-'/individuals/deductions/cis':
-  /{nino}:
+    /amendments:
+      post: !include create.raml
     /amendments/{submissionId}:
         delete: !include delete.raml
         put: !include amend.raml
