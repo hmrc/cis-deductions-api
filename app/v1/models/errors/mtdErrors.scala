@@ -45,7 +45,7 @@ object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
 
 object RuleDeductionsDateRangeInvalidError
-    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align to the 6th of the month to the 5th of the tax year")
+    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align from the 6th of one month to the 5th of the following month")
 
 object RuleDateRangeInvalidError
     extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")

@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <td><p>RULE_DEDUCTIONS_DATE_RANGE_INVALID</p></td>
-            <td><p>Simulate the scenario where the deductions period does not align from the 6th of one month to the 5th of the following month</p></td>
+            <td><p>Simulate the scenario where the deductions period must align from the 6th of one month to the 5th of the following month</p></td>
         </tr> 
         <tr>
             <td><p>RULE_UNALIGNED_DEDUCTIONS_PERIOD</p></td>
