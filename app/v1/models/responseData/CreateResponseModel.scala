@@ -22,7 +22,7 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 import v1.models.request.CreateRequestData
 
-case class CreateResponseModel(id: String)
+case class CreateResponseModel(submissionId: String)
 
 object CreateResponseModel extends HateoasLinks {
   implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
