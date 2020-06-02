@@ -16,11 +16,11 @@
 
 package v1.fixtures
 
-import v1.models.responseData.{DeductionsDetails, ListResponseModel, PeriodDeductions}
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel, PeriodDeductions}
 
 object ListModels {
 
-  val multipleDeductionsModel = ListResponseModel(
+  val multipleDeductionsModel = RetrieveResponseModel(
     Seq(
       DeductionsDetails(
         Some("54759eb3c090d83494e2d804"),
@@ -49,7 +49,7 @@ object ListModels {
     )
   )
 
-  val singleDeductionModel = ListResponseModel(
+  val singleDeductionModel = RetrieveResponseModel(
     Seq(
       DeductionsDetails(
         Some("54759eb3c090d83494e2d804"),
@@ -66,7 +66,7 @@ object ListModels {
   )
 
   val listCisDeductionsModel =
-    ListResponseModel(
+    RetrieveResponseModel(
       Seq(DeductionsDetails(
         submissionId = Some("12345678"),
         fromDate = "2019-04-06",

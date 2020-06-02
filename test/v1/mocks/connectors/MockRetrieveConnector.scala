@@ -19,21 +19,21 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, ListConnector}
-import v1.models.request.ListRequestData
-import v1.models.responseData.{DeductionsDetails, ListResponseModel}
+import v1.connectors.{DesOutcome, RetrieveConnector}
+import v1.models.request.RetrieveRequestData
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListConnector extends MockFactory {
+trait MockRetrieveConnector extends MockFactory {
 
-  val mockListConnector: ListConnector = mock[ListConnector]
+  val mockListConnector: RetrieveConnector = mock[RetrieveConnector]
 
   object MockListCisDeductionsConnector {
 
-    def listCisDeduction(requestData: ListRequestData): CallHandler[Future[DesOutcome[ListResponseModel[DeductionsDetails]]]] = {
+    def listCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]]] = {
       (mockListConnector
-        .list(_: ListRequestData)(_: HeaderCarrier, _: ExecutionContext))
+        .list(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }

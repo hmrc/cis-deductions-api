@@ -21,16 +21,16 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.fixtures.ListModels._
-import v1.mocks.connectors.MockListConnector
+import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.ListRequestData
-import v1.models.responseData.{DeductionsDetails, ListResponseModel}
+import v1.models.request.RetrieveRequestData
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListServiceSpec extends UnitSpec {
+class RetrieveServiceSpec extends UnitSpec {
 
   private val nino = Nino("AA123456A")
   private val correlationId = "X-123"
@@ -38,14 +38,14 @@ class ListServiceSpec extends UnitSpec {
   private val toDate = "2020-04-05"
   private val source = "Contractor"
 
-  val request: ListRequestData = ListRequestData(nino, fromDate, toDate, source)
-  val response: ListResponseModel[DeductionsDetails] = listCisDeductionsModel
+  val request: RetrieveRequestData = RetrieveRequestData(nino, fromDate, toDate, source)
+  val response: RetrieveResponseModel[DeductionsDetails] = listCisDeductionsModel
 
-  trait Test extends MockListConnector {
+  trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "listcis")
 
-    val service = new ListService(mockListConnector)
+    val service = new RetrieveService(mockListConnector)
   }
 
   "ListDeductions" should {
@@ -54,7 +54,7 @@ class ListServiceSpec extends UnitSpec {
         MockListCisDeductionsConnector.listCisDeduction(request)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.listDeductions(request)) shouldBe Right(ResponseWrapper(correlationId,response))
+        await(service.retrieveDeductions(request)) shouldBe Right(ResponseWrapper(correlationId,response))
       }
     }
 
@@ -66,7 +66,7 @@ class ListServiceSpec extends UnitSpec {
           MockListCisDeductionsConnector.listCisDeduction(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.listDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
+          await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
         }
       val input = Seq(
         ("INVALID_IDVALUE" , NinoFormatError),

@@ -19,6 +19,6 @@ package v1.models.request
 import uk.gov.hmrc.domain.Nino
 import v1.models.requestData.RawData
 
-case class ListRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
+case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
 
-case class ListRequestData(nino: Nino, fromDate: String, toDate: String, source: String)
+case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)

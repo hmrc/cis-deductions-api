@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockListValidator
+import v1.mocks.validators.MockRetrieveValidator
 import v1.models.errors.{BadRequestError, ErrorWrapper, FromDateFormatError, NinoFormatError, RuleSourceError, RuleToDateBeforeFromDateError, ToDateFormatError}
 import v1.models.request._
 
@@ -27,36 +27,36 @@ class ListDeductionsParserSpec extends UnitSpec {
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
 
-  trait Test extends MockListValidator {
-    lazy val parser = new ListRequestParser(mockValidator)
+  trait Test extends MockRetrieveValidator {
+    lazy val parser = new RetrieveRequestParser(mockValidator)
   }
 
   "parser" should {
     "accept a valid input" when {
       "a valid list deduction request has been made" in new Test {
-        val inputData = ListRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
+        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(ListRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
       }
 
       "a valid list deduction request has been made with the optional field returning none" in new Test {
-        val inputData = ListRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
+        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(ListRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
       }
     }
 
     "reject invalid input" when {
       "an invalid nino is given" in new Test {
-        val inputData = ListRawData(invalidNino, Some("2018-04-05"), Some("2019-04-06"), Some("customer"))
+        val inputData = RetrieveRawData(invalidNino, Some("2018-04-05"), Some("2019-04-06"), Some("customer"))
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
@@ -66,7 +66,7 @@ class ListDeductionsParserSpec extends UnitSpec {
       }
 
       "a mandatory field is given invalid data" in new Test {
-        val inputData = ListRawData(nino, Some("asdf"), Some("231k"), Some("all"))
+        val inputData = RetrieveRawData(nino, Some("asdf"), Some("231k"), Some("all"))
           MockValidator
           .validate(inputData)
           .returns(List(FromDateFormatError, ToDateFormatError))
@@ -76,7 +76,7 @@ class ListDeductionsParserSpec extends UnitSpec {
       }
 
       "an invalid source is given" in new Test {
-        val inputData = ListRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("fruit source"))
+        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("fruit source"))
         MockValidator
           .validate(inputData)
           .returns(List(RuleSourceError))
@@ -86,7 +86,7 @@ class ListDeductionsParserSpec extends UnitSpec {
       }
 
       "the to date given is before the from date" in new Test {
-        val inputData = ListRawData(nino, Some("2020-04-06"), Some("2019-04-05"), Some("contractor"))
+        val inputData = RetrieveRawData(nino, Some("2020-04-06"), Some("2019-04-05"), Some("contractor"))
 
         MockValidator
           .validate(inputData)

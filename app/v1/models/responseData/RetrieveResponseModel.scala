@@ -22,17 +22,17 @@ import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class ListResponseModel[I](cisDeductions: Seq[I])
+case class RetrieveResponseModel[I](cisDeductions: Seq[I])
 
-object ListResponseModel extends HateoasLinks {
+object RetrieveResponseModel extends HateoasLinks {
 
-  implicit def reads[I: Reads]: Reads[ListResponseModel[I]] = implicitly(Json.reads[ListResponseModel[I]])
+  implicit def reads[I: Reads]: Reads[RetrieveResponseModel[I]] = implicitly(Json.reads[RetrieveResponseModel[I]])
 
-  implicit def writes[I: Writes]: OWrites[ListResponseModel[I]] = Json.writes[ListResponseModel[I]]
+  implicit def writes[I: Writes]: OWrites[RetrieveResponseModel[I]] = Json.writes[RetrieveResponseModel[I]]
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[ListResponseModel, DeductionsDetails, ListResponseHateoasData] {
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, DeductionsDetails, RetrieveResponseHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: ListResponseHateoasData, item: DeductionsDetails): Seq[Link] = {
+    override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: DeductionsDetails): Seq[Link] = {
       item.submissionId match {
           case None => Seq()
           case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false),
@@ -40,17 +40,17 @@ object ListResponseModel extends HateoasLinks {
         }
     }
 
-    override def links(appConfig: AppConfig, data: ListResponseHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: RetrieveResponseHateoasData): Seq[Link] = {
       Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
   }
 
-  implicit object ResponseFunctor extends Functor[ListResponseModel] {
-    override def map[A, B](fa: ListResponseModel[A])(f: A => B): ListResponseModel[B] =
-      ListResponseModel(fa.cisDeductions.map(f))
+  implicit object ResponseFunctor extends Functor[RetrieveResponseModel] {
+    override def map[A, B](fa: RetrieveResponseModel[A])(f: A => B): RetrieveResponseModel[B] =
+      RetrieveResponseModel(fa.cisDeductions.map(f))
   }
 }
 
-case class ListResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
-                                   listResponse: ListResponseModel[DeductionsDetails]) extends HateoasData
+case class RetrieveResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
+                                       listResponse: RetrieveResponseModel[DeductionsDetails]) extends HateoasData
