@@ -561,7 +561,7 @@ object CreateRequestFixtures {
   val   responseJson: JsValue = Json.parse(
     """
       |{
-      |"id": "S4636A77V5KB8625U"
+      |"submissionId": "S4636A77V5KB8625U"
       |}
       |""".stripMargin
   )
@@ -569,7 +569,7 @@ object CreateRequestFixtures {
   val invalidResponseJson: JsValue = Json.parse(
     """
       |{
-      |"id": 1
+      |"submissionId": 1
       |}
       |""".stripMargin
   )
@@ -624,7 +624,7 @@ object CreateRequestFixtures {
   val hateoasResponse: (String,String) => String = (nino: String, responseId: String) =>
     s"""
        |{
-       |  "id": "$responseId",
+       |  "submissionId": "$responseId",
        |  "links":[
        |    {
        |      "href":"/deductions/cis/$nino/current-position",
