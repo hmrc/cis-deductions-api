@@ -20,7 +20,8 @@
       "example": "Ace Chemicals"
     },
     "employerRef": {
-      "description": "A unique identifier contractor reference number. Must conform to the regex: [0-9]{3}\\\\/[A-Z][A-Z0-9]{0,6}$",
+      "description": "A unique identifier contractor reference number.",
+      "pattern": "[0-9]{3}\\\\/[A-Z][A-Z0-9]{0,6}$",
       "type": "string",
       "example": "123/AB56797"
     },
