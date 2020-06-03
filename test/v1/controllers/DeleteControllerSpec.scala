@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.fixtures.ListJson._
+import v1.fixtures.RetrieveJson._
 import v1.mocks.requestParsers.MockDeleteRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, _}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}

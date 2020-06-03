@@ -29,7 +29,7 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   val hateoasFactory = new HateoasFactory(mockAppConfig)
 
   case class Response(foo: String)
-  case class ListResponse[A](items: Seq[A])
+  case class RetrieveResponse[A](items: Seq[A])
 
   case class Data1(id: String) extends HateoasData
   case class Data2(id: String) extends HateoasData
@@ -40,8 +40,8 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
     implicit val writes: OWrites[Response] = Json.writes[Response]
   }
 
-  object ListResponse {
-    implicit val writes: OWrites[ListResponse[HateoasWrapper[Response]]] = Json.writes[ListResponse[HateoasWrapper[Response]]]
+  object RetrieveResponse {
+    implicit val writes: OWrites[RetrieveResponse[HateoasWrapper[Response]]] = Json.writes[RetrieveResponse[HateoasWrapper[Response]]]
   }
 
   class Test {
@@ -101,11 +101,11 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
   "wrapList" should {
 
-    implicit object ListResponseFunctor extends Functor[ListResponse] {
-      override def map[A, B](fa: ListResponse[A])(f: A => B): ListResponse[B] = ListResponse(fa.items.map(f))
+    implicit object ListResponseFunctor extends Functor[RetrieveResponse] {
+      override def map[A, B](fa: RetrieveResponse[A])(f: A => B): RetrieveResponse[B] = RetrieveResponse(fa.items.map(f))
     }
 
-    implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
+    implicit object LinksFactory extends HateoasListLinksFactory[RetrieveResponse, Response, Data1] {
       override def itemLinks(appConfig: AppConfig, data: Data1, item: Response): Seq[Link] =
         Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}/${item.foo}", GET, "item"))
 
@@ -114,9 +114,9 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
     "work" in new Test {
 
-      val wrapper = HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
+      val wrapper = HateoasWrapper(RetrieveResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
 
-      hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe wrapper
+      hateoasFactory.wrapList(RetrieveResponse(Seq(response)), Data1("id")) shouldBe wrapper
 
       Json.toJson(wrapper) shouldBe
         Json.parse("""

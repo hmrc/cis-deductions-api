@@ -22,21 +22,21 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.ListRequestData
-import v1.models.responseData.{DeductionsDetails, ListResponseModel}
-import v1.services.ListService
+import v1.models.request.RetrieveRequestData
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.services.RetrieveService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListService extends MockFactory{
+trait MockRetrieveService extends MockFactory{
 
-  val mockService: ListService = mock[ListService]
+  val mockService: RetrieveService = mock[RetrieveService]
 
-  object MockListService {
-    def listCisDeductions(requestData: ListRequestData): CallHandler4[ListRequestData, HeaderCarrier, ExecutionContext,
-      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[DeductionsDetails]]]]] = {
+  object MockRetrieveService {
+    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler4[RetrieveRequestData, HeaderCarrier, ExecutionContext,
+      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]]] = {
       (mockService
-        .listDeductions(_:ListRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)
     }
   }

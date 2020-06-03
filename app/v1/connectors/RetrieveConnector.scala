@@ -20,24 +20,24 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import v1.models.request.ListRequestData
-import v1.models.responseData.{DeductionsDetails, ListResponseModel}
+import v1.models.request.RetrieveRequestData
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListConnector @Inject()(val http: HttpClient,
-                              val appConfig: AppConfig
+class RetrieveConnector @Inject()(val http: HttpClient,
+                                  val appConfig: AppConfig
                                       ) extends BaseDesConnector {
 
-  def list(request: ListRequestData)(
+  def retrieve(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[ListResponseModel[DeductionsDetails]]] = {
+    ec: ExecutionContext): Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     get(
-      DesUri[ListResponseModel[DeductionsDetails]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
+      DesUri[RetrieveResponseModel[DeductionsDetails]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
         s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
     )
   }
