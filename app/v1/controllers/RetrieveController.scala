@@ -29,37 +29,37 @@ import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{ListRawData, ListRequestData}
-import v1.models.responseData.{DeductionsDetails, ListResponseHateoasData, ListResponseModel}
-import v1.services.{AuditService, EnrolmentsAuthService, ListService, MtdIdLookupService}
+import v1.models.request.{RetrieveRawData, RetrieveRequestData}
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.services.{AuditService, EnrolmentsAuthService, RetrieveService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ListController @Inject()(val authService: EnrolmentsAuthService,
-                               val lookupService: MtdIdLookupService,
-                               requestParser: ListRequestParser,
-                               service: ListService,
-                               auditService: AuditService,
-                               hateoasFactory: HateoasFactory,
-                               cc: ControllerComponents)
-                                 (implicit ec: ExecutionContext)
+class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
+                                   val lookupService: MtdIdLookupService,
+                                   requestParser: RetrieveRequestParser,
+                                   service: RetrieveService,
+                                   auditService: AuditService,
+                                   hateoasFactory: HateoasFactory,
+                                   cc: ControllerComponents)
+                                  (implicit ec: ExecutionContext)
 extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
-      controllerName = "ListController",
-      endpointName = "listEndpoint"
+      controllerName = "RetrieveController",
+      endpointName = "retrieveEndpoint"
     )
 
-  def listDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
+  def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
   authorisedAction(nino).async { implicit request =>
-    val rawData = ListRawData(nino,fromDate,toDate,source)
-    val parseResponse: Either[ErrorWrapper, ListRequestData] = requestParser.parseRequest(rawData)
+    val rawData = RetrieveRawData(nino,fromDate,toDate,source)
+    val parseResponse: Either[ErrorWrapper, RetrieveRequestData] = requestParser.parseRequest(rawData)
     val serviceResponse = parseResponse match {
       case Right(data) =>
-        service.listDeductions(data)
+        service.retrieveDeductions(data)
       case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[DeductionsDetails]]]] =
+        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]] =
           Future.successful(Left(errorWrapper))
         futureError
     }
@@ -70,7 +70,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
             s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
 
         val hateoasResponse = hateoasFactory.wrapList(responseWrapper.responseData,
-          ListResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, responseWrapper.responseData))
+          RetrieveResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, responseWrapper.responseData))
 
         auditSubmission(
           createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasResponse))))
@@ -97,7 +97,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
     }
   }
 
-  private def createAuditDetails(rawData: ListRawData,
+  private def createAuditDetails(rawData: RetrieveRawData,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
@@ -113,7 +113,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("listCisDeductionsAuditType", "list-cis-deductions-transaction-type", details)
+    val event = AuditEvent("retrieveCisDeductionsAuditType", "retrieve-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
 }

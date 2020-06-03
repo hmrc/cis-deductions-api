@@ -21,26 +21,26 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.ListConnector
+import v1.connectors.RetrieveConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.ListRequestData
-import v1.models.responseData.{DeductionsDetails, ListResponseModel}
+import v1.models.request.RetrieveRequestData
+import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListService @Inject()(connector: ListConnector) extends DesResponseMappingSupport with Logging {
+class RetrieveService @Inject()(connector: RetrieveConnector) extends DesResponseMappingSupport with Logging {
 
-  def listDeductions(request: ListRequestData)(
+  def retrieveDeductions(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[ListResponseModel[DeductionsDetails]]]] = {
+    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.list(request)).leftMap(mapDesErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper
     result.value
   }

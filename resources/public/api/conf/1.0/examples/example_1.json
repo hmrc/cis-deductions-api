@@ -3,7 +3,7 @@
   "links": [
     {
       "href": "/individuals/deductions/cis/TC663795B/current-position?fromDate=2019-04-06&toDate=2020-04-05",
-      "rel": "list-cis-deductions-for-subcontractor",
+      "rel": "retrieve-cis-deductions-for-subcontractor",
       "method": "GET"
     }
   ]

@@ -19,7 +19,7 @@ package v1.fixtures
 import play.api.libs.json.{JsValue, Json}
 
 
-object ListJson {
+object RetrieveJson {
 
   val multipleDeductionsJson: JsValue = Json.parse(
     """

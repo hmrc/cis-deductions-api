@@ -7,10 +7,10 @@ import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
-import v1.fixtures.ListJson._
+import v1.fixtures.RetrieveJson._
 import v1.models.errors._
 
-class ListControllerISpec extends IntegrationBaseSpec {
+class RetrieveControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
@@ -36,7 +36,7 @@ class ListControllerISpec extends IntegrationBaseSpec {
     }
   }
 
-  "Calling the list endpoint" should {
+  "Calling the retrieve endpoint" should {
 
     "return a valid response with status OK" when {
 

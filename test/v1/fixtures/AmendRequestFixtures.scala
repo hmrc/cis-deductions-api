@@ -566,7 +566,7 @@ object AmendRequestFixtures {
        |  "links":[
        |    {
        |      "href":"/deductions/cis/$nino/current-position",
-       |      "rel":"list-cis-deductions-for-subcontractor",
+       |      "rel":"retrieve-cis-deductions-for-subcontractor",
        |      "method":"GET"
        |     }
        |  ]
@@ -600,4 +600,3 @@ object AmendRequestFixtures {
       |""".stripMargin
   }
 }
-
