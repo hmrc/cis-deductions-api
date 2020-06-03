@@ -600,4 +600,3 @@ object AmendRequestFixtures {
       |""".stripMargin
   }
 }
-
