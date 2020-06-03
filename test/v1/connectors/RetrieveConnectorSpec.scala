@@ -40,8 +40,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
-  "list" should {
-    "return a List Deductions response when a source is supplied" in new Test {
+  "retrieve" should {
+    "return a Retrieve Deductions response when a source is supplied" in new Test {
       val request = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel(

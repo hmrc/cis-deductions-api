@@ -141,8 +141,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
-            auditType = "listCisDeductionsAuditType",
-            transactionName = "list-cis-deductions-transaction-type",
+            auditType = "retrieveCisDeductionsAuditType",
+            transactionName = "retrieve-cis-deductions-transaction-type",
             detail = GenericAuditDetail(
                 userType = "Individual",
                 agentReferenceNumber = None,
@@ -152,7 +152,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             )
         )
 
-    "ListCis" should {
+    "RetrieveCis" should {
 
         "return a successful response with status 200 (OK)" when {
 

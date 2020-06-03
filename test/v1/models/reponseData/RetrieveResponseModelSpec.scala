@@ -23,7 +23,7 @@ import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
 
 class RetrieveResponseModelSpec extends UnitSpec {
 
-  "ListResponseModel" when {
+  "RetrieveResponseModel" when {
     "processing a complete response" should {
       "produce a valid model with multiple deductions from json" in {
         Json.toJson(RetrieveJson.multipleDeductionsJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)

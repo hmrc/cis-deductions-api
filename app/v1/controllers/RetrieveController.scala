@@ -113,7 +113,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("listCisDeductionsAuditType", "list-cis-deductions-transaction-type", details)
+    val event = AuditEvent("retrieveCisDeductionsAuditType", "retrieve-cis-deductions-transaction-type", details)
     auditService.auditEvent(event)
   }
 }

@@ -35,9 +35,9 @@ class HateoasFactory @Inject()(appConfig: AppConfig) {
   def wrapList[Payload[_] : Functor, Item, Data](payload: Payload[Item], data: Data)(
     implicit linksFactory: HateoasListLinksFactory[Payload, Item, Data]): HateoasWrapper[Payload[HateoasWrapper[Item]]] = {
 
-    val hateoasList = payload.map(item => HateoasWrapper(item, linksFactory.itemLinks(appConfig, data, item)))
+    val hateoasRetrieve = payload.map(item => HateoasWrapper(item, linksFactory.itemLinks(appConfig, data, item)))
 
-    HateoasWrapper(hateoasList, linksFactory.links(appConfig, data))
+    HateoasWrapper(hateoasRetrieve, linksFactory.links(appConfig, data))
   }
 }
 
