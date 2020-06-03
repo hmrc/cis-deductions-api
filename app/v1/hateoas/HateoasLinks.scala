@@ -56,7 +56,7 @@ trait HateoasLinks {
       rel = if(isSelf) SELF else AMEND_CIS)
 
   //L4
-  def listCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean):
+  def retrieveCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean):
   Link =
     Link (
       href = retrieveUri(appConfig, nino, fromDate, toDate, source),

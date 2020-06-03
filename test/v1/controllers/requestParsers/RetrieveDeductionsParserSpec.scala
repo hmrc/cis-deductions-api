@@ -22,7 +22,7 @@ import v1.mocks.validators.MockRetrieveValidator
 import v1.models.errors.{BadRequestError, ErrorWrapper, FromDateFormatError, NinoFormatError, RuleSourceError, RuleToDateBeforeFromDateError, ToDateFormatError}
 import v1.models.request._
 
-class ListDeductionsParserSpec extends UnitSpec {
+class RetrieveDeductionsParserSpec extends UnitSpec {
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
@@ -33,7 +33,7 @@ class ListDeductionsParserSpec extends UnitSpec {
 
   "parser" should {
     "accept a valid input" when {
-      "a valid list deduction request has been made" in new Test {
+      "a valid retrieve deduction request has been made" in new Test {
         val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
         MockValidator
           .validate(inputData)
@@ -43,7 +43,7 @@ class ListDeductionsParserSpec extends UnitSpec {
         result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
       }
 
-      "a valid list deduction request has been made with the optional field returning none" in new Test {
+      "a valid retrieve deduction request has been made with the optional field returning none" in new Test {
         val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
         MockValidator
           .validate(inputData)
@@ -97,5 +97,4 @@ class ListDeductionsParserSpec extends UnitSpec {
       }
     }
   }
-
 }

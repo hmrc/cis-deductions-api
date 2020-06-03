@@ -55,7 +55,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
         requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
       ).returns(Future.successful(outcome))
 
-      await(connector.list(request)) shouldBe outcome
+      await(connector.retrieve(request)) shouldBe outcome
     }
 
     "return a Des Error code" when {
@@ -69,7 +69,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[RetrieveResponseModel[DeductionsDetails]] = await(connector.list(request))
+        val result: DesOutcome[RetrieveResponseModel[DeductionsDetails]] = await(connector.retrieve(request))
         result shouldBe outcome
       }
     }

@@ -40,7 +40,7 @@ class RetrieveService @Inject()(connector: RetrieveConnector) extends DesRespons
     logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.list(request)).leftMap(mapDesErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper
     result.value
   }

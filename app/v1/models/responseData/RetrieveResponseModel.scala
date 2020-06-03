@@ -41,7 +41,7 @@ object RetrieveResponseModel extends HateoasLinks {
     }
 
     override def links(appConfig: AppConfig, data: RetrieveResponseHateoasData): Seq[Link] = {
-      Seq(listCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
+      Seq(retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
   }
@@ -53,4 +53,4 @@ object RetrieveResponseModel extends HateoasLinks {
 }
 
 case class RetrieveResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
-                                       listResponse: RetrieveResponseModel[DeductionsDetails]) extends HateoasData
+                                       retrieveResponse: RetrieveResponseModel[DeductionsDetails]) extends HateoasData

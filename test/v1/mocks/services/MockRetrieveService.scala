@@ -32,8 +32,8 @@ trait MockRetrieveService extends MockFactory{
 
   val mockService: RetrieveService = mock[RetrieveService]
 
-  object MockListService {
-    def listCisDeductions(requestData: RetrieveRequestData): CallHandler4[RetrieveRequestData, HeaderCarrier, ExecutionContext,
+  object MockRetrieveService {
+    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler4[RetrieveRequestData, HeaderCarrier, ExecutionContext,
       EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]]] = {
       (mockService
         .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))

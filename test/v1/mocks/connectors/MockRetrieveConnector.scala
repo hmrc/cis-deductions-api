@@ -27,13 +27,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveConnector extends MockFactory {
 
-  val mockListConnector: RetrieveConnector = mock[RetrieveConnector]
+  val mockRetrieveConnector: RetrieveConnector = mock[RetrieveConnector]
 
-  object MockListCisDeductionsConnector {
+  object MockRetrieveCisDeductionsConnector {
 
-    def listCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]]] = {
-      (mockListConnector
-        .list(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext))
+    def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]]] = {
+      (mockRetrieveConnector
+        .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
     }
   }

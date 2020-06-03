@@ -18,7 +18,7 @@ package v1.fixtures
 
 import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel, PeriodDeductions}
 
-object ListModels {
+object RetrieveModels {
 
   val multipleDeductionsModel = RetrieveResponseModel(
     Seq(
@@ -65,7 +65,7 @@ object ListModels {
     )
   )
 
-  val listCisDeductionsModel =
+  val retrieveCisDeductionsModel =
     RetrieveResponseModel(
       Seq(DeductionsDetails(
         submissionId = Some("12345678"),

@@ -26,20 +26,20 @@ class RetrieveResponseModelSpec extends UnitSpec {
   "ListResponseModel" when {
     "processing a complete response" should {
       "produce a valid model with multiple deductions from json" in {
-        Json.toJson(ListJson.multipleDeductionsJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(ListModels.multipleDeductionsModel)
+        Json.toJson(RetrieveJson.multipleDeductionsJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
       }
       "produce a valid model with single deduction from json" in {
-        Json.toJson(ListJson.singleDeductionJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(ListModels.singleDeductionModel)
+        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(RetrieveModels.singleDeductionModel)
       }
     }
     "processing bad json" should {
       "produce an error" in {
-        Json.parse(ListJson.errorJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe a[JsError]
+        Json.parse(RetrieveJson.errorJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe a[JsError]
       }
     }
     "producing json from a valid model" should {
       "produce valid json" in {
-        Json.toJson(ListModels.multipleDeductionsModel) shouldBe Json.toJson(ListJson.multipleDeductionsJson)
+        Json.toJson(RetrieveModels.multipleDeductionsModel) shouldBe Json.toJson(RetrieveJson.multipleDeductionsJson)
       }
     }
   }

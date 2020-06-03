@@ -30,7 +30,7 @@ class RetrieveConnector @Inject()(val http: HttpClient,
                                   val appConfig: AppConfig
                                       ) extends BaseDesConnector {
 
-  def list(request: RetrieveRequestData)(
+  def retrieve(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]] = {
 

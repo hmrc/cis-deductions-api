@@ -20,7 +20,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.fixtures.ListModels._
+import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -39,19 +39,19 @@ class RetrieveServiceSpec extends UnitSpec {
   private val source = "Contractor"
 
   val request: RetrieveRequestData = RetrieveRequestData(nino, fromDate, toDate, source)
-  val response: RetrieveResponseModel[DeductionsDetails] = listCisDeductionsModel
+  val response: RetrieveResponseModel[DeductionsDetails] = retrieveCisDeductionsModel
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "listcis")
+    implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockListConnector)
+    val service = new RetrieveService(mockRetrieveConnector)
   }
 
-  "ListDeductions" should {
+  "RetrieveDeductions" should {
     "return a valid response" when {
       "a valid request is supplied" in new Test {
-        MockListCisDeductionsConnector.listCisDeduction(request)
+        MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrieveDeductions(request)) shouldBe Right(ResponseWrapper(correlationId,response))
@@ -63,7 +63,7 @@ class RetrieveServiceSpec extends UnitSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockListCisDeductionsConnector.listCisDeduction(request)
+          MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
