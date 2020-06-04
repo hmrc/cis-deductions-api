@@ -5,7 +5,7 @@
       "fromDate": "2019-04-06",
       "toDate": "2020-04-05",
       "contractorName": "Bovis",
-      "employerRef": "BV40092",
+      "employerRef": "123/BV80213",
       "periodData": [
         {
           "deductionAmount": 350,
@@ -44,7 +44,7 @@
       "fromDate": "2019-04-06",
       "toDate": "2020-04-05",
       "contractorName": "Taylor Wimpy",
-      "employerRef": "TW44355",
+      "employerRef": "123/TW44355",
       "periodData": [
         {
           "deductionAmount": 60,

@@ -33,8 +33,9 @@
           },
           "employerRef": {
             "description": "The unique identifier contractor reference number.",
+            "pattern": "^[0-9]{3}\\/[^ ].{0,9}$",
             "type": "string",
-            "example": "AC80213"
+            "example": "123/AC80213"
           },
           "periodData": {
             "description": "List of items that make up the overall deductions.",
