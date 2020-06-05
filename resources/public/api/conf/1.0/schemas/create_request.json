@@ -16,8 +16,7 @@
     },
     "contractorName": {
       "description": "The name of the contractor the subcontractor worked for.",
-      "type": "string",
-      "example": "Ace Chemicals"
+      "type": "string"
     },
     "employerRef": {
       "description": "A unique identifier contractor reference number.",
