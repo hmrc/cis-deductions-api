@@ -25,7 +25,7 @@ import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -39,7 +39,7 @@ class RetrieveServiceSpec extends UnitSpec {
   private val source = "Contractor"
 
   val request: RetrieveRequestData = RetrieveRequestData(nino, fromDate, toDate, source)
-  val response: RetrieveResponseModel[DeductionsDetails] = retrieveCisDeductionsModel
+  val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

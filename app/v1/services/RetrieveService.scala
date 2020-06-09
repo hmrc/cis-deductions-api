@@ -26,7 +26,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ class RetrieveService @Inject()(connector: RetrieveConnector) extends DesRespons
   def retrieveDeductions(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]] = {
+    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDesErrors(mappingDesToMtdError))

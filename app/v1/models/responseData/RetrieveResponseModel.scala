@@ -22,7 +22,7 @@ import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveResponseModel[I](cisDeductions: Seq[I])
+case class RetrieveResponseModel[I](totalDeductionAmount: BigDecimal, totalCostOfMaterials: BigDecimal, totalGrossAmountPaid: BigDecimal, cisDeductions: Seq[I])
 
 object RetrieveResponseModel extends HateoasLinks {
 
@@ -30,13 +30,13 @@ object RetrieveResponseModel extends HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[RetrieveResponseModel[I]] = Json.writes[RetrieveResponseModel[I]]
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, DeductionsDetails, RetrieveResponseHateoasData] {
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveResponseHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: DeductionsDetails): Seq[Link] = {
-      item.submissionId match {
+    override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: CisDeductions): Seq[Link] = {
+      item.periodData.head.submissionId match {
           case None => Seq()
-          case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false),
-            amendCISDeduction(appConfig, data.nino, item.submissionId.getOrElse(""), isSelf = false))
+          case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false))
         }
     }
 
@@ -48,9 +48,9 @@ object RetrieveResponseModel extends HateoasLinks {
 
   implicit object ResponseFunctor extends Functor[RetrieveResponseModel] {
     override def map[A, B](fa: RetrieveResponseModel[A])(f: A => B): RetrieveResponseModel[B] =
-      RetrieveResponseModel(fa.cisDeductions.map(f))
+      RetrieveResponseModel(fa.totalDeductionAmount, fa.totalCostOfMaterials, fa.totalGrossAmountPaid,fa.cisDeductions.map(f))
   }
 }
 
 case class RetrieveResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
-                                       retrieveResponse: RetrieveResponseModel[DeductionsDetails]) extends HateoasData
+                                       retrieveResponse: RetrieveResponseModel[CisDeductions]) extends HateoasData

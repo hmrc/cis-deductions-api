@@ -32,428 +32,462 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request._
 import v1.models.responseData
 import v1.models.responseData.RetrieveResponseModel._
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseHateoasData, RetrieveResponseModel, PeriodDeductions}
+import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel, PeriodData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveControllerSpec extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
-    with MockRetrieveRequestParser
-    with MockRetrieveService
-    with MockHateoasFactory
-    with MockAppConfig
-    with MockAuditService {
+  with MockEnrolmentsAuthService
+  with MockMtdIdLookupService
+  with MockRetrieveRequestParser
+  with MockRetrieveService
+  with MockHateoasFactory
+  with MockAppConfig
+  with MockAuditService {
 
-    trait Test {
-        val hc = HeaderCarrier()
+  trait Test {
+    val hc = HeaderCarrier()
 
-        val controller = new RetrieveController(
-            authService = mockEnrolmentsAuthService,
-            lookupService = mockMtdIdLookupService,
-            requestParser = mockRequestParser,
-            service = mockService,
-            hateoasFactory = mockHateoasFactory,
-            auditService = mockAuditService,
-            cc = cc
+    val controller = new RetrieveController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      requestParser = mockRequestParser,
+      service = mockService,
+      hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
+      cc = cc
+    )
+
+    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockedEnrolmentsAuthService.authoriseUser()
+
+  }
+
+  private val nino = "AA123456A"
+  private val fromDate = Some("2019-04-06")
+  private val toDate = Some("2020-04-05")
+  private val sourceRaw = Some("customer")
+  private val sourceRawAll = Some("all")
+  private val sourceAll = "all"
+  private val correlationId = "X-123"
+  private val retrieveRawData = RetrieveRawData(nino, fromDate, toDate, sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+  private val optionalFieldMissingRawData = RetrieveRawData(nino, fromDate, toDate, None)
+  private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+
+  val response: RetrieveResponseModel[CisDeductions] =
+    RetrieveResponseModel(
+      totalDeductionAmount = 12345.56,
+      totalCostOfMaterials = 234234.33,
+      totalGrossAmountPaid = 2342424.56,
+      Seq(CisDeductions(
+        fromDate = "2019-04-06",
+        toDate = "2020-04-05",
+        contractorName = "Bovis",
+        employerRef = "BV40092",
+        totalDeductionAmount = 3543.55,
+        totalCostOfMaterials = 6644.67,
+        totalGrossAmountPaid = 3424.12,
+        Seq(
+          PeriodData(
+            deductionFromDate = "2019-06-06",
+            deductionToDate = "2019-07-05",
+            deductionAmount = 355.00,
+            costOfMaterials = Some(35.00),
+            grossAmountPaid = 1457.00,
+            submissionDate = "2020-05-11T16:38:57.489Z",
+            submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+            source = Some("customer")),
+          PeriodData(
+            deductionFromDate = "2019-07-06",
+            deductionToDate = "2019-08-05",
+            deductionAmount = 355.00,
+            costOfMaterials = Some(35.00),
+            grossAmountPaid = 1457.00,
+            submissionDate = "2020-05-11T16:38:57.489Z",
+            submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+            source = Some("customer")),
         )
+      )
+      )
+    )
 
-        MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-        MockedEnrolmentsAuthService.authoriseUser()
+  val responseNoId: RetrieveResponseModel[CisDeductions] =
+    RetrieveResponseModel(
+      totalDeductionAmount = 12345.56,
+      totalCostOfMaterials = 234234.33,
+      totalGrossAmountPaid = 2342424.56,
+      Seq(CisDeductions(
+        fromDate = "2019-04-06",
+        toDate = "2020-04-05",
+        contractorName = "Bovis",
+        employerRef = "BV40092",
+        totalDeductionAmount = 3543.55,
+        totalCostOfMaterials = 6644.67,
+        totalGrossAmountPaid = 3424.12,
+        Seq(
+          PeriodData(
+            deductionFromDate = "2019-06-06",
+            deductionToDate = "2019-07-05",
+            deductionAmount = 355.00,
+            costOfMaterials = Some(35.00),
+            grossAmountPaid = 1457.00,
+            submissionDate = "2020-05-11T16:38:57.489Z",
+            submissionId = None,
+            source = Some("customer")),
+          PeriodData(
+            deductionFromDate = "2019-07-06",
+            deductionToDate = "2019-08-05",
+            deductionAmount = 355.00,
+            costOfMaterials = Some(35.00),
+            grossAmountPaid = 1457.00,
+            submissionDate = "2020-05-11T16:38:57.489Z",
+            submissionId = None,
+            source = Some("customer")),
+        )
+      )
+      )
+    )
 
-    }
 
-    private val nino = "AA123456A"
-    private val fromDate = Some("2019-04-06")
-    private val toDate = Some("2020-04-05")
-    private val sourceRaw = Some("customer")
-    private val sourceRawAll = Some("all")
-    private val sourceAll = "all"
-    private val correlationId = "X-123"
-    private val retrieveRawData = RetrieveRawData(nino,fromDate, toDate, sourceRaw)
-    private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
-    private val optionalFieldMissingRawData = RetrieveRawData(nino, fromDate, toDate, None)
-    private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+  def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "retrieveCisDeductionsAuditType",
+      transactionName = "retrieve-cis-deductions-transaction-type",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        nino,
+        `X-CorrelationId` = correlationId,
+        auditResponse
+      )
+    )
 
-    val response: RetrieveResponseModel[DeductionsDetails] =
-        RetrieveResponseModel(
-            Seq(DeductionsDetails(
-                submissionId = Some("54759eb3c090d83494e2d804"),
+  "RetrieveCis" should {
+
+    "return a successful response with status 200 (OK)" when {
+
+      "a valid request is supplied for a cis get request" in new Test {
+
+        MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Right(retrieveRequestData))
+
+        MockRetrieveService
+          .retrieveCisDeductions(retrieveRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+          RetrieveResponseModel(
+            totalDeductionAmount = 12345.56,
+            totalCostOfMaterials = 234234.33,
+            totalGrossAmountPaid = 2342424.56,
+            Seq(HateoasWrapper(
+              CisDeductions(
                 fromDate = "2019-04-06",
                 toDate = "2020-04-05",
-                contractorName = "Bovis",
-                employerRef = "BV40092",
+                contractorName = "contractor Name",
+                employerRef = "123/AA12345",
+                totalDeductionAmount = 3543.55,
+                totalCostOfMaterials = 6644.67,
+                totalGrossAmountPaid = 3424.12,
                 Seq(
-                    PeriodDeductions(
-                        deductionAmount = 355.00,
-                        deductionFromDate = "2019-06-06",
-                        deductionToDate = "2019-07-05",
-                        costOfMaterials = Some(35.00),
-                        grossAmountPaid = 1457.00,
-                        submissionDate = "2020-01-14",
-                        submittedBy = "customer"),
-                    PeriodDeductions(
-                        deductionAmount = 355.00,
-                        deductionFromDate = "2019-07-06",
-                        deductionToDate = "2019-08-05",
-                        costOfMaterials = Some(35.00),
-                        grossAmountPaid = 1457.00,
-                        submissionDate = "2020-01-14",
-                        submittedBy = "customer"
-                    )
+                  PeriodData(
+                    deductionFromDate = "2019-06-06",
+                    deductionToDate = "2019-07-05",
+                    deductionAmount = 355.00,
+                    costOfMaterials = Some(35.00),
+                    grossAmountPaid = 1457.00,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("customer")),
+                  PeriodData(
+                    deductionFromDate = "2019-07-06",
+                    deductionToDate = "2019-08-05",
+                    deductionAmount = 355.00,
+                    costOfMaterials = Some(35.00),
+                    grossAmountPaid = 1457.00,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("customer")),
                 )
-            )
+              ), Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
+                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
           )
+        ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
-    val responseNoId: RetrieveResponseModel[DeductionsDetails] =
-        RetrieveResponseModel(
-            Seq(DeductionsDetails(
-                submissionId = None,
+        MockHateoasFactory
+          .wrapList(response, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
+          .returns(responseWithHateoas)
+
+        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe singleDeductionJsonHateoas
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas))).once()
+      }
+
+      "a valid request is supplied when an optional field is missing" in new Test {
+
+        MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
+
+        MockRetrieveDeductionRequestParser
+          .parse(optionalFieldMissingRawData)
+          .returns(Right(optionalFieldMissingRequestData))
+
+        MockRetrieveService
+          .retrieveCisDeductions(optionalFieldMissingRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+          RetrieveResponseModel(
+            totalDeductionAmount = 12345.56,
+            totalCostOfMaterials = 234234.33,
+            totalGrossAmountPaid = 2342424.56,
+            Seq(HateoasWrapper(
+              CisDeductions(
                 fromDate = "2019-04-06",
                 toDate = "2020-04-05",
-                contractorName = "Bovis",
-                employerRef = "BV40092",
+                contractorName = "contractor Name",
+                employerRef = "123/AA12345",
+                totalDeductionAmount = 3543.55,
+                totalCostOfMaterials = 6644.67,
+                totalGrossAmountPaid = 3424.12,
                 Seq(
-                    PeriodDeductions(
-                        deductionAmount = 355.00,
-                        deductionFromDate = "2019-06-06",
-                        deductionToDate = "2019-07-05",
-                        costOfMaterials = Some(35.00),
-                        grossAmountPaid = 1457.00,
-                        submissionDate = "2020-01-14",
-                        submittedBy = "customer"),
-                    PeriodDeductions(
-                        deductionAmount = 355.00,
-                        deductionFromDate = "2019-07-06",
-                        deductionToDate = "2019-08-05",
-                        costOfMaterials = Some(35.00),
-                        grossAmountPaid = 1457.00,
-                        submissionDate = "2020-01-14",
-                        submittedBy = "customer"
-                    )
+                  PeriodData(
+                    deductionFromDate = "2020-05-11",
+                    deductionToDate = "2020-05-11",
+                    deductionAmount = 4654.78,
+                    costOfMaterials = Some(4564.89),
+                    grossAmountPaid = 7878.67,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("customer")),
+                  PeriodData(
+                    deductionFromDate = "2019-07-06",
+                    deductionToDate = "2019-08-05",
+                    deductionAmount = 355.00,
+                    costOfMaterials = Some(35.00),
+                    grossAmountPaid = 1457.00,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("customer")),
                 )
+              ), Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
+                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false)))
             )
-            )
+          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
+        MockHateoasFactory
+          .wrapList(response, RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, None, response))
+          .returns(responseWithHateoas)
 
-    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-        AuditEvent(
-            auditType = "retrieveCisDeductionsAuditType",
-            transactionName = "retrieve-cis-deductions-transaction-type",
-            detail = GenericAuditDetail(
-                userType = "Individual",
-                agentReferenceNumber = None,
-                nino,
-                `X-CorrelationId` = correlationId,
-                auditResponse
+        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, None)(fakeGetRequest)
+
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe singleDeductionJsonHateoasMissingOptionalField
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasMissingOptionalField))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasMissingOptionalField))).once()
+      }
+
+      "a valid request where response submission id is missing" in new Test {
+
+        MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Right(retrieveRequestData))
+
+        MockRetrieveService
+          .retrieveCisDeductions(retrieveRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseNoId))))
+
+        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+          RetrieveResponseModel(
+            totalDeductionAmount = 12345.56,
+            totalCostOfMaterials = 234234.33,
+            totalGrossAmountPaid = 2342424.56,
+            Seq(HateoasWrapper(
+              CisDeductions(
+                fromDate = "2019-04-06",
+                toDate = "2020-04-05",
+                contractorName = "contractor Name",
+                employerRef = "123/AA12345",
+                totalDeductionAmount = 3543.55,
+                totalCostOfMaterials = 6644.67,
+                totalGrossAmountPaid = 3424.12,
+                Seq(
+                  PeriodData(
+                    deductionFromDate = "2019-06-06",
+                    deductionToDate = "2019-07-05",
+                    deductionAmount = 355.00,
+                    costOfMaterials = Some(35.00),
+                    grossAmountPaid = 1457.00,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("contractor")),
+                  PeriodData(
+                    deductionFromDate = "2019-07-06",
+                    deductionToDate = "2019-08-05",
+                    deductionAmount = 355.00,
+                    costOfMaterials = Some(35.00),
+                    grossAmountPaid = 1457.00,
+                    submissionDate = "2020-05-11T16:38:57.489Z",
+                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+                    source = Some("contractor")),
+                )
+              ), Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
+                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false)))
             )
+          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
-    "RetrieveCis" should {
+        MockHateoasFactory
+          .wrapList(responseNoId, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
+          .returns(responseWithHateoas)
 
-        "return a successful response with status 200 (OK)" when {
+        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
-            "a valid request is supplied for a cis get request" in new Test {
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe singleDeductionJsonHateoasNoId
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-                MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
-
-                MockRetrieveDeductionRequestParser
-                  .parse(retrieveRawData)
-                  .returns(Right(retrieveRequestData))
-
-                MockRetrieveService
-                  .retrieveCisDeductions(retrieveRequestData)
-                  .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-                val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[DeductionsDetails]]] = HateoasWrapper(
-                    RetrieveResponseModel(
-                        Seq(HateoasWrapper(
-                            DeductionsDetails(
-                                submissionId = Some("54759eb3c090d83494e2d804"),
-                                fromDate = "2019-04-06",
-                                toDate = "2020-04-05",
-                                contractorName = "Bovis",
-                                employerRef = "BV40092",
-                                Seq(
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-06-06",
-                                        deductionToDate = "2019-07-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "customer"),
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-07-06",
-                                        deductionToDate = "2019-08-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "customer"
-                                    )
-                                )
-                            ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
-                                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
-                        ))
-                    ),Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
-                        createCISDeduction(mockAppConfig, nino, isSelf = false))
-                )
-                MockHateoasFactory
-                  .wrapList(response, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
-                  .returns(responseWithHateoas)
-
-                val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
-
-                status(result) shouldBe OK
-                contentAsJson(result) shouldBe singleDeductionJsonHateoas
-                header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas))
-                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas))).once()
-            }
-
-            "a valid request is supplied when an optional field is missing" in new Test {
-
-                MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
-
-                MockRetrieveDeductionRequestParser
-                  .parse(optionalFieldMissingRawData)
-                  .returns(Right(optionalFieldMissingRequestData))
-
-                MockRetrieveService
-                  .retrieveCisDeductions(optionalFieldMissingRequestData)
-                  .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-                val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[DeductionsDetails]]] = HateoasWrapper(
-                    RetrieveResponseModel(
-                        Seq(HateoasWrapper(
-                            DeductionsDetails(
-                                submissionId = Some("54759eb3c090d83494e2d804"),
-                                fromDate = "2019-04-06",
-                                toDate = "2020-04-05",
-                                contractorName = "Bovis",
-                                employerRef = "BV40092",
-                                Seq(
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-06-06",
-                                        deductionToDate = "2019-07-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "customer"),
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-07-06",
-                                        deductionToDate = "2019-08-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "customer"
-                                    )
-                                )
-                            ),Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
-                                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false))
-                        ))
-                    ),Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRawAll, isSelf = true),
-                        createCISDeduction(mockAppConfig, nino, isSelf = false))
-                )
-
-                MockHateoasFactory
-                  .wrapList(response, RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, None, response))
-                  .returns(responseWithHateoas)
-
-                val result: Future[Result] = controller.retrieveDeductions(nino,fromDate,toDate,None)(fakeGetRequest)
-
-                status(result) shouldBe OK
-                contentAsJson(result) shouldBe singleDeductionJsonHateoasMissingOptionalField
-                header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasMissingOptionalField))
-                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasMissingOptionalField))).once()
-            }
-
-            "a valid request where response submission id is missing" in new Test {
-
-                MockedAppConfig.apiGatewayContext returns "deductions/cis" anyNumberOfTimes()
-
-                MockRetrieveDeductionRequestParser
-                  .parse(retrieveRawData)
-                  .returns(Right(retrieveRequestData))
-
-                MockRetrieveService
-                  .retrieveCisDeductions(retrieveRequestData)
-                  .returns(Future.successful(Right(ResponseWrapper(correlationId, responseNoId))))
-
-                val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[DeductionsDetails]]] = HateoasWrapper(
-                    RetrieveResponseModel(
-                        Seq(HateoasWrapper(
-                            DeductionsDetails(
-                                submissionId = None,
-                                fromDate = "2019-04-06",
-                                toDate = "2020-04-05",
-                                contractorName = "Bovis",
-                                employerRef = "BV40092",
-                                Seq(
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-06-06",
-                                        deductionToDate = "2019-07-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "contractor"),
-                                    PeriodDeductions(
-                                        deductionAmount = 355.00,
-                                        deductionFromDate = "2019-07-06",
-                                        deductionToDate = "2019-08-05",
-                                        costOfMaterials = Some(35.00),
-                                        grossAmountPaid = 1457.00,
-                                        submissionDate = "2020-01-14",
-                                        submittedBy = "contractor"
-                                    )
-                                )
-                            ),Seq()
-                        ))
-                    ),Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
-                        createCISDeduction(mockAppConfig, nino, isSelf = false))
-                )
-
-                MockHateoasFactory
-                  .wrapList(responseNoId, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
-                  .returns(responseWithHateoas)
-
-                val result: Future[Result] = controller.retrieveDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
-
-                status(result) shouldBe OK
-                contentAsJson(result) shouldBe singleDeductionJsonHateoasNoId
-                header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasNoId))
-                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasNoId))).once()
-            }
-        }
-
-        "return the error as per spec" when {
-            def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-                s"a ${error.code} error is returned from the parser" in new Test {
-
-                    MockRetrieveDeductionRequestParser
-                      .parse(retrieveRawData)
-                      .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
-
-                    val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
-
-                    status(result) shouldBe expectedStatus
-                    contentAsJson(result) shouldBe Json.toJson(error)
-                    header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                    val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-                    MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
-                }
-            }
-            val input = Seq(
-                (BadRequestError, BAD_REQUEST),
-                (NinoFormatError, BAD_REQUEST),
-                (DownstreamError, INTERNAL_SERVER_ERROR),
-            )
-            input.foreach(args => (errorsFromParserTester _).tupled(args))
-
-            "multiple parser errors occur" in new Test {
-                val error = ErrorWrapper(Some(correlationId), Seq(BadRequestError, NinoFormatError))
-
-                MockRetrieveDeductionRequestParser
-                  .parse(retrieveRawData)
-                  .returns(Left(error))
-
-                val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
-
-                status(result) shouldBe BAD_REQUEST
-                contentAsJson(result) shouldBe Json.toJson(error)
-                header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
-            }
-
-            "multiple errors occur for format errors" in new Test {
-                val error = ErrorWrapper(
-                    Some(correlationId),
-                    Seq(
-                        BadRequestError,
-                        RuleDateRangeInvalidError,
-                        ToDateFormatError,
-                        FromDateFormatError,
-                        ToDateFormatError,
-                        RuleMissingToDateError,
-                        RuleMissingFromDateError,
-                        RuleSourceError,
-                        RuleFromDateError,
-                        RuleToDateError)
-                )
-
-                MockRetrieveDeductionRequestParser
-                  .parse(retrieveRawData)
-                  .returns(Left(error))
-
-                val result: Future[Result] = controller.retrieveDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
-
-                status(result) shouldBe BAD_REQUEST
-                contentAsJson(result) shouldBe Json.toJson(error)
-                header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
-                    Seq(
-                        AuditError(BadRequestError.code),
-                        AuditError(RuleDateRangeInvalidError.code),
-                        AuditError(ToDateFormatError.code),
-                        AuditError(FromDateFormatError.code),
-                        AuditError(ToDateFormatError.code),
-                        AuditError(RuleMissingToDateError.code),
-                        AuditError(RuleMissingFromDateError.code),
-                        AuditError(RuleSourceError.code),
-                        AuditError(RuleFromDateError.code),
-                        AuditError(RuleToDateError.code))),
-                    None
-                )
-                MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
-            }
-        }
-
-        "return downstream errors as per the spec" when {
-            def serviceErrors(mtdError: MtdError, expectedStatus: Int) : Unit = {
-                s"a ${mtdError.code} error is returned from the service" in new Test {
-
-                    MockRetrieveDeductionRequestParser
-                      .parse(retrieveRawData)
-                      .returns(Right(retrieveRequestData))
-
-                    MockRetrieveService
-                      .retrieveCisDeductions(retrieveRequestData)
-                      .returns(Future.successful(Left(ErrorWrapper(Some(correlationId),Seq(mtdError)))))
-
-                    val result: Future[Result] = controller.retrieveDeductions(nino,fromDate,toDate,sourceRaw)(fakeGetRequest)
-
-                    status(result) shouldBe expectedStatus
-                    contentAsJson(result) shouldBe Json.toJson(mtdError)
-                    header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-                    val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-                    MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
-                }
-            }
-            val input = Seq(
-                (NinoFormatError, BAD_REQUEST),
-                (NotFoundError, NOT_FOUND),
-                (DownstreamError, INTERNAL_SERVER_ERROR),
-                (FromDateFormatError, BAD_REQUEST),
-                (ToDateFormatError, BAD_REQUEST)
-            )
-            input.foreach(args => (serviceErrors _).tupled(args))
-        }
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoasNoId))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoasNoId))).once()
+      }
     }
+
+    "return the error as per spec" when {
+      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+        s"a ${error.code} error is returned from the parser" in new Test {
+
+          MockRetrieveDeductionRequestParser
+            .parse(retrieveRawData)
+            .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
+
+          val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+
+          status(result) shouldBe expectedStatus
+          contentAsJson(result) shouldBe Json.toJson(error)
+          header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
+        }
+      }
+
+      val input = Seq(
+        (BadRequestError, BAD_REQUEST),
+        (NinoFormatError, BAD_REQUEST),
+        (DownstreamError, INTERNAL_SERVER_ERROR),
+      )
+      input.foreach(args => (errorsFromParserTester _).tupled(args))
+
+      "multiple parser errors occur" in new Test {
+        val error = ErrorWrapper(Some(correlationId), Seq(BadRequestError, NinoFormatError))
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Left(error))
+
+        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+
+        status(result) shouldBe BAD_REQUEST
+        contentAsJson(result) shouldBe Json.toJson(error)
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+      }
+
+      "multiple errors occur for format errors" in new Test {
+        val error = ErrorWrapper(
+          Some(correlationId),
+          Seq(
+            BadRequestError,
+            RuleDateRangeInvalidError,
+            ToDateFormatError,
+            FromDateFormatError,
+            ToDateFormatError,
+            RuleMissingToDateError,
+            RuleMissingFromDateError,
+            RuleSourceError,
+            RuleFromDateError,
+            RuleToDateError)
+        )
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Left(error))
+
+        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+
+        status(result) shouldBe BAD_REQUEST
+        contentAsJson(result) shouldBe Json.toJson(error)
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
+          Seq(
+            AuditError(BadRequestError.code),
+            AuditError(RuleDateRangeInvalidError.code),
+            AuditError(ToDateFormatError.code),
+            AuditError(FromDateFormatError.code),
+            AuditError(ToDateFormatError.code),
+            AuditError(RuleMissingToDateError.code),
+            AuditError(RuleMissingFromDateError.code),
+            AuditError(RuleSourceError.code),
+            AuditError(RuleFromDateError.code),
+            AuditError(RuleToDateError.code))),
+          None
+        )
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+      }
+    }
+
+    "return downstream errors as per the spec" when {
+      def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
+        s"a ${mtdError.code} error is returned from the service" in new Test {
+
+          MockRetrieveDeductionRequestParser
+            .parse(retrieveRawData)
+            .returns(Right(retrieveRequestData))
+
+          MockRetrieveService
+            .retrieveCisDeductions(retrieveRequestData)
+            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), Seq(mtdError)))))
+
+          val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+
+          status(result) shouldBe expectedStatus
+          contentAsJson(result) shouldBe Json.toJson(mtdError)
+          header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+        }
+      }
+
+      val input = Seq(
+        (NinoFormatError, BAD_REQUEST),
+        (NotFoundError, NOT_FOUND),
+        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (FromDateFormatError, BAD_REQUEST),
+        (ToDateFormatError, BAD_REQUEST)
+      )
+      input.foreach(args => (serviceErrors _).tupled(args))
+    }
+  }
 }

@@ -16,50 +16,70 @@
 
 package v1.fixtures
 
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel, PeriodDeductions}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel, PeriodData}
 
 object RetrieveModels {
 
   val multipleDeductionsModel = RetrieveResponseModel(
+    totalDeductionAmount = 12345.56,
+    totalCostOfMaterials = 234234.33,
+    totalGrossAmountPaid = 2342424.56,
     Seq(
-      DeductionsDetails(
-        Some("54759eb3c090d83494e2d804"),
+      CisDeductions(
         "2019-04-06",
         "2020-04-05",
         "Bovis",
         "BV40092",
+        3543.55,
+        6644.67,
+        3424.12,
         Seq(
-          PeriodDeductions(355.11, "2019-04-06", "2019-05-05", Some(35.11), 1457.11, "2019-04-03", "contractor"),
-          PeriodDeductions(355.11, "2019-05-06", "2019-06-05", Some(35.11), 1457.11, "2019-05-03", "contractor"),
-          PeriodDeductions(355.11, "2019-06-06", "2019-07-05", Some(35.11), 1457.11, "2020-01-14", "customer"),
-          PeriodDeductions(355.11, "2019-07-06", "2019-08-05", Some(35.11), 1457.11, "2020-01-14", "customer")
+          PeriodData("2019-04-06", "2019-05-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+          PeriodData("2019-05-06", "2019-06-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+          PeriodData("2019-06-06", "2019-07-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
+          PeriodData("2019-07-06", "2019-08-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       ),
-      DeductionsDetails(
-        None,
+      CisDeductions(
         "2019-04-06",
         "2020-04-05",
         "Taylor Wimpy",
         "TW44355",
+        3543.55,
+        6644.67,
+        3424.12,
         Seq(
-          PeriodDeductions(60.11, "2019-07-06", "2019-08-05", Some(35.11), 1457.11, "2019-08-05", "contractor"),
-          PeriodDeductions(60.11, "2019-09-06", "2019-10-05", Some(35.11), 1457.11, "2019-08-05", "contractor")
+          PeriodData("2019-07-06", "2019-08-05", 60.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+          PeriodData("2019-09-06", "2019-10-05", 60.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor"))
         )
       )
     )
   )
 
   val singleDeductionModel = RetrieveResponseModel(
+    totalDeductionAmount = 12345.56,
+    totalCostOfMaterials = 234234.33,
+    totalGrossAmountPaid = 2342424.56,
     Seq(
-      DeductionsDetails(
-        Some("54759eb3c090d83494e2d804"),
+      CisDeductions(
         "2019-04-06",
         "2020-04-05",
-        "Bovis",
-        "BV40092",
+        "contractor Name",
+        "123/AA12345",
+        3543.55,
+        6644.67,
+        3424.12,
         Seq(
-          PeriodDeductions(355.00, "2019-06-06", "2019-07-05", Some(35.00), 1457.00, "2020-01-14", "customer"),
-          PeriodDeductions(355.00, "2019-07-06", "2019-08-05", Some(35.00), 1457.00, "2020-01-14", "customer")
+          PeriodData("2019-06-06", "2019-07-05", 355.00, Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
+          PeriodData("2019-07-06", "2019-08-05", 355.00, Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       )
     )
@@ -67,21 +87,28 @@ object RetrieveModels {
 
   val retrieveCisDeductionsModel =
     RetrieveResponseModel(
-      Seq(DeductionsDetails(
-        submissionId = Some("12345678"),
-        fromDate = "2019-04-06",
-        toDate = "2020-04-05",
-        contractorName = "Bovis",
-        employerRef = "BV40092",
+      totalDeductionAmount = 12345.56,
+      totalCostOfMaterials = 234234.33,
+      totalGrossAmountPaid = 2342424.56,
+      Seq(
+        CisDeductions(
+          "2019-04-06",
+          "2020-04-05",
+          "Bovis",
+          "BV40092",
+          3543.55,
+          6644.67,
+          3424.12,
         Seq(
-          PeriodDeductions(
-            deductionAmount = 355.00,
+          PeriodData(
             deductionFromDate = "2019-06-06",
             deductionToDate = "2019-07-05",
+            deductionAmount = 355.00,
             costOfMaterials = Some(35.00),
             grossAmountPaid = 1457.00,
-            submissionDate = " 2019-04-06",
-            submittedBy = "2019-04-06"
+            submissionDate = "2020-05-11T16:38:57.489Z",
+            submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+            source = Some("customer")
           )
         )
       )

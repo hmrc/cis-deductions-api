@@ -19,22 +19,23 @@ package v1.models.reponseData
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures._
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 
 class RetrieveResponseModelSpec extends UnitSpec {
 
   "RetrieveResponseModel" when {
     "processing a complete response" should {
       "produce a valid model with multiple deductions from json" in {
-        Json.toJson(RetrieveJson.multipleDeductionsJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
+        Json.toJson(RetrieveJson.multipleDeductionsJson)
+          .validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
       }
       "produce a valid model with single deduction from json" in {
-        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe JsSuccess(RetrieveModels.singleDeductionModel)
+        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.singleDeductionModel)
       }
     }
     "processing bad json" should {
       "produce an error" in {
-        Json.parse(RetrieveJson.errorJson).validate[RetrieveResponseModel[DeductionsDetails]] shouldBe a[JsError]
+        Json.parse(RetrieveJson.errorJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe a[JsError]
       }
     }
     "producing json from a valid model" should {

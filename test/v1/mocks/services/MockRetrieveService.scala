@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 import v1.services.RetrieveService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ trait MockRetrieveService extends MockFactory{
 
   object MockRetrieveService {
     def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler4[RetrieveRequestData, HeaderCarrier, ExecutionContext,
-      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]]] = {
+      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
       (mockService
         .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)

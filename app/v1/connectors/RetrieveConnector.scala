@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,12 +32,12 @@ class RetrieveConnector @Inject()(val http: HttpClient,
 
   def retrieve(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]] = {
+    ec: ExecutionContext): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     get(
-      DesUri[RetrieveResponseModel[DeductionsDetails]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
+      DesUri[RetrieveResponseModel[CisDeductions]](s"${appConfig.desCisUrl}/${request.nino}/current-position" +
         s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
     )
   }
