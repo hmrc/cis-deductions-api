@@ -15,7 +15,7 @@ class AmendControllerISpec extends IntegrationBaseSpec{
     val nino = "AA123456A"
     val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-    def uri: String = s"/deductions/cis/$nino/amendments/$submissionId"
+    def uri: String = s"/individuals/deductions/cis/$nino/amendments/$submissionId"
     def desUri: String = s"/income-tax/cis/deductions/$nino/amendments/$submissionId"
 
     def setupStubs(): StubMapping

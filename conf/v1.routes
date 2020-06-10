@@ -1,7 +1,7 @@
-POST       /deductions/cis/:nino/amendments                v1.controllers.CreateController.createRequest(nino: String)
+POST       /individuals/deductions/cis/:nino/amendments                v1.controllers.CreateController.createRequest(nino: String)
 
-GET        /deductions/cis/:nino/current-position          v1.controllers.RetrieveController.retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String])
+GET        /individuals/deductions/cis/:nino/current-position          v1.controllers.RetrieveController.retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String])
 
-DELETE     /deductions/cis/:nino/amendments/:id            v1.controllers.DeleteController.deleteRequest(nino: String, id: String)
+DELETE     /individuals/deductions/cis/:nino/amendments/:id            v1.controllers.DeleteController.deleteRequest(nino: String, id: String)
 
-PUT        /deductions/cis/:nino/amendments/:id            v1.controllers.AmendController.amendRequest(nino: String, id: String)
+PUT        /individuals/deductions/cis/:nino/amendments/:id            v1.controllers.AmendController.amendRequest(nino: String, id: String)
