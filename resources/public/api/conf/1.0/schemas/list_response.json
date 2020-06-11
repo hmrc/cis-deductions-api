@@ -4,6 +4,18 @@
   "description": "List CIS Deductions",
   "type": "object",
   "properties": {
+    "totalDeductionAmount":{
+      "description": "The total amount of tax deducted by CIS contractors.The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "type": "number"
+    },
+    "totalCostOfMaterials":{
+      "description": "The total cost of materials incurred under CIS by the subcontractor across all of the CIS contractors that they worked for.This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "type": "number"
+    },
+    "totalGrossAmountPaid":{
+      "description": "The total gross amount paid by CIS contractors.The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "type": "number"
+    },
     "cisDeductions": {
       "description": "List of items that make up the overall deductions.",
       "type": "array",
@@ -11,11 +23,6 @@
         "title": "item",
         "type": "object",
         "properties": {
-          "submissionId": {
-            "description": "The unique identifier for submission by the contractor.",
-            "type": "string",
-            "example": "db854aaa-65dc-488c-9120-e63fea14b9f1"
-          },
           "fromDate": {
             "description": "The CIS start date within the tax year.",
             "type": "string",
@@ -36,6 +43,21 @@
             "pattern": "^[0-9]{3}\\/[^ ].{0,9}$",
             "type": "string",
             "example": "123/AC80213"
+          },
+          "totalDeductionAmount": {
+            "description": "The total amount of tax deducted by a CIS contractor. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "example": "5000.99"
+          },
+          "totalCostOfMaterials": {
+            "description": "The total cost of materials incurred under CIS by the subcontractor.This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "example": "5000.99"
+          },
+          "totalGrossAmountPaid": {
+            "description": "The total gross amount paid by a CIS contractor.The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "example": "5000.99"
           },
           "periodData": {
             "description": "List of items that make up the overall deductions.",
@@ -83,10 +105,15 @@
                   "type": "string",
                   "example": "2019-08-05"
                 },
-                "submittedBy": {
-                  "description": "CIS deductions gross amount paid related to self-employment. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "source": {
+                  "description": "The source of the data.",
                   "type": "string",
-                  "example": "customer"
+                  "example": "2019-08-05"
+                },
+                "submissionId": {
+                  "description": "The unique identifier for the submission.",
+                  "type": "string",
+                  "example": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
                 }
               },
               "required": [
@@ -94,8 +121,8 @@
                 "deductionFromDate",
                 "deductionToDate",
                 "grossAmountPaid",
-                "submissionDate",
-                "submittedBy"
+                "submissionDate"
+
               ]
             }
           },

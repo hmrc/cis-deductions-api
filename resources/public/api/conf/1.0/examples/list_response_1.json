@@ -1,29 +1,36 @@
 {
+  "totalDeductionAmount": 12345.56,
+  "totalCostOfMaterials": 234234.33,
+  "totalGrossAmountPaid": 2342424.56,
   "cisDeductions" : [
     {
-      "submissionId": "db854aaa-65dc-488c-9120-e63fea14b9f1",
       "fromDate": "2019-04-06",
       "toDate": "2020-04-05",
-      "contractorName": "Bovis",
-      "employerRef": "123/BV80213",
+      "contractorName": "contractor Name",
+      "employerRef": "123/AA12345",
+      "totalDeductionAmount": 3543.55,
+      "totalCostOfMaterials": 6644.67,
+      "totalGrossAmountPaid": 3424.12,
       "periodData": [
         {
-          "deductionAmount": 350,
-          "deductionFromDate": "2019-05-06",
-          "deductionToDate": "2019-06-05",
-          "costOfMaterials": 30,
-          "grossAmountPaid": 1200,
-          "submissionDate": "2019-05-03",
-          "submittedBy": "contractor"
+          "deductionFromDate": "2019-04-06",
+          "deductionToDate": "2020-04-05",
+          "deductionAmount": 4654.78,
+          "costOfMaterials": 4564.89,
+          "grossAmountPaid": 7878.67,
+          "submissionDate": "2020-05-11T16:38:57.489Z",
+          "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+          "source": "customer"
         },
         {
-          "deductionAmount": 355,
-          "deductionFromDate": "2019-04-06",
-          "deductionToDate": "2019-05-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
-          "submissionDate": "2019-04-03",
-          "submittedBy": "customer"
+          "deductionFromDate": "2019-05-06",
+          "deductionToDate": "2019-06-05",
+          "deductionAmount": 355.00,
+          "costOfMaterials": 35.00,
+          "grossAmountPaid": 1457.00,
+          "submissionDate": "2019-05-03",
+          "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+          "source": "contractor"
         }
       ],
       "links":[
@@ -43,17 +50,30 @@
     {
       "fromDate": "2019-04-06",
       "toDate": "2020-04-05",
-      "contractorName": "Taylor Wimpy",
+      "contractorName": "Soylent Solutions",
       "employerRef": "123/TW44355",
+      "totalDeductionAmount": 3543.55,
+      "totalCostOfMaterials": 6644.67,
+      "totalGrossAmountPaid": 3424.12,
       "periodData": [
         {
-          "deductionAmount": 60,
           "deductionFromDate": "2019-07-06",
           "deductionToDate": "2019-08-05",
-          "costOfMaterials": 35,
-          "grossAmountPaid": 1457,
+          "deductionAmount": 60.00,
+          "costOfMaterials": 35.00,
+          "grossAmountPaid": 1457.00,
           "submissionDate": "2019-08-05",
-          "submittedBy": "contractor"
+          "source": "contractor"
+
+        },
+        {
+          "deductionFromDate": "2019-09-06",
+          "deductionToDate": "2019-10-05",
+          "deductionAmount": 60.00,
+          "costOfMaterials": 35.00,
+          "grossAmountPaid": 1457.00,
+          "submissionDate": "2019-08-05",
+          "source": "contractor"
         }
       ]
     }
