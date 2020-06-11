@@ -30,7 +30,7 @@ import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{RetrieveRawData, RetrieveRequestData}
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
 import v1.services.{AuditService, EnrolmentsAuthService, RetrieveService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,7 +59,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
       case Right(data) =>
         service.retrieveDeductions(data)
       case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[DeductionsDetails]]]] =
+        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] =
           Future.successful(Left(errorWrapper))
         futureError
     }

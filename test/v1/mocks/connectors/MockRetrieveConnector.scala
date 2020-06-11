@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, RetrieveConnector}
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,7 @@ trait MockRetrieveConnector extends MockFactory {
 
   object MockRetrieveCisDeductionsConnector {
 
-    def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[DeductionsDetails]]]] = {
+    def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[CisDeductions]]]] = {
       (mockRetrieveConnector
         .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext))
         .expects(requestData, *, *)
