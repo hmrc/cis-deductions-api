@@ -36,7 +36,7 @@ object RetrieveModels {
         deductionToDate = "2019-07-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
         source = Some("customer")),
@@ -45,7 +45,7 @@ object RetrieveModels {
         deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
         source = Some("customer")),
@@ -66,7 +66,7 @@ object RetrieveModels {
         deductionToDate = "2019-07-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = None,
         source = Some("contractor")),
@@ -75,7 +75,7 @@ object RetrieveModels {
         deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = None,
         source = Some("contractor")),
@@ -96,7 +96,7 @@ object RetrieveModels {
         deductionToDate = "2019-07-05",
         deductionAmount = None,
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
         source = Some("contractor")),
@@ -105,7 +105,7 @@ object RetrieveModels {
         deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
-        grossAmountPaid = 1457.00,
+        grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
         source = Some("contractor")),
@@ -126,13 +126,13 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         Seq(
-          PeriodData("2019-04-06", "2019-05-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-04-06", "2019-05-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-05-06", "2019-06-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-05-06", "2019-06-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-06-06", "2019-07-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
-          PeriodData("2019-07-06", "2019-08-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       ),
@@ -145,9 +145,9 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         Seq(
-          PeriodData("2019-07-06", "2019-08-05", Some(60.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(60.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-09-06", "2019-10-05", Some(60.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-09-06", "2019-10-05", Some(60.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor"))
         )
       )
@@ -168,9 +168,9 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         Seq(
-          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
-          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       )
@@ -197,7 +197,7 @@ object RetrieveModels {
             deductionToDate = "2019-07-05",
             deductionAmount = Some(355.00),
             costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
+            grossAmountPaid = Some(1457.00),
             submissionDate = "2020-05-11T16:38:57.489Z",
             submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
             source = Some("customer")

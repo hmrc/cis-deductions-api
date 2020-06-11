@@ -22,7 +22,7 @@ case class PeriodData(deductionFromDate: String,
                       deductionToDate: String,
                       deductionAmount: Option[BigDecimal],
                       costOfMaterials: Option[BigDecimal],
-                      grossAmountPaid: BigDecimal,
+                      grossAmountPaid: Option[BigDecimal],
                       submissionDate: String,
                       submissionId: Option[String],
                       source: Option[String]
