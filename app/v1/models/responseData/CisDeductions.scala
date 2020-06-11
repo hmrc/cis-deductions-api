@@ -19,15 +19,17 @@ package v1.models.responseData
 import play.api.libs.json._
 
 
-case class DeductionsDetails(submissionId: Option[String],
-                             fromDate: String,
-                             toDate: String,
-                             contractorName: String,
-                             employerRef: String,
-                             periodData: Seq[PeriodDeductions]
-                            )
+case class CisDeductions(fromDate: String,
+                         toDate: String,
+                         contractorName: Option[String],
+                         employerRef: String,
+                         totalDeductionAmount: Option[BigDecimal],
+                         totalCostOfMaterials: Option[BigDecimal],
+                         totalGrossAmountPaid: Option[BigDecimal],
+                         periodData: Seq[PeriodData]
+                        )
 
-object DeductionsDetails {
-  implicit val reads: Reads[DeductionsDetails] = Json.reads[DeductionsDetails]
-  implicit val writes: OWrites[DeductionsDetails] = Json.writes[DeductionsDetails]
+object CisDeductions {
+  implicit val reads: Reads[CisDeductions] = Json.reads[CisDeductions]
+  implicit val writes: OWrites[CisDeductions] = Json.writes[CisDeductions]
 }

@@ -22,7 +22,7 @@ import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{DeductionsDetails, RetrieveResponseModel, PeriodDeductions}
+import v1.models.responseData.{CisDeductions, RetrieveResponseModel, PeriodData}
 
 import scala.concurrent.Future
 
@@ -44,9 +44,9 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     "return a Retrieve Deductions response when a source is supplied" in new Test {
       val request = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
 
-      val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel(
-        Seq(DeductionsDetails(Some(""),request.fromDate,request.toDate,"","",
-          Seq(PeriodDeductions(0.00,"","",Some(0.00),0.00,"",request.source))))
+      val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
+        Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
+          Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),request.source))))
       )))
 
       MockedHttpClient.get(
@@ -64,12 +64,12 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[DeductionsDetails]]](s"$baseUrl/income-tax/cis/deductions" +
+        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions" +
           s"/${nino.nino}/current-position" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[RetrieveResponseModel[DeductionsDetails]] = await(connector.retrieve(request))
+        val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome
       }
     }

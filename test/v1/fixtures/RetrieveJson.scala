@@ -24,49 +24,58 @@ object RetrieveJson {
   val multipleDeductionsJson: JsValue = Json.parse(
     """
       |{
+      | "totalDeductionAmount": 12345.56,
+      | "totalCostOfMaterials": 234234.33,
+      | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "submissionId": "54759eb3c090d83494e2d804",
       |    "fromDate": "2019-04-06" ,
       |    "toDate": "2020-04-05",
       |    "contractorName": "Bovis",
       |    "employerRef": "BV40092",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-04-06",
       |        "deductionToDate": "2019-05-05",
+      |        "deductionAmount": 355.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2019-04-03",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-05-06",
       |        "deductionToDate": "2019-06-05",
+      |        "deductionAmount": 355.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2019-05-03",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-06-06",
       |        "deductionToDate": "2019-07-05",
+      |        "deductionAmount": 355.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      },
       |      {
-      |        "deductionAmount": 355.11,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
+      |        "deductionAmount": 355.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      }
       |    ]
       |  },
@@ -75,24 +84,29 @@ object RetrieveJson {
       |    "toDate": "2020-04-05",
       |    "contractorName": "Taylor Wimpy",
       |    "employerRef": "TW44355",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionAmount": 60.11,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
+      |        "deductionAmount": 60.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2019-08-05",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 60.11,
       |        "deductionFromDate": "2019-09-06",
       |        "deductionToDate": "2019-10-05",
+      |        "deductionAmount": 60.11,
       |        "costOfMaterials": 35.11,
       |        "grossAmountPaid": 1457.11,
-      |        "submissionDate": "2019-08-05",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      }
       |    ]
       |  }
@@ -102,16 +116,22 @@ object RetrieveJson {
 
   )
 
-  val singleDeductionJson : JsValue = Json.parse{
+  val singleDeductionJson: JsValue = Json.parse {
     """
       |{
+      | "totalDeductionAmount": 12345.56,
+      | "totalCostOfMaterials": 234234.33,
+      | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
       |    "submissionId": "54759eb3c090d83494e2d804",
       |    "fromDate": "2019-04-06" ,
       |    "toDate": "2020-04-05",
-      |    "contractorName": "Bovis",
-      |    "employerRef": "BV40092",
+      |    "contractorName": "contractor Name",
+      |    "employerRef": "123/AA12345",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
       |        "deductionAmount": 355.00,
@@ -119,8 +139,9 @@ object RetrieveJson {
       |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      },
       |      {
       |        "deductionAmount": 355.00,
@@ -128,8 +149,9 @@ object RetrieveJson {
       |        "deductionToDate": "2019-08-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      }
       |    ]
       |  }
@@ -138,44 +160,51 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionJsonHateoas : JsValue = Json.parse{
+  val singleDeductionJsonHateoas: JsValue = Json.parse {
     """
       |{
+      |"totalDeductionAmount": 12345.56,
+      |"totalCostOfMaterials": 234234.33,
+      |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "submissionId": "54759eb3c090d83494e2d804",
-      |    "fromDate": "2019-04-06" ,
+      |    "fromDate": "2019-04-06",
       |    "toDate": "2020-04-05",
-      |    "contractorName": "Bovis",
-      |    "employerRef": "BV40092",
+      |    "contractorName": "contractor Name",
+      |    "employerRef": "123/AA12345",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-06-06",
       |        "deductionToDate": "2019-07-05",
+      |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
+      |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      }
       |    ],
       |    "links": [
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "DELETE",
       |                    "rel": "delete-cis-deductions-for-subcontractor"
       |                },
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "PUT",
       |                    "rel": "amend-cis-deductions-for-subcontractor"
       |                }
@@ -198,44 +227,50 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionJsonHateoasMissingOptionalField : JsValue = Json.parse{
+  val singleDeductionJsonHateoasMissingOptionalField: JsValue = Json.parse {
     """
       |{
+      |"totalDeductionAmount": 12345.56,
+      |"totalCostOfMaterials": 234234.33,
+      |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "submissionId": "54759eb3c090d83494e2d804",
-      |    "fromDate": "2019-04-06" ,
-      |    "toDate": "2020-04-05",
-      |    "contractorName": "Bovis",
-      |    "employerRef": "BV40092",
-      |    "periodData": [
+      |     "fromDate": "2019-04-06",
+      |     "toDate": "2020-04-05",
+      |     "contractorName": "contractor Name",
+      |     "employerRef": "123/AA12345",
+      |     "totalDeductionAmount": 3543.55,
+      |     "totalCostOfMaterials": 6644.67,
+      |     "totalGrossAmountPaid": 3424.12,
+      |     "periodData": [
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-06-06",
       |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
+      |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "customer"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "contractor"
       |      }
       |    ],
       |    "links": [
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "DELETE",
       |                    "rel": "delete-cis-deductions-for-subcontractor"
       |                },
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "PUT",
       |                    "rel": "amend-cis-deductions-for-subcontractor"
       |                }
@@ -244,7 +279,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=all",
+      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -258,35 +293,53 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionJsonHateoasNoId : JsValue = Json.parse{
+  val singleDeductionJsonHateoasNoId: JsValue = Json.parse {
     """
       |{
+      |"totalDeductionAmount": 12345.56,
+      |"totalCostOfMaterials": 234234.33,
+      |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2019-04-06" ,
+      |    "fromDate": "2019-04-06",
       |    "toDate": "2020-04-05",
-      |    "contractorName": "Bovis",
-      |    "employerRef": "BV40092",
+      |    "contractorName": "contractor Name",
+      |    "employerRef": "123/AA12345",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-06-06",
       |        "deductionToDate": "2019-07-05",
+      |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "source": "contractor"
       |      },
       |      {
-      |        "deductionAmount": 355.00,
       |        "deductionFromDate": "2019-07-06",
       |        "deductionToDate": "2019-08-05",
+      |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-01-14",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "source": "contractor"
       |      }
-      |    ]
+      |     ],
+      |  "links": [
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |                    "method": "DELETE",
+      |                    "rel": "delete-cis-deductions-for-subcontractor"
+      |                },
+      |                {
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |                    "method": "PUT",
+      |                    "rel": "amend-cis-deductions-for-subcontractor"
+      |                }
+      |            ]
       |  }
       |],
       |    "links": [
@@ -314,30 +367,39 @@ object RetrieveJson {
   val errorJson =
     """
       |{
+      | "totalDeductionAmount": "deduction amount: 12345.56",
+      | "totalCostOfMaterials": 234234.33,
+      | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
       |    "submissionId": "54759eb3c090d83494e2d804",
       |    "fromDate": "2019-04-06" ,
       |    "toDate": "2020-04-05",
-      |    "employerRef": "BV40092",
+      |    "contractorName": "contractor Name",
+      |    "employerRef": "123/AA12345",
+      |    "totalDeductionAmount": 3543.55,
+      |    "totalCostOfMaterials": 6644.67,
+      |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2019-04-06",
-      |        "deductionToDate": "2019-05-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2019-04-03",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      },
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2019-05-06",
-      |        "deductionToDate": "2019-06-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2019-05-03",
-      |        "submittedBy": "contractor"
+      |        "submissionDate": "2020-05-11T16:38:57.489Z",
+      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |        "source": "customer"
       |      }
       |    ]
       |  }
