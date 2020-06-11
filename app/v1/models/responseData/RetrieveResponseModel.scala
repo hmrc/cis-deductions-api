@@ -33,7 +33,7 @@ object RetrieveResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveResponseHateoasData] {
 
     override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: CisDeductions): Seq[Link] = {
-      item.periodData.head.submissionId match {
+      item.periodData.head.submissionId match { // this is not the correct use for hateoas, it was added to make the model compile
           case None => Seq()
           case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false),
             amendCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false))

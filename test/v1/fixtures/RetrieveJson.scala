@@ -244,14 +244,13 @@ object RetrieveJson {
       |     "totalGrossAmountPaid": 3424.12,
       |     "periodData": [
       |      {
-      |        "deductionFromDate": "2020-05-11",
-      |        "deductionToDate": "2020-05-11",
-      |        "deductionAmount": 4654.78,
-      |        "costOfMaterials": 4564.89,
-      |        "grossAmountPaid": 7878.67,
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
+      |        "costOfMaterials": 35.00,
+      |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-05-11T16:38:57.489Z",
       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
+      |        "source": "contractor"
       |      },
       |      {
       |        "deductionFromDate": "2019-07-06",
@@ -261,17 +260,17 @@ object RetrieveJson {
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-05-11T16:38:57.489Z",
       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
+      |        "source": "contractor"
       |      }
       |    ],
       |    "links": [
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "DELETE",
       |                    "rel": "delete-cis-deductions-for-subcontractor"
       |                },
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "PUT",
       |                    "rel": "amend-cis-deductions-for-subcontractor"
       |                }
@@ -317,7 +316,6 @@ object RetrieveJson {
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-05-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |        "source": "contractor"
       |      },
       |      {
@@ -327,18 +325,17 @@ object RetrieveJson {
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-05-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |        "source": "contractor"
       |      }
       |     ],
       |  "links": [
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "DELETE",
       |                    "rel": "delete-cis-deductions-for-subcontractor"
       |                },
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/54759eb3c090d83494e2d804",
+      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "PUT",
       |                    "rel": "amend-cis-deductions-for-subcontractor"
       |                }

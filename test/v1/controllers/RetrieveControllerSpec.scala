@@ -22,6 +22,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveJson._
+import v1.fixtures.RetrieveModels._
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockRetrieveService, MockMtdIdLookupService}
@@ -76,81 +77,6 @@ class RetrieveControllerSpec extends ControllerBaseSpec
   private val optionalFieldMissingRawData = RetrieveRawData(nino, fromDate, toDate, None)
   private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
 
-  val response: RetrieveResponseModel[CisDeductions] =
-    RetrieveResponseModel(
-      totalDeductionAmount = 12345.56,
-      totalCostOfMaterials = 234234.33,
-      totalGrossAmountPaid = 2342424.56,
-      Seq(CisDeductions(
-        fromDate = "2019-04-06",
-        toDate = "2020-04-05",
-        contractorName = "Bovis",
-        employerRef = "BV40092",
-        totalDeductionAmount = 3543.55,
-        totalCostOfMaterials = 6644.67,
-        totalGrossAmountPaid = 3424.12,
-        Seq(
-          PeriodData(
-            deductionFromDate = "2019-06-06",
-            deductionToDate = "2019-07-05",
-            deductionAmount = 355.00,
-            costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
-            submissionDate = "2020-05-11T16:38:57.489Z",
-            submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            source = Some("customer")),
-          PeriodData(
-            deductionFromDate = "2019-07-06",
-            deductionToDate = "2019-08-05",
-            deductionAmount = 355.00,
-            costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
-            submissionDate = "2020-05-11T16:38:57.489Z",
-            submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            source = Some("customer")),
-        )
-      )
-      )
-    )
-
-  val responseNoId: RetrieveResponseModel[CisDeductions] =
-    RetrieveResponseModel(
-      totalDeductionAmount = 12345.56,
-      totalCostOfMaterials = 234234.33,
-      totalGrossAmountPaid = 2342424.56,
-      Seq(CisDeductions(
-        fromDate = "2019-04-06",
-        toDate = "2020-04-05",
-        contractorName = "Bovis",
-        employerRef = "BV40092",
-        totalDeductionAmount = 3543.55,
-        totalCostOfMaterials = 6644.67,
-        totalGrossAmountPaid = 3424.12,
-        Seq(
-          PeriodData(
-            deductionFromDate = "2019-06-06",
-            deductionToDate = "2019-07-05",
-            deductionAmount = 355.00,
-            costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
-            submissionDate = "2020-05-11T16:38:57.489Z",
-            submissionId = None,
-            source = Some("customer")),
-          PeriodData(
-            deductionFromDate = "2019-07-06",
-            deductionToDate = "2019-08-05",
-            deductionAmount = 355.00,
-            costOfMaterials = Some(35.00),
-            grossAmountPaid = 1457.00,
-            submissionDate = "2020-05-11T16:38:57.489Z",
-            submissionId = None,
-            source = Some("customer")),
-        )
-      )
-      )
-    )
-
-
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
       auditType = "retrieveCisDeductionsAuditType",
@@ -186,38 +112,11 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalCostOfMaterials = 234234.33,
             totalGrossAmountPaid = 2342424.56,
             Seq(HateoasWrapper(
-              CisDeductions(
-                fromDate = "2019-04-06",
-                toDate = "2020-04-05",
-                contractorName = "contractor Name",
-                employerRef = "123/AA12345",
-                totalDeductionAmount = 3543.55,
-                totalCostOfMaterials = 6644.67,
-                totalGrossAmountPaid = 3424.12,
-                Seq(
-                  PeriodData(
-                    deductionFromDate = "2019-06-06",
-                    deductionToDate = "2019-07-05",
-                    deductionAmount = 355.00,
-                    costOfMaterials = Some(35.00),
-                    grossAmountPaid = 1457.00,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("customer")),
-                  PeriodData(
-                    deductionFromDate = "2019-07-06",
-                    deductionToDate = "2019-08-05",
-                    deductionAmount = 355.00,
-                    costOfMaterials = Some(35.00),
-                    grossAmountPaid = 1457.00,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("customer")),
-                )
-              ), Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
+              cisDeductions
+              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
                 amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
-          )
-        ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            )
+          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -253,36 +152,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalCostOfMaterials = 234234.33,
             totalGrossAmountPaid = 2342424.56,
             Seq(HateoasWrapper(
-              CisDeductions(
-                fromDate = "2019-04-06",
-                toDate = "2020-04-05",
-                contractorName = "contractor Name",
-                employerRef = "123/AA12345",
-                totalDeductionAmount = 3543.55,
-                totalCostOfMaterials = 6644.67,
-                totalGrossAmountPaid = 3424.12,
-                Seq(
-                  PeriodData(
-                    deductionFromDate = "2020-05-11",
-                    deductionToDate = "2020-05-11",
-                    deductionAmount = 4654.78,
-                    costOfMaterials = Some(4564.89),
-                    grossAmountPaid = 7878.67,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("customer")),
-                  PeriodData(
-                    deductionFromDate = "2019-07-06",
-                    deductionToDate = "2019-08-05",
-                    deductionAmount = 355.00,
-                    costOfMaterials = Some(35.00),
-                    grossAmountPaid = 1457.00,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("customer")),
-                )
-              ), Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
-                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false)))
+              cisDeductionsMissingOptional
+              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
+                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
             )
           ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
@@ -320,36 +192,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalCostOfMaterials = 234234.33,
             totalGrossAmountPaid = 2342424.56,
             Seq(HateoasWrapper(
-              CisDeductions(
-                fromDate = "2019-04-06",
-                toDate = "2020-04-05",
-                contractorName = "contractor Name",
-                employerRef = "123/AA12345",
-                totalDeductionAmount = 3543.55,
-                totalCostOfMaterials = 6644.67,
-                totalGrossAmountPaid = 3424.12,
-                Seq(
-                  PeriodData(
-                    deductionFromDate = "2019-06-06",
-                    deductionToDate = "2019-07-05",
-                    deductionAmount = 355.00,
-                    costOfMaterials = Some(35.00),
-                    grossAmountPaid = 1457.00,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("contractor")),
-                  PeriodData(
-                    deductionFromDate = "2019-07-06",
-                    deductionToDate = "2019-08-05",
-                    deductionAmount = 355.00,
-                    costOfMaterials = Some(35.00),
-                    grossAmountPaid = 1457.00,
-                    submissionDate = "2020-05-11T16:38:57.489Z",
-                    submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-                    source = Some("contractor")),
-                )
-              ), Seq(deleteCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false),
-                amendCISDeduction(mockAppConfig, nino, "54759eb3c090d83494e2d804", isSelf = false)))
+              cisDeductionsNoId
+              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
+                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
             )
           ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))

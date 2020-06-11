@@ -20,7 +20,7 @@ import play.api.libs.json._
 
 case class PeriodData(deductionFromDate: String,
                       deductionToDate: String,
-                      deductionAmount: BigDecimal,
+                      deductionAmount: Option[BigDecimal],
                       costOfMaterials: Option[BigDecimal],
                       grossAmountPaid: BigDecimal,
                       submissionDate: String,

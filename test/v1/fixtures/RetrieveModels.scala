@@ -16,9 +16,101 @@
 
 package v1.fixtures
 
-import v1.models.responseData.{CisDeductions, RetrieveResponseModel, PeriodData}
+import v1.models.hateoas.HateoasWrapper
+import v1.models.responseData.RetrieveResponseModel.{amendCISDeduction, createCISDeduction, deleteCISDeduction, retrieveCISDeduction}
+import v1.models.responseData.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 object RetrieveModels {
+
+  val cisDeductions: CisDeductions = CisDeductions(
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
+    contractorName = Some("contractor Name"),
+    employerRef = "123/AA12345",
+    totalDeductionAmount = Some(3543.55),
+    totalCostOfMaterials = Some(6644.67),
+    totalGrossAmountPaid = Some(3424.12),
+    Seq(
+      PeriodData(
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
+        deductionAmount = Some(355.00),
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+        source = Some("customer")),
+      PeriodData(
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
+        deductionAmount = Some(355.00),
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+        source = Some("customer")),
+    )
+  )
+
+  val cisDeductionsNoId: CisDeductions = CisDeductions(
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
+    contractorName = Some("contractor Name"),
+    employerRef = "123/AA12345",
+    totalDeductionAmount = Some(3543.55),
+    totalCostOfMaterials = Some(6644.67),
+    totalGrossAmountPaid = Some(3424.12),
+    Seq(
+      PeriodData(
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
+        deductionAmount = Some(355.00),
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = None,
+        source = Some("contractor")),
+      PeriodData(
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
+        deductionAmount = Some(355.00),
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = None,
+        source = Some("contractor")),
+    )
+  )
+
+  val cisDeductionsMissingOptional: CisDeductions = CisDeductions(
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
+    contractorName = Some("contractor Name"),
+    employerRef = "123/AA12345",
+    totalDeductionAmount = Some(3543.55),
+    totalCostOfMaterials = Some(6644.67),
+    totalGrossAmountPaid = Some(3424.12),
+    Seq(
+      PeriodData(
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
+        deductionAmount = None,
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+        source = Some("contractor")),
+      PeriodData(
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
+        deductionAmount = Some(355.00),
+        costOfMaterials = Some(35.00),
+        grossAmountPaid = 1457.00,
+        submissionDate = "2020-05-11T16:38:57.489Z",
+        submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
+        source = Some("contractor")),
+    )
+  )
 
   val multipleDeductionsModel = RetrieveResponseModel(
     totalDeductionAmount = 12345.56,
@@ -28,34 +120,34 @@ object RetrieveModels {
       CisDeductions(
         "2019-04-06",
         "2020-04-05",
-        "Bovis",
+        Some("Bovis"),
         "BV40092",
-        3543.55,
-        6644.67,
-        3424.12,
+        Some(3543.55),
+        Some(6644.67),
+        Some(3424.12),
         Seq(
-          PeriodData("2019-04-06", "2019-05-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-04-06", "2019-05-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-05-06", "2019-06-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-05-06", "2019-06-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-06-06", "2019-07-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
-          PeriodData("2019-07-06", "2019-08-05", 355.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       ),
       CisDeductions(
         "2019-04-06",
         "2020-04-05",
-        "Taylor Wimpy",
+        Some("Taylor Wimpy"),
         "TW44355",
-        3543.55,
-        6644.67,
-        3424.12,
+        Some(3543.55),
+        Some(6644.67),
+        Some(3424.12),
         Seq(
-          PeriodData("2019-07-06", "2019-08-05", 60.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(60.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
-          PeriodData("2019-09-06", "2019-10-05", 60.11, Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-09-06", "2019-10-05", Some(60.11), Some(35.11), 1457.11, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor"))
         )
       )
@@ -70,15 +162,15 @@ object RetrieveModels {
       CisDeductions(
         "2019-04-06",
         "2020-04-05",
-        "contractor Name",
+        Some("contractor Name"),
         "123/AA12345",
-        3543.55,
-        6644.67,
-        3424.12,
+        Some(3543.55),
+        Some(6644.67),
+        Some(3424.12),
         Seq(
-          PeriodData("2019-06-06", "2019-07-05", 355.00, Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
-          PeriodData("2019-07-06", "2019-08-05", 355.00, Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), 1457.00, "2020-05-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
         )
       )
@@ -94,16 +186,16 @@ object RetrieveModels {
         CisDeductions(
           "2019-04-06",
           "2020-04-05",
-          "Bovis",
+          Some("Bovis"),
           "BV40092",
-          3543.55,
-          6644.67,
-          3424.12,
+          Some(3543.55),
+          Some(6644.67),
+          Some(3424.12),
         Seq(
           PeriodData(
             deductionFromDate = "2019-06-06",
             deductionToDate = "2019-07-05",
-            deductionAmount = 355.00,
+            deductionAmount = Some(355.00),
             costOfMaterials = Some(35.00),
             grossAmountPaid = 1457.00,
             submissionDate = "2020-05-11T16:38:57.489Z",
@@ -115,4 +207,21 @@ object RetrieveModels {
       )
     )
 
+  val response: RetrieveResponseModel[CisDeductions] =
+    RetrieveResponseModel(
+      totalDeductionAmount = 12345.56,
+      totalCostOfMaterials = 234234.33,
+      totalGrossAmountPaid = 2342424.56,
+      Seq(cisDeductions
+      )
+    )
+
+  val responseNoId: RetrieveResponseModel[CisDeductions] =
+    RetrieveResponseModel(
+      totalDeductionAmount = 12345.56,
+      totalCostOfMaterials = 234234.33,
+      totalGrossAmountPaid = 2342424.56,
+      Seq(cisDeductionsNoId
+      )
+    )
 }

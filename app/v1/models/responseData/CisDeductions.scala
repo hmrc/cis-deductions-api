@@ -21,11 +21,11 @@ import play.api.libs.json._
 
 case class CisDeductions(fromDate: String,
                          toDate: String,
-                         contractorName: String,
+                         contractorName: Option[String],
                          employerRef: String,
-                         totalDeductionAmount: BigDecimal,
-                         totalCostOfMaterials: BigDecimal,
-                         totalGrossAmountPaid: BigDecimal,
+                         totalDeductionAmount: Option[BigDecimal],
+                         totalCostOfMaterials: Option[BigDecimal],
+                         totalGrossAmountPaid: Option[BigDecimal],
                          periodData: Seq[PeriodData]
                         )
 
