@@ -69,10 +69,12 @@ class RetrieveServiceSpec extends UnitSpec {
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
         }
       val input = Seq(
-        ("INVALID_IDVALUE" , NinoFormatError),
-        ("INVALID_DATE_FROM", FromDateFormatError),
-        ("INVALID_DATE_TO", ToDateFormatError),
-        ("NOT_FOUND", NotFoundError),
+        ("INVALID_TAXABLE_ENTITY_ID" , NinoFormatError),
+        ("NO_DATA_FOUND", NotFoundError),
+        ("INVALID_DATE_RANGE",RuleDateRangeOutOfDate),
+        ("INVALID_PERIOD_START", FromDateFormatError),
+        ("INVALID_PERIOD_END", ToDateFormatError),
+        ("INVALID_SOURCE", RuleSourceError),
         ("SERVER_ERROR", DownstreamError),
         ("SERVICE_UNAVAILABLE", DownstreamError)
       )
