@@ -108,9 +108,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
-            totalDeductionAmount = 12345.56,
-            totalCostOfMaterials = 234234.33,
-            totalGrossAmountPaid = 2342424.56,
+            totalDeductionAmount = Some(12345.56),
+            totalCostOfMaterials = Some(234234.33),
+            totalGrossAmountPaid = Some(2342424.56),
             Seq(HateoasWrapper(
               cisDeductions
               , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
@@ -148,9 +148,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
-            totalDeductionAmount = 12345.56,
-            totalCostOfMaterials = 234234.33,
-            totalGrossAmountPaid = 2342424.56,
+            totalDeductionAmount = Some(12345.56),
+            totalCostOfMaterials = Some(234234.33),
+            totalGrossAmountPaid = Some(2342424.56),
             Seq(HateoasWrapper(
               cisDeductionsMissingOptional
               , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
@@ -188,9 +188,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
-            totalDeductionAmount = 12345.56,
-            totalCostOfMaterials = 234234.33,
-            totalGrossAmountPaid = 2342424.56,
+            totalDeductionAmount = Some(12345.56),
+            totalCostOfMaterials = Some(234234.33),
+            totalGrossAmountPaid = Some(2342424.56),
             Seq(HateoasWrapper(
               cisDeductionsNoId
               , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),

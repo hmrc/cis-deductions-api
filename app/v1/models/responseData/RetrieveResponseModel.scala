@@ -22,7 +22,10 @@ import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveResponseModel[I](totalDeductionAmount: BigDecimal, totalCostOfMaterials: BigDecimal, totalGrossAmountPaid: BigDecimal, cisDeductions: Seq[I])
+case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
+                                    totalCostOfMaterials: Option[BigDecimal],
+                                    totalGrossAmountPaid: Option[BigDecimal],
+                                    cisDeductions: Seq[I])
 
 object RetrieveResponseModel extends HateoasLinks {
 

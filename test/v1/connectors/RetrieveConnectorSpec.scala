@@ -44,7 +44,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     "return a Retrieve Deductions response when a source is supplied" in new Test {
       val request = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
 
-      val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( 0.00, 0.00, 0.00,
+      val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
         Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
           Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),Some(request.source)))))
       )))

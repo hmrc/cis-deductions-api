@@ -113,9 +113,9 @@ object RetrieveModels {
   )
 
   val multipleDeductionsModel = RetrieveResponseModel(
-    totalDeductionAmount = 12345.56,
-    totalCostOfMaterials = 234234.33,
-    totalGrossAmountPaid = 2342424.56,
+    totalDeductionAmount = Some(12345.56),
+    totalCostOfMaterials = Some(234234.33),
+    totalGrossAmountPaid = Some(2342424.56),
     Seq(
       CisDeductions(
         "2019-04-06",
@@ -155,9 +155,9 @@ object RetrieveModels {
   )
 
   val singleDeductionModel = RetrieveResponseModel(
-    totalDeductionAmount = 12345.56,
-    totalCostOfMaterials = 234234.33,
-    totalGrossAmountPaid = 2342424.56,
+    totalDeductionAmount = Some(12345.56),
+    totalCostOfMaterials = Some(234234.33),
+    totalGrossAmountPaid = Some(2342424.56),
     Seq(
       CisDeductions(
         "2019-04-06",
@@ -179,9 +179,9 @@ object RetrieveModels {
 
   val retrieveCisDeductionsModel =
     RetrieveResponseModel(
-      totalDeductionAmount = 12345.56,
-      totalCostOfMaterials = 234234.33,
-      totalGrossAmountPaid = 2342424.56,
+      totalDeductionAmount = Some(12345.56),
+      totalCostOfMaterials = Some(234234.33),
+      totalGrossAmountPaid = Some(2342424.56),
       Seq(
         CisDeductions(
           "2019-04-06",
@@ -209,18 +209,18 @@ object RetrieveModels {
 
   val response: RetrieveResponseModel[CisDeductions] =
     RetrieveResponseModel(
-      totalDeductionAmount = 12345.56,
-      totalCostOfMaterials = 234234.33,
-      totalGrossAmountPaid = 2342424.56,
+      totalDeductionAmount = Some(12345.56),
+      totalCostOfMaterials = Some(234234.33),
+      totalGrossAmountPaid = Some(2342424.56),
       Seq(cisDeductions
       )
     )
 
   val responseNoId: RetrieveResponseModel[CisDeductions] =
     RetrieveResponseModel(
-      totalDeductionAmount = 12345.56,
-      totalCostOfMaterials = 234234.33,
-      totalGrossAmountPaid = 2342424.56,
+      totalDeductionAmount = Some(12345.56),
+      totalCostOfMaterials = Some(234234.33),
+      totalGrossAmountPaid = Some(2342424.56),
       Seq(cisDeductionsNoId
       )
     )
