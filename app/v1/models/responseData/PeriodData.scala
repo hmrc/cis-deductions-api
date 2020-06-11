@@ -25,7 +25,7 @@ case class PeriodData(deductionFromDate: String,
                       grossAmountPaid: Option[BigDecimal],
                       submissionDate: String,
                       submissionId: Option[String],
-                      source: Option[String]
+                      source: String
                      )
 
 object PeriodData {

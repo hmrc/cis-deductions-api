@@ -39,7 +39,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Some("customer")),
+        source = "customer"),
       PeriodData(
         deductionFromDate = "2019-07-06",
         deductionToDate = "2019-08-05",
@@ -48,7 +48,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Some("customer")),
+        source = "customer"),
     )
   )
 
@@ -69,7 +69,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = None,
-        source = Some("contractor")),
+        source = "contractor"),
       PeriodData(
         deductionFromDate = "2019-07-06",
         deductionToDate = "2019-08-05",
@@ -78,7 +78,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = None,
-        source = Some("contractor")),
+        source = "contractor"),
     )
   )
 
@@ -99,7 +99,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Some("contractor")),
+        source = "contractor"),
       PeriodData(
         deductionFromDate = "2019-07-06",
         deductionToDate = "2019-08-05",
@@ -108,7 +108,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-05-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Some("contractor")),
+        source = "contractor"),
     )
   )
 
@@ -127,13 +127,13 @@ object RetrieveModels {
         Some(3424.12),
         Seq(
           PeriodData("2019-04-06", "2019-05-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "contractor"),
           PeriodData("2019-05-06", "2019-06-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "contractor"),
           PeriodData("2019-06-06", "2019-07-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer"),
           PeriodData("2019-07-06", "2019-08-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer")
         )
       ),
       CisDeductions(
@@ -146,9 +146,9 @@ object RetrieveModels {
         Some(3424.12),
         Seq(
           PeriodData("2019-07-06", "2019-08-05", Some(60.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor")),
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "contractor"),
           PeriodData("2019-09-06", "2019-10-05", Some(60.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("contractor"))
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "contractor")
         )
       )
     )
@@ -169,9 +169,9 @@ object RetrieveModels {
         Some(3424.12),
         Seq(
           PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer")),
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer"),
           PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-05-11T16:38:57.489Z",
-            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), Some("customer"))
+            Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer")
         )
       )
     )
@@ -200,7 +200,7 @@ object RetrieveModels {
             grossAmountPaid = Some(1457.00),
             submissionDate = "2020-05-11T16:38:57.489Z",
             submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            source = Some("customer")
+            source = "customer"
           )
         )
       )

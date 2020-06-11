@@ -46,7 +46,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
       val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
         Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
-          Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),Some(request.source)))))
+          Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),request.source))))
       )))
 
       MockedHttpClient.get(
