@@ -270,8 +270,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             RuleMissingToDateError,
             RuleMissingFromDateError,
             RuleSourceError,
-            RuleFromDateError,
-            RuleToDateError)
+            RuleDateRangeOutOfDate)
         )
 
         MockRetrieveDeductionRequestParser
@@ -294,8 +293,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             AuditError(RuleMissingToDateError.code),
             AuditError(RuleMissingFromDateError.code),
             AuditError(RuleSourceError.code),
-            AuditError(RuleFromDateError.code),
-            AuditError(RuleToDateError.code))),
+            AuditError(RuleDateRangeOutOfDate.code))),
           None
         )
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
@@ -330,7 +328,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         (NotFoundError, NOT_FOUND),
         (DownstreamError, INTERNAL_SERVER_ERROR),
         (FromDateFormatError, BAD_REQUEST),
-        (ToDateFormatError, BAD_REQUEST)
+        (ToDateFormatError, BAD_REQUEST),
+        (RuleDateRangeOutOfDate, FORBIDDEN)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }
