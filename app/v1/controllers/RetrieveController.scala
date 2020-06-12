@@ -94,6 +94,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case RuleDateRangeOutOfDate => Forbidden(Json.toJson(errorWrapper))
     }
   }
 

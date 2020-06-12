@@ -89,6 +89,9 @@ object RuleDuplicateSubmissionError
 object RuleDuplicatePeriodError
   extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period")
 
+object RuleDateRangeOutOfDate
+  extends MtdError("RULE_DATE_RANGE_OUT_OF_DATE", "The specified date range is outside the allowable tax years (the current tax year minus four years)")
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 
