@@ -29,7 +29,8 @@ class RetrieveValidator extends Validator[RetrieveRawData] with FixedConfig{
     NinoValidation.validate(data.nino),
     SourceValidation.validate(data.source),
     DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-    DateValidation.validate(ToDateFormatError)(data.toDate.get))
+    DateValidation.validate(ToDateFormatError)(data.toDate.get)
+  )
 
   private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) => List(
     MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
