@@ -89,7 +89,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
-      case BadRequestError | NinoFormatError | RuleDateRangeInvalidError| RuleDateRangeOutOfDate | UnauthorisedError |
+      case BadRequestError | NinoFormatError | RuleDateRangeInvalidError| UnauthorisedError |
            FromDateFormatError | RuleMissingFromDateError | ToDateFormatError | RuleMissingToDateError | RuleSourceError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

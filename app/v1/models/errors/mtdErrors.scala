@@ -50,9 +50,6 @@ object RuleDeductionsDateRangeInvalidError
 object RuleDateRangeInvalidError
     extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")
 
-object RuleDateRangeOutOfDate
-    extends MtdError("RULE_DATE_RANGE_OUT_OF_DATE", "The specified date range is outside the allowable tax years (the current tax year minus four years).")
-
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 

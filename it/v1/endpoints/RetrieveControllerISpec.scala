@@ -122,13 +122,13 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       }
 
       val input = Seq(
-        (BAD_REQUEST, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, FromDateFormatError),
-        (BAD_REQUEST, "INVALID_DATE_TO", BAD_REQUEST, ToDateFormatError)
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
+        (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError)
       )
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
