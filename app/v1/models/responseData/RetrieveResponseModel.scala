@@ -36,22 +36,25 @@ object RetrieveResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveResponseHateoasData] {
 
     override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: CisDeductions): Seq[Link] = {
-      item.periodData.head.submissionId match { // this is not the correct use for hateoas, it was added to make the model compile
-          case None => Seq()
-          case _ => Seq(deleteCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false),
-            amendCISDeduction(appConfig, data.nino, item.periodData.head.submissionId.getOrElse(""), isSelf = false))
-        }
-    }
+      val filteredPeriodData = item.periodData.filter(_.submissionId.isDefined)
+      val submissionIdOption = filteredPeriodData.headOption.map(_.submissionId.get)
 
+      filteredPeriodData match {
+        case Nil => Seq()
+        case _ => {
+          Seq(deleteCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false))
+        }
+      }
+    }
     override def links(appConfig: AppConfig, data: RetrieveResponseHateoasData): Seq[Link] = {
       Seq(retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
   }
-
   implicit object ResponseFunctor extends Functor[RetrieveResponseModel] {
     override def map[A, B](fa: RetrieveResponseModel[A])(f: A => B): RetrieveResponseModel[B] =
-      RetrieveResponseModel(fa.totalDeductionAmount, fa.totalCostOfMaterials, fa.totalGrossAmountPaid,fa.cisDeductions.map(f))
+      RetrieveResponseModel(fa.totalDeductionAmount, fa.totalCostOfMaterials, fa.totalGrossAmountPaid, fa.cisDeductions.map(f))
   }
 }
 
