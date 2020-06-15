@@ -30,8 +30,8 @@ import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{RetrieveRawData, RetrieveRequestData}
-import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
-import v1.services.{AuditService, EnrolmentsAuthService, RetrieveService, MtdIdLookupService}
+import v1.models.responseData.{CisDeductions, PeriodData, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
 
 import scala.concurrent.{ExecutionContext, Future}
 

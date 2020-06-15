@@ -32,6 +32,10 @@ class RetrieveResponseModelSpec extends UnitSpec {
       "produce a valid model with single deduction from json" in {
         Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.singleDeductionModel)
       }
+      "produce a valid model with single deduction(contractor submission only) from json" in {
+        Json.toJson(RetrieveJson.singleDeductionContractorJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe
+          JsSuccess(RetrieveModels.singleDeductionModelContractor)
+      }
     }
     "processing bad json" should {
       "produce an error" in {
