@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{RuleDateRangeInvalidError, RuleFromDateError, RuleToDateError}
+import v1.models.errors.RuleDateRangeInvalidError
 import v1.models.utils.JsonErrorValidators
 
 class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {

@@ -87,7 +87,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           ("AA123456B", "2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
           ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError, None),
           ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
-          ("AA123456B", "2020-04-05", "2019-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
+          ("AA123456B", "2020-04-05", "2019-04-06", "customer", FORBIDDEN, RuleDateRangeInvalidError, None),
           ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2019-04-06", "source" -> "all"))),
           ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2020-04-05", "source" -> "all")))
         )
@@ -122,13 +122,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       }
 
       val input = Seq(
-        (BAD_REQUEST, "NOT_FOUND", NOT_FOUND, NotFoundError),
+        (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, FromDateFormatError),
-        (BAD_REQUEST, "INVALID_DATE_TO", BAD_REQUEST, ToDateFormatError)
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
+        (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE",FORBIDDEN,RuleDateRangeOutOfDate)
       )
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }

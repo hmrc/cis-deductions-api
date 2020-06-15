@@ -30,8 +30,8 @@ import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{RetrieveRawData, RetrieveRequestData}
-import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
-import v1.services.{AuditService, EnrolmentsAuthService, RetrieveService, MtdIdLookupService}
+import v1.models.responseData.{CisDeductions, PeriodData, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -89,11 +89,12 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
-      case BadRequestError | NinoFormatError | RuleDateRangeInvalidError | FromDateFormatError | RuleMissingFromDateError |
-           ToDateFormatError | RuleMissingToDateError | RuleSourceError | UnauthorisedError | RuleToDateError | RuleFromDateError =>
+      case BadRequestError | NinoFormatError | UnauthorisedError |
+           FromDateFormatError | RuleMissingFromDateError | ToDateFormatError | RuleMissingToDateError | RuleSourceError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
     }
   }
 

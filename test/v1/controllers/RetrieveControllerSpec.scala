@@ -69,7 +69,6 @@ class RetrieveControllerSpec extends ControllerBaseSpec
   private val fromDate = Some("2019-04-06")
   private val toDate = Some("2020-04-05")
   private val sourceRaw = Some("customer")
-  private val sourceRawAll = Some("all")
   private val sourceAll = "all"
   private val correlationId = "X-123"
   private val retrieveRawData = RetrieveRawData(nino, fromDate, toDate, sourceRaw)
@@ -153,8 +152,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalGrossAmountPaid = Some(2342424.56),
             Seq(HateoasWrapper(
               cisDeductionsMissingOptional
-              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
-                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
+              , Seq())
             )
           ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
@@ -193,8 +191,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalGrossAmountPaid = Some(2342424.56),
             Seq(HateoasWrapper(
               cisDeductionsNoId
-              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
-                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
+              , Seq())
             )
           ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
@@ -270,8 +267,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             RuleMissingToDateError,
             RuleMissingFromDateError,
             RuleSourceError,
-            RuleFromDateError,
-            RuleToDateError)
+            RuleDateRangeOutOfDate)
         )
 
         MockRetrieveDeductionRequestParser
@@ -294,8 +290,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             AuditError(RuleMissingToDateError.code),
             AuditError(RuleMissingFromDateError.code),
             AuditError(RuleSourceError.code),
-            AuditError(RuleFromDateError.code),
-            AuditError(RuleToDateError.code))),
+            AuditError(RuleDateRangeOutOfDate.code))),
           None
         )
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
@@ -330,7 +325,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         (NotFoundError, NOT_FOUND),
         (DownstreamError, INTERNAL_SERVER_ERROR),
         (FromDateFormatError, BAD_REQUEST),
-        (ToDateFormatError, BAD_REQUEST)
+        (ToDateFormatError, BAD_REQUEST),
+        (RuleDateRangeOutOfDate, FORBIDDEN)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }
