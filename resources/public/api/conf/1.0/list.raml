@@ -16,7 +16,7 @@ is:
   - queryParameters.to
   - queryParameters.source
 displayName: Retrieve all CIS Deductions for Subcontractor [test only]
-description: This endpoint allows a developer to retrieve a list of CIS deductions for subcontractors that have been previously populated.
+description: This endpoint allows a developer to retrieve a customer's latest CIS deductions data and whether it was submitted by a contractor or user. A National Insurance number and submission ID must be provided.
 (annotations.sandboxData): !include scenarios/list_scenarios.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]

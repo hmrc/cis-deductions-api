@@ -17,7 +17,7 @@
         </tr>
         <tr>
            <td><p>RULE_DATE_RANGE_OUT_OF_DATE</p></td>
-           <td><p>Simulate the scenario where The specified date range is outside the allowable tax years (the current tax year minus four years).</p></td>
+           <td><p>Simulate the scenario where the specified date range is outside the allowable tax years (the current tax year minus four years).</p></td>
         </tr>
         <tr>
             <td><p>FORMAT_FROM_DATE</p></td>
@@ -29,11 +29,11 @@
         </tr>
         <tr>
             <td><p>RULE_SOURCE_INVALID</p></td>
-            <td><p>The source of data should be one of these All (blended view), Customer or Contractor.</p></td>
+            <td><p>Simulate the scenrio where the source of data should be one of these All (blended view), Customer or Contractor.</p></td>
         </tr>
         <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
-            <td><p>Simulate the scenario where The remote endpoint has indicated that no data can be found for the given period</p></td>
+            <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period</p></td>
         </tr>
     </tbody>
 </table>

@@ -35,8 +35,7 @@
           },
           "contractorName": {
             "description": "The name of the contractor the subcontractor worked for.",
-            "type": "string",
-            "example": "Ace Chemicals"
+            "type": "string"
           },
           "employerRef": {
             "description": "The unique identifier contractor reference number.",
@@ -66,14 +65,6 @@
               "title": "item",
               "type": "object",
               "properties": {
-                "deductionAmount": {
-                  "description": "The deducted amount relating to self-employment. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
-                  "type": "number",
-                  "multipleOf": 0.01,
-                  "minimum": 0,
-                  "maximum": 99999999999.99,
-                  "example": "5000.99"
-                },
                 "deductionFromDate": {
                   "description": "The From date when the deduction was made within the CIS tax year window.",
                   "type": "string",
@@ -83,8 +74,16 @@
                   "description": "The To date when the deduction was made within the CIS tax year window.",
                   "type": "string",
                   "example": "2019-08-05"
-                },
-                "costOfMaterials": {
+              },
+                "deductionAmount": {
+                "description": "The deducted amount relating to self-employment. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "type": "number",
+                "multipleOf": 0.01,
+                "minimum": 0,
+                "maximum": 99999999999.99,
+                "example": "5000.99"
+              },
+              "costOfMaterials": {
                   "description": "The cost of materials incurred for CIS.",
                   "type": "number",
                   "multipleOf": 0.01,
@@ -105,22 +104,21 @@
                   "type": "string",
                   "example": "2019-08-05"
                 },
-                "source": {
-                  "description": "The source of the data.",
-                  "type": "string",
-                  "example": "2019-08-05"
-                },
                 "submissionId": {
                   "description": "The unique identifier for the submission.",
                   "type": "string",
                   "example": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+                },
+                "source": {
+                  "description": "The source of the data.",
+                  "type": "string",
+                  "example": "2019-08-05"
                 }
               },
               "required": [
                 "deductionAmount",
                 "deductionFromDate",
                 "deductionToDate",
-                "grossAmountPaid",
                 "submissionDate",
                 "source"
 
@@ -160,7 +158,6 @@
           "periodData",
           "fromDate",
           "toDate",
-          "contractorName",
           "employerRef"
         ]
       }
