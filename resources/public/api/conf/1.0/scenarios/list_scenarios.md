@@ -21,15 +21,11 @@
         </tr>
         <tr>
             <td><p>FORMAT_FROM_DATE</p></td>
-            <td><p>Simulate the scenario where the From date is not a valid ISO format date</p></td>
+            <td><p>Simulate the scenario where the From date is not a valid format </p></td>
         </tr>
         <tr>
             <td><p>FORMAT_TO_DATE</p></td>
-            <td><p>Simulate the scenario where the To date is not a valid ISO format date</p></td>
-        </tr>
-        <tr>
-            <td><p>RULE_SOURCE_INVALID</p></td>
-            <td><p>Simulate the scenrio where the source of data should be one of these All (blended view), Customer or Contractor.</p></td>
+            <td><p>Simulate the scenario where the To date is not a valid format </p></td>
         </tr>
         <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>

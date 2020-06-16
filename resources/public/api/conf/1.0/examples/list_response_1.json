@@ -28,14 +28,14 @@
           "deductionAmount": 355.00,
           "costOfMaterials": 35.00,
           "grossAmountPaid": 1457.00,
-          "submissionDate": "2019-05-03",
+          "submissionDate": "2020-05-11T16:38:57.489Z",
           "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
           "source": "contractor"
         }
       ],
       "links":[
         {
-          "href":"/deductions/cis/TC663795B/amendments/db854aaa-65dc-488c-9120-e63fea14b9f1",
+          "href":"individuals/deductions/cis/TC663795B/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
           "rel":"delete-cis-deductions-for-subcontractor",
           "method":"DELETE"
         },
@@ -62,7 +62,7 @@
           "deductionAmount": 60.00,
           "costOfMaterials": 35.00,
           "grossAmountPaid": 1457.00,
-          "submissionDate": "2019-08-05",
+          "submissionDate": "2020-05-11T16:38:57.489Z",
           "source": "contractor"
 
         },
@@ -72,7 +72,7 @@
           "deductionAmount": 60.00,
           "costOfMaterials": 35.00,
           "grossAmountPaid": 1457.00,
-          "submissionDate": "2019-08-05",
+          "submissionDate": "2020-05-11T16:38:57.489Z",
           "source": "contractor"
         }
       ]
