@@ -77,7 +77,7 @@ class CreateControllerSpec
 
   val testHatoeasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/deductions/cis/$nino/current-position",
+      href = s"/individuals/deductions/cis/$nino/current-position",
       rel = "retrieve-cis-deductions-for-subcontractor",
       method = GET
     )

@@ -50,7 +50,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
       )))
 
       MockedHttpClient.get(
-        url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}/current-position" +
+        url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}",
         requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
       ).returns(Future.successful(outcome))
@@ -65,7 +65,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
         MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions" +
-          s"/${nino.nino}/current-position" +
+          s"/${nino.nino}" +
           s"?fromDate=${request.fromDate}&toDate=${request.toDate}&source=${request.source}")
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
