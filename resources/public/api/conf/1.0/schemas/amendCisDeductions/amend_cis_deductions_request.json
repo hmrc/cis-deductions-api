@@ -11,7 +11,7 @@
         "type": "object",
         "properties": {
           "deductionAmount": {
-            "description": "The deducted amount relating to self-employment. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "description": "The amount of tax deducted by the contractor. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
             "type": "number",
             "example": "5000.99"
           },
@@ -26,12 +26,12 @@
             "example": "2020-04-05"
           },
           "costOfMaterials": {
-            "description": "The cost of materials incurred for CIS. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "description": "The cost of materials incurred under CIS. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
             "type": "number",
             "example": "5000.99"
           },
           "grossAmountPaid": {
-            "description": "CIS deductions gross amount paid relating to self-employment. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "description": "The gross amount paid under CIS. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
             "type": "number",
             "example": "5000.99"
           }
