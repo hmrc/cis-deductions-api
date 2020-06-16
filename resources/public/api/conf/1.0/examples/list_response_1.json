@@ -40,8 +40,7 @@
           "method":"DELETE"
         },
         {
-          "href":"individuals/deductions/cis/TC663795B/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-        ,
+          "href":"individuals/deductions/cis/TC663795B/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
           "rel":"amend-cis-deductions-for-subcontractor",
           "method":"PUT"
         }
