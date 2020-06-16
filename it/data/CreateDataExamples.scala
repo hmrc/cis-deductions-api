@@ -17,7 +17,7 @@ object CreateDataExamples {
       |   "submissionId":"someResponse",
       |   "links":[
       |      {
-      |         "href":"/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
+      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
       |         "method":"GET",
       |         "rel":"retrieve-cis-deductions-for-subcontractor"
       |      }

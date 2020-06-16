@@ -37,7 +37,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       "api": {
         "name": "CIS Deductions (MTD)",
         "description": "An API for providing Construction industry scheme data",
-        "context": "deductions/cis",
+        "context": "individuals/deductions/cis",
         "categories": ["INCOME_TAX_MTD"],
         "versions": [{
           "version": "1.0",

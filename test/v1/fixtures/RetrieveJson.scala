@@ -235,12 +235,12 @@ object RetrieveJson {
       |    ],
       |    "links": [
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "DELETE",
       |                    "rel": "delete-cis-deductions-for-subcontractor"
       |                },
       |                {
-      |                    "href": "/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+      |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
       |                    "method": "PUT",
       |                    "rel": "amend-cis-deductions-for-subcontractor"
       |                }
@@ -249,12 +249,12 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
       |        {
-      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "href": "/individuals/deductions/cis/AA123456A/amendments",
       |            "method": "POST",
       |            "rel": "create-cis-deductions-for-subcontractor"
       |        }
@@ -301,12 +301,12 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
       |        {
-      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "href": "/individuals/deductions/cis/AA123456A/amendments",
       |            "method": "POST",
       |            "rel": "create-cis-deductions-for-subcontractor"
       |        }
@@ -354,12 +354,12 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
       |        {
-      |            "href": "/deductions/cis/AA123456A/amendments",
+      |            "href": "/individuals/deductions/cis/AA123456A/amendments",
       |            "method": "POST",
       |            "rel": "create-cis-deductions-for-subcontractor"
       |        }

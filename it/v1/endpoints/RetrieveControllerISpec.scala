@@ -23,7 +23,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/individuals/deductions/cis/$nino/current-position"
 
-    def desUrl: String = s"/income-tax/cis/deductions/$nino/current-position"
+    def desUrl: String = s"/income-tax/cis/deductions/$nino"
 
     def setupStubs(): StubMapping
 
