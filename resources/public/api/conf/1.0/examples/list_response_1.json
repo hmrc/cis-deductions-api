@@ -40,7 +40,7 @@
           "method":"DELETE"
         },
         {
-          "href":"/deductions/cis/TC663795B/amendments/db854aaa-65dc-488c-9120-e63fez14b9l2"
+          "href":"individuals/deductions/cis/TC663795B/amendments/db854aaa-65dc-488c-9120-e63fez14b9l2"
         ,
           "rel":"amend-cis-deductions-for-subcontractor",
           "method":"PUT"
@@ -64,7 +64,6 @@
           "grossAmountPaid": 1457.00,
           "submissionDate": "2020-05-11T16:38:57.489Z",
           "source": "contractor"
-
         },
         {
           "deductionFromDate": "2019-09-06",
@@ -80,12 +79,12 @@
   ],
   "links":[
     {
-      "href": "/deductions/cis/TC663795B/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=all",
+      "href": "individuals/deductions/cis/TC663795B/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=all",
       "rel": "self",
       "method": "GET"
     },
     {
-      "href":"/deductions/cis/TC663795B/amendments",
+      "href":"individuals/deductions/cis/TC663795B/amendments",
       "rel":"create-cis-deductions-for-subcontractor",
       "method":"POST"
     }
