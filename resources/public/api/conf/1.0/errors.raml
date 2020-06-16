@@ -179,6 +179,17 @@ traits:
                 description: The specified date range is invalid
                 value:
                   code: RULE_DATE_RANGE_INVALID
+  ruleDateRangeOutOfDate:
+      responses:
+        403:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleDateRangeOutOfDate:
+                  description: The specified date range is outside the allowable tax years (the current tax year minus four years).
+                  value:
+                    code: RULE_DATE_RANGE_OUT_OF_DATE
   ruleDeductionsDateRangeInvalid:
     responses:
       403:
