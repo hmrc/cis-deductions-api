@@ -41,7 +41,7 @@
             "type": "string"
           },
           "employerRef": {
-            "description": "A unique identifier contractor reference number.",
+            "description": "A unique identifier, the contractor reference number. Must conform to the regex:",
             "pattern": "^[0-9]{3}\\/[^ ].{0,9}$",
             "type": "string",
             "example": "123/AC80213"
@@ -114,7 +114,9 @@
                 },
                 "source": {
                   "description": "The source of the data.",
-                  "type": "string"}
+                  "type": "string",
+                  "example": "customer or contractor"
+                }
               },
               "required": [
                 "deductionFromDate",
