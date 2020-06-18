@@ -19,7 +19,7 @@
       "type": "string"
     },
     "employerRef": {
-      "description": "A unique identifier contractor reference number.",
+      "description": "A unique identifier, the contractor reference number.",
       "pattern": "^[0-9]{3}\\/[^ ].{0,9}$",
       "type": "string",
       "example": "123/AB56797"
