@@ -18,7 +18,8 @@ package v1.controllers.requestParsers.validators.validations
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import v1.models.errors.{MtdError, RuleDateRangeInvalidError, RuleFromDateError, RuleToDateError}
+
+import v1.models.errors.{MtdError, RuleDateRangeInvalidError}
 
 object TaxYearDatesValidation {
 
