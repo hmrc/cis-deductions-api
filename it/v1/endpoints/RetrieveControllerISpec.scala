@@ -21,7 +21,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     val source = "customer"
     val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
-    def uri: String = s"/individuals/deductions/cis/$nino/current-position"
+    def uri: String = s"/$nino/current-position"
 
     def desUrl: String = s"/income-tax/cis/deductions/$nino"
 

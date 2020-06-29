@@ -34,7 +34,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
     val data = "someData"
     val correlationId = "X-123"
 
-    def uri: String = s"/individuals/deductions/cis/$nino/amendments"
+    def uri: String = s"/$nino/amendments"
     def desUri: String = s"/income-tax/cis/deductions/$nino"
 
     def setupStubs(): StubMapping
