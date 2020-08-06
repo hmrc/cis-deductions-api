@@ -49,7 +49,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           delete(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.submissionId}",
+            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.submissionId}",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
 
@@ -61,7 +61,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     "the http client returns a Des Error code" in new Test {
       val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.submissionId}")
+      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.submissionId}")
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
       val result: DesOutcome[Unit] = await(connector.delete(request))

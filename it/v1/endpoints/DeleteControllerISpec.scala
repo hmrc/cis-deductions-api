@@ -34,7 +34,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
     val correlationId = "X-123"
 
     def uri: String = s"/$nino/amendments/$submissionId"
-    def desUri: String = s"/income-tax/cis/deductions/$nino/amendments/$submissionId"
+    def desUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
 
     def setupStubs(): StubMapping
 
