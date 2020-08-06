@@ -50,7 +50,7 @@ class AmendConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
             body = request.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
@@ -63,7 +63,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/amendments/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
             body = request.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           )

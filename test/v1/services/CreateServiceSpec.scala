@@ -78,7 +78,7 @@ class CreateServiceSpec extends UnitSpec {
           ("INVALID_REQUEST_DATE_RANGE", RuleDeductionsDateRangeInvalidError),
           ("INVALID_REQUEST_BEFORE_TAX_YEAR", RuleTaxYearNotEndedError),
           ("CONFLICT", RuleDuplicateSubmissionError),
-          ("DUPLICATE_MONTH", RuleDuplicatePeriodError),
+          ("INVALID_REQUEST_DUPLICATE_MONTH", RuleDuplicatePeriodError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError),
           ("INVALID_CORRELATIONID", DownstreamError)
