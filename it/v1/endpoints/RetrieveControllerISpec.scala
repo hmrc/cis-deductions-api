@@ -20,6 +20,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     val toDate = "2020-04-05"
     val source = "customer"
     val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
 
     def uri: String = s"/$nino/current-position"
 
@@ -46,7 +47,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionJson, Some(queryParams))
+          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionJson, Some(desQueryParams))
         }
 
         val response: WSResponse = await(request.get)
