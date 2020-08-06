@@ -33,7 +33,7 @@ class AmendConnector @Inject()(val http: HttpClient,
 
     put(
       body = request.body,
-      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/amendments/${request.id}")
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/submissionId/${request.id}")
     )
   }
 }
