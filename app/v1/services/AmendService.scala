@@ -52,6 +52,7 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
       "NO_DATA_FOUND"-> NotFoundError,
       "INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
+      "INVALID_PAYLOAD" -> RuleIncorrectOrEmptyBodyError,
       "DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
       "SERVICE_UNAVAILABLE" -> DownstreamError,
       "SERVICE_ERROR" -> DownstreamError

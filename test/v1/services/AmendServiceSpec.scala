@@ -64,6 +64,7 @@ class AmendServiceSpec extends UnitSpec{
 
         val input = Seq(
           ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
+          ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
           ("INVALID_SUBMISSION_ID"-> SubmissionIdFormatError),
           ("INVALID_CORRELATIONID"-> DownstreamError),
           ("NO_DATA_FOUND"-> NotFoundError),
