@@ -35,5 +35,6 @@ trait MockAppConfig extends MockFactory {
     def apiStatus: CallHandler[String] = (mockAppConfig.apiStatus: String => String).expects("1.0")
     def endpointsEnabled: CallHandler[Boolean] = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
     def desCisUrl: CallHandler[String] = (mockAppConfig.desCisUrl _: () => String).expects()
+    def minTaxYearCisDeductions: CallHandler[String] = (mockAppConfig.minTaxYearCisDeductions _: () => String).expects()
   }
 }

@@ -16,6 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
+import mocks.MockAppConfig
 import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.RetrieveRawData
@@ -25,33 +26,34 @@ class RetrieveValidatorSpec extends UnitSpec {
   private val nino = "AA123456A"
   private val invalidNino = "GHFG197854"
 
-  class SetUp {
-    val validator = new RetrieveValidator
+  class SetUp extends MockAppConfig {
+    val validator = new RetrieveValidator(mockAppConfig)
+    MockedAppConfig.minTaxYearCisDeductions.returns("2021")
   }
 
   "running validation" should {
     "return no errors" when {
       "all query parameters are passed in the request" in new SetUp {
         validator
-          .validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")))
+          .validate(RetrieveRawData(nino, Some("2020-04-06"), Some("2021-04-05"), Some("all")))
           .isEmpty shouldBe true
       }
 
       "an optional field returns None" in new SetUp {
         validator
-          .validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None))
+          .validate(RetrieveRawData(nino, Some("2020-04-06"), Some("2021-04-05"), None))
           .isEmpty shouldBe true
       }
     }
 
     "return errors" when {
       "invalid nino and source data is passed in the request" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All")))
+        private val result = validator.validate(RetrieveRawData(invalidNino, Some("2020-04-06"), Some("2021-04-05"), Some("All")))
         result shouldBe List(NinoFormatError, RuleSourceError)
       }
 
       "invalid dates are provided in the request" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor")))
+        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2021-04-05"), Some("contractor")))
         result shouldBe List(RuleDateRangeInvalidError)
       }
 
@@ -66,13 +68,18 @@ class RetrieveValidatorSpec extends UnitSpec {
       }
 
       "the from date is not the start of the tax year" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")))
+        private val result = validator.validate(RetrieveRawData(nino, Some("2020-04-05"), Some("2021-04-05"), Some("customer")))
         result shouldBe List(RuleDateRangeInvalidError)
       }
 
       "the to date is not the end of the tax year" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")))
+        private val result = validator.validate(RetrieveRawData(nino, Some("2020-04-06"), Some("2021-04-04"), Some("customer")))
         result shouldBe List(RuleDateRangeInvalidError)
+      }
+
+      "invalid date range before minimum tax year is provided" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("customer")))
+        result shouldBe List(RuleTaxYearNotSupportedError)
       }
     }
   }

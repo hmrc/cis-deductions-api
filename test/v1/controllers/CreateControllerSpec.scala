@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
@@ -42,6 +43,7 @@ class CreateControllerSpec
     with MockCreateRequestParser
     with MockCreateService
     with MockHateoasFactory
+    with MockAppConfig
     with MockAuditService {
 
   trait Test {
@@ -54,6 +56,7 @@ class CreateControllerSpec
       service = mockService,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
+      appConfig = mockAppConfig,
       cc = cc
     )
 
@@ -176,6 +179,7 @@ class CreateControllerSpec
         (DeductionToDateFormatError, BAD_REQUEST),
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
+        (RuleTaxYearNotSupportedError, BAD_REQUEST),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (RuleDeductionAmountError, BAD_REQUEST),
         (RuleCostOfMaterialsError, BAD_REQUEST),
@@ -213,6 +217,7 @@ class CreateControllerSpec
             DeductionFromDateFormatError,
             ToDateFormatError,
             FromDateFormatError,
+            RuleTaxYearNotSupportedError,
             TaxYearFormatError
           )
         )
@@ -236,6 +241,7 @@ class CreateControllerSpec
             AuditError(DeductionFromDateFormatError.code),
             AuditError(ToDateFormatError.code),
             AuditError(FromDateFormatError.code),
+            AuditError(RuleTaxYearNotSupportedError.code),
             AuditError(TaxYearFormatError.code))),
           None
         )
@@ -276,7 +282,8 @@ class CreateControllerSpec
         (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
         (RuleTaxYearNotEndedError, FORBIDDEN),
         (RuleDuplicateSubmissionError, FORBIDDEN),
-        (RuleDuplicatePeriodError, FORBIDDEN)
+        (RuleDuplicatePeriodError, FORBIDDEN),
+        (NotFoundError, NOT_FOUND)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
     }

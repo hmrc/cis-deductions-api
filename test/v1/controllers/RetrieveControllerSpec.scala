@@ -57,6 +57,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       service = mockService,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
+      appConfig = mockAppConfig,
       cc = cc
     )
 
@@ -66,8 +67,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
   }
 
   private val nino = "AA123456A"
-  private val fromDate = Some("2019-04-06")
-  private val toDate = Some("2020-04-05")
+  private val fromDate = Some("2020-04-06")
+  private val toDate = Some("2021-04-05")
   private val sourceRaw = Some("customer")
   private val sourceAll = "all"
   private val correlationId = "X-123"
@@ -267,7 +268,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             RuleMissingToDateError,
             RuleMissingFromDateError,
             RuleSourceError,
-            RuleDateRangeOutOfDate)
+            RuleDateRangeOutOfDate,
+            RuleTaxYearNotSupportedError)
         )
 
         MockRetrieveDeductionRequestParser
@@ -290,7 +292,9 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             AuditError(RuleMissingToDateError.code),
             AuditError(RuleMissingFromDateError.code),
             AuditError(RuleSourceError.code),
-            AuditError(RuleDateRangeOutOfDate.code))),
+            AuditError(RuleDateRangeOutOfDate.code),
+            AuditError(RuleTaxYearNotSupportedError.code)
+          )),
           None
         )
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once

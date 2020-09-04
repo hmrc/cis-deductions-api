@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import config.AppConfig
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -41,6 +42,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
                                    service: RetrieveService,
                                    auditService: AuditService,
                                    hateoasFactory: HateoasFactory,
+                                   appConfig: AppConfig,
                                    cc: ControllerComponents)
                                   (implicit ec: ExecutionContext)
 extends AuthorisedController(cc) with BaseController with Logging {
@@ -90,7 +92,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
       case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError
-           | RuleMissingToDateError | RuleSourceError => BadRequest(Json.toJson(errorWrapper))
+           | RuleMissingToDateError | RuleSourceError | RuleTaxYearNotSupportedError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))

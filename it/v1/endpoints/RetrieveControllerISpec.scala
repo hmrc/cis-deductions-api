@@ -16,8 +16,8 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
     val nino = "AA123456A"
     val correlationId = "X-123"
-    val fromDate = "2019-04-06"
-    val toDate = "2020-04-05"
+    val fromDate = "2020-04-06"
+    val toDate = "2021-04-05"
     val source = "customer"
     val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
     val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
@@ -84,13 +84,15 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA12345", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
-          ("AA123456B", "2019-04", "2020-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
-          ("AA123456B", "2019-04-06", "2020-04", "customer", BAD_REQUEST, ToDateFormatError, None),
-          ("AA123456B", "2019-04-06", "2020-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
-          ("AA123456B", "2020-04-05", "2019-04-06", "customer", FORBIDDEN, RuleDateRangeInvalidError, None),
-          ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2019-04-06", "source" -> "all"))),
-          ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2020-04-05", "source" -> "all")))
+          ("AA12345", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
+          ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
+          ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
+          ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
+          ("AA123456B", "2022-04-05", "2021-04-06", "customer", FORBIDDEN, RuleDateRangeInvalidError, None),
+          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
+          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2021-04-05", "source" -> "all"))),
+          ("AA123456B", "2019-04-06", "2020-04-05", "customer", BAD_REQUEST,
+            RuleTaxYearNotSupportedError, Some(Seq("fromDate" -> "2019-04-06", "toDate" -> "2020-04-05", "source" -> "all")))
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
