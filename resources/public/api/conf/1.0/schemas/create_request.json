@@ -7,12 +7,12 @@
     "fromDate": {
       "description": "CIS tax year start date.",
       "type": "string",
-      "example": "2019-04-06"
+      "example": "2020-04-06"
     },
     "toDate": {
       "description": "CIS tax year end date.",
       "type": "string",
-      "example": "2020-04-05"
+      "example": "2021-04-05"
     },
     "contractorName": {
       "description": "The name of the contractor the subcontractor worked for.",
@@ -42,12 +42,12 @@
           "deductionFromDate" : {
             "description": "The From date when the deduction was made within the CIS tax year period.",
             "type": "string",
-            "example": "2019-07-06"
+            "example": "2020-07-06"
           },
           "deductionToDate" : {
             "description": "The To date when the deduction was made within the CIS tax year period.",
             "type": "string",
-            "example": "2019-08-05"
+            "example": "2020-08-05"
           },
           "costOfMaterials" : {
             "description": "The cost of materials incurred under CIS. This value must be between 0 and 99999999999.99 up to 2 decimal places.",

@@ -18,7 +18,7 @@
           "deductionFromDate": {
             "description": "The From date when the deduction was made within the CIS tax year period.",
             "type": "string",
-            "example": "2019-04-04"
+            "example": "2020-04-06"
           },
           "deductionToDate": {
             "description": "The To date when the deduction was made within the CIS tax year period.",

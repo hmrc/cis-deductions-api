@@ -29,12 +29,12 @@
           "fromDate": {
             "description": "CIS start date of a tax year.",
             "type": "string",
-            "example": "2019-04-06"
+            "example": "2020-04-06"
           },
           "toDate": {
             "description": "CIS end date of a tax year.",
             "type": "string",
-            "example": "2020-04-05"
+            "example": "2021-04-05"
           },
           "contractorName": {
             "description": "The name of the contractor the subcontractor worked for.",
@@ -71,12 +71,12 @@
                 "deductionFromDate": {
                   "description": "The From date when the deduction was made within the CIS tax year period.",
                   "type": "string",
-                  "example": "2019-07-06"
+                  "example": "2020-07-06"
                 },
                 "deductionToDate": {
                   "description": "The To date when the deduction was made within the CIS tax year period.",
                   "type": "string",
-                  "example": "2019-08-05"
+                  "example": "2020-08-05"
               },
                 "deductionAmount": {
                 "description": "The amount of tax deducted by the contractor. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
