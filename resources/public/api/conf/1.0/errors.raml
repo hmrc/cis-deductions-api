@@ -322,3 +322,14 @@ traits:
                 description: More than one deduction period has been supplied for the same month or period
                 value:
                   code: RULE_DUPLICATE_PERIOD
+  ruleTaxYearNotSupported:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTaxYearNotSupported:
+                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
+                value:
+                  code: RULE_TAX_YEAR_NOT_SUPPORTED
