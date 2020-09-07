@@ -16,6 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
+import mocks.MockAppConfig
 import support.UnitSpec
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
@@ -26,9 +27,12 @@ class CreateValidatorSpec extends UnitSpec{
   val nino = "AA123456A"
   val invalidNino = "GHFG197854"
 
-  class SetUp {
-    val validator = new CreateValidator
+
+  class SetUp extends MockAppConfig {
+    val validator = new CreateValidator(mockAppConfig)
+    MockedAppConfig.minTaxYearCisDeductions.returns("2021")
   }
+
   "running validation" should {
     "return no errors" when {
       "all the fields are submitted in a request" in new SetUp {
@@ -137,6 +141,12 @@ class CreateValidatorSpec extends UnitSpec{
         CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMin)
         )
         result shouldBe List(RuleDateRangeInvalidError)
+      }
+      "invalid date range before minimum tax year is provided" in new SetUp {
+        private val result = validator.validate(
+        CreateRawData(nino, requestBodyJsonErrorNotSupportedTaxYear)
+        )
+        result shouldBe List(RuleTaxYearNotSupportedError)
       }
       "invalid employer reference format is provided" in new SetUp {
         private val result = validator.validate(

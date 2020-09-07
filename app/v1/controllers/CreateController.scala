@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import config.AppConfig
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -31,7 +32,7 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.models.responseData.{CreateHateoasData ,CreateResponseModel}
+import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
 import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,6 +43,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
                                  service: CreateService,
                                  hateoasFactory: HateoasFactory,
                                  auditService: AuditService,
+                                 appConfig: AppConfig,
                                  cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
@@ -94,7 +96,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
       case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError |
            DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
            ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError |
-           RuleGrossAmountError | EmployerRefFormatError =>
+           RuleGrossAmountError | EmployerRefFormatError | RuleTaxYearNotSupportedError =>
         BadRequest(Json.toJson(errorWrapper))
       case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError
            | RuleTaxYearNotEndedError | RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>

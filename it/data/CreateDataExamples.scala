@@ -17,7 +17,7 @@ object CreateDataExamples {
       |   "submissionId":"someResponse",
       |   "links":[
       |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
+      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05",
       |         "method":"GET",
       |         "rel":"retrieve-cis-deductions-for-subcontractor"
       |      }
@@ -36,22 +36,22 @@ object CreateDataExamples {
   val requestBodyJson = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -62,22 +62,22 @@ object CreateDataExamples {
   val requestBodyJsonErrorFromDate = Json.parse(
     """
       |{
-      |  "fromDate": "04-06-2019" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "04-06-2020" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -88,22 +88,22 @@ object CreateDataExamples {
   val requestBodyJsonErrorToDate = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "04-05-2020",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "04-05-2021",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -114,22 +114,22 @@ object CreateDataExamples {
   val requestBodyJsonErrorDeductionFromDate = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "06-06-2019",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "06-06-2020",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -140,6 +140,32 @@ object CreateDataExamples {
   val requestBodyJsonErrorDeductionToDate = Json.parse(
     """
       |{
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "123/AB56797",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "07-05-2020",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+        """.stripMargin
+  )
+  val requestBodyJsonErrorTaxYearNotSupported = Json.parse(
+    """
+      |{
       |  "fromDate": "2019-04-06" ,
       |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
@@ -147,15 +173,15 @@ object CreateDataExamples {
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "07-05-2019",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -166,22 +192,22 @@ object CreateDataExamples {
   val requestInvalidEmpRef = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -193,22 +219,22 @@ object CreateDataExamples {
   val requestRuleDeductionAmountJson = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": -355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -220,22 +246,22 @@ object CreateDataExamples {
   val requestInvalidRuleCostOfMaterialsJson = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": -35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -247,22 +273,22 @@ object CreateDataExamples {
   val requestInvalidGrossAmountJson = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": -1457.00
       |    }
@@ -274,22 +300,22 @@ object CreateDataExamples {
   val requestInvalidDateRangeJson = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2020-04-06" ,
+      |  "toDate": "2022-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }

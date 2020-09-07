@@ -16,12 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.FixedConfig
-import v1.controllers.requestParsers.validators.validations._
+import config.{AppConfig, FixedConfig}
+import javax.inject.Inject
+import v1.controllers.requestParsers.validators.validations.{MinTaxYearValidation, _}
 import v1.models.errors._
 import v1.models.request.RetrieveRawData
 
-class RetrieveValidator extends Validator[RetrieveRawData] with FixedConfig{
+class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig{
 
   private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
 
@@ -29,7 +30,8 @@ class RetrieveValidator extends Validator[RetrieveRawData] with FixedConfig{
     NinoValidation.validate(data.nino),
     SourceValidation.validate(data.source),
     DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-    DateValidation.validate(ToDateFormatError)(data.toDate.get)
+    DateValidation.validate(ToDateFormatError)(data.toDate.get),
+    MinTaxYearValidation.validate(data.toDate.get, appConfig.minTaxYearCisDeductions.toInt)
   )
 
   private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) => List(

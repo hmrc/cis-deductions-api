@@ -16,12 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.FixedConfig
+import config.{AppConfig, FixedConfig}
+import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.{CreateRawData, CreateRequest}
 
-class CreateValidator extends Validator[CreateRawData] with FixedConfig {
+class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator,
@@ -52,6 +53,7 @@ class CreateValidator extends Validator[CreateRawData] with FixedConfig {
       PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError),
       DateValidation.validate(FromDateFormatError)(req.fromDate),
       DateValidation.validate(ToDateFormatError)(req.toDate),
+      MinTaxYearValidation.validate(req.toDate,appConfig.minTaxYearCisDeductions.toInt),
       EmployerRefValidation.validate(req.employerRef)
     )
   }
