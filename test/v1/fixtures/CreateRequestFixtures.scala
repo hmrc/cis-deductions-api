@@ -167,7 +167,7 @@ object CreateRequestFixtures {
       |""".stripMargin
   }
 
-  val invalidToDateFormatRequestJson: JsValue = Json.parse {
+  val invalidToDateFormatRequesJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "2020-04-06" ,
