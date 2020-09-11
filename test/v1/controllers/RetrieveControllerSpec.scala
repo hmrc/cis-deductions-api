@@ -79,13 +79,15 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
-      auditType = "retrieveCisDeductionsAuditType",
-      transactionName = "retrieve-cis-deductions-transaction-type",
+      auditType = "RetrieveCisDeductionsForSubcontractor",
+      transactionName = "retrieve-cis-deductions-for-subcontractor",
       detail = GenericAuditDetail(
         userType = "Individual",
         agentReferenceNumber = None,
         nino,
+        None,
         `X-CorrelationId` = correlationId,
+        None,
         auditResponse
       )
     )

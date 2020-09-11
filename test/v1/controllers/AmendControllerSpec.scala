@@ -70,13 +70,15 @@ class AmendControllerSpec extends ControllerBaseSpec
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
-      auditType = "amendCisDeductionsAuditType",
-      transactionName = "amend-cis-deductions-transaction-type",
+      auditType = "AmendCisDeductionsForSubcontractor",
+      transactionName = "amend-cis-deductions-for-subcontractor",
       detail = GenericAuditDetail(
         userType = "Individual",
         agentReferenceNumber = None,
         nino,
+        Some(submissionId),
         `X-CorrelationId` = correlationId,
+        requestBody,
         auditResponse
       )
     )
@@ -99,7 +101,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()      }
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()      }
 
       "a valid request is supplied when an optional field is missing" in new Test {
 
@@ -118,7 +120,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(missingOptionalRequestJson))).once()
       }
       }
     }
@@ -138,7 +140,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
         }
       }
 
@@ -174,7 +176,7 @@ class AmendControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -211,7 +213,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           None
         )
 
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
       }
     }
 
@@ -234,7 +236,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
         }
       }
 
