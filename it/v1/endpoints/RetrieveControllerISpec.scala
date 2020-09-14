@@ -57,6 +57,22 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe singleDeductionJsonHateoas
       }
 
+      "valid request is made without any ids" in new Test {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionWithoutIdsJson, Some(desQueryParams))
+        }
+
+        val response: WSResponse = await(request.get)
+
+        response.status shouldBe OK
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.json shouldBe singleDeductionWithoutIdsJsonHateoas
+      }
+
       "return error according to spec" when {
 
         def validationErrorTest(requestNino: String, requestFromDate: String,
