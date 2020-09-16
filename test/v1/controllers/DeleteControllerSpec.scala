@@ -65,13 +65,15 @@ class DeleteControllerSpec extends ControllerBaseSpec
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
         AuditEvent(
-            auditType = "deleteCisDeductionsAuditType",
-            transactionName = "delete-cis-deductions-transaction-type",
+            auditType = "DeleteCisDeductionsForSubcontractor",
+            transactionName = "delete-cis-deductions-for-subcontractor",
             detail = GenericAuditDetail(
                 userType = "Individual",
                 agentReferenceNumber = None,
                 nino,
+                Some(submissionId),
                 `X-CorrelationId` = correlationId,
+                None,
                 auditResponse
             )
         )

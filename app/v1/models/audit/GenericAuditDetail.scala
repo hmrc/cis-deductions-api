@@ -16,13 +16,15 @@
 
 package v1.models.audit
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{JsValue, Json, OWrites}
 
 case class GenericAuditDetail(
                              userType: String,
                              agentReferenceNumber: Option[String],
                              nino: String,
+                             submissionId: Option[String],
                              `X-CorrelationId`: String,
+                             request: Option[JsValue],
                              response: AuditResponse
                            )
 

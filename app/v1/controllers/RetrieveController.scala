@@ -75,7 +75,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
           RetrieveResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, responseWrapper.responseData))
 
         auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, Some(Json.toJson(hateoasResponse))))
+          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, responseBody = Some(Json.toJson(hateoasResponse))))
 
         Ok(Json.toJson(hateoasResponse))
           .withApiHeaders(responseWrapper.correlationId)
@@ -104,6 +104,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
                                  correlationId: String,
                                  userDetails: UserDetails,
                                  errorWrapper: Option[ErrorWrapper] = None,
+                                 requestBody: Option[JsValue] = None,
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>
@@ -111,11 +112,11 @@ extends AuthorisedController(cc) with BaseController with Logging {
       }
       .getOrElse(AuditResponse(statusCode, None, responseBody ))
 
-    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, correlationId, response)
+    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, None, correlationId, requestBody, response)
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("retrieveCisDeductionsAuditType", "retrieve-cis-deductions-transaction-type", details)
+    val event = AuditEvent("RetrieveCisDeductionsForSubcontractor", "retrieve-cis-deductions-for-subcontractor", details)
     auditService.auditEvent(event)
   }
 }
