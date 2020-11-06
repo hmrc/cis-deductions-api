@@ -73,7 +73,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(FromDateFormatError, ToDateFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(FromDateFormatError, ToDateFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(BadRequestError, FromDateFormatError, ToDateFormatError)))
       }
 
       "an invalid source is given" in new Test {

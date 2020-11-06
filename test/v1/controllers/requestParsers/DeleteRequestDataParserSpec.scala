@@ -54,7 +54,7 @@ class DeleteRequestDataParserSpec extends UnitSpec {
       MockDeleteValidator.validate(inputData).returns(List(NinoFormatError, SubmissionIdFormatError))
 
       parser.parseRequest(inputData) shouldBe
-        Left(ErrorWrapper(correlationId ,Seq(NinoFormatError, SubmissionIdFormatError)))
+        Left(ErrorWrapper(correlationId ,Seq(BadRequestError, NinoFormatError, SubmissionIdFormatError)))
     }
   }
 }

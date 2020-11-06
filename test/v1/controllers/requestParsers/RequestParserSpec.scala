@@ -62,7 +62,7 @@ class RequestParserSpec extends UnitSpec {
       "the validator returns multiple errors" in new Test {
         lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
 
-        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, Seq(NinoFormatError, RuleIncorrectOrEmptyBodyError)))
+        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError, RuleIncorrectOrEmptyBodyError)))
       }
     }
   }
