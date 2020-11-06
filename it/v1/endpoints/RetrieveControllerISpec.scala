@@ -15,7 +15,6 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   private trait Test {
 
     val nino = "AA123456A"
-    val correlationId = "X-123"
     val fromDate = "2020-04-06"
     val toDate = "2021-04-05"
     val source = "customer"

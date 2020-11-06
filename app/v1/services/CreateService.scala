@@ -37,7 +37,8 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
   def createDeductions(request: CreateRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+    logContext: EndpointLogContext,
+    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
     val result = for {
       desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper

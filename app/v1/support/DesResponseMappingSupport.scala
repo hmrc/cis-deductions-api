@@ -34,7 +34,7 @@ trait DesResponseMappingSupport {
 
     desResponseWrapper match {
       case ResponseWrapper(correlationId, DesErrors(error :: Nil)) =>
-        ErrorWrapper(Some(correlationId), Seq(errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping)))
+        ErrorWrapper(correlationId, Seq(errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping)))
 
       case ResponseWrapper(correlationId, DesErrors(errorCodes)) =>
         val mtdErrors = errorCodes.map(error => errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping))
@@ -43,13 +43,13 @@ trait DesResponseMappingSupport {
           logger.info(
             s"[${logContext.controllerName}] [${logContext.endpointName}] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errorCodes.map(_.code).mkString(",")}. Revert to ISE")
-          ErrorWrapper(Some(correlationId), Seq(DownstreamError))
+          ErrorWrapper(correlationId, Seq(DownstreamError))
         } else {
-          ErrorWrapper(Some(correlationId), Seq(BadRequestError) ++ mtdErrors)
+          ErrorWrapper(correlationId, Seq(BadRequestError) ++ mtdErrors)
         }
 
       case ResponseWrapper(correlationId, OutboundError(errors)) =>
-        ErrorWrapper(Some(correlationId), errors)
+        ErrorWrapper(correlationId, errors)
     }
   }
 }

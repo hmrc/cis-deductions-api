@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class RetrieveServiceSpec extends UnitSpec {
 
   private val nino = Nino("AA123456A")
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
   private val fromDate = "2019-04-06"
   private val toDate = "2020-04-05"
   private val source = "Contractor"
@@ -66,7 +66,7 @@ class RetrieveServiceSpec extends UnitSpec {
           MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
+          await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, Seq(error)))
         }
       val input = Seq(
         ("INVALID_TAXABLE_ENTITY_ID" , NinoFormatError),

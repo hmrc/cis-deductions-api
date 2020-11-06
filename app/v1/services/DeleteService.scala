@@ -36,7 +36,8 @@ class DeleteService @Inject()(connector: DeleteConnector) extends DesResponseMap
   def deleteDeductions(request: DeleteRequestData)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+    logContext: EndpointLogContext,
+    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.delete(request)).leftMap(mapDesErrors(desErrorMap))

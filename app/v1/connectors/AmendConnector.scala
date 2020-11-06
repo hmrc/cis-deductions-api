@@ -29,7 +29,7 @@ class AmendConnector @Inject()(val http: HttpClient,
                                val appConfig: AppConfig) extends BaseDesConnector  {
 
   def amendDeduction(request: AmendRequestData)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+                    (implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
 
     put(
       body = request.body,

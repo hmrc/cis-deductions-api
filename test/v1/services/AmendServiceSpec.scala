@@ -32,6 +32,7 @@ class AmendServiceSpec extends UnitSpec{
 
   val validNino = Nino("AA123456A")
   val submissionId = "S4636A77V5KB8625U"
+  implicit val correlationId = "X-123"
 
   val requestData = AmendRequestData(validNino,submissionId,amendRequestObj)
 
@@ -59,7 +60,7 @@ class AmendServiceSpec extends UnitSpec{
             MockAmendConnector.amendDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper(Some("resultId"), Seq(error)))
+            await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", Seq(error)))
           }
 
         val input = Seq(

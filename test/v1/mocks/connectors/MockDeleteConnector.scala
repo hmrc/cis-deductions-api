@@ -33,8 +33,8 @@ trait MockDeleteConnector extends MockFactory {
 
     def deleteDeduction(requestData: DeleteRequestData): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockDeleteConnector
-        .delete(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .delete(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _:String))
+        .expects(requestData, *, *, *)
     }
   }
 

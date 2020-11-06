@@ -23,9 +23,10 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveJson._
 import v1.fixtures.RetrieveModels._
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockRetrieveService, MockMtdIdLookupService}
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
@@ -33,7 +34,7 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request._
 import v1.models.responseData
 import v1.models.responseData.RetrieveResponseModel._
-import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel, PeriodData}
+import v1.models.responseData.{CisDeductions, PeriodData, RetrieveResponseHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,10 +46,11 @@ class RetrieveControllerSpec extends ControllerBaseSpec
   with MockRetrieveService
   with MockHateoasFactory
   with MockAppConfig
-  with MockAuditService {
+  with MockAuditService
+  with MockIdGenerator {
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveController(
       authService = mockEnrolmentsAuthService,
@@ -58,12 +60,13 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       appConfig = mockAppConfig,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -221,7 +224,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
           MockRetrieveDeductionRequestParser
             .parse(retrieveRawData)
-            .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
+            .returns(Left(ErrorWrapper(correlationId, Seq(error))))
 
           val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
@@ -242,7 +245,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(Some(correlationId), Seq(BadRequestError, NinoFormatError))
+        val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -260,7 +263,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
       "multiple errors occur for format errors" in new Test {
         val error = ErrorWrapper(
-          Some(correlationId),
+          correlationId,
           Seq(
             BadRequestError,
             RuleDateRangeInvalidError,
@@ -313,7 +316,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
           MockRetrieveService
             .retrieveCisDeductions(retrieveRequestData)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), Seq(mtdError)))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, Seq(mtdError)))))
 
           val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 

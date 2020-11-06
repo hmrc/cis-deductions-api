@@ -16,21 +16,30 @@
 
 package v1.controllers.requestParsers
 
+import utils.Logging
 import v1.controllers.requestParsers.validators.Validator
 import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.requestData.RawData
 
-trait RequestParser[Raw <: RawData, Request] {
+trait RequestParser[Raw <: RawData, Request] extends Logging {
 
   val validator: Validator[Raw]
 
   protected def requestFor(data: Raw): Request
 
-  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
+  def parseRequest(data: Raw)(implicit correlationId: String): Either[ErrorWrapper, Request] = {
     validator.validate(data) match {
-      case Nil => Right(requestFor(data))
-      case err :: Nil => Left(ErrorWrapper(None, Seq(err)))
-      case errs => Left(ErrorWrapper(None, Seq(BadRequestError) ++ errs))
+      case Nil => logger.info(message = "[RequestParser][parseRequest] " +
+        s"Validation successful for the request with correlationId : $correlationId")
+        Right(requestFor(data))
+      case err :: Nil =>
+        logger.info(message = "[RequestParser][parseRequest] " +
+          s"Validation failed with ${err.code} error for the request with correlationId : $correlationId")
+        Left(ErrorWrapper(correlationId, Seq(err)))
+      case errs =>
+        logger.info("[RequestParser][parseRequest] " +
+          s"Validation failed with ${errs.map(_.code).mkString(",")} error for the request with correlationId : $correlationId")
+        Left(ErrorWrapper(correlationId, errs))
     }
   }
 }

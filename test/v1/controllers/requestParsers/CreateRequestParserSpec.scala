@@ -28,6 +28,7 @@ class CreateRequestParserSpec extends UnitSpec{
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends  MockCreateValidator{
     lazy val parser = new CreateRequestParser(mockValidator)
@@ -67,7 +68,7 @@ class CreateRequestParserSpec extends UnitSpec{
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None,List(BadRequestError)))
+        result shouldBe Left(ErrorWrapper(correlationId,List(BadRequestError)))
       }
       "Nino format is incorrect" in new Test {
         val inputData = CreateRawData(nino,requestJson)
@@ -77,7 +78,7 @@ class CreateRequestParserSpec extends UnitSpec{
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None,List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId,List(NinoFormatError)))
       }
     }
   }

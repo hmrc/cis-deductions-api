@@ -33,8 +33,8 @@ trait MockCreateConnector extends MockFactory {
 
     def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DesOutcome[CreateResponseModel]]] = {
       (mockCreateConnector
-        .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _:String))
+        .expects(requestData, *, *, *)
     }
   }
 

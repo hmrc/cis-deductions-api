@@ -32,7 +32,8 @@ class RetrieveConnector @Inject()(val http: HttpClient,
 
   def retrieve(request: RetrieveRequestData)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 

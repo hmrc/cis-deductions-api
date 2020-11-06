@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.Logging
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreateRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit._
@@ -44,7 +44,8 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
                                  hateoasFactory: HateoasFactory,
                                  auditService: AuditService,
                                  appConfig: AppConfig,
-                                 cc: ControllerComponents)(implicit ec: ExecutionContext)
+                                 cc: ControllerComponents,
+                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -56,6 +57,9 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
     )
 
   def createRequest(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
+    implicit val correlationId: String = idGenerator.getCorrelationId
+    logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+      s"with correlationId : $correlationId")
     val rawData = CreateRawData(nino, request.body)
     val parseResponse: Either[ErrorWrapper, CreateRequestData] = requestParser.parseRequest(rawData)
 
@@ -85,8 +89,13 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
           .as(MimeTypes.JSON)
 
       case Left(errorWrapper) =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
+
         auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
                         requestBody = Some(request.body)))
         result

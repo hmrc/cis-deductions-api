@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.Logging
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers._
 import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -43,7 +43,8 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
                                    auditService: AuditService,
                                    hateoasFactory: HateoasFactory,
                                    appConfig: AppConfig,
-                                   cc: ControllerComponents)
+                                   cc: ControllerComponents,
+                                   val idGenerator: IdGenerator)
                                   (implicit ec: ExecutionContext)
 extends AuthorisedController(cc) with BaseController with Logging {
 
@@ -55,6 +56,9 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
   def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
   authorisedAction(nino).async { implicit request =>
+    implicit val correlationId: String = idGenerator.getCorrelationId
+    logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+      s"with correlationId : $correlationId")
     val rawData = RetrieveRawData(nino,fromDate,toDate,source)
     val parseResponse: Either[ErrorWrapper, RetrieveRequestData] = requestParser.parseRequest(rawData)
     val serviceResponse = parseResponse match {
@@ -82,8 +86,13 @@ extends AuthorisedController(cc) with BaseController with Logging {
           .as(MimeTypes.JSON)
 
       case Left(errorWrapper) =>
-        val correlationId = getCorrelationId(errorWrapper)
-        val result = errorResult(errorWrapper).withApiHeaders(correlationId)
+        val resCorrelationId = errorWrapper.correlationId
+        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
+
         auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
         result
     }

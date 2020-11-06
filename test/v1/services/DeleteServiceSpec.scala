@@ -32,6 +32,7 @@ class DeleteServiceSpec extends UnitSpec {
 
   val nino = Nino("AA123456A")
   val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  implicit val correlationId = "X-123"
 
   val requestData = DeleteRequestData(nino, submissionId)
 
@@ -61,7 +62,7 @@ class DeleteServiceSpec extends UnitSpec {
           MockDeleteConnector.deleteDeduction(requestData)
             .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.deleteDeductions(requestData)) shouldBe Left(ErrorWrapper(Some("resultId"), Seq(error)))
+          await(service.deleteDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", Seq(error)))
         }
       }
 

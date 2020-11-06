@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{DeleteRequestData}
+import v1.models.request.DeleteRequestData
 import v1.services.DeleteService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,8 +36,8 @@ trait MockDeleteService extends MockFactory {
     def deleteRequest(requestData: DeleteRequestData):
     CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteService
-        .deleteDeductions(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .deleteDeductions(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

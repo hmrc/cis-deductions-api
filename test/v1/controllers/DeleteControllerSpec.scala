@@ -22,6 +22,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveJson._
+import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRequestDataParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, _}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
@@ -33,15 +34,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteControllerSpec extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
-    with MockDeleteRequestDataParser
-    with MockDeleteService
-    with MockAppConfig
-    with MockAuditService {
+  with MockEnrolmentsAuthService
+  with MockMtdIdLookupService
+  with MockDeleteRequestDataParser
+  with MockDeleteService
+  with MockAppConfig
+  with MockAuditService
+  with MockIdGenerator {
 
     trait Test {
-        val hc = HeaderCarrier()
+        val hc: HeaderCarrier = HeaderCarrier()
 
         val controller = new DeleteController(
             authService = mockEnrolmentsAuthService,
@@ -49,12 +51,13 @@ class DeleteControllerSpec extends ControllerBaseSpec
             requestParser = mockRequestParser,
             service = mockDeleteService,
             auditService = mockAuditService,
-            cc = cc
+            cc = cc,
+            idGenerator = mockIdGenerator
         )
 
         MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
         MockedEnrolmentsAuthService.authoriseUser()
-
+        MockIdGenerator.getCorrelationId.returns(correlationId)
     }
 
     private val nino = "AA123456A"
@@ -107,7 +110,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
 
                     MockDeleteRequestDataParser
                       .parse(deleteRawData)
-                      .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
+                      .returns(Left(ErrorWrapper(correlationId, Seq(error))))
 
                     val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
@@ -130,7 +133,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
             input.foreach(args => (errorsFromParserTester _).tupled(args))
 
             "multiple parser errors occur" in new Test {
-                val error = ErrorWrapper(Some(correlationId), Seq(BadRequestError, NinoFormatError))
+                val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
 
                 MockDeleteRequestDataParser
                   .parse(deleteRawData)
@@ -148,7 +151,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
 
             "multiple errors occur for format errors" in new Test {
                 val error = ErrorWrapper(
-                    Some(correlationId),
+                    correlationId,
                     Seq(
                         BadRequestError,
                         RuleSourceError)
@@ -185,7 +188,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
 
                     MockDeleteService
                       .deleteRequest(deleteRequestData)
-                      .returns(Future.successful(Left(ErrorWrapper(Some(correlationId),Seq(mtdError)))))
+                      .returns(Future.successful(Left(ErrorWrapper(correlationId,Seq(mtdError)))))
 
                     val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
