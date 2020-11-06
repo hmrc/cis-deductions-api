@@ -34,7 +34,7 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request._
 import v1.models.responseData
 import v1.models.responseData.RetrieveResponseModel._
-import v1.models.responseData.{CisDeductions, PeriodData, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

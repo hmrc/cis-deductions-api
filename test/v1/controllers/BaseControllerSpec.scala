@@ -20,7 +20,6 @@ import play.api.http.HttpEntity
 import play.api.mvc.{ResponseHeader, Result}
 import support.UnitSpec
 import utils.Logging
-import v1.models.errors.{BadRequestError, ErrorWrapper}
 
 class BaseControllerSpec extends UnitSpec {
 
