@@ -32,7 +32,8 @@ class CreateConnector @Inject()(val http: HttpClient,
 
   def create(request: CreateRequestData)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[CreateResponseModel]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[CreateResponseModel]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 

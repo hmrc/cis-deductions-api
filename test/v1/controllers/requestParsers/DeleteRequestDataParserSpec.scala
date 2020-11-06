@@ -25,6 +25,7 @@ import v1.models.request.{DeleteRawData, DeleteRequestData}
 class DeleteRequestDataParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val   inputData = DeleteRawData(nino, submissionId)
 
@@ -46,14 +47,14 @@ class DeleteRequestDataParserSpec extends UnitSpec {
         MockDeleteValidator.validate(inputData).returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(None, Seq(NinoFormatError)))
+          Left(ErrorWrapper(correlationId, Seq(NinoFormatError)))
       }
     }
     "multiple validation errors occur" in new Test {
       MockDeleteValidator.validate(inputData).returns(List(NinoFormatError, SubmissionIdFormatError))
 
       parser.parseRequest(inputData) shouldBe
-        Left(ErrorWrapper(None ,Seq(BadRequestError, NinoFormatError, SubmissionIdFormatError)))
+        Left(ErrorWrapper(correlationId ,Seq(BadRequestError, NinoFormatError, SubmissionIdFormatError)))
     }
   }
 }

@@ -28,7 +28,7 @@ trait MockCreateRequestParser extends MockFactory {
 
   object MockCreateRequestDataParser {
     def parse(data: CreateRawData): CallHandler[Either[ErrorWrapper, CreateRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: CreateRawData)).expects(data)
+      (mockRequestDataParser.parseRequest(_: CreateRawData)(_: String)).expects(data, *)
     }
   }
 }

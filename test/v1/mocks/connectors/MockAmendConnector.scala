@@ -16,11 +16,12 @@
 
 package v1.mocks.connectors
 
-import org.scalamock.handlers.CallHandler3
+import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{AmendConnector, DesOutcome}
 import v1.models.request.AmendRequestData
+
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendConnector extends MockFactory{
@@ -30,10 +31,10 @@ trait MockAmendConnector extends MockFactory{
   object MockAmendConnector {
 
     def amendDeduction(requestData: AmendRequestData):
-    CallHandler3[AmendRequestData, HeaderCarrier, ExecutionContext, Future[DesOutcome[Unit]]] = {
+    CallHandler4[AmendRequestData, HeaderCarrier, ExecutionContext, String, Future[DesOutcome[Unit]]] = {
       (mockAmendConnector
-        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _:String))
+        .expects(requestData, *, *, *)
     }
 
   }

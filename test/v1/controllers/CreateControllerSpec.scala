@@ -26,6 +26,7 @@ import v1.mocks.services.{MockEnrolmentsAuthService, _}
 import v1.models.audit._
 import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -44,10 +45,11 @@ class CreateControllerSpec
     with MockCreateService
     with MockHateoasFactory
     with MockAppConfig
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new CreateController(
       authService = mockEnrolmentsAuthService,
@@ -57,12 +59,13 @@ class CreateControllerSpec
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       appConfig = mockAppConfig,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -160,7 +163,7 @@ class CreateControllerSpec
 
           MockCreateRequestDataParser
             .parse(rawCreateRequest)
-            .returns(Left(ErrorWrapper(Some(correlationId), Seq(error))))
+            .returns(Left(ErrorWrapper(correlationId, Seq(error))))
 
           val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(requestJson))
 
@@ -192,7 +195,7 @@ class CreateControllerSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(Some(correlationId), Seq(BadRequestError, NinoFormatError))
+        val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
 
         MockCreateRequestDataParser
           .parse(rawCreateRequest)
@@ -210,7 +213,7 @@ class CreateControllerSpec
 
       "multiple errors occur for format errors" in new Test {
         val error = ErrorWrapper(
-          Some(correlationId),
+          correlationId,
           Seq(
             EmployerRefFormatError,
             NinoFormatError,
@@ -262,7 +265,7 @@ class CreateControllerSpec
 
           MockCreateService
             .submitCreateRequest(createRequest)
-            .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), Seq(mtdError)))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, Seq(mtdError)))))
 
           val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
 

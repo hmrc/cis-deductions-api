@@ -16,7 +16,7 @@
 
 package v1.mocks.services
 
-import org.scalamock.handlers.{ CallHandler4}
+import org.scalamock.handlers.CallHandler5
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
@@ -34,10 +34,10 @@ trait MockAmendService extends MockFactory {
   object MockAmendService {
 
     def submitAmendRequest(requestData: AmendRequestData):
-    CallHandler4[AmendRequestData, HeaderCarrier, ExecutionContext, EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    CallHandler5[AmendRequestData, HeaderCarrier, ExecutionContext, EndpointLogContext, String, Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendService
-        .amendDeductions(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .amendDeductions(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 

@@ -20,7 +20,6 @@ import play.api.http.HttpEntity
 import play.api.mvc.{ResponseHeader, Result}
 import support.UnitSpec
 import utils.Logging
-import v1.models.errors.{BadRequestError, ErrorWrapper}
 
 class BaseControllerSpec extends UnitSpec {
 
@@ -52,25 +51,5 @@ class BaseControllerSpec extends UnitSpec {
         }
       }
     }
-    "getCorrelationId is called" should {
-      "return the correlationId" when {
-        "the ErrorWrapper contains a correlationId" in new TestController {
-          val errorWrapper: ErrorWrapper = ErrorWrapper(Some(correlationId), Seq(BadRequestError))
-
-          getCorrelationId(errorWrapper) shouldBe correlationId
-        }
-      }
-      "return a new correlationId" when {
-        "the ErrorWrapper does not contain a correlationId" in new TestController {
-          val errorWrapper: ErrorWrapper = ErrorWrapper(None, Seq(BadRequestError))
-
-          val correlationIdRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-
-          getCorrelationId(errorWrapper).matches(correlationIdRegex) shouldBe true
-        }
-      }
-    }
   }
-
-
 }

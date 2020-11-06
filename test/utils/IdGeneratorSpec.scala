@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package utils
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.DeleteRequestParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.{DeleteRawData, DeleteRequestData}
+import support.UnitSpec
 
-trait MockDeleteRequestDataParser extends MockFactory {
+class IdGeneratorSpec extends UnitSpec {
 
-  val mockRequestParser: DeleteRequestParser = mock[DeleteRequestParser]
+  val generator = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-  object MockDeleteRequestDataParser {
-    def parse(data: DeleteRawData): CallHandler[Either[ErrorWrapper, DeleteRequestData]] = {
-      (mockRequestParser.parseRequest(_: DeleteRawData)(_: String)).expects(data, *)
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.getCorrelationId.matches(correlationRegex) shouldBe true
+      }
     }
   }
 }

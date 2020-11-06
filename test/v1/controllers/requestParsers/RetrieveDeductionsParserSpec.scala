@@ -26,6 +26,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
 
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockRetrieveValidator {
     lazy val parser = new RetrieveRequestParser(mockValidator)
@@ -62,7 +63,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
       }
 
       "a mandatory field is given invalid data" in new Test {
@@ -72,7 +73,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(FromDateFormatError, ToDateFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(BadRequestError, FromDateFormatError, ToDateFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(BadRequestError, FromDateFormatError, ToDateFormatError)))
       }
 
       "an invalid source is given" in new Test {
@@ -82,7 +83,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(RuleSourceError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(RuleSourceError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(RuleSourceError)))
       }
 
       "the to date given is before the from date" in new Test {
@@ -93,7 +94,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(RuleToDateBeforeFromDateError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(RuleToDateBeforeFromDateError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(RuleToDateBeforeFromDateError)))
       }
     }
   }

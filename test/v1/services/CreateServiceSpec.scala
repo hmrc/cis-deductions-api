@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class CreateServiceSpec extends UnitSpec {
 
   private val nino = "AA123456A"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
   private val submissionId = "123456789"
 
   private val requestBody = CreateRequest("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00))))
@@ -67,7 +67,7 @@ class CreateServiceSpec extends UnitSpec {
             MockCreateCisDeductionsConnector.createCisDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), Seq(error)))
+            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, Seq(error)))
           }
 
         val input = Seq(

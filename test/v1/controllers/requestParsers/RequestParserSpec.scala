@@ -25,6 +25,7 @@ import v1.models.requestData.RawData
 class RequestParserSpec extends UnitSpec {
 
   private val nino = "AA123456A"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
   case class Raw(nino: String) extends RawData
   case class Request(nino: Nino)
 
@@ -53,7 +54,7 @@ class RequestParserSpec extends UnitSpec {
       "the validator returns a single error" in new Test {
         lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError)
 
-        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(None, Seq(NinoFormatError)))
+        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, Seq(NinoFormatError)))
       }
     }
 
@@ -61,7 +62,7 @@ class RequestParserSpec extends UnitSpec {
       "the validator returns multiple errors" in new Test {
         lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
 
-        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(None, Seq(BadRequestError, NinoFormatError, RuleIncorrectOrEmptyBodyError)))
+        parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError, RuleIncorrectOrEmptyBodyError)))
       }
     }
   }

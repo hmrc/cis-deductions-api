@@ -16,7 +16,7 @@
 
 package v1.mocks.services
 
-import org.scalamock.handlers.CallHandler4
+import org.scalamock.handlers.CallHandler5
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
@@ -33,11 +33,11 @@ trait MockRetrieveService extends MockFactory{
   val mockService: RetrieveService = mock[RetrieveService]
 
   object MockRetrieveService {
-    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler4[RetrieveRequestData, HeaderCarrier, ExecutionContext,
-      EndpointLogContext, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
+    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler5[RetrieveRequestData, HeaderCarrier, ExecutionContext,
+      EndpointLogContext, String, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
       (mockService
-        .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

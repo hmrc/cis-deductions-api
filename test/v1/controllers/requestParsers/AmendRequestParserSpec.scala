@@ -28,6 +28,7 @@ class AmendRequestParserSpec extends UnitSpec {
   val nino = "AA123456A"
   val invalidNino = "PLKL87654"
   val submissionId = "S4636A77V5KB8625U"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockAmendValidator {
     lazy val parser = new AmendRequestParser(mockValidator)
@@ -66,7 +67,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(BadRequestError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(BadRequestError)))
       }
       "Nino format is incorrect" in new Test {
         val inputData = AmendRawData(invalidNino, submissionId, requestJson)
@@ -76,7 +77,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
       }
       "Id format is incorrect" in new Test {
         val inputData = AmendRawData(nino, "id", requestJson)
@@ -86,7 +87,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(None, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
       }
     }
   }
