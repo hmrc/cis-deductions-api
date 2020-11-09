@@ -105,7 +105,7 @@
                 "submissionDate": {
                   "description": "The date the deduction was submitted.",
                   "type": "string",
-                  "example": "2020-05-11T16:38:57.489Z"
+                  "example": "2020-05-11T16:38:57Z"
                 },
                 "submissionId": {
                   "description": "The unique identifier for the submission.",
