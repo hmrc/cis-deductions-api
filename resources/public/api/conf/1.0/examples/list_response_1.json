@@ -60,7 +60,7 @@
           "deductionAmount": 60.00,
           "costOfMaterials": 35.00,
           "grossAmountPaid": 1457.00,
-          "submissionDate": "2020-08-11T16:38:57.489Z",
+          "submissionDate": "2020-05-11T16:38:57Z",
           "source": "contractor"
         },
         {
@@ -69,7 +69,7 @@
           "deductionAmount": 60.00,
           "costOfMaterials": 35.00,
           "grossAmountPaid": 1457.00,
-          "submissionDate": "2020-10-11T16:38:57.489Z",
+          "submissionDate": "2020-05-11T16:38:57Z",
           "source": "contractor"
         }
       ]
