@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "fromDate": {
-      "description": "CIS tax year start date.",
+      "description": "CIS tax year start date. This cannot be below the minimum tax year starting 2020.",
       "type": "string",
       "example": "2020-04-06"
     },
