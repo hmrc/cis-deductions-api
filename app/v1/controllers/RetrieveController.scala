@@ -75,9 +75,6 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-        val hateoasResponse = hateoasFactory.wrapList(serviceResponse.responseData,
-          RetrieveResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData))
-
         auditSubmission(
           createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, responseBody = Some(Json.toJson(vendorResponse))))
 
