@@ -58,7 +58,7 @@ object StandardDesHttpParser extends HttpParser {
 
     response.status match {
       case successCode.status =>
-        logger.warn(
+        logger.info(
           "[StandardDesHttpParser][read] - " +
             s"Success response received from DES with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
