@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import cats.data.EitherT
 import config.AppConfig
 import javax.inject.Inject
 import play.api.http.MimeTypes
@@ -31,8 +32,9 @@ import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.{RetrieveRawData, RetrieveRequestData}
-import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, CreateHateoasData, RetrieveResponseHateoasData, RetrieveResponseModel}
 import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
+import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,7 +48,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
                                    cc: ControllerComponents,
                                    val idGenerator: IdGenerator)
                                   (implicit ec: ExecutionContext)
-extends AuthorisedController(cc) with BaseController with Logging {
+  extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -54,38 +56,34 @@ extends AuthorisedController(cc) with BaseController with Logging {
       endpointName = "retrieveEndpoint"
     )
 
-  def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]) : Action[AnyContent] =
-  authorisedAction(nino).async { implicit request =>
-    implicit val correlationId: String = idGenerator.getCorrelationId
-    logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-      s"with correlationId : $correlationId")
-    val rawData = RetrieveRawData(nino,fromDate,toDate,source)
-    val parseResponse: Either[ErrorWrapper, RetrieveRequestData] = requestParser.parseRequest(rawData)
-    val serviceResponse = parseResponse match {
-      case Right(data) =>
-        service.retrieveDeductions(data)
-      case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] =
-          Future.successful(Left(errorWrapper))
-        futureError
-    }
-      serviceResponse.map {
-      case Right(responseWrapper) =>
+  def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
+    authorisedAction(nino).async { implicit request =>
+      implicit val correlationId: String = idGenerator.getCorrelationId
+      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+        s"with correlationId : $correlationId")
+      val rawData = RetrieveRawData(nino, fromDate, toDate, source)
+
+      val result = for {
+        parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+        serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
+        vendorResponse <- EitherT.fromEither[Future](
+          hateoasFactory.wrapList(serviceResponse.responseData,
+            RetrieveResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData)).asRight[ErrorWrapper]
+        )
+      } yield {
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-
-        val hateoasResponse = hateoasFactory.wrapList(responseWrapper.responseData,
-          RetrieveResponseHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, responseWrapper.responseData))
+            s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
         auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None, responseBody = Some(Json.toJson(hateoasResponse))))
+          createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, responseBody = Some(Json.toJson(vendorResponse))))
 
-        Ok(Json.toJson(hateoasResponse))
-          .withApiHeaders(responseWrapper.correlationId)
+        Ok(Json.toJson(vendorResponse))
+          .withApiHeaders(serviceResponse.correlationId)
           .as(MimeTypes.JSON)
+      }
 
-      case Left(errorWrapper) =>
+      result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
@@ -95,8 +93,8 @@ extends AuthorisedController(cc) with BaseController with Logging {
 
         auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
         result
+      }.merge
     }
-  }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
@@ -119,7 +117,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
       .map { wrapper =>
         AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       }
-      .getOrElse(AuditResponse(statusCode, None, responseBody ))
+      .getOrElse(AuditResponse(statusCode, None, responseBody))
 
     GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, None, correlationId, requestBody, response)
   }

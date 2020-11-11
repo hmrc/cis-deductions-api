@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import cats.data.EitherT
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -54,39 +55,34 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
     val rawData = AmendRawData(nino,id,request.body)
-    val parseResponse: Either[ErrorWrapper, AmendRequestData] = requestParser.parseRequest(rawData)
 
-    val serviceResponse = parseResponse match {
-      case Right(data) => service.amendDeductions(data)
-      case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] =
-          Future.successful(Left(errorWrapper))
-        futureError
+    val result = for {
+      parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+      serviceResponse <- EitherT(service.amendDeductions(parsedRequest))
+    } yield {
+      logger.info(
+        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+          s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+      auditSubmission(
+        createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, None,
+          Some(request.body), Some(Json.toJson(serviceResponse.correlationId))))
+
+      NoContent.withApiHeaders(serviceResponse.correlationId)
+        .as(MimeTypes.JSON)
     }
-    serviceResponse.map {
-      case Right(responseWrapper) =>
 
-        logger.info(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-        auditSubmission(
-          createAuditDetails(rawData, NO_CONTENT, responseWrapper.correlationId, request.userDetails, None,
-                              Some(request.body), Some(Json.toJson(responseWrapper.correlationId))))
+    result.leftMap { errorWrapper =>
+      val resCorrelationId = errorWrapper.correlationId
+      val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
-          NoContent.withApiHeaders(responseWrapper.correlationId)
-          .as(MimeTypes.JSON)
-      case Left(errorWrapper) =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+      logger.info(
+        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+          s"Error response received with CorrelationId: $resCorrelationId")
 
-        logger.info(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
-                        Some(request.body)))
-        result
-    }
+      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
+        Some(request.body)))
+      result
+    }.merge
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {

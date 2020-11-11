@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import cats.data.EitherT
+import cats.implicits._
 import config.AppConfig
 import javax.inject.Inject
 import play.api.http.MimeTypes
@@ -61,45 +63,38 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
     val rawData = CreateRawData(nino, request.body)
-    val parseResponse: Either[ErrorWrapper, CreateRequestData] = requestParser.parseRequest(rawData)
 
-    val serviceResponse = parseResponse match {
-      case Right(data) => service.createDeductions(data)
-      case Left(errorWrapper) =>
-        val futureError: Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] =
-          Future.successful(Left(errorWrapper))
-        futureError
+    val result = for {
+      parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+      serviceResponse <- EitherT(service.createDeductions(parsedRequest))
+      vendorResponse <- EitherT.fromEither[Future](
+        hateoasFactory.wrap(serviceResponse.responseData, CreateHateoasData(nino, parsedRequest)).asRight[ErrorWrapper]
+      )
+    } yield {
+      logger.info(
+        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+          s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+      auditSubmission(
+        createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None,
+          requestBody = Some(request.body), responseBody = Some(Json.toJson(vendorResponse))))
+
+      Ok(Json.toJson(vendorResponse))
+        .withApiHeaders(serviceResponse.correlationId)
+        .as(MimeTypes.JSON)
     }
 
-    serviceResponse.map {
-      case Right(responseWrapper) =>
+    result.leftMap { errorWrapper =>
+      val resCorrelationId = errorWrapper.correlationId
+      val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
-        val hateoasWrappedResponse: HateoasWrapper[CreateResponseModel] =
-          hateoasFactory.wrap(responseWrapper.responseData, CreateHateoasData(nino, parseResponse.right.get))
+      logger.info(
+        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+          s"Error response received with CorrelationId: $resCorrelationId")
 
-        logger.info(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-        auditSubmission(
-          createAuditDetails(rawData, OK, responseWrapper.correlationId, request.userDetails, None,
-                              requestBody = Some(request.body), responseBody = Some(Json.toJson(hateoasWrappedResponse))))
-
-        Ok(Json.toJson(hateoasWrappedResponse))
-          .withApiHeaders(responseWrapper.correlationId)
-          .as(MimeTypes.JSON)
-
-      case Left(errorWrapper) =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.info(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
-                        requestBody = Some(request.body)))
-        result
-    }
+      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
+        requestBody = Some(request.body)))
+      result
+    }.merge
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {

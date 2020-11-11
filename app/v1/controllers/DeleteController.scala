@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import cats.data.EitherT
 import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
@@ -39,7 +40,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
                                  service: DeleteService,
                                  auditService: AuditService,
                                  cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)extends AuthorisedController(cc)
+                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext) extends AuthorisedController(cc)
   with BaseController
   with Logging {
 
@@ -56,28 +57,23 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
       logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
         s"with correlationId : $correlationId")
       val rawData = DeleteRawData(nino, submissionId)
-      val parseRequest: Either[ErrorWrapper, DeleteRequestData] = requestParser.parseRequest(rawData)
 
-      val serviceResponse = parseRequest match {
-        case Right(data) => service.deleteDeductions(data)
-        case Left(errorWrapper) => val futureError: Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] =
-          Future.successful(Left(errorWrapper))
-          futureError
+      val result = for {
+        parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+        serviceResponse <- EitherT(service.deleteDeductions(parsedRequest))
+      } yield {
+        logger.info(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+        auditSubmission(
+          createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, None,
+            responseBody = Some(Json.toJson(serviceResponse.correlationId))))
+
+        NoContent.withApiHeaders(serviceResponse.correlationId)
+          .as(MimeTypes.JSON)
       }
-      serviceResponse.map {
-        case Right(responseWrapper) =>
 
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${responseWrapper.correlationId}")
-          auditSubmission(
-            createAuditDetails(rawData, NO_CONTENT, responseWrapper.correlationId, request.userDetails, None,
-              responseBody = Some(Json.toJson(responseWrapper.correlationId))))
-
-          NoContent.withApiHeaders(responseWrapper.correlationId)
-            .as(MimeTypes.JSON)
-
-        case Left(errorWrapper) =>
+      result.leftMap { errorWrapper =>
           val resCorrelationId = errorWrapper.correlationId
           val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
@@ -87,14 +83,14 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
 
           auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
           result
-      }
+      }.merge
     }
 
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.errors.head: @unchecked) match {
-      case BadRequestError | NinoFormatError | SubmissionIdFormatError  =>
+      case BadRequestError | NinoFormatError | SubmissionIdFormatError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
