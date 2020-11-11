@@ -75,9 +75,9 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       val resCorrelationId = errorWrapper.correlationId
       val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-          s"Error response received with CorrelationId: $resCorrelationId")
+        logger.warn(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Error response received with CorrelationId: $resCorrelationId")
 
       auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
         Some(request.body)))
