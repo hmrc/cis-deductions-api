@@ -17,6 +17,7 @@
 package v1.controllers
 
 import cats.data.EitherT
+import cats.implicits._
 import config.AppConfig
 import javax.inject.Inject
 import play.api.http.MimeTypes
@@ -30,11 +31,9 @@ import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{RetrieveRawData, RetrieveRequestData}
-import v1.models.responseData.{CisDeductions, CreateHateoasData, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.models.request.RetrieveRawData
+import v1.models.responseData.RetrieveResponseHateoasData
 import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
-import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 

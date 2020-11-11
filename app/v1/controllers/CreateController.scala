@@ -31,10 +31,8 @@ import v1.hateoas.HateoasFactory
 import v1.models.audit._
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRawData, CreateRequestData}
-import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
+import v1.models.request.CreateRawData
+import v1.models.responseData.CreateHateoasData
 import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -87,7 +85,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
       val resCorrelationId = errorWrapper.correlationId
       val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
-      logger.info(
+      logger.warn(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Error response received with CorrelationId: $resCorrelationId")
 

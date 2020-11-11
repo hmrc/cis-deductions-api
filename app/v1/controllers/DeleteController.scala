@@ -28,8 +28,7 @@ import v1.controllers.requestParsers.DeleteRequestParser
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{DeleteRawData, DeleteRequestData}
+import v1.models.request.DeleteRawData
 import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
