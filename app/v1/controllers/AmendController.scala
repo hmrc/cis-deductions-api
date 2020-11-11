@@ -28,8 +28,7 @@ import v1.controllers.requestParsers.AmendRequestParser
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{AmendRawData, AmendRequestData}
+import v1.models.request.AmendRawData
 import v1.services.{AmendService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,11 +49,12 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       controllerName = "AmendController",
       endpointName = "amendEndpoint"
     )
-  def amendRequest(nino: String, id:String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
+
+  def amendRequest(nino: String, id: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
     implicit val correlationId: String = idGenerator.getCorrelationId
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
-    val rawData = AmendRawData(nino,id,request.body)
+    val rawData = AmendRawData(nino, id, request.body)
 
     val result = for {
       parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
@@ -75,7 +75,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       val resCorrelationId = errorWrapper.correlationId
       val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
-      logger.info(
+      logger.warn(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Error response received with CorrelationId: $resCorrelationId")
 
@@ -109,7 +109,7 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
       .map { wrapper =>
         AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       }
-      .getOrElse(AuditResponse(statusCode, None, None ))
+      .getOrElse(AuditResponse(statusCode, None, None))
 
     GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, Some(rawData.id), correlationId, requestBody, response)
   }
