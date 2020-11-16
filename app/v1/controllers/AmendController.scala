@@ -88,13 +88,14 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
-           SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleDeductionsDateRangeInvalidError |
-           RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case Seq(RuleIncorrectOrEmptyBodyError) | Seq(BadRequestError) | Seq(NinoFormatError) |
+           Seq(DeductionFromDateFormatError) | Seq(DeductionToDateFormatError) |
+           Seq(RuleDeductionAmountError) | Seq(RuleCostOfMaterialsError) | Seq(RuleGrossAmountError) |
+           Seq(SubmissionIdFormatError) => BadRequest(Json.toJson(errorWrapper))
+      case Seq(RuleDeductionsDateRangeInvalidError) |
+           Seq(RuleUnalignedDeductionsPeriodError) | Seq(RuleDuplicatePeriodError) => Forbidden(Json.toJson(errorWrapper))
+      case Seq(NotFoundError) => NotFound(Json.toJson(errorWrapper))
+      case Seq(DownstreamError) => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

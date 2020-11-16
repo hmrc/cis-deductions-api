@@ -66,7 +66,7 @@ class RetrieveServiceSpec extends UnitSpec {
           MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, Seq(error)))
+          await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
       val input = Seq(
         ("INVALID_TAXABLE_ENTITY_ID" , NinoFormatError),

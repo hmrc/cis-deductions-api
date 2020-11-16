@@ -67,7 +67,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(BadRequestError)))
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError))
       }
       "Nino format is incorrect" in new Test {
         val inputData = AmendRawData(invalidNino, submissionId, requestJson)
@@ -77,7 +77,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
       "Id format is incorrect" in new Test {
         val inputData = AmendRawData(nino, "id", requestJson)
@@ -87,7 +87,7 @@ class AmendRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
     }
   }

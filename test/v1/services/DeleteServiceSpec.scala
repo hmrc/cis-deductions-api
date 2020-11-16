@@ -62,7 +62,7 @@ class DeleteServiceSpec extends UnitSpec {
           MockDeleteConnector.deleteDeduction(requestData)
             .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.deleteDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", Seq(error)))
+          await(service.deleteDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
         }
       }
 

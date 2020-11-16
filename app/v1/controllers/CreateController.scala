@@ -97,16 +97,16 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError |
-           DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError |
-           RuleGrossAmountError | EmployerRefFormatError | RuleTaxYearNotSupportedError =>
+      case Seq(RuleIncorrectOrEmptyBodyError) | Seq(NinoFormatError) | Seq(BadRequestError) |
+           Seq(DeductionFromDateFormatError) | Seq(DeductionToDateFormatError) | Seq(FromDateFormatError) |
+           Seq(ToDateFormatError) | Seq(RuleDeductionAmountError) | Seq(RuleCostOfMaterialsError) |
+           Seq(RuleGrossAmountError) | Seq(EmployerRefFormatError) | Seq(RuleTaxYearNotSupportedError) =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError
-           | RuleTaxYearNotEndedError | RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
+      case Seq(RuleDateRangeInvalidError) | Seq(RuleUnalignedDeductionsPeriodError) | Seq(RuleDeductionsDateRangeInvalidError)
+           | Seq(RuleTaxYearNotEndedError) | Seq(RuleDuplicatePeriodError) | Seq(RuleDuplicateSubmissionError) =>
         Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case Seq(NotFoundError) => NotFound(Json.toJson(errorWrapper))
+      case Seq(DownstreamError) => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

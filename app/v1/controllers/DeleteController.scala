@@ -89,10 +89,10 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.errors.head: @unchecked) match {
-      case BadRequestError | NinoFormatError | SubmissionIdFormatError =>
+      case Seq(BadRequestError) | Seq(NinoFormatError) | Seq(SubmissionIdFormatError) =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case Seq(NotFoundError) => NotFound(Json.toJson(errorWrapper))
+      case Seq(DownstreamError) => InternalServerError(Json.toJson(errorWrapper))
     }
 
   }

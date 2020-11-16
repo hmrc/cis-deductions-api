@@ -60,7 +60,7 @@ class AmendServiceSpec extends UnitSpec{
             MockAmendConnector.amendDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", Seq(error)))
+            await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
           }
 
         val input = Seq(
