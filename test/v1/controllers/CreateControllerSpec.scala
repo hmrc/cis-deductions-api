@@ -195,7 +195,7 @@ class CreateControllerSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError)))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
         MockCreateRequestDataParser
           .parse(rawCreateRequest)

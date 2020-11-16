@@ -133,7 +133,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError)))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
         MockDeleteRequestDataParser
           .parse(deleteRawData)

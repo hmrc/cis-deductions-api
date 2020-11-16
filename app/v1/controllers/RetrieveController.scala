@@ -96,12 +96,12 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.errors.head: @unchecked) match {
-      case Seq(BadRequestError) | Seq(NinoFormatError) | Seq(FromDateFormatError) | Seq(RuleMissingFromDateError) | Seq(ToDateFormatError)
-           | Seq(RuleMissingToDateError) | Seq(RuleSourceError) | Seq(RuleTaxYearNotSupportedError) => BadRequest(Json.toJson(errorWrapper))
-      case Seq(NotFoundError) => NotFound(Json.toJson(errorWrapper))
-      case Seq(DownstreamError) => InternalServerError(Json.toJson(errorWrapper))
-      case Seq(RuleDateRangeOutOfDate) | Seq(RuleDateRangeInvalidError) => Forbidden(Json.toJson(errorWrapper))
+    (errorWrapper.error: @unchecked) match {
+      case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError
+           | RuleMissingToDateError | RuleSourceError | RuleTaxYearNotSupportedError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
     }
   }
 
