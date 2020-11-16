@@ -109,7 +109,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper] = None,
+                                 errorWrapper: Option[ErrorWrapper],
                                  requestBody: Option[JsValue] = None,
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper

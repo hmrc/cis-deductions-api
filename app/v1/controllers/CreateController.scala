@@ -114,8 +114,8 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper] = None,
-                                 requestBody: Option[JsValue] = None,
+                                 errorWrapper: Option[ErrorWrapper],
+                                 requestBody: Option[JsValue],
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>
