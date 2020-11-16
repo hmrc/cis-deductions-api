@@ -47,14 +47,14 @@ class DeleteRequestDataParserSpec extends UnitSpec {
         MockDeleteValidator.validate(inputData).returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
-          Left(ErrorWrapper(correlationId, Seq(NinoFormatError)))
+          Left(ErrorWrapper(correlationId, NinoFormatError))
       }
     }
     "multiple validation errors occur" in new Test {
       MockDeleteValidator.validate(inputData).returns(List(NinoFormatError, SubmissionIdFormatError))
 
       parser.parseRequest(inputData) shouldBe
-        Left(ErrorWrapper(correlationId ,Seq(BadRequestError, NinoFormatError, SubmissionIdFormatError)))
+        Left(ErrorWrapper(correlationId, BadRequestError ,Some(Seq(NinoFormatError, SubmissionIdFormatError))))
     }
   }
 }

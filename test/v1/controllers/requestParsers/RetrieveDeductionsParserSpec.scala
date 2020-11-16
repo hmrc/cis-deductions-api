@@ -63,7 +63,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(NinoFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
       "a mandatory field is given invalid data" in new Test {
@@ -73,7 +73,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(FromDateFormatError, ToDateFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(BadRequestError, FromDateFormatError, ToDateFormatError)))
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(FromDateFormatError, ToDateFormatError))))
       }
 
       "an invalid source is given" in new Test {
@@ -83,7 +83,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(RuleSourceError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(RuleSourceError)))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleSourceError))
       }
 
       "the to date given is before the from date" in new Test {
@@ -94,7 +94,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
           .returns(List(RuleToDateBeforeFromDateError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, List(RuleToDateBeforeFromDateError)))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleToDateBeforeFromDateError))
       }
     }
   }

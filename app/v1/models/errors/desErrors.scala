@@ -34,4 +34,4 @@ object DesErrors {
   def single(error: DesErrorCode): DesErrors = DesErrors(Seq(error))
 }
 
-case class OutboundError(errors: Seq[MtdError] = Seq()) extends DesError
+case class OutboundError(error: MtdError, errors: Option[Seq[MtdError]] = None) extends DesError

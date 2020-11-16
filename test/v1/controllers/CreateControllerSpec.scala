@@ -63,9 +63,9 @@ class CreateControllerSpec
       idGenerator = mockIdGenerator
     )
 
+    MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -163,7 +163,7 @@ class CreateControllerSpec
 
           MockCreateRequestDataParser
             .parse(rawCreateRequest)
-            .returns(Left(ErrorWrapper(correlationId, Seq(error))))
+            .returns(Left(ErrorWrapper(correlationId, error)))
 
           val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(requestJson))
 
@@ -195,7 +195,7 @@ class CreateControllerSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
         MockCreateRequestDataParser
           .parse(rawCreateRequest)
@@ -214,7 +214,8 @@ class CreateControllerSpec
       "multiple errors occur for format errors" in new Test {
         val error = ErrorWrapper(
           correlationId,
-          Seq(
+          BadRequestError,
+          Some(Seq(
             EmployerRefFormatError,
             NinoFormatError,
             BadRequestError,
@@ -224,7 +225,7 @@ class CreateControllerSpec
             FromDateFormatError,
             RuleTaxYearNotSupportedError,
             TaxYearFormatError
-          )
+          ))
         )
 
         MockCreateRequestDataParser
@@ -265,7 +266,7 @@ class CreateControllerSpec
 
           MockCreateService
             .submitCreateRequest(createRequest)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, Seq(mtdError)))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
           val result: Future[Result] = controller.createRequest(nino)(fakePostRequest(Json.toJson(requestJson)))
 

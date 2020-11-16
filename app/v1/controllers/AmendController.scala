@@ -87,8 +87,9 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
-    (errorWrapper.errors.head: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
+    (errorWrapper.error: @unchecked) match {
+      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError |
+           DeductionFromDateFormatError | DeductionToDateFormatError |
            RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
            SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
       case RuleDeductionsDateRangeInvalidError |
@@ -102,8 +103,8 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper] = None,
-                                 requestBody: Option[JsValue] = None,
+                                 errorWrapper: Option[ErrorWrapper],
+                                 requestBody: Option[JsValue],
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>

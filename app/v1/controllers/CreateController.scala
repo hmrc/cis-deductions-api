@@ -96,7 +96,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.errors.head: @unchecked) match {
+    (errorWrapper.error: @unchecked) match {
       case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError |
            DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
            ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError |
@@ -114,8 +114,8 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper] = None,
-                                 requestBody: Option[JsValue] = None,
+                                 errorWrapper: Option[ErrorWrapper],
+                                 requestBody: Option[JsValue],
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper
       .map { wrapper =>

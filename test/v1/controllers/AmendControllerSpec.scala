@@ -132,7 +132,7 @@ class AmendControllerSpec extends ControllerBaseSpec
 
           MockAmendRequestDataParser
             .parse(rawAmendRequest)
-            .returns(Left(ErrorWrapper(correlationId, Seq(error))))
+            .returns(Left(ErrorWrapper(correlationId, error, None)))
 
           val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(requestJson))
 
@@ -164,7 +164,7 @@ class AmendControllerSpec extends ControllerBaseSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
         MockAmendRequestDataParser
           .parse(rawAmendRequest)
@@ -183,14 +183,15 @@ class AmendControllerSpec extends ControllerBaseSpec
       "multiple errors occur for format errors" in new Test {
         val error = ErrorWrapper(
           correlationId,
-          Seq(
+          BadRequestError,
+          Some(Seq(
             BadRequestError,
             DeductionToDateFormatError,
             DeductionFromDateFormatError,
             ToDateFormatError,
             FromDateFormatError,
             TaxYearFormatError
-          )
+          ))
         )
 
         MockAmendRequestDataParser
@@ -228,7 +229,7 @@ class AmendControllerSpec extends ControllerBaseSpec
 
           MockAmendService
             .submitAmendRequest(amendRequest)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, Seq(mtdError)))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
           val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
 

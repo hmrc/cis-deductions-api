@@ -224,7 +224,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
           MockRetrieveDeductionRequestParser
             .parse(retrieveRawData)
-            .returns(Left(ErrorWrapper(correlationId, Seq(error))))
+            .returns(Left(ErrorWrapper(correlationId, error)))
 
           val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 
@@ -245,7 +245,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, Seq(BadRequestError, NinoFormatError))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -264,7 +264,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       "multiple errors occur for format errors" in new Test {
         val error = ErrorWrapper(
           correlationId,
-          Seq(
+          BadRequestError,
+          Some(Seq(
             BadRequestError,
             RuleDateRangeInvalidError,
             ToDateFormatError,
@@ -275,7 +276,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             RuleSourceError,
             RuleDateRangeOutOfDate,
             RuleTaxYearNotSupportedError)
-        )
+        ))
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -316,7 +317,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
           MockRetrieveService
             .retrieveCisDeductions(retrieveRequestData)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, Seq(mtdError)))))
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
           val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
 

@@ -88,7 +88,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
-    (errorWrapper.errors.head: @unchecked) match {
+    (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | SubmissionIdFormatError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
@@ -101,7 +101,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
                                  statusCode: Int,
                                  correlationId: String,
                                  userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper] = None,
+                                 errorWrapper: Option[ErrorWrapper],
                                  requestBody: Option[JsValue] = None,
                                  responseBody: Option[JsValue] = None): GenericAuditDetail = {
     val response = errorWrapper

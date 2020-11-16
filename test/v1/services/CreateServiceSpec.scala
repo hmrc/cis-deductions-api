@@ -67,7 +67,7 @@ class CreateServiceSpec extends UnitSpec {
             MockCreateCisDeductionsConnector.createCisDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, Seq(error)))
+            await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(
