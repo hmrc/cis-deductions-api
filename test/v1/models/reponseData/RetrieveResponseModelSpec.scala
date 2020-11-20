@@ -16,12 +16,15 @@
 
 package v1.models.reponseData
 
+import mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures._
-import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
+import v1.models.hateoas.Link
+import v1.models.hateoas.Method.{GET, POST}
+import v1.models.responseData.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
-class RetrieveResponseModelSpec extends UnitSpec {
+class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "RetrieveResponseModel" when {
     "processing a complete response" should {
@@ -47,5 +50,21 @@ class RetrieveResponseModelSpec extends UnitSpec {
         Json.toJson(RetrieveModels.multipleDeductionsModel) shouldBe Json.toJson(RetrieveJson.multipleDeductionsJson)
       }
     }
+  }
+
+  "LinksFactory" should {
+    "return the correct links" in {
+      val nino = "mynino"
+      val fromDate = "fromDate"
+      val toDate = "toDate"
+
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
+        Seq(
+          Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
+          Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor"),
+        )
+    }
+
   }
 }
