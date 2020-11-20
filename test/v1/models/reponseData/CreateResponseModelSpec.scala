@@ -16,12 +16,17 @@
 
 package v1.models.reponseData
 
+import mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.models.responseData.CreateResponseModel
+import uk.gov.hmrc.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
+import v1.models.hateoas.Link
+import v1.models.hateoas.Method.GET
+import v1.models.request.{CreateRequest, CreateRequestData, PeriodDetails}
+import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
 
-class CreateResponseModelSpec extends UnitSpec {
+class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
@@ -45,5 +50,25 @@ class CreateResponseModelSpec extends UnitSpec {
     "return the expected error when submission id field is missing" in {
       missingMandatoryResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
+  }
+
+  "LinksFactory" should {
+    "return the correct links" in {
+      val nino = "AA999999A"
+      val fromDate = "fromDate"
+      val toDate = "toDate"
+      val contractorName = "name"
+      val employerRef = "reference"
+      val periodData = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
+      val request = CreateRequestData(Nino(nino), CreateRequest(fromDate, toDate, contractorName, employerRef, periodData))
+
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      CreateResponseModel.CreateLinksFactory
+        .links(mockAppConfig, CreateHateoasData(nino, request)) shouldBe
+        Seq(
+          Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "retrieve-cis-deductions-for-subcontractor")
+        )
+    }
+
   }
 }

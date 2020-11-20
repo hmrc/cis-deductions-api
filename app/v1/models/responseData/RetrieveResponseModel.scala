@@ -33,9 +33,9 @@ object RetrieveResponseModel extends HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[RetrieveResponseModel[I]] = Json.writes[RetrieveResponseModel[I]]
 
-  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveResponseHateoasData] {
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: RetrieveResponseHateoasData, item: CisDeductions): Seq[Link] = {
+    override def itemLinks(appConfig: AppConfig, data: RetrieveHateoasData, item: CisDeductions): Seq[Link] = {
       val filteredPeriodData = item.periodData.filter(_.submissionId.isDefined)
       val submissionIdOption = filteredPeriodData.headOption.map(_.submissionId.get)
 
@@ -47,7 +47,7 @@ object RetrieveResponseModel extends HateoasLinks {
         }
       }
     }
-    override def links(appConfig: AppConfig, data: RetrieveResponseHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: RetrieveHateoasData): Seq[Link] = {
       Seq(retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
@@ -58,5 +58,5 @@ object RetrieveResponseModel extends HateoasLinks {
   }
 }
 
-case class RetrieveResponseHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
-                                       retrieveResponse: RetrieveResponseModel[CisDeductions]) extends HateoasData
+case class RetrieveHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
+                               retrieveResponse: RetrieveResponseModel[CisDeductions]) extends HateoasData

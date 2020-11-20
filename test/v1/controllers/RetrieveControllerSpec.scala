@@ -34,7 +34,7 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request._
 import v1.models.responseData
 import v1.models.responseData.RetrieveResponseModel._
-import v1.models.responseData.{CisDeductions, RetrieveResponseHateoasData, RetrieveResponseModel}
+import v1.models.responseData.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -126,7 +126,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         )
 
         MockHateoasFactory
-          .wrapList(response, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
+          .wrapList(response, responseData.RetrieveHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
@@ -165,7 +165,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         )
 
         MockHateoasFactory
-          .wrapList(response, RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, None, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate.get, toDate.get, None, response))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, None)(fakeGetRequest)
@@ -204,7 +204,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         )
 
         MockHateoasFactory
-          .wrapList(responseNoId, responseData.RetrieveResponseHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
+          .wrapList(responseNoId, responseData.RetrieveHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
