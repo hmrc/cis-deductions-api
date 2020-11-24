@@ -23,8 +23,9 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockCreateConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRequestData, CreateRequest, PeriodDetails}
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.amend.PeriodDetails
+import v1.models.request.create.{CreateRequest, CreateRequestData}
+import v1.models.response.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

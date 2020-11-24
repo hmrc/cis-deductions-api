@@ -20,7 +20,7 @@ import config.{AppConfig, FixedConfig}
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.{CreateRawData, CreateRequest}
+import v1.models.request.create.{CreateRawData, CreateRequest}
 
 class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.response
 
 import play.api.libs.json._
 

@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request.delete
 
-import support.UnitSpec
+import uk.gov.hmrc.domain.Nino
+import v1.models.request.RawData
 
-class DesTaxYearSpec extends UnitSpec {
+case class DeleteRawData(nino: String, submissionId: String) extends RawData
 
-  val mtdValue = "2018-19"
-  val desValue = "2019"
+case class DeleteRequestData(nino: Nino, submissionId: String)
 
-  "DesTaxYear" when {
-    "toString is called" should {
-      "return the value instead of a String representation of the case class" in {
-        DesTaxYear(desValue).toString shouldBe desValue
-      }
-    }
-
-    "fromMtd is called" should {
-      "return the DES representation of the tax year" in {
-        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
-      }
-    }
-  }
-
-
-}

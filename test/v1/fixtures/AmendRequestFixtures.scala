@@ -17,7 +17,7 @@
 package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import v1.models.request.{AmendRequest, PeriodDetails}
+import v1.models.request.amend.{AmendRequest, PeriodDetails}
 
 object AmendRequestFixtures {
 

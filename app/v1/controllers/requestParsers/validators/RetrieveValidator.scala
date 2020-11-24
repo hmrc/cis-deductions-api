@@ -20,7 +20,7 @@ import config.{AppConfig, FixedConfig}
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations.{MinTaxYearValidation, _}
 import v1.models.errors._
-import v1.models.request.RetrieveRawData
+import v1.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig{
 

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.retrieve
 
 import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.models.request.RawData
 
-case class DeleteRawData(nino: String, submissionId: String) extends RawData
+case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
 
-case class DeleteRequestData(nino: Nino, submissionId: String)
-
+case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)

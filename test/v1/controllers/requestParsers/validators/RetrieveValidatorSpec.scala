@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators
 import mocks.MockAppConfig
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.RetrieveRawData
+import v1.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidatorSpec extends UnitSpec {
 

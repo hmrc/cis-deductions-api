@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.create
 
 import play.api.libs.json.{Json, Reads, Writes}
+import v1.models.request.amend.PeriodDetails
 
 case class CreateRequest(
                                fromDate: String,

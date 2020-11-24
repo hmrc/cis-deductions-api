@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.response
 
 import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
-import v1.models.request.CreateRequestData
+import v1.models.request.create.CreateRequestData
 
 case class CreateResponseModel(submissionId: String)
 

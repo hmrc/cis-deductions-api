@@ -16,9 +16,23 @@
 
 package v1.models.request
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+/**
+  * Represents a tax year for DES
+  *
+  * @param value the tax year string (where 2018 represents 2017-18)
+  */
+case class DesTaxYear(value: String) extends AnyVal {
+  override def toString: String = value
+}
 
-case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
+object DesTaxYear {
 
-case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)
+  val taxYearStart: Int = 2
+  val taxYearEnd: Int = 5
+
+  /**
+    * @param taxYear tax year in MTD format (e.g. 2017-18)
+    */
+  def fromMtd(taxYear: String): DesTaxYear =
+    DesTaxYear(taxYear.take(taxYearStart) + taxYear.drop(taxYearEnd))
+}

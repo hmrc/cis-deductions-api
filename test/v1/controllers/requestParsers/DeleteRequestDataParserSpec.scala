@@ -20,7 +20,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockDeleteValidator
 import v1.models.errors._
-import v1.models.request.{DeleteRawData, DeleteRequestData}
+import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
 
 class DeleteRequestDataParserSpec extends UnitSpec {
   val nino = "AA123456B"

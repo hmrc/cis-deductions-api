@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.models.request.AmendRequest
 import v1.fixtures.AmendRequestFixtures._
+import v1.models.request.amend.AmendRequest
 
 
 

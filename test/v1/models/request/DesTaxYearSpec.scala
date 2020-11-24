@@ -16,10 +16,26 @@
 
 package v1.models.request
 
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import support.UnitSpec
 
-case class CreateRawData(nino: String, body: JsValue) extends RawData
+class DesTaxYearSpec extends UnitSpec {
 
-case class CreateRequestData(nino: Nino, body: CreateRequest)
+  val mtdValue = "2018-19"
+  val desValue = "2019"
+
+  "DesTaxYear" when {
+    "toString is called" should {
+      "return the value instead of a String representation of the case class" in {
+        DesTaxYear(desValue).toString shouldBe desValue
+      }
+    }
+
+    "fromMtd is called" should {
+      "return the DES representation of the tax year" in {
+        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
+      }
+    }
+  }
+
+
+}

@@ -25,8 +25,8 @@ import v1.connectors.CreateConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.CreateRequestData
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.create.CreateRequestData
+import v1.models.response.CreateResponseModel
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{AmendConnector, DesOutcome}
-import v1.models.request.AmendRequestData
+import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -24,7 +24,8 @@ import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.AmendRequestData
+import v1.models.request.amend.AmendRequestData
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

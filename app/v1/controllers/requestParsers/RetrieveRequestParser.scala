@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.RetrieveValidator
-import v1.models.request.{RetrieveRawData, RetrieveRequestData}
+import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 class RetrieveRequestParser @Inject()(val validator: RetrieveValidator)
   extends RequestParser[RetrieveRawData, RetrieveRequestData] {

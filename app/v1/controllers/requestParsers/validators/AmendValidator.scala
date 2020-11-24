@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.{AmendRawData, AmendRequest}
+import v1.models.request.amend.{AmendRawData, AmendRequest}
 
 class   AmendValidator extends Validator[AmendRawData] {
 

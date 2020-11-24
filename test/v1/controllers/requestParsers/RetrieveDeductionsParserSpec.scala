@@ -19,8 +19,8 @@ package v1.controllers.requestParsers
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockRetrieveValidator
-import v1.models.errors.{BadRequestError, ErrorWrapper, FromDateFormatError, NinoFormatError, RuleSourceError, RuleToDateBeforeFromDateError, ToDateFormatError}
-import v1.models.request._
+import v1.models.errors._
+import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 class RetrieveDeductionsParserSpec extends UnitSpec {
 

@@ -21,8 +21,9 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{CreateRequestData, CreateRequest, PeriodDetails}
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.amend.PeriodDetails
+import v1.models.request.create.{CreateRequest, CreateRequestData}
+import v1.models.response.CreateResponseModel
 
 import scala.concurrent.Future
 

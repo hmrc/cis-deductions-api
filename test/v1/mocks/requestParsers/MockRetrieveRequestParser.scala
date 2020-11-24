@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.RetrieveRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.{RetrieveRawData, RetrieveRequestData}
+import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 trait MockRetrieveRequestParser extends MockFactory{
 

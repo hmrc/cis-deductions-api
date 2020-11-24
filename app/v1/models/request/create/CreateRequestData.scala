@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request.create
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.domain.Nino
+import v1.models.request.RawData
 
-object DesTaxYear {
+case class CreateRawData(nino: String, body: JsValue) extends RawData
 
-  val taxYearStart: Int = 2
-  val taxYearEnd: Int = 5
-
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(taxYearStart) + taxYear.drop(taxYearEnd))
-}
+case class CreateRequestData(nino: Nino, body: CreateRequest)

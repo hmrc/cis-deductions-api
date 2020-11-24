@@ -31,8 +31,8 @@ import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.request.RetrieveRawData
-import v1.models.responseData.RetrieveHateoasData
+import v1.models.request.retrieve.RetrieveRawData
+import v1.models.response.RetrieveHateoasData
 import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
 
 import scala.concurrent.{ExecutionContext, Future}

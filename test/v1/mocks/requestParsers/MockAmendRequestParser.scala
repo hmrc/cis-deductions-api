@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.AmendRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.{AmendRawData, AmendRequestData}
+import v1.models.request.amend.{AmendRawData, AmendRequestData}
 
 trait MockAmendRequestParser extends MockFactory{
 

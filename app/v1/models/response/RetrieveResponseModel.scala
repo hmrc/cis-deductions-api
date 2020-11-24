@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.responseData
+package v1.models.response
 
 import cats.Functor
 import config.AppConfig
