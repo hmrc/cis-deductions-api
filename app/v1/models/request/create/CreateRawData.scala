@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request.create
 
-import support.UnitSpec
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-class DesTaxYearSpec extends UnitSpec {
-
-  val mtdValue = "2018-19"
-  val desValue = "2019"
-
-  "DesTaxYear" when {
-    "toString is called" should {
-      "return the value instead of a String representation of the case class" in {
-        DesTaxYear(desValue).toString shouldBe desValue
-      }
-    }
-
-    "fromMtd is called" should {
-      "return the DES representation of the tax year" in {
-        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
-      }
-    }
-  }
-
-
-}
+case class CreateRawData(nino: String, body: JsValue) extends RawData

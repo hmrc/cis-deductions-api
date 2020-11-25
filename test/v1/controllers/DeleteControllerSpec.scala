@@ -28,7 +28,7 @@ import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, _}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request._
+import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

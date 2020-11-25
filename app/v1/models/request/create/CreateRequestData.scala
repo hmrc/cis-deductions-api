@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.create
 
-import play.api.libs.json.{Json, Reads, Writes}
+import uk.gov.hmrc.domain.Nino
 
-case class CreateRequest(
-                               fromDate: String,
-                               toDate: String,
-                               contractorName: String,
-                               employerRef: String,
-                               periodData: Seq[PeriodDetails]
-                             )
-
-object CreateRequest {
-  implicit val reads: Reads[CreateRequest] = Json.reads[CreateRequest]
-  implicit val writes: Writes[CreateRequest] = Json.writes[CreateRequest]
-}
+case class CreateRequestData(nino: Nino, body: CreateBody)

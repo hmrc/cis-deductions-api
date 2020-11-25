@@ -16,12 +16,11 @@
 
 package v1.mocks.connectors
 
-import org.scalamock.handlers.{CallHandler}
+import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DeleteConnector, DesOutcome}
-
-import v1.models.request.DeleteRequestData
+import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 

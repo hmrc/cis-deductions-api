@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request.create
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.models.request.CreateRequest
 import v1.fixtures.CreateRequestFixtures._
 
 
-class CreateRequestSpec extends UnitSpec {
+class CreateBodySpec extends UnitSpec {
 
   "read from valid JSON" should {
     "return the expected CisDeductionsRequestBody" in {
-      requestJson.validate[CreateRequest] shouldBe JsSuccess(requestObj)
+      requestJson.validate[CreateBody] shouldBe JsSuccess(requestObj)
     }
     "return the expected CisDeductionRequestBody when optional field is omitted" in {
-      missingOptionalRequestJson.validate[CreateRequest] shouldBe JsSuccess(missingOptionalRequestObj)
+      missingOptionalRequestJson.validate[CreateBody] shouldBe JsSuccess(missingOptionalRequestObj)
     }
   }
 
   "read from invalid JSON" should {
     "return the expected error when field contains incorrect data type" in {
-      invalidRequestJson.validate[CreateRequest] shouldBe a[JsError]
+      invalidRequestJson.validate[CreateBody] shouldBe a[JsError]
     }
 
     "return the expected error when mandatory field is omitted" in {
-      missingMandatoryFieldRequestJson.validate[CreateRequest] shouldBe a[JsError]
+      missingMandatoryFieldRequestJson.validate[CreateBody] shouldBe a[JsError]
     }
   }
 

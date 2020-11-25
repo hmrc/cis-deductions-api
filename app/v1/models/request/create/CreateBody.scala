@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.create
 
-import play.api.libs.json.JsValue
-import v1.models.requestData.RawData
-import uk.gov.hmrc.domain.Nino
+import play.api.libs.json.{Json, Reads, Writes}
+import v1.models.request.amend.PeriodDetails
 
+case class CreateBody(
+                               fromDate: String,
+                               toDate: String,
+                               contractorName: String,
+                               employerRef: String,
+                               periodData: Seq[PeriodDetails]
+                             )
 
-case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData
-
-case class AmendRequestData(nino: Nino, id: String, body: AmendRequest)
+object CreateBody {
+  implicit val reads: Reads[CreateBody] = Json.reads[CreateBody]
+  implicit val writes: Writes[CreateBody] = Json.writes[CreateBody]
+}

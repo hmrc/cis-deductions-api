@@ -20,7 +20,7 @@ import org.scalamock.handlers._
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.DeleteValidator
 import v1.models.errors.MtdError
-import v1.models.request.DeleteRawData
+import v1.models.request.delete.DeleteRawData
 
 class MockDeleteValidator extends MockFactory{
 

@@ -28,7 +28,7 @@ import v1.controllers.requestParsers.AmendRequestParser
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
-import v1.models.request.AmendRawData
+import v1.models.request.amend.AmendRawData
 import v1.services.{AmendService, AuditService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}

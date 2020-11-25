@@ -21,18 +21,18 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers._
-import v1.mocks.services.{MockEnrolmentsAuthService, _}
-import v1.models.audit._
-import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
+import v1.mocks.requestParsers.MockCreateRequestParser
+import v1.mocks.services._
+import v1.models.audit._
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method._
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
+import v1.models.request.create.{CreateRawData, CreateRequestData}
+import v1.models.response.create.{CreateHateoasData, CreateResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

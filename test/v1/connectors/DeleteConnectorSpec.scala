@@ -21,7 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRequestData
+import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.Future
 

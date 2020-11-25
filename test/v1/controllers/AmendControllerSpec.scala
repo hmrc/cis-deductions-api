@@ -26,9 +26,9 @@ import v1.mocks.services.{MockAmendService, MockAuditService, MockEnrolmentsAuth
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{AmendRawData, AmendRequestData}
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.MockIdGenerator
+import v1.models.request.amend.{AmendRawData, AmendRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

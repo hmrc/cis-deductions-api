@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.amend
 
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import v1.models.request.RawData
 
-case class CreateRawData(nino: String, body: JsValue) extends RawData
-
-case class CreateRequestData(nino: Nino, body: CreateRequest)
+case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData

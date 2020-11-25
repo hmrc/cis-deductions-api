@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.requestData
+package v1.models.request.retrieve
 
-trait RawData
+import uk.gov.hmrc.domain.Nino
+
+case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)

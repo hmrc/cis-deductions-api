@@ -20,10 +20,9 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.AmendRequestData
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.errors.{DesErrorCode, DesErrors}
-
+import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.Future
 

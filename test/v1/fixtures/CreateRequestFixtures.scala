@@ -19,8 +19,9 @@ package v1.fixtures
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import v1.models.audit.{AuditError, AuditResponse}
-import v1.models.request.{CreateRequest, PeriodDetails}
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.amend.PeriodDetails
+import v1.models.request.create.CreateBody
+import v1.models.response.create.CreateResponseModel
 
 object CreateRequestFixtures {
 
@@ -570,14 +571,14 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateRequest = CreateRequest("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
+  val requestObj: CreateBody = CreateBody("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2020-06-06", "2020-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2020-07-06", "2020-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val missingOptionalRequestObj: CreateRequest = CreateRequest("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
+  val missingOptionalRequestObj: CreateBody = CreateBody("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2020-06-06", "2020-07-05", None, None),
       PeriodDetails(355.00, "2020-07-06", "2020-08-05", None, None)

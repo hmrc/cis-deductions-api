@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.reponseData
+package v1.models.response.create
 
 import mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -23,8 +23,8 @@ import uk.gov.hmrc.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.GET
-import v1.models.request.{CreateRequest, CreateRequestData, PeriodDetails}
-import v1.models.responseData.{CreateHateoasData, CreateResponseModel}
+import v1.models.request.amend.PeriodDetails
+import v1.models.request.create.{CreateBody, CreateRequestData}
 
 class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
 
@@ -60,7 +60,7 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
       val contractorName = "name"
       val employerRef = "reference"
       val periodData = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
-      val request = CreateRequestData(Nino(nino), CreateRequest(fromDate, toDate, contractorName, employerRef, periodData))
+      val request = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
 
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
       CreateResponseModel.CreateLinksFactory

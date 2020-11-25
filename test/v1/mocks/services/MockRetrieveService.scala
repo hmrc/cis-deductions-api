@@ -22,8 +22,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
+import v1.models.request.retrieve.RetrieveRequestData
+import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import v1.services.RetrieveService
 
 import scala.concurrent.{ExecutionContext, Future}

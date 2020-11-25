@@ -22,8 +22,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.CreateRequestData
-import v1.models.responseData.CreateResponseModel
+import v1.models.request.create.CreateRequestData
+import v1.models.response.create.CreateResponseModel
 import v1.services.CreateService
 
 import scala.concurrent.{ExecutionContext, Future}

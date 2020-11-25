@@ -16,9 +16,26 @@
 
 package v1.models.request
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
+import support.UnitSpec
 
-case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData
+class DesTaxYearSpec extends UnitSpec {
 
-case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)
+  val mtdValue = "2018-19"
+  val desValue = "2019"
+
+  "DesTaxYear" when {
+    "toString is called" should {
+      "return the value instead of a String representation of the case class" in {
+        DesTaxYear(desValue).toString shouldBe desValue
+      }
+    }
+
+    "fromMtd is called" should {
+      "return the DES representation of the tax year" in {
+        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
+      }
+    }
+  }
+
+
+}

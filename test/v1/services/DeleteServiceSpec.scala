@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockDeleteConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRequestData
+import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

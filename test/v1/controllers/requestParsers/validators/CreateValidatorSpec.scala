@@ -18,9 +18,9 @@ package v1.controllers.requestParsers.validators
 
 import mocks.MockAppConfig
 import support.UnitSpec
-import v1.models.request._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
+import v1.models.request.create.CreateRawData
 
 class CreateValidatorSpec extends UnitSpec{
 

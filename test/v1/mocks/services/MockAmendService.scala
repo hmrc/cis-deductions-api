@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.AmendRequestData
+import v1.models.request.amend.AmendRequestData
 import v1.services.AmendService
 
 import scala.concurrent.{ExecutionContext, Future}

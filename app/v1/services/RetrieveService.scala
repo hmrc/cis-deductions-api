@@ -25,8 +25,8 @@ import v1.connectors.RetrieveConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.RetrieveRequestData
-import v1.models.responseData.{CisDeductions, RetrieveResponseModel}
+import v1.models.request.retrieve.RetrieveRequestData
+import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}

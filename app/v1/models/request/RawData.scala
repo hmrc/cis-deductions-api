@@ -16,10 +16,4 @@
 
 package v1.models.request
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.requestData.RawData
-
-case class DeleteRawData(nino: String, submissionId: String) extends RawData
-
-case class DeleteRequestData(nino: Nino, submissionId: String)
-
+trait RawData
