@@ -12,14 +12,6 @@
             <td><p>Simulate success response.</p></td>
         </tr>
         <tr>
-            <td><p>FORMAT_NINO</p></td>
-            <td><p>Simulate the scenario where the format of the supplied NINO field is not valid</p></td>
-        </tr>  
-        <tr>
-            <td><p>FORMAT_SUBMISSION_ID</p></td>
-            <td><p>Simulate the scenario where the supplied submissionId is not found</p></td>
-        </tr> 
-        <tr>
              <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
              <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period.</p></td>
         </tr>                     
