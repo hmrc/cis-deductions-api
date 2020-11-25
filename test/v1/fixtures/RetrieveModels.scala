@@ -16,7 +16,7 @@
 
 package v1.fixtures
 
-import v1.models.response.{CisDeductions, PeriodData, RetrieveResponseModel}
+import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 object RetrieveModels {
 

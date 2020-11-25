@@ -17,18 +17,18 @@
 package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import v1.models.request.amend.{AmendRequest, PeriodDetails}
+import v1.models.request.amend.{AmendBody, PeriodDetails}
 
 object AmendRequestFixtures {
 
-  val amendRequestObj: AmendRequest = AmendRequest(
+  val amendRequestObj: AmendBody = AmendBody(
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val amendMissingOptionalRequestObj: AmendRequest = AmendRequest(
+  val amendMissingOptionalRequestObj: AmendBody = AmendBody(
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)

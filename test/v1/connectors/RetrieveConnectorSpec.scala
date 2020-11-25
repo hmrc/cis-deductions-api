@@ -22,7 +22,7 @@ import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
-import v1.models.response.{CisDeductions, PeriodData, RetrieveResponseModel}
+import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 import scala.concurrent.Future
 

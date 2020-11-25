@@ -25,7 +25,7 @@ import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
-import v1.models.response.{CisDeductions, RetrieveResponseModel}
+import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

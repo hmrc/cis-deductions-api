@@ -16,18 +16,7 @@
 
 package v1.models.request.create
 
-import play.api.libs.json.{Json, Reads, Writes}
-import v1.models.request.amend.PeriodDetails
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-case class CreateRequest(
-                               fromDate: String,
-                               toDate: String,
-                               contractorName: String,
-                               employerRef: String,
-                               periodData: Seq[PeriodDetails]
-                             )
-
-object CreateRequest {
-  implicit val reads: Reads[CreateRequest] = Json.reads[CreateRequest]
-  implicit val writes: Writes[CreateRequest] = Json.writes[CreateRequest]
-}
+case class CreateRawData(nino: String, body: JsValue) extends RawData

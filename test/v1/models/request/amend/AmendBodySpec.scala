@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.models.request.amend
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures.AmendRequestFixtures._
-import v1.models.request.amend.AmendRequest
 
 
 
-class AmendRequestSpec extends UnitSpec {
+class AmendBodySpec extends UnitSpec {
 
   "read from valid JSON" should {
     "return the expected CisDeductionsRequestBody" in {
-      requestJson.validate[AmendRequest] shouldBe JsSuccess(amendRequestObj)
+      requestJson.validate[AmendBody] shouldBe JsSuccess(amendRequestObj)
     }
     "return the expected CisDeductionRequestBody when optional field is omitted" in {
-      missingOptionalRequestJson.validate[AmendRequest] shouldBe JsSuccess(amendMissingOptionalRequestObj)
+      missingOptionalRequestJson.validate[AmendBody] shouldBe JsSuccess(amendMissingOptionalRequestObj)
     }
   }
 
   "read from invalid JSON" should {
     "return the expected error when field contains incorrect data type" in {
-      invalidRequestJson.validate[AmendRequest] shouldBe a[JsError]
+      invalidRequestJson.validate[AmendBody] shouldBe a[JsError]
     }
 
     "return the expected error when mandatory field is omitted" in {
-      missingMandatoryFieldRequestJson.validate[AmendRequest] shouldBe a[JsError]
+      missingMandatoryFieldRequestJson.validate[AmendBody] shouldBe a[JsError]
     }
   }
 

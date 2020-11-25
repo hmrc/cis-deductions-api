@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{CreateConnector, DesOutcome}
 import v1.models.request.create.CreateRequestData
-import v1.models.response.CreateResponseModel
+import v1.models.response.create.CreateResponseModel
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.models.request.create.CreateRequestData
-import v1.models.response.CreateResponseModel
+import v1.models.response.create.CreateResponseModel
 
 import scala.concurrent.{ExecutionContext, Future}
 

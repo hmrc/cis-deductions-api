@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.request.amend
 
-import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.AmendValidator
-import v1.models.request.amend.{AmendRawData, AmendBody, AmendRequestData}
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-class AmendRequestParser @Inject()(val validator: AmendValidator )
-  extends RequestParser[AmendRawData, AmendRequestData]{
-
-  override protected def requestFor(data: AmendRawData): AmendRequestData = {
-    val requestBody = data.body.as[AmendBody]
-    AmendRequestData(Nino(data.nino), data.id, requestBody)
-  }
-}
+case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData

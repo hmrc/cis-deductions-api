@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import v1.models.request.retrieve.RetrieveRequestData
-import v1.models.response.{CisDeductions, RetrieveResponseModel}
+import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 

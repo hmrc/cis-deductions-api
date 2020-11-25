@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, RetrieveConnector}
 import v1.models.request.retrieve.RetrieveRequestData
-import v1.models.response.{CisDeductions, RetrieveResponseModel}
+import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 

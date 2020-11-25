@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.reponse
+package v1.models.response.retrieve
 
 import mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -22,7 +22,6 @@ import support.UnitSpec
 import v1.fixtures._
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{GET, POST}
-import v1.models.response.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 

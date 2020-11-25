@@ -20,7 +20,7 @@ import config.{AppConfig, FixedConfig}
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.create.{CreateRawData, CreateRequest}
+import v1.models.request.create.{CreateRawData, CreateBody}
 
 class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
@@ -38,12 +38,12 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
 
   private def bodyFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[CreateRequest](data.body, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[CreateBody](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 
   private def bodyRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[CreateRequest]
+    val req = data.body.as[CreateBody]
 
     List(
       PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),
@@ -59,7 +59,7 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
   }
 
   private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[CreateRequest]
+    val req = data.body.as[CreateBody]
     List(
       TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
     )

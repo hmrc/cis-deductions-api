@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package v1.models.request.amend
+package v1.models.request.create
 
 import play.api.libs.json.{Json, Reads, Writes}
+import v1.models.request.amend.PeriodDetails
 
-case class AmendRequest(
-                         periodData: Seq[PeriodDetails]
-                       )
+case class CreateBody(
+                               fromDate: String,
+                               toDate: String,
+                               contractorName: String,
+                               employerRef: String,
+                               periodData: Seq[PeriodDetails]
+                             )
 
-object AmendRequest {
-  implicit val reads: Reads[AmendRequest] = Json.reads[AmendRequest]
-  implicit val writes: Writes[AmendRequest] = Json.writes[AmendRequest]
+object CreateBody {
+  implicit val reads: Reads[CreateBody] = Json.reads[CreateBody]
+  implicit val writes: Writes[CreateBody] = Json.writes[CreateBody]
 }

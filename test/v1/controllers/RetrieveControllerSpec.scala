@@ -32,8 +32,8 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
-import v1.models.response.RetrieveResponseModel._
-import v1.models.response.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
+import v1.models.response.retrieve.RetrieveResponseModel._
+import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

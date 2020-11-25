@@ -32,7 +32,7 @@ import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
-import v1.models.response.RetrieveHateoasData
+import v1.models.response.retrieve
 import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,7 +67,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
         serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
         vendorResponse <- EitherT.fromEither[Future](
           hateoasFactory.wrapList(serviceResponse.responseData,
-            RetrieveHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData)).asRight[ErrorWrapper]
+            retrieve.RetrieveHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData)).asRight[ErrorWrapper]
         )
       } yield {
         logger.info(

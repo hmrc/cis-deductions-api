@@ -24,8 +24,8 @@ import v1.mocks.connectors.MockCreateConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.PeriodDetails
-import v1.models.request.create.{CreateRequest, CreateRequestData}
-import v1.models.response.CreateResponseModel
+import v1.models.request.create.{CreateBody, CreateRequestData}
+import v1.models.response.create.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class CreateServiceSpec extends UnitSpec {
   implicit val correlationId = "X-123"
   private val submissionId = "123456789"
 
-  private val requestBody = CreateRequest("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00))))
+  private val requestBody = CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00))))
 
   private val requestData = CreateRequestData(Nino(nino), requestBody)
 

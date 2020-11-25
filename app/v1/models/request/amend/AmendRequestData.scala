@@ -16,11 +16,6 @@
 
 package v1.models.request.amend
 
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Nino
-import v1.models.request.RawData
 
-
-case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData
-
-case class AmendRequestData(nino: Nino, id: String, body: AmendRequest)
+case class AmendRequestData(nino: Nino, id: String, body: AmendBody)
