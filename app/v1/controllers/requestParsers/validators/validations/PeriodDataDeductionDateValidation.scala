@@ -17,11 +17,11 @@
 package v1.controllers.requestParsers.validators.validations
 
 import play.api.libs.json.JsValue
-import v1.models.errors.MtdError
+import v1.models.errors._
 
 object PeriodDataDeductionDateValidation {
 
-  def validate(json: JsValue, fieldName: String, error: MtdError): List[MtdError] = {
+  def validateDate(json: JsValue, fieldName: String, error: MtdError): List[MtdError] = {
 
     val periodData = (json \ "periodData").as[List[JsValue]]
 
@@ -29,4 +29,24 @@ object PeriodDataDeductionDateValidation {
       period => DateValidation.validate(error)((period \ fieldName).as[String])
     }
   }
+
+  def validateDateOrder(fromDate: String, toDate: String): List[MtdError] = {
+
+    fromDate > toDate match {
+      case true  => NoValidationErrors
+      case false => List(RuleDeductionsDateRangeInvalidError)
+    }
+  }
+
+  def validatePeriodInsideTaxYear(fromDate: String, toDate: String, deductionFromDate: String, deductionToDate: String): List[MtdError] = {
+
+    (fromDate <= deductionFromDate, deductionFromDate < toDate, fromDate < deductionToDate, deductionToDate <= toDate) match {
+      case (true, true, true, true)  => NoValidationErrors
+      case _ => List(RuleDeductionsDateRangeInvalidError)
+    }
+  }
+
+
+
+
 }

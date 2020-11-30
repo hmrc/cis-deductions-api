@@ -28,8 +28,8 @@ object CreateRequestFixtures {
   val requestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -55,8 +55,8 @@ object CreateRequestFixtures {
   val invalidRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": false,
       |  "periodData": [
@@ -82,8 +82,8 @@ object CreateRequestFixtures {
   val missingOptionalRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -105,8 +105,8 @@ object CreateRequestFixtures {
   val missingMandatoryFieldRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -131,8 +131,8 @@ object CreateRequestFixtures {
   val missingPeriodDataRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -198,8 +198,8 @@ object CreateRequestFixtures {
   val invalidDeductionFromDateFormatRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -225,8 +225,8 @@ object CreateRequestFixtures {
   val invalidDeductionToDateFormatRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -252,8 +252,8 @@ object CreateRequestFixtures {
   val invalidDeductionAmountTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -279,8 +279,8 @@ object CreateRequestFixtures {
   val invalidDeductionAmountNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -306,8 +306,8 @@ object CreateRequestFixtures {
   val invalidCostOfMaterialsTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -333,8 +333,8 @@ object CreateRequestFixtures {
   val invalidCostOfMaterialsNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -360,8 +360,8 @@ object CreateRequestFixtures {
   val invalidGrossAmountTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -387,8 +387,8 @@ object CreateRequestFixtures {
   val invalidGrossAmountNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [

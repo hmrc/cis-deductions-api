@@ -17,6 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import mocks.MockAppConfig
+import play.api.libs.json.Json
 import support.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
@@ -147,6 +148,93 @@ class CreateValidatorSpec extends UnitSpec{
         CreateRawData(nino, requestBodyJsonErrorNotSupportedTaxYear)
         )
         result shouldBe List(RuleTaxYearNotSupportedError)
+      }
+      "tax year is dated beyond the latest completed tax year" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2020-04-06" ,
+              |  "toDate": "2021-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-06-06",
+              |      "deductionToDate": "2020-07-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-07-06",
+              |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleDateRangeInvalidError)
+      }
+      "period falls outside the tax year identified by fromDate and toDate" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2019-04-06" ,
+              |  "toDate": "2020-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-06-06",
+              |      "deductionToDate": "2020-07-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-07-06",
+              |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
+      "deductionToDate precedes the deductionFromDate" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2020-04-06" ,
+              |  "toDate": "2021-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-08-05",
+              |      "deductionToDate": "2020-07-06",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-07-06",
+              |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
       "invalid employer reference format is provided" in new SetUp {
         private val result = validator.validate(
