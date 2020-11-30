@@ -18,7 +18,6 @@ package utils
 
 import java.time.Instant
 
-import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
