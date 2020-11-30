@@ -8,9 +8,8 @@ object AppDependencies {
 
   val compile = Seq(
 
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.5.0",
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0",
-    "uk.gov.hmrc" %% "domain" % "5.9.0-play-26",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "2.1.0",
+    "uk.gov.hmrc" %% "domain" % "5.10.0-play-26",
     "uk.gov.hmrc" %% "play-hmrc-api" % "4.1.0-play-26",
     "org.typelevel" %% "cats-core" % "2.2.0",
     compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.6.0" cross CrossVersion.full),

@@ -16,6 +16,8 @@
 
 package utils
 
+import java.time.Instant
+
 import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
@@ -58,7 +60,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       eventId = "",
       tags = eventTags,
       detail = Map("test" -> "test"),
-      generatedAt = DateTime.now()
+      generatedAt = Instant.now()
     )
 
     (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String])(_: HeaderCarrier)).expects(*, *, *, *, *)
