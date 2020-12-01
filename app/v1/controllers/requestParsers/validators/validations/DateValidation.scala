@@ -26,4 +26,16 @@ object DateValidation {
     if (date.matches(dateFormat)) NoValidationErrors else List(error)
   }
 
+  val deductionFromDateFormat = "[0-9][0-9][0-9][0-9]\\-[0-1][0-9]\\-06"
+
+  def deductionFromDateValidate(error: MtdError)(date: String): List[MtdError] = {
+    if (date.matches(dateFormat)) NoValidationErrors else List(error)
+  }
+
+  val deductionToDateFormat = "[0-9][0-9][0-9][0-9]\\-[0-1][0-9]\\-05"
+
+  def deductionToDateValidate(error: MtdError)(date: String): List[MtdError] = {
+    if (date.matches(dateFormat)) NoValidationErrors else List(error)
+  }
+
 }

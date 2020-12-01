@@ -31,25 +31,20 @@ class CreateValidatorSpec extends UnitSpec{
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
-    MockedAppConfig.minTaxYearCisDeductions.returns("2021")
+    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
   }
 
   "running validation" should {
     "return no errors" when {
       "all the fields are submitted in a request" in new SetUp {
 
-        validator
-          .validate(
-            CreateRawData(nino, requestJson))
-          .isEmpty shouldBe true
+        validator.validate(CreateRawData(nino, requestJson)).isEmpty shouldBe true
       }
 
       "an optional field is omitted in a request" in new SetUp {
 
-        validator
-          .validate(
-            CreateRawData(nino, missingOptionalRequestJson))
-          .isEmpty shouldBe true
+        validator.validate(CreateRawData(nino, missingOptionalRequestJson)) shouldBe List()
+//          .isEmpty shouldBe true
       }
     }
     "return errors" when {
@@ -176,7 +171,7 @@ class CreateValidatorSpec extends UnitSpec{
               |  ]
               |}
               |""".stripMargin))
-        ) shouldBe List(RuleDateRangeInvalidError)
+        ) shouldBe List(RuleTaxYearNotEndedError)
       }
       "period falls outside the tax year identified by fromDate and toDate" in new SetUp {
         validator.validate(
@@ -212,8 +207,8 @@ class CreateValidatorSpec extends UnitSpec{
           CreateRawData(nino, Json.parse(
             """
               |{
-              |  "fromDate": "2020-04-06" ,
-              |  "toDate": "2021-04-05",
+              |  "fromDate": "2019-04-06" ,
+              |  "toDate": "2020-04-05",
               |  "contractorName": "Bovis",
               |  "employerRef": "123/AB56797",
               |  "periodData": [

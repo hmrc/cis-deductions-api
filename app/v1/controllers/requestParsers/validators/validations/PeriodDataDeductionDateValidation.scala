@@ -16,10 +16,15 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import play.api.libs.json.JsValue
 import v1.models.errors._
 
 object PeriodDataDeductionDateValidation {
+
+  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
   def validateDate(json: JsValue, fieldName: String, error: MtdError): List[MtdError] = {
 
@@ -32,21 +37,43 @@ object PeriodDataDeductionDateValidation {
 
   def validateDateOrder(fromDate: String, toDate: String): List[MtdError] = {
 
-    fromDate > toDate match {
-      case true  => NoValidationErrors
-      case false => List(RuleDeductionsDateRangeInvalidError)
-    }
+    val dateFormatErrs = validateFromDate(fromDate) ++
+      validateToDate(toDate)
+    if (dateFormatErrs.isEmpty) validateMonths(fromDate, toDate) else dateFormatErrs
   }
+
+    val fromDateFormat = "[0-9]{4}-[0-9][0-9]-06"
+    val toDateFormat = "[0-9]{4}-[0-9][0-9]-05"
+
+    private def validateFromDate(fromDate: String): List[MtdError] = {
+      if (fromDate.matches(fromDateFormat)) NoValidationErrors else List(RuleDeductionsDateRangeInvalidError)
+    }
+
+    private def validateToDate(toDate: String): List[MtdError] = {
+      if (toDate.matches(toDateFormat)) NoValidationErrors else List(RuleDeductionsDateRangeInvalidError)
+    }
+
+    private def validateMonths(fromDate: String, toDate: String): List[MtdError] = {
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+      val startDate = LocalDate.parse(fromDate, formatter)
+      val endDate = LocalDate.parse(toDate, formatter)
+      val diff = endDate.getMonth.getValue - startDate.getMonth.getValue
+      if (diff != 1 && diff != -11) List(RuleDeductionsDateRangeInvalidError) else NoValidationErrors
+    }
+
+
 
   def validatePeriodInsideTaxYear(fromDate: String, toDate: String, deductionFromDate: String, deductionToDate: String): List[MtdError] = {
 
-    (fromDate <= deductionFromDate, deductionFromDate < toDate, fromDate < deductionToDate, deductionToDate <= toDate) match {
-      case (true, true, true, true)  => NoValidationErrors
-      case _ => List(RuleDeductionsDateRangeInvalidError)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val taxYearStartDate = LocalDate.parse(fromDate, formatter)
+    val DeductionStartDate = LocalDate.parse(deductionFromDate, formatter)
+    val taxYearEndDate = LocalDate.parse(toDate, formatter)
+    val DeductionEndDate = LocalDate.parse(deductionToDate, formatter)
+
+    (DeductionStartDate.isAfter(taxYearStartDate) || DeductionStartDate.isEqual(taxYearStartDate), DeductionEndDate.isBefore(taxYearEndDate) || DeductionEndDate.isEqual(taxYearEndDate)) match {
+      case (true, true)  => NoValidationErrors
+      case _ => List(RuleUnalignedDeductionsPeriodError)
     }
   }
-
-
-
-
 }

@@ -61,8 +61,8 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "202520-06-06",
-      |      "deductionToDate": "20253740-07-05",
+      |      "deductionFromDate": "20420-06-06",
+      |      "deductionToDate": "20250-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
@@ -77,7 +77,7 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  "running validateDate " should {
+  "running validateDate" should {
     "return no errors" when {
       "a json is submitted with a valid From date" in {
         PeriodDataDeductionDateValidation.validateDate(
@@ -100,18 +100,60 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
           invalidDatesJson,
           "deductionFromDate",
           DeductionFromDateFormatError
-        ) shouldBe DeductionFromDateFormatError
+        ) shouldBe List(DeductionFromDateFormatError)
       }
       "a json is submitted with an invalid To date" in {
         PeriodDataDeductionDateValidation.validateDate(
           invalidDatesJson,
           "deductionToDate",
           DeductionToDateFormatError
-        ) shouldBe DeductionToDateFormatError
+        ) shouldBe List(DeductionToDateFormatError)
       }
     }
-
   }
 
+  "running validateDateOrder" should {
+    "return no errors" when {
+      "the provided fromDate is 1 month before the provided toDate" in {
+        PeriodDataDeductionDateValidation.validateDateOrder("2020-06-06", "2020-07-05") shouldBe NoValidationErrors
+      }
+      "the provided fromDate is in december and the to date is in the following january" in {
+        PeriodDataDeductionDateValidation.validateDateOrder("2019-12-06", "2020-01-05") shouldBe NoValidationErrors
+      }
+    }
+    "return an error" when {
+      "the provided fromDate is after the provided toDate" in {
+        PeriodDataDeductionDateValidation.validateDateOrder("2020-05-06", "2020-07-05") shouldBe List(RuleDeductionsDateRangeInvalidError)
+      }
+      "the provided fromDate is before the provided toDate" in {
+        PeriodDataDeductionDateValidation.validateDateOrder("2020-07-05", "2020-07-05") shouldBe List(RuleDeductionsDateRangeInvalidError)
+      }
+    }
+  }
+
+  "running validatePeriodInsideTaxYear" should {
+    "return no errors" when {
+      "the provided deductionFromDate and deductionFromDate are inside the provided tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-06-06", "2019-07-05") shouldBe NoValidationErrors
+      }
+      "the provided deductionFromDate and deductionFromDate are first month inside the provided tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-04-06", "2019-05-05") shouldBe NoValidationErrors
+      }
+      "the provided deductionFromDate and deductionFromDate are last month inside the provided tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-03-06", "2020-04-05") shouldBe NoValidationErrors
+      }
+      "the provided deductionFromDate and deductionFromDate are december and jan" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-12-06", "2020-01-05") shouldBe NoValidationErrors
+      }
+    }
+    "return an error" when {
+      "the provided deductionFromDate and deductionFromDate are before the provided tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-01-06", "2019-02-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
+      "the provided deductionFromDate and deductionFromDate are after the provided tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-05-06", "2020-06-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
+    }
+  }
 
 }

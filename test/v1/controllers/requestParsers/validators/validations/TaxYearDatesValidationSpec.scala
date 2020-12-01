@@ -16,8 +16,11 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import support.UnitSpec
-import v1.models.errors.RuleDateRangeInvalidError
+import v1.models.errors.{RuleDateRangeInvalidError, RuleTaxYearNotEndedError}
 import v1.models.utils.JsonErrorValidators
 
 class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -39,7 +42,26 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
         validationResult shouldBe List(RuleDateRangeInvalidError)
       }
       "a request body with invalid date range" in {
-        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2021-04-05", Some(1))
+        val validationResult = TaxYearDatesValidation.validate("2018-04-06", "2020-04-05", Some(1))
+        validationResult shouldBe List(RuleDateRangeInvalidError)
+      }
+      "a request using the current tax year is used" in {
+        val currentYear = LocalDate.now().getYear
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val startYear = if (LocalDate.now().isAfter(LocalDate.parse(currentYear.toString + "-04-05", formatter))) currentYear else currentYear -1
+        val endYear = startYear + 1
+        val startDate = startYear.toString + "-04-06"
+        val endDate = endYear.toString + "-04-05"
+        val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1))
+        validationResult shouldBe List(RuleTaxYearNotEndedError)
+      }
+      "a request using a future tax year is used" in {
+        val currentYear = LocalDate.now().getYear
+        val startYear = currentYear + 5
+        val endYear = currentYear + 6
+        val startDate = startYear.toString + "-04-06"
+        val endDate = endYear.toString + "-04-05"
+        val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1))
         validationResult shouldBe List(RuleDateRangeInvalidError)
       }
     }

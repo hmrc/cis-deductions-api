@@ -20,7 +20,7 @@ import config.{AppConfig, FixedConfig}
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.create.{CreateRawData, CreateBody}
+import v1.models.request.create.{CreateBody, CreateRawData}
 
 class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
   private val validationSet = List(
@@ -60,9 +60,19 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
 
   private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
     val req = data.body.as[CreateBody]
-    List(
-      TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1))
-    )
+    val taxYearValidations = List(TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1)))
+    val periodDataCheck = if (taxYearValidations.flatten.isEmpty) {
+      req.periodData.map { period =>
+        PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
+      }.toList
+    } else taxYearValidations
+    if (periodDataCheck.flatten.isEmpty) {
+      req.periodData.map { period =>
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(req.fromDate, req.toDate, period.deductionFromDate, period.deductionFromDate)
+      }.toList
+    } else
+      periodDataCheck
+
   }
 
   override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data).distinct
