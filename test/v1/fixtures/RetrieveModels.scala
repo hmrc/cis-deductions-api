@@ -21,8 +21,8 @@ import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseM
 object RetrieveModels {
 
   val cisDeductions: CisDeductions = CisDeductions(
-    fromDate = "2020-04-06",
-    toDate = "2021-04-05",
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
     contractorName = Some("contractor Name"),
     employerRef = "123/AA12345",
     totalDeductionAmount = Some(3543.55),
@@ -30,8 +30,8 @@ object RetrieveModels {
     totalGrossAmountPaid = Some(3424.12),
     Seq(
       PeriodData(
-        deductionFromDate = "2020-06-06",
-        deductionToDate = "2020-07-05",
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -39,8 +39,8 @@ object RetrieveModels {
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
         source = "customer"),
       PeriodData(
-        deductionFromDate = "2020-07-06",
-        deductionToDate = "2020-08-05",
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -51,8 +51,8 @@ object RetrieveModels {
   )
 
   val cisDeductionsNoId: CisDeductions = CisDeductions(
-    fromDate = "2020-04-06",
-    toDate = "2021-04-05",
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
     contractorName = Some("contractor Name"),
     employerRef = "123/AA12345",
     totalDeductionAmount = Some(3543.55),
@@ -60,8 +60,8 @@ object RetrieveModels {
     totalGrossAmountPaid = Some(3424.12),
     Seq(
       PeriodData(
-        deductionFromDate = "2020-06-06",
-        deductionToDate = "2020-07-05",
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -69,8 +69,8 @@ object RetrieveModels {
         submissionId = None,
         source = "contractor"),
       PeriodData(
-        deductionFromDate = "2020-07-06",
-        deductionToDate = "2020-08-05",
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -81,8 +81,8 @@ object RetrieveModels {
   )
 
   val cisDeductionsMissingOptional: CisDeductions = CisDeductions(
-    fromDate = "2020-04-06",
-    toDate = "2021-04-05",
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
     contractorName = Some("contractor Name"),
     employerRef = "123/AA12345",
     totalDeductionAmount = Some(3543.55),
@@ -90,8 +90,8 @@ object RetrieveModels {
     totalGrossAmountPaid = Some(3424.12),
     Seq(
       PeriodData(
-        deductionFromDate = "2020-06-06",
-        deductionToDate = "2020-07-05",
+        deductionFromDate = "2019-06-06",
+        deductionToDate = "2019-07-05",
         deductionAmount = None,
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -99,8 +99,8 @@ object RetrieveModels {
         submissionId = None,
         source = "contractor"),
       PeriodData(
-        deductionFromDate = "2020-07-06",
-        deductionToDate = "2020-08-05",
+        deductionFromDate = "2019-07-06",
+        deductionToDate = "2019-08-05",
         deductionAmount = Some(355.00),
         costOfMaterials = Some(35.00),
         grossAmountPaid = Some(1457.00),
@@ -158,17 +158,17 @@ object RetrieveModels {
     totalGrossAmountPaid = Some(2342424.56),
     Seq(
       CisDeductions(
-        "2020-04-06",
-        "2021-04-05",
+        "2019-04-06",
+        "2020-04-05",
         Some("contractor Name"),
         "123/AA12345",
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
         Seq(
-          PeriodData("2020-06-06", "2020-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer"),
-          PeriodData("2020-07-06", "2020-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"), "customer")
         )
       )
@@ -181,17 +181,17 @@ object RetrieveModels {
     totalGrossAmountPaid = Some(2342424.56),
     Seq(
       CisDeductions(
-        "2020-04-06",
-        "2021-04-05",
+        "2019-04-06",
+        "2020-04-05",
         Some("contractor Name"),
         "123/AA12345",
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
         Seq(
-          PeriodData("2020-06-06", "2020-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z",
+          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z",
             None, "contractor"),
-          PeriodData("2020-07-06", "2020-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z",
+          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z",
             None, "contractor")
         )
       )
