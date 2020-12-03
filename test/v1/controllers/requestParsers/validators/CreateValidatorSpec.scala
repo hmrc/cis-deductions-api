@@ -43,8 +43,7 @@ class CreateValidatorSpec extends UnitSpec{
 
       "an optional field is omitted in a request" in new SetUp {
 
-        validator.validate(CreateRawData(nino, missingOptionalRequestJson)) shouldBe List()
-//          .isEmpty shouldBe true
+        validator.validate(CreateRawData(nino, missingOptionalRequestJson)).isEmpty shouldBe true
       }
     }
     "return errors" when {
