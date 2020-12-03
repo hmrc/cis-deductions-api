@@ -18,13 +18,15 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.amend.{AmendRawData, AmendBody}
+import v1.models.request.amend.{AmendBody, AmendRawData}
+import v1.models.request.create.CreateBody
 
 class   AmendValidator extends Validator[AmendRawData] {
 
   private val validationSet = List(parameterFormatValidation,
     bodyFormatValidator,
-    bodyRuleValidator)
+    bodyRuleValidator,
+    businessRuleValidator)
 
   private def parameterFormatValidation: AmendRawData => List[List[MtdError]] = (data: AmendRawData) => {
     List(
@@ -44,9 +46,16 @@ class   AmendValidator extends Validator[AmendRawData] {
       PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),
       PeriodDataPositiveAmountValidation.validate(data.body, "costOfMaterials", RuleCostOfMaterialsError),
       PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
-      PeriodDataDeductionDateValidation.validate(data.body, "deductionFromDate", DeductionFromDateFormatError),
-      PeriodDataDeductionDateValidation.validate(data.body, "deductionToDate", DeductionToDateFormatError)
+      PeriodDataDeductionDateValidation.validateDate(data.body, "deductionFromDate", DeductionFromDateFormatError),
+      PeriodDataDeductionDateValidation.validateDate(data.body, "deductionToDate", DeductionToDateFormatError)
     )
+  }
+
+  private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
+    val req = data.body.as[AmendBody]
+    req.periodData.map { period =>
+      PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
+    }.toList
   }
 
   override def validate(data: AmendRawData): List[MtdError] = {

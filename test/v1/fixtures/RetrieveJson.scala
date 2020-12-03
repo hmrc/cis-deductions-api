@@ -120,8 +120,8 @@ object RetrieveJson {
       | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06" ,
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -130,8 +130,8 @@ object RetrieveJson {
       |    "periodData": [
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-07-11T16:38:57.489Z",
@@ -140,8 +140,8 @@ object RetrieveJson {
       |      },
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-08-11T16:38:57.489Z",
@@ -163,8 +163,8 @@ object RetrieveJson {
       | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06" ,
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -173,8 +173,8 @@ object RetrieveJson {
       |    "periodData": [
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-07-11T16:38:57.489Z",
@@ -182,8 +182,8 @@ object RetrieveJson {
       |      },
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-08-11T16:38:57.489Z",
@@ -204,8 +204,8 @@ object RetrieveJson {
       | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06" ,
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06" ,
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -214,8 +214,8 @@ object RetrieveJson {
       |    "periodData": [
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-07-11T16:38:57.489Z",
@@ -223,8 +223,8 @@ object RetrieveJson {
       |      },
       |      {
       |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-08-11T16:38:57.489Z",
@@ -245,8 +245,8 @@ object RetrieveJson {
       |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06",
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06",
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -254,8 +254,8 @@ object RetrieveJson {
       |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -264,8 +264,8 @@ object RetrieveJson {
       |        "source": "customer"
       |      },
       |      {
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -290,7 +290,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -312,8 +312,8 @@ object RetrieveJson {
       |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06",
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06",
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -321,8 +321,8 @@ object RetrieveJson {
       |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -330,8 +330,8 @@ object RetrieveJson {
       |        "source": "customer"
       |      },
       |      {
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -343,7 +343,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -365,8 +365,8 @@ object RetrieveJson {
       |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |     "fromDate": "2020-04-06",
-      |     "toDate": "2021-04-05",
+      |     "fromDate": "2019-04-06",
+      |     "toDate": "2020-04-05",
       |     "contractorName": "contractor Name",
       |     "employerRef": "123/AA12345",
       |     "totalDeductionAmount": 3543.55,
@@ -374,16 +374,16 @@ object RetrieveJson {
       |     "totalGrossAmountPaid": 3424.12,
       |     "periodData": [
       |      {
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
       |        "submissionDate": "2020-07-11T16:38:57.489Z",
       |        "source": "contractor"
       |      },
       |      {
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -395,7 +395,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -417,8 +417,8 @@ object RetrieveJson {
       |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2020-04-06",
-      |    "toDate": "2021-04-05",
+      |    "fromDate": "2019-04-06",
+      |    "toDate": "2020-04-05",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -426,8 +426,8 @@ object RetrieveJson {
       |    "totalGrossAmountPaid": 3424.12,
       |    "periodData": [
       |      {
-      |        "deductionFromDate": "2020-06-06",
-      |        "deductionToDate": "2020-07-05",
+      |        "deductionFromDate": "2019-06-06",
+      |        "deductionToDate": "2019-07-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -435,8 +435,8 @@ object RetrieveJson {
       |        "source": "contractor"
       |      },
       |      {
-      |        "deductionFromDate": "2020-07-06",
-      |        "deductionToDate": "2020-08-05",
+      |        "deductionFromDate": "2019-07-06",
+      |        "deductionToDate": "2019-08-05",
       |        "deductionAmount": 355.00,
       |        "costOfMaterials": 35.00,
       |        "grossAmountPaid": 1457.00,
@@ -448,7 +448,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },

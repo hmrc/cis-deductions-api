@@ -69,8 +69,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
   }
 
   private val nino = "AA123456A"
-  private val fromDate = Some("2020-04-06")
-  private val toDate = Some("2021-04-05")
+  private val fromDate = Some("2019-04-06")
+  private val toDate = Some("2020-04-05")
   private val sourceRaw = Some("customer")
   private val sourceAll = "all"
   private val correlationId = "X-123"

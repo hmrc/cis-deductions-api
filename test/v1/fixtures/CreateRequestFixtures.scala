@@ -28,22 +28,22 @@ object CreateRequestFixtures {
   val requestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -55,8 +55,8 @@ object CreateRequestFixtures {
   val invalidRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": false,
       |  "periodData": [
@@ -82,20 +82,20 @@ object CreateRequestFixtures {
   val missingOptionalRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05"
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05"
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05"
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05"
       |    }
       |  ]
       |}
@@ -105,8 +105,8 @@ object CreateRequestFixtures {
   val missingMandatoryFieldRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -131,8 +131,8 @@ object CreateRequestFixtures {
   val missingPeriodDataRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -198,8 +198,8 @@ object CreateRequestFixtures {
   val invalidDeductionFromDateFormatRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -225,8 +225,8 @@ object CreateRequestFixtures {
   val invalidDeductionToDateFormatRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -252,8 +252,8 @@ object CreateRequestFixtures {
   val invalidDeductionAmountTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -279,8 +279,8 @@ object CreateRequestFixtures {
   val invalidDeductionAmountNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -306,8 +306,8 @@ object CreateRequestFixtures {
   val invalidCostOfMaterialsTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -333,8 +333,8 @@ object CreateRequestFixtures {
   val invalidCostOfMaterialsNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -360,8 +360,8 @@ object CreateRequestFixtures {
   val invalidGrossAmountTooHighRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -387,8 +387,8 @@ object CreateRequestFixtures {
   val invalidGrossAmountNegativeRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -414,8 +414,8 @@ object CreateRequestFixtures {
   val invalidToDateBeforeFromDateRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "fromDate": "2022-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2021-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -494,8 +494,8 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorNotSupportedTaxYear = Json.parse(
     """
       |{
-      |  "fromDate" : "2019-04-06",
-      |  "toDate" : "2020-04-06",
+      |  "fromDate" : "2018-04-06",
+      |  "toDate" : "2019-04-06",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -520,8 +520,8 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorInvalidDateRangeMax = Json.parse(
     """
       |{
-      |  "fromDate" : "2020-04-06",
-      |  "toDate" : "2022-04-05",
+      |  "fromDate" : "2018-04-06",
+      |  "toDate" : "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -571,17 +571,17 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateBody = CreateBody("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
+  val requestObj: CreateBody = CreateBody("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
     Seq(
-      PeriodDetails(355.00, "2020-06-06", "2020-07-05", Some(35.00), Some(1457.00)),
-      PeriodDetails(355.00, "2020-07-06", "2020-08-05", Some(35.00), Some(1457.00))
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val missingOptionalRequestObj: CreateBody = CreateBody("2020-04-06", "2021-04-05", "Bovis", "123/AB56797",
+  val missingOptionalRequestObj: CreateBody = CreateBody("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
     Seq(
-      PeriodDetails(355.00, "2020-06-06", "2020-07-05", None, None),
-      PeriodDetails(355.00, "2020-07-06", "2020-08-05", None, None)
+      PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
+      PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)
     )
   )
 
@@ -675,7 +675,7 @@ object CreateRequestFixtures {
       |   "submissionId":"someResponse",
       |   "links":[
       |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2020-04-06&toDate=2021-04-05",
+      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
       |         "method":"GET",
       |         "rel":"retrieve-cis-deductions-for-subcontractor"
       |      }
@@ -694,22 +694,22 @@ object CreateRequestFixtures {
   val requestBodyJson = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -721,21 +721,21 @@ object CreateRequestFixtures {
     """
       |{
       |  "fromDate": "04-06-2020" ,
-      |  "toDate": "2021-04-05",
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -746,22 +746,22 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorToDate = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
+      |  "fromDate": "2019-04-06" ,
       |  "toDate": "04-05-2021",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -772,22 +772,22 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorDeductionFromDate = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "06-06-2020",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -798,22 +798,22 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorDeductionToDate = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
+      |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "07-05-2020",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -824,22 +824,22 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorTaxYearNotSupported = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2018-04-06" ,
+      |  "toDate": "2019-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -850,22 +850,22 @@ object CreateRequestFixtures {
   val requestInvalidEmpRef = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -877,22 +877,22 @@ object CreateRequestFixtures {
   val requestRuleDeductionAmountJson = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": -355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -904,22 +904,22 @@ object CreateRequestFixtures {
   val requestInvalidRuleCostOfMaterialsJson = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": -35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -931,22 +931,22 @@ object CreateRequestFixtures {
   val requestInvalidGrossAmountJson = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": -1457.00
       |    }
@@ -958,22 +958,22 @@ object CreateRequestFixtures {
   val requestInvalidDateRangeJson = Json.parse(
     """
       |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2022-04-05",
+      |  "fromDate": "2018-04-06" ,
+      |  "toDate": "2020-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }

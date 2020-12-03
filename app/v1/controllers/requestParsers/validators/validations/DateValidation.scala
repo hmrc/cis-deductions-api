@@ -25,5 +25,4 @@ object DateValidation {
   def validate(error: MtdError)(date: String): List[MtdError] = {
     if (date.matches(dateFormat)) NoValidationErrors else List(error)
   }
-
 }
