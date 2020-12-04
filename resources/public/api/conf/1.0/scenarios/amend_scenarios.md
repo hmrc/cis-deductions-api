@@ -13,11 +13,11 @@
         </tr>
         <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
-            <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period</p></td>
+            <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period.</p></td>
         </tr>
         <tr>
             <td><p>RULE_UNALIGNED_DEDUCTIONS_PERIOD</p></td>
-            <td><p>Simulate the scenario where The deductions periods do not align with the tax year being submitted to</p></td>
+            <td><p>Simulate the scenario where the tax year does not align with the submitted deduction period.</p></td>
         </tr>
    </tbody>
 </table>
