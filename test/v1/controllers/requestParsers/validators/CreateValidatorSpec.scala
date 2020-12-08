@@ -201,6 +201,64 @@ class CreateValidatorSpec extends UnitSpec{
               |""".stripMargin))
         ) shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
+      "period falls in the month after the tax year identified by fromDate and toDate" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2019-04-06" ,
+              |  "toDate": "2020-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-04-06",
+              |      "deductionToDate": "2020-05-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-07-06",
+              |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
+      "period falls in the month before the tax year identified by fromDate and toDate" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2019-04-06" ,
+              |  "toDate": "2020-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2019-03-06",
+              |      "deductionToDate": "2019-04-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2020-07-06",
+              |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
       "deductionToDate precedes the deductionFromDate" in new SetUp {
         validator.validate(
           CreateRawData(nino, Json.parse(
@@ -222,6 +280,35 @@ class CreateValidatorSpec extends UnitSpec{
               |      "deductionAmount": 355.00,
               |      "deductionFromDate": "2020-07-06",
               |      "deductionToDate": "2020-08-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    }
+              |  ]
+              |}
+              |""".stripMargin))
+        ) shouldBe List(RuleDeductionsDateRangeInvalidError)
+      }
+      "deductionToDate is thirteen months after the deductionFromDate" in new SetUp {
+        validator.validate(
+          CreateRawData(nino, Json.parse(
+            """
+              |{
+              |  "fromDate": "2019-04-06" ,
+              |  "toDate": "2020-04-05",
+              |  "contractorName": "Bovis",
+              |  "employerRef": "123/AB56797",
+              |  "periodData": [
+              |      {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2019-06-06",
+              |      "deductionToDate": "2020-07-05",
+              |      "costOfMaterials": 35.00,
+              |      "grossAmountPaid": 1457.00
+              |    },
+              |    {
+              |      "deductionAmount": 355.00,
+              |      "deductionFromDate": "2019-07-06",
+              |      "deductionToDate": "2019-08-05",
               |      "costOfMaterials": 35.00,
               |      "grossAmountPaid": 1457.00
               |    }

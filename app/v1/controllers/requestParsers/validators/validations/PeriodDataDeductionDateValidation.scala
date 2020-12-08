@@ -58,7 +58,10 @@ object PeriodDataDeductionDateValidation {
       val startDate = LocalDate.parse(fromDate, formatter)
       val endDate = LocalDate.parse(toDate, formatter)
       val diff = endDate.getMonth.getValue - startDate.getMonth.getValue
-      if (diff != 1 && diff != -11) List(RuleDeductionsDateRangeInvalidError) else NoValidationErrors
+      (diff == 1 && endDate.getYear == startDate.getYear, diff == -11 && endDate.getYear - startDate.getYear == 1) match {
+        case (false, false) => List(RuleDeductionsDateRangeInvalidError)
+        case _            => NoValidationErrors
+      }
     }
 
 
@@ -71,8 +74,9 @@ object PeriodDataDeductionDateValidation {
     val taxYearEndDate = LocalDate.parse(toDate, formatter)
     val DeductionEndDate = LocalDate.parse(deductionToDate, formatter)
 
-    (DeductionStartDate.isAfter(taxYearStartDate) || DeductionStartDate.isEqual(taxYearStartDate), DeductionEndDate.isBefore(taxYearEndDate) || DeductionEndDate.isEqual(taxYearEndDate)) match {
-      case (true, true)  => NoValidationErrors
+    (DeductionStartDate.isBefore(taxYearStartDate),
+      DeductionEndDate.isAfter(taxYearEndDate)) match {
+      case (false, false)  => NoValidationErrors
       case _ => List(RuleUnalignedDeductionsPeriodError)
     }
   }

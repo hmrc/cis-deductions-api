@@ -153,6 +153,9 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       "the provided deductionFromDate and deductionFromDate are after the provided tax year" in {
         PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-05-06", "2020-06-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
+      "the provided deductionFromDate and deductionFromDate are thirteen months apart with one inside the tax year" in {
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-06-06", "2020-07-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
     }
   }
 
