@@ -288,7 +288,7 @@ class CreateValidatorSpec extends UnitSpec{
               |""".stripMargin))
         ) shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
-      "deductionToDate is thirteen months before the deductionFromDate" in new SetUp {
+      "deductionToDate is thirteen months after the deductionFromDate" in new SetUp {
         validator.validate(
           CreateRawData(nino, Json.parse(
             """
