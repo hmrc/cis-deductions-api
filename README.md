@@ -20,7 +20,7 @@ Run unit tests: `sbt test`
 Run integration tests: `sbt it:test`
 
 ## To view the RAML
-To view documentation locally ensure the Obligations API is running, and run api-documentation-frontend:
+To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:
 
 ```
 ./run_local_with_dependencies.sh
