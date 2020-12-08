@@ -9,7 +9,7 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>This scenario allows a user to amend their CIS Deductions.</p></td>
+            <td><p>This scenario allows a user to amend their CIS deductions.</p></td>
         </tr>
         <tr>
             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
