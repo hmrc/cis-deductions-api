@@ -1,4 +1,4 @@
-cis-deductions-api
+CIS Deductions API
 ========================
 
 The CIS Deductions API allows a developer to create, retrieve, amend and delete CIS deductions for a subcontractor.
@@ -14,12 +14,12 @@ Run from the console using: `sbt run` (starts on port 7781 by default)
 
 Start the service manager profile: `sm --start CIS_DEDUCTIONS_ALL`
 
-## Run tests
+## Running tests
 Run unit tests: `sbt test`
 
 Run integration tests: `sbt it:test`
 
-## To view the RAML
+## Vieweing RAML
 To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:
 
 ```
