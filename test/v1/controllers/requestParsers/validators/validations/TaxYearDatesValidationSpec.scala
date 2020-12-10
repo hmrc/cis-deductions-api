@@ -28,25 +28,21 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
   "validate" should {
     "return no errors" when {
       "a request body with valid toDate & fromDate" in {
-        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-05", Some(1), validateTaxYearEndedFlag = true)
-        validationResult.isEmpty shouldBe true
-      }
-      "no numYears is provided" in {
-        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-05", None, validateTaxYearEndedFlag = true)
+        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-05", 1, validateTaxYearEndedFlag = true)
         validationResult.isEmpty shouldBe true
       }
     }
     "return errors" when {
       "a request body with invalid toDate" in {
-        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-06", None, validateTaxYearEndedFlag = true)
+        val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-06", 1, validateTaxYearEndedFlag = true)
         validationResult shouldBe List(RuleDateRangeInvalidError)
       }
       "a request body with invalid fromDate" in {
-        val validationResult = TaxYearDatesValidation.validate("2019-04-07", "2020-04-05", None, validateTaxYearEndedFlag = true)
+        val validationResult = TaxYearDatesValidation.validate("2019-04-07", "2020-04-05", 1, validateTaxYearEndedFlag = true)
         validationResult shouldBe List(RuleDateRangeInvalidError)
       }
       "a request body with invalid date range" in {
-        val validationResult = TaxYearDatesValidation.validate("2018-04-06", "2020-04-05", Some(1), validateTaxYearEndedFlag = true)
+        val validationResult = TaxYearDatesValidation.validate("2018-04-06", "2020-04-05", 1, validateTaxYearEndedFlag = true)
         validationResult shouldBe List(RuleDateRangeInvalidError)
       }
     }
@@ -62,7 +58,7 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
           val endYear = startYear + 1
           val startDate = startYear.toString + "-04-06"
           val endDate = endYear.toString + "-04-05"
-          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1), validateTaxYearEndedFlag = true)
+          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = true)
           validationResult shouldBe List(RuleTaxYearNotEndedError)
         }
         "a request using a future tax year is used" in {
@@ -71,7 +67,7 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
           val endYear = currentYear + 6
           val startDate = startYear.toString + "-04-06"
           val endDate = endYear.toString + "-04-05"
-          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1), validateTaxYearEndedFlag = true)
+          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = true)
           validationResult shouldBe List(RuleDateRangeInvalidError)
         }
       }
@@ -85,7 +81,7 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
           val endYear = startYear + 1
           val startDate = startYear.toString + "-04-06"
           val endDate = endYear.toString + "-04-05"
-          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1), validateTaxYearEndedFlag = false)
+          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = false)
           validationResult shouldBe List()
         }
         "a request using a future tax year is used" in {
@@ -94,7 +90,7 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
           val endYear = currentYear + 6
           val startDate = startYear.toString + "-04-06"
           val endDate = endYear.toString + "-04-05"
-          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, Some(1), validateTaxYearEndedFlag = false)
+          val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = false)
           validationResult shouldBe List()
         }
       }

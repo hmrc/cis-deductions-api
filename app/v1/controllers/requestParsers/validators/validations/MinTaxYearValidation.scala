@@ -16,19 +16,19 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError, ToDateFormatError}
+import v1.models.errors.{FromDateFormatError, MtdError, RuleTaxYearNotSupportedError}
 
 object MinTaxYearValidation {
   private val yearSize = 4
 
   // @param taxYear In format YYYY-MM-DD
-  def validate(taxYear: String, minTaxYear: Int): List[MtdError] = {
+  def validate(fromDate: String, minTaxYear: Int): List[MtdError] = {
     try {
-      val fyTaxYear = Integer.parseInt(taxYear.take(yearSize))
+      val fyTaxYear = Integer.parseInt(fromDate.take(yearSize))
 
       if (fyTaxYear >= minTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
     } catch {
-      case e: NumberFormatException => List(ToDateFormatError)
+      case e: NumberFormatException => List(FromDateFormatError)
     }
   }
 }

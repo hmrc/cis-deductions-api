@@ -273,8 +273,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             RuleMissingToDateError,
             RuleMissingFromDateError,
             RuleSourceError,
-            RuleDateRangeOutOfDate,
-            RuleTaxYearNotSupportedError)
+            RuleDateRangeOutOfDate
+          )
         ))
 
         MockRetrieveDeductionRequestParser
@@ -297,8 +297,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             AuditError(RuleMissingToDateError.code),
             AuditError(RuleMissingFromDateError.code),
             AuditError(RuleSourceError.code),
-            AuditError(RuleDateRangeOutOfDate.code),
-            AuditError(RuleTaxYearNotSupportedError.code)
+            AuditError(RuleDateRangeOutOfDate.code)
           )),
           None
         )

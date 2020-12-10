@@ -76,11 +76,6 @@ class RetrieveValidatorSpec extends UnitSpec {
         private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")))
         result shouldBe List(RuleDateRangeInvalidError)
       }
-
-      "invalid date range before minimum tax year is provided" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2018-04-06"), Some("2019-04-05"), Some("customer")))
-        result shouldBe List(RuleTaxYearNotSupportedError)
-      }
     }
   }
 }
