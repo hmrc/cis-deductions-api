@@ -41,7 +41,7 @@ class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[Retrie
 
   private def businessRuleValidator: RetrieveRawData => List[List[MtdError]] = { data =>
     List(
-      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, Some(1))
+      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, Some(1), validateTaxYearEndedFlag = false)
     )
   }
 

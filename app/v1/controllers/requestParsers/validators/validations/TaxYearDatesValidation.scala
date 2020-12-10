@@ -16,18 +16,32 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import v1.models.errors.{MtdError, RuleDateRangeInvalidError, RuleTaxYearNotEndedError}
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import v1.models.errors.{MtdError, RuleDateRangeInvalidError, RuleTaxYearNotEndedError}
-
 object TaxYearDatesValidation {
 
-  def validate(fromDate: String, toDate: String, numYears: Option[Int]): List[MtdError] = {
-    val dateFormatErrs = validateFromDate(fromDate) ++
-    validateToDate(toDate)
-    val taxYearEndedErrs = if (dateFormatErrs.isEmpty) validateTaxYearEnded(fromDate, toDate) else dateFormatErrs
-    if(numYears.isDefined & taxYearEndedErrs.isEmpty) validateYears(numYears.get, fromDate, toDate) else taxYearEndedErrs
+  def validate(fromDate: String, toDate: String, numYears: Option[Int], validateTaxYearEndedFlag: Boolean): List[MtdError] = {
+    val fromAndToDateErrors = validateFromDate(fromDate) ++ validateToDate(toDate)
+
+    fromAndToDateErrors match {
+      case Nil  =>
+        validateYears(numYears, fromDate, toDate) match {
+          case Nil  =>
+            if (validateTaxYearEndedFlag) {
+              validateTaxYearEnded(fromDate, toDate) match {
+                case Nil  => NoValidationErrors
+                case errs => errs
+              }
+            } else {
+              NoValidationErrors
+            }
+          case errs => errs
+        }
+      case errs => errs
+    }
   }
 
   val fromDateFormat = "[0-9]{4}-04-06"
@@ -47,18 +61,21 @@ object TaxYearDatesValidation {
     val startDate = LocalDate.parse(fromDate, formatter)
     val endDate = LocalDate.parse(toDate, formatter)
     (startDate.isBefore(currentDate), endDate.isBefore(currentDate)) match {
-      case (true, true)   => NoValidationErrors
-      case (true, false)  => List(RuleTaxYearNotEndedError)
-      case (false, false) => List(RuleDateRangeInvalidError)
-      case (false, true)  => List(RuleDateRangeInvalidError)
+      case (true, true)  => NoValidationErrors
+      case (true, false) => List(RuleTaxYearNotEndedError)
+      case (false, _)    => List(RuleDateRangeInvalidError)
     }
   }
 
-  private def validateYears(numYears: Int, fromDate: String, toDate: String): List[MtdError] = {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val startDate = LocalDate.parse(fromDate, formatter)
-    val endDate = LocalDate.parse(toDate, formatter)
-    val diff = endDate.getYear - startDate.getYear
-    if (diff != numYears) List(RuleDateRangeInvalidError) else List()
-  }
+  private def validateYears(numYears: Option[Int], fromDate: String, toDate: String): List[MtdError] =
+    numYears match {
+      case Some(years) =>
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val startDate = LocalDate.parse(fromDate, formatter)
+        val endDate = LocalDate.parse(toDate, formatter)
+        val diff = endDate.getYear - startDate.getYear
+        if (diff != years) List(RuleDateRangeInvalidError) else NoValidationErrors
+      case None        => NoValidationErrors
+    }
+
 }

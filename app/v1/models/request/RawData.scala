@@ -16,4 +16,6 @@
 
 package v1.models.request
 
-trait RawData
+trait RawData {
+  val nino: String
+}

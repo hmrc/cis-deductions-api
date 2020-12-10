@@ -16,8 +16,14 @@
 
 package v1.controllers
 
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import utils.Logging
+import v1.models.audit.{AuditResponse, GenericAuditDetail}
+import v1.models.auth.UserDetails
+import v1.models.errors.ErrorWrapper
+import v1.models.request.RawData
+import play.api.http.Status
 
 trait BaseController {
   self: Logging =>
@@ -34,6 +40,28 @@ trait BaseController {
 
       result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
     }
+  }
+
+  def createAuditDetails[A <: RawData](rawData: A,
+                                       statusCode: Int,
+                                       correlationId: String,
+                                       userDetails: UserDetails,
+                                       submissionId: Option[String],
+                                       errorWrapper: Option[ErrorWrapper],
+                                       requestBody: Option[JsValue] = None,
+                                       responseBody: Option[JsValue] = None): GenericAuditDetail = {
+    val response = errorWrapper
+      .map { wrapper =>
+        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
+      } match {
+      case Some(wrapper) => wrapper
+      case None          => statusCode match {
+        case Status.NO_CONTENT => AuditResponse(statusCode, None, None)
+        case _                 => AuditResponse(statusCode, None, responseBody)
+      }
+    }
+
+    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, submissionId, correlationId, requestBody, response)
   }
 }
 

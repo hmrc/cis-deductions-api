@@ -62,19 +62,22 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
     val req = data.body.as[CreateBody]
     val fromDate = req.fromDate
     val toDate = req.toDate
-    val taxYearValidations = List(TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1)))
+    val taxYearValidations = List(TaxYearDatesValidation.validate(req.fromDate, req.toDate, Some(1), validateTaxYearEndedFlag = true))
     val periodDataCheck = if (taxYearValidations.flatten.isEmpty) {
       req.periodData.map { period =>
         PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
       }.toList
-    } else taxYearValidations
+    } else {
+      taxYearValidations
+    }
 
     if (periodDataCheck.flatten.isEmpty) {
       req.periodData.map { period =>
         PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(fromDate, toDate, period.deductionFromDate, period.deductionFromDate)
       }.toList
-    } else
+    } else {
       periodDataCheck
+    }
 
   }
 

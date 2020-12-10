@@ -19,7 +19,6 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import config.AppConfig
-import javax.inject.Inject
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
@@ -29,12 +28,12 @@ import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreateRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.audit._
-import v1.models.auth.UserDetails
 import v1.models.errors._
 import v1.models.request.create.CreateRawData
 import v1.models.response.create.CreateHateoasData
 import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CreateController @Inject()(val authService: EnrolmentsAuthService,
@@ -73,7 +72,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
       auditSubmission(
-        createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None,
+        createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, None,
           requestBody = Some(request.body), responseBody = Some(Json.toJson(vendorResponse))))
 
       Ok(Json.toJson(vendorResponse))
@@ -89,7 +88,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Error response received with CorrelationId: $resCorrelationId")
 
-      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper),
+      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, None, Some(errorWrapper),
         requestBody = Some(request.body)))
       result
     }.merge
@@ -108,22 +107,6 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
-  }
-
-  private def createAuditDetails(rawData: CreateRawData,
-                                 statusCode: Int,
-                                 correlationId: String,
-                                 userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper],
-                                 requestBody: Option[JsValue],
-                                 responseBody: Option[JsValue] = None): GenericAuditDetail = {
-    val response = errorWrapper
-      .map { wrapper =>
-        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
-      }
-      .getOrElse(AuditResponse(statusCode, None, responseBody ))
-
-    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, None, correlationId, requestBody, response)
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
