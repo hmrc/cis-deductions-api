@@ -17,10 +17,11 @@
 package v1.controllers.requestParsers.validators
 
 import config.{AppConfig, FixedConfig}
-import javax.inject.Inject
-import v1.controllers.requestParsers.validators.validations.{MinTaxYearValidation, _}
+import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
+
+import javax.inject.Inject
 
 class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig{
 
@@ -30,8 +31,7 @@ class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[Retrie
     NinoValidation.validate(data.nino),
     SourceValidation.validate(data.source),
     DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-    DateValidation.validate(ToDateFormatError)(data.toDate.get),
-    MinTaxYearValidation.validate(data.toDate.get, appConfig.minTaxYearCisDeductions.toInt)
+    DateValidation.validate(ToDateFormatError)(data.toDate.get)
   )
 
   private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) => List(
@@ -41,7 +41,7 @@ class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[Retrie
 
   private def businessRuleValidator: RetrieveRawData => List[List[MtdError]] = { data =>
     List(
-      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, Some(1))
+      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = false)
     )
   }
 

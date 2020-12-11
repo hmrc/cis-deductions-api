@@ -19,22 +19,21 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import config.AppConfig
-import javax.inject.Inject
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers._
 import v1.hateoas.HateoasFactory
-import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.auth.UserDetails
+import v1.models.audit.{AuditEvent, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
 import v1.models.response.retrieve
 import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
@@ -75,7 +74,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
         auditSubmission(
-          createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, responseBody = Some(Json.toJson(vendorResponse))))
+          createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, None, responseBody = Some(Json.toJson(vendorResponse))))
 
         Ok(Json.toJson(vendorResponse))
           .withApiHeaders(serviceResponse.correlationId)
@@ -90,7 +89,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: $resCorrelationId")
 
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
+        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, None, Some(errorWrapper)))
         result
       }.merge
     }
@@ -98,27 +97,11 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError
-           | RuleMissingToDateError | RuleSourceError | RuleTaxYearNotSupportedError => BadRequest(Json.toJson(errorWrapper))
+           | RuleMissingToDateError | RuleSourceError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
     }
-  }
-
-  private def createAuditDetails(rawData: RetrieveRawData,
-                                 statusCode: Int,
-                                 correlationId: String,
-                                 userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper],
-                                 requestBody: Option[JsValue] = None,
-                                 responseBody: Option[JsValue] = None): GenericAuditDetail = {
-    val response = errorWrapper
-      .map { wrapper =>
-        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
-      }
-      .getOrElse(AuditResponse(statusCode, None, responseBody))
-
-    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, None, correlationId, requestBody, response)
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {

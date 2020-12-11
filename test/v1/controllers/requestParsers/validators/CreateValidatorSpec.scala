@@ -31,19 +31,19 @@ class CreateValidatorSpec extends UnitSpec{
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
-    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
+    MockedAppConfig.minTaxYearCisDeductions.returns("2019")
   }
 
   "running validation" should {
     "return no errors" when {
       "all the fields are submitted in a request" in new SetUp {
 
-        validator.validate(CreateRawData(nino, requestJson)).isEmpty shouldBe true
+        validator.validate(CreateRawData(nino, requestJson)) shouldBe Nil
       }
 
       "an optional field is omitted in a request" in new SetUp {
 
-        validator.validate(CreateRawData(nino, missingOptionalRequestJson)).isEmpty shouldBe true
+        validator.validate(CreateRawData(nino, missingOptionalRequestJson)) shouldBe Nil
       }
     }
     "return errors" when {

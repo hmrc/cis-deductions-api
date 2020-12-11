@@ -5,12 +5,12 @@
   "type": "object",
   "properties": {
     "fromDate": {
-      "description": "CIS tax year start date. This cannot be below the minimum tax year starting 2020.",
+      "description": "CIS tax year start date. The minimum tax year is 2020-21. The minimum tax year in Sandbox is 2019-20.",
       "type": "string",
       "example": "2020-04-06"
     },
     "toDate": {
-      "description": "CIS tax year end date.",
+      "description": "CIS tax year end date. The minimum tax year is 2020-21. The minimum tax year in Sandbox is 2019-20.",
       "type": "string",
       "example": "2021-04-05"
     },

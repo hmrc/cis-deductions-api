@@ -102,7 +102,8 @@ class AmendControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()      }
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
+      }
 
       "a valid request is supplied when an optional field is missing" in new Test {
 

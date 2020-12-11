@@ -129,7 +129,7 @@ class MockFunctionObject(name: String) {
 
 }
 
-private case class TestRawData(fieldOne: String, fieldTwo: String) extends RawData
+private case class TestRawData(nino: String, fieldTwo: String) extends RawData
 
 // Create a Validator based off the trait to be able to test it
 private class TestValidator extends Validator[TestRawData] {

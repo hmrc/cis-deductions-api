@@ -17,20 +17,19 @@
 package v1.controllers
 
 import cats.data.EitherT
-import javax.inject.Inject
 import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.DeleteRequestParser
-import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.auth.UserDetails
+import v1.models.audit.{AuditEvent, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.request.delete.DeleteRawData
 import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLookupService}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeleteController @Inject()(val authService: EnrolmentsAuthService,
@@ -65,7 +64,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
         auditSubmission(
-          createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, None,
+          createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, Some(rawData.submissionId), None,
             responseBody = Some(Json.toJson(serviceResponse.correlationId))))
 
         NoContent.withApiHeaders(serviceResponse.correlationId)
@@ -80,7 +79,7 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: $resCorrelationId")
 
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(errorWrapper)))
+        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(rawData.submissionId), Some(errorWrapper)))
         result
       }.merge
     }
@@ -95,22 +94,6 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
 
-  }
-
-  private def createAuditDetails(rawData: DeleteRawData,
-                                 statusCode: Int,
-                                 correlationId: String,
-                                 userDetails: UserDetails,
-                                 errorWrapper: Option[ErrorWrapper],
-                                 requestBody: Option[JsValue] = None,
-                                 responseBody: Option[JsValue] = None): GenericAuditDetail = {
-    val response = errorWrapper
-      .map { wrapper =>
-        AuditResponse(statusCode, Some(wrapper.auditErrors), None)
-      }
-      .getOrElse(AuditResponse(statusCode, None, None))
-
-    GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, Some(rawData.submissionId), correlationId, requestBody, response)
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {

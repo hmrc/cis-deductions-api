@@ -44,12 +44,12 @@ class ApiDefinitionFactorySpec extends UnitSpec {
           Definition(
             scopes = Seq(
               Scope(
-                key = "read:self-assessment",
+                key = readScope,
                 name = "View your Self Assessment information",
                 description = "Allow read access to self assessment data"
               ),
               Scope(
-                key = "write:self-assessment",
+                key = writeScope,
                 name = "Change your Self Assessment information",
                 description = "Allow write access to self assessment data"
               )

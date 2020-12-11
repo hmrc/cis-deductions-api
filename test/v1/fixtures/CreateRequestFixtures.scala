@@ -520,8 +520,8 @@ object CreateRequestFixtures {
   val requestBodyJsonErrorInvalidDateRangeMax = Json.parse(
     """
       |{
-      |  "fromDate" : "2018-04-06",
-      |  "toDate" : "2020-04-05",
+      |  "fromDate" : "2019-04-06",
+      |  "toDate" : "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -958,8 +958,8 @@ object CreateRequestFixtures {
   val requestInvalidDateRangeJson = Json.parse(
     """
       |{
-      |  "fromDate": "2018-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate": "2019-04-06" ,
+      |  "toDate": "2021-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
