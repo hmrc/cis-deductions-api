@@ -37,9 +37,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         MockedAppConfig.apiStatus returns "1.0"
         MockedAppConfig.endpointsEnabled returns true
 
-        private val readScope = "read:self-assessment"
-        private val writeScope = "write:self-assessment"
-
         apiDefinitionFactory.definition shouldBe
           Definition(
             scopes = Seq(
