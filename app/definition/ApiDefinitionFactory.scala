@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import config.{AppConfig, FeatureSwitch}
 import definition.Versions._
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 @Singleton
 class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
@@ -27,18 +28,22 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
   private val readScope = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
+  def confidenceLevel: ConfidenceLevel = if (appConfig.confidenceLevelConfig.definitionEnabled) ConfidenceLevel.L200 else ConfidenceLevel.L50
+
   lazy val definition: Definition =
     Definition(
       scopes = Seq(
         Scope(
           key = readScope,
           name = "View your Self Assessment information",
-          description = "Allow read access to self assessment data"
+          description = "Allow read access to self assessment data",
+          confidenceLevel = confidenceLevel
         ),
         Scope(
           key = writeScope,
           name = "Change your Self Assessment information",
-          description = "Allow write access to self assessment data"
+          description = "Allow write access to self assessment data",
+          confidenceLevel = confidenceLevel
         )
       ),
       api = APIDefinition(
