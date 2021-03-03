@@ -28,11 +28,13 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       "scopes": [{
         "key": "read:self-assessment",
         "name": "View your Self Assessment information",
-        "description": "Allow read access to self assessment data"
+        "description": "Allow read access to self assessment data",
+        "confidenceLevel": 200
       }, {
         "key": "write:self-assessment",
         "name": "Change your Self Assessment information",
-        "description": "Allow write access to self assessment data"
+        "description": "Allow write access to self assessment data",
+        "confidenceLevel": 200
       }],
       "api": {
         "name": "CIS Deductions (MTD)",
