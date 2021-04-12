@@ -16,6 +16,8 @@
 
 package v1.controllers.requestParsers.validators
 
+import java.time.Year
+
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
@@ -27,6 +29,8 @@ class CreateValidatorSpec extends UnitSpec{
 
   val nino = "AA123456A"
   val invalidNino = "GHFG197854"
+  val nextTaxYearEnd = Year.now.getValue + 1
+  val nextTaxYearStart = Year.now.getValue
 
 
   class SetUp extends MockAppConfig {
@@ -146,10 +150,10 @@ class CreateValidatorSpec extends UnitSpec{
       "tax year is dated beyond the latest completed tax year" in new SetUp {
         validator.validate(
           CreateRawData(nino, Json.parse(
-            """
+            s"""
               |{
-              |  "fromDate": "2020-04-06" ,
-              |  "toDate": "2021-04-05",
+              |  "fromDate": "$nextTaxYearStart-04-06" ,
+              |  "toDate": "$nextTaxYearEnd-04-05",
               |  "contractorName": "Bovis",
               |  "employerRef": "123/AB56797",
               |  "periodData": [
