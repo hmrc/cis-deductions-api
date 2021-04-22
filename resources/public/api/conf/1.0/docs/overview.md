@@ -8,4 +8,4 @@ This API allows the developer to:
 * remove CIS deductions
 * override previous CIS deductions (after the tax year has ended)
 
-For information on how to connect to this API [see the Income Tax MTD end-to-end service guide https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/#overview].
+For information on how to connect to this API [see the Income Tax MTD end-to-end service guide](https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/).
