@@ -9,11 +9,11 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>This scenario allows a user to delete their CIS deductions.</p></td>
+            <td><p>Simulate successfully deleting CIS deductions.</p></td>
         </tr>
         <tr>
-             <td><p>MATCHING_RESOURCE_NOT_FOUND</p></td>
-             <td><p>Simulate the scenario where the remote endpoint has indicated that no data can be found for the given period.</p></td>
+             <td><p>NOT_FOUND</p></td>
+             <td><p>Simulate the scenario where the CIS deduction was not found.</p></td>
         </tr>                     
     </tbody>
 </table>
