@@ -39,12 +39,12 @@ uses:
         type: string
         example: TC663795B
     /current-position:
-      get: !include list.raml
+      get: !include endpoints/retrieve.raml
     /amendments:
-      post: !include create.raml
+      post: !include endpoints/create.raml
     /amendments/{submissionId}:
-        delete: !include delete.raml
-        put: !include amend.raml
+        delete: !include endpoints/delete.raml
+        put: !include endpoints/amend.raml
         uriParameters:
          submissionId:
             description: 'A unique identifier for the customer provided CIS deduction amendment.'
