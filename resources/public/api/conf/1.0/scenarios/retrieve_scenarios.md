@@ -24,6 +24,10 @@
             <td><p>Simulate success response with customer deductions.</p></td>
         </tr>
         <tr>
+            <td><p>DATE_RANGE_OUT_OF_DATE</p></td>
+            <td><p>Simulate error when retrieving data which is outside the allowable tax years.</p></td>
+        </tr>
+        <tr>
             <td><p>NOT_FOUND</p></td>
             <td><p>Simulate the scenario where no data is found.</p></td>
         </tr>
