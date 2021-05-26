@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.fixtures.AmendRequestFixtures._
@@ -50,8 +50,10 @@ class AmendConnectorSpec extends ConnectorSpec {
         MockedHttpClient.
           put(
             url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
@@ -63,8 +65,10 @@ class AmendConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 

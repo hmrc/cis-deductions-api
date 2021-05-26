@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
@@ -38,6 +38,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "retrieve" should {
@@ -51,8 +52,9 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
       MockedHttpClient.get(
         url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-        requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",dummyDesHeaderCarrierConfig,
+        desRequestHeaders,
+        Seq("AnotherHeader" -> "HeaderValue")
       ).returns(Future.successful(outcome))
 
       await(connector.retrieve(request)) shouldBe outcome
@@ -66,7 +68,10 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions" +
           s"/${nino.nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
+          dummyDesHeaderCarrierConfig,
+          desRequestHeaders,
+          Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
         val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))

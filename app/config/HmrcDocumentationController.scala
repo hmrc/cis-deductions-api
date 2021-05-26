@@ -17,22 +17,23 @@
 package config
 
 import controllers.Assets
-import definition.ApiDefinitionFactory
-import javax.inject.{Inject, Singleton}
 import play.api.http.HttpErrorHandler
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-@Singleton
-class DocumentationController @Inject()(selfAssessmentApiDefinition: ApiDefinitionFactory,
-                                        cc: ControllerComponents, assets: Assets, errorHandler: HttpErrorHandler)
-  extends HmrcDocumentationController(cc,assets , errorHandler ) {
+/* TODO: This file exists as a placeholder for uk.gov.hmrc.api.controllers.DocumentationController
+    until the play-hmrc-api library gets upgraded to support Play 27*/
 
-  override def definition(): Action[AnyContent] = Action {
-    Ok(Json.toJson(selfAssessmentApiDefinition.definition))
-  }
+class HmrcDocumentationController(cc: ControllerComponents,
+                                  assets: Assets,
+                                  errorHandler: HttpErrorHandler) extends BackendController(cc) {
 
-  def raml(version: String, file: String): Action[AnyContent] = {
+  def documentation(version: String, endpointName: String): Action[AnyContent] =
+    assets.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
+
+  def definition(): Action[AnyContent] =
+    assets.at(s"/public/api", "definition.json")
+
+  def conf(version: String, file: String): Action[AnyContent] =
     assets.at(s"/public/api/conf/$version", file)
-  }
 }

@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import v1.mocks.validators.MockCreateValidator
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
 import v1.models.request.create.{CreateRawData, CreateRequestData}

@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
@@ -50,7 +50,9 @@ class DeleteConnectorSpec extends ConnectorSpec {
         MockedHttpClient.
           delete(
             url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.submissionId}",
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            dummyDesHeaderCarrierConfig,
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
         await(connector.delete(request)) shouldBe outcome
@@ -61,7 +63,11 @@ class DeleteConnectorSpec extends ConnectorSpec {
     "the http client returns a Des Error code" in new Test {
       val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.submissionId}")
+      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.submissionId}",
+        dummyDesHeaderCarrierConfig,
+        desRequestHeaders,
+        Seq("AnotherHeader" -> "HeaderValue")
+      )
         .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
       val result: DesOutcome[Unit] = await(connector.delete(request))

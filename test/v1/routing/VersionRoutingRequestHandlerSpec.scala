@@ -39,7 +39,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   test =>
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
-  implicit private val mat: Materializer        = ActorMaterializer()
   val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
 
   private val defaultRouter = mock[Router]

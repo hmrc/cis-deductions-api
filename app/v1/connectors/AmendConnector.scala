@@ -18,7 +18,7 @@ package v1.connectors
 
 import config.AppConfig
 import javax.inject.Inject
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.amend.AmendRequestData

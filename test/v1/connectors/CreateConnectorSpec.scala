@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
@@ -51,8 +51,10 @@ class CreateConnectorSpec extends ConnectorSpec {
       MockedHttpClient
         .post(
           url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+          dummyDesHeaderCarrierConfig,
           body = request.body,
-          requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          desRequestHeaders,
+          Seq("AnotherHeader" -> "HeaderValue")
         )
         .returns(Future.successful(outcome))
 
@@ -66,8 +68,10 @@ class CreateConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
