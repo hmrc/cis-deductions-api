@@ -27,7 +27,7 @@ trait ConnectorSpec extends UnitSpec
   with MimeTypes
   with HeaderNames {
 
-  lazy val baseUrl = "test-BaseUrl"
+  lazy val baseUrl = "http://test-BaseUrl"
   implicit val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val otherHeaders: Seq[(String, String)] = Seq(

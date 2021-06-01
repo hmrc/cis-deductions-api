@@ -17,17 +17,19 @@
 package v1.connectors
 
 import config.AppConfig
+import play.api.Logger
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpClient}
-import utils.Logging
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait BaseDesConnector extends Logging {
+trait BaseDesConnector {
   val http: HttpClient
   val appConfig: AppConfig
 
-  private[connectors] def desHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier = {
+  val logger: Logger = Logger(this.getClass)
+
+  private def desHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier = {
     HeaderCarrier(
       extraHeaders = hc.extraHeaders ++
         // Contract headers

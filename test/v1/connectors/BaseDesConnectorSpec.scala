@@ -44,6 +44,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
       val http: HttpClient = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
+
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
