@@ -39,6 +39,7 @@ class CreateConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
