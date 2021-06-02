@@ -35,7 +35,7 @@ trait ConnectorSpec extends UnitSpec
     "AnotherHeader" -> "HeaderValue"
   )
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   val dummyDesHeaderCarrierConfig: HeaderCarrier.Config =
