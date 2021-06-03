@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class RetrieveConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
@@ -43,16 +43,16 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
   "retrieve" should {
     "return a Retrieve Deductions response when a source is supplied" in new Test {
-      val request: RetrieveRequestData = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
+      val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
         Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
           Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),request.source))))
       )))
 
-      MockedHttpClient.parameterGet(
-        url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}",
-        parameters = Seq(("periodStart", s"${request.fromDate}"),("periodEnd",s"${request.toDate}"),("source",s"${request.source}")),
+      MockedHttpClient.get(
+        url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
         dummyDesHeaderCarrierConfig,
         desRequestHeaders,
         Seq("AnotherHeader" -> "HeaderValue")
@@ -63,12 +63,12 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "return a Des Error code" when {
       "the http client returns a Des Error code" in new Test {
-        val request: RetrieveRequestData = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
+        val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.parameterGet[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions/${nino.nino}",
-          parameters = Seq(("periodStart", s"${request.fromDate}"),("periodEnd",s"${request.toDate}"),("source",s"${request.source}")),
+        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions/${nino}" +
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
           dummyDesHeaderCarrierConfig,
           desRequestHeaders,
           Seq("AnotherHeader" -> "HeaderValue"))

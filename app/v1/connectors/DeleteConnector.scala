@@ -34,7 +34,7 @@ class DeleteConnector @Inject()(val http: HttpClient,
   ec: ExecutionContext,
   correlationId: String): Future[DesOutcome[Unit]] = {
     delete(
-      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/submissionId/${request.submissionId}")
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.submissionId}")
     )
   }
 }

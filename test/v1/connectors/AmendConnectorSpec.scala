@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
   val submissionId = "S4636A77V5KB8625U"
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -43,14 +43,14 @@ class AmendConnectorSpec extends ConnectorSpec {
   }
 
   "amend" should {
-    val request = AmendRequestData(nino, submissionId, amendRequestObj)
+    val request = AmendRequestData(Nino(nino), submissionId, amendRequestObj)
 
     "return a result" when {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
             dummyDesHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,
@@ -65,7 +65,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
             dummyDesHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,

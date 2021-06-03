@@ -39,7 +39,7 @@ class CreateConnector @Inject()(val http: HttpClient,
 
     post(
       body = request.body,
-      DesUri[CreateResponseModel](s"${appConfig.desCisUrl}/${request.nino}")
+      DesUri[CreateResponseModel](s"${appConfig.desCisUrl}/${request.nino.nino}")
     )
   }
 }

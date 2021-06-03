@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
   val submissionId = "123456789"
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -44,14 +44,14 @@ class CreateConnectorSpec extends ConnectorSpec {
   }
 
   "create" must {
-    val request = CreateRequestData(nino, CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00)))))
+    val request = CreateRequestData(Nino(nino), CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00)))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
       val outcome = Right(ResponseWrapper(submissionId, CreateResponseModel(submissionId)))
 
       MockedHttpClient
         .post(
-          url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+          url = s"$baseUrl/income-tax/cis/deductions/$nino",
           dummyDesHeaderCarrierConfig,
           body = request.body,
           desRequestHeaders,
@@ -68,7 +68,7 @@ class CreateConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .post(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino",
             dummyDesHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,

@@ -38,7 +38,7 @@ class RetrieveConnector @Inject()(val http: HttpClient,
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     get(
-      DesUri[RetrieveResponseModel[CisDeductions]](s"${appConfig.desCisUrl}/${request.nino}" +
+      DesUri[RetrieveResponseModel[CisDeductions]](s"${appConfig.desCisUrl}/${request.nino.nino}" +
         s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
     )
   }
