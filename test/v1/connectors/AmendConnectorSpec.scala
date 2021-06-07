@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.fixtures.AmendRequestFixtures._
@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
   val submissionId = "S4636A77V5KB8625U"
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -37,21 +37,24 @@ class AmendConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
 
   }
 
   "amend" should {
-    val request = AmendRequestData(nino, submissionId, amendRequestObj)
+    val request = AmendRequestData(Nino(nino), submissionId, amendRequestObj)
 
     "return a result" when {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
@@ -62,9 +65,11 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}/submissionId/${request.id}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 

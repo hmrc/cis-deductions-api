@@ -19,11 +19,11 @@ package definition
 import config.{AppConfig, FeatureSwitch}
 import definition.Versions._
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import uk.gov.hmrc.auth.core.ConfidenceLevel
+import utils.Logging
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
+class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
 
   private val readScope = "read:self-assessment"
   private val writeScope = "write:self-assessment"
@@ -54,7 +54,6 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         versions = Seq(
           APIVersion(
             version = VERSION_1,
-            access = buildWhiteListingAccess(),
             status = buildAPIStatus(VERSION_1),
             endpointsEnabled = appConfig.endpointsEnabled(VERSION_1)
           )
@@ -66,13 +65,8 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
   private[definition] def buildAPIStatus(version: String): APIStatus = {
     APIStatus.parser.lift(appConfig.apiStatus(version))
       .getOrElse {
-        Logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
+        logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
         APIStatus.ALPHA
       }
-  }
-
-  private[definition] def buildWhiteListingAccess(): Option[Access] = {
-    val featureSwitch = FeatureSwitch(appConfig.featureSwitch)
-    if (featureSwitch.isWhiteListingEnabled) Some(Access("PRIVATE", featureSwitch.whiteListedApplicationIds)) else None
   }
 }

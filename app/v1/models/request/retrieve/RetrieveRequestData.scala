@@ -16,6 +16,6 @@
 
 package v1.models.request.retrieve
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 
 case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String)

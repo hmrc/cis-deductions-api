@@ -19,7 +19,7 @@ package v1.models.response.create
 import mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.GET

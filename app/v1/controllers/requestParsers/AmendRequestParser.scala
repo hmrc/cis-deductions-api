@@ -17,9 +17,9 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.AmendValidator
-import v1.models.request.amend.{AmendRawData, AmendBody, AmendRequestData}
+import v1.models.domain.Nino
+import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
 class AmendRequestParser @Inject()(val validator: AmendValidator )
   extends RequestParser[AmendRawData, AmendRequestData]{

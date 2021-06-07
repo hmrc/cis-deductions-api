@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class RetrieveConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
@@ -38,11 +38,12 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "retrieve" should {
     "return a Retrieve Deductions response when a source is supplied" in new Test {
-      val request = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
+      val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
 
       val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
         Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
@@ -50,9 +51,11 @@ class RetrieveConnectorSpec extends ConnectorSpec {
       )))
 
       MockedHttpClient.get(
-        url = s"$baseUrl/income-tax/cis/deductions/${nino.nino}" +
+        url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
           s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-        requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+        dummyDesHeaderCarrierConfig,
+        desRequestHeaders,
+        Seq("AnotherHeader" -> "HeaderValue")
       ).returns(Future.successful(outcome))
 
       await(connector.retrieve(request)) shouldBe outcome
@@ -60,13 +63,15 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "return a Des Error code" when {
       "the http client returns a Des Error code" in new Test {
-        val request = RetrieveRequestData(nino, "2019-04-05", "2020-04-06", "contractor")
+        val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions" +
-          s"/${nino.nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
+        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions/${nino}" +
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
+          dummyDesHeaderCarrierConfig,
+          desRequestHeaders,
+          Seq("AnotherHeader" -> "HeaderValue"))
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
         val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
