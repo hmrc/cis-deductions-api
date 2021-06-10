@@ -69,7 +69,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               versions = Seq(
                 APIVersion(
                   version = "1.0",
-                  access = None,
                   status = APIStatus.ALPHA,
                   endpointsEnabled = true
                 )
@@ -116,7 +115,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "the 'featureSwitch' parameter is not present" should {
       "return None" in new Test {
         MockedAppConfig.featureSwitch returns None
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
       }
     }
 
@@ -132,14 +130,12 @@ class ApiDefinitionFactorySpec extends UnitSpec {
           """.stripMargin
 
         MockedAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString(someString)))
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe Some(Access("PRIVATE", Seq("anId")))
       }
     }
 
     "the 'featureSwitch' parameter is present and white listing is not enabled" should {
       "return None" in new Test {
         MockedAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString("""white-list.enabled = false""")))
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
       }
     }
   }
