@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
+  val nino = "AA123456A"
   val submissionId = "123456789"
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -39,20 +39,23 @@ class CreateConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
     MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
   "create" must {
-    val request = CreateRequestData(nino, CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00)))))
+    val request = CreateRequestData(Nino(nino), CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00)))))
 
     "post a CreateCisDeductionRequest body and return the result" in new Test {
       val outcome = Right(ResponseWrapper(submissionId, CreateResponseModel(submissionId)))
 
       MockedHttpClient
         .post(
-          url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+          url = s"$baseUrl/income-tax/cis/deductions/$nino",
+          dummyDesHeaderCarrierConfig,
           body = request.body,
-          requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          desRequestHeaders,
+          Seq("AnotherHeader" -> "HeaderValue")
         )
         .returns(Future.successful(outcome))
 
@@ -65,9 +68,11 @@ class CreateConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .post(
-            url = s"$baseUrl/income-tax/cis/deductions/${request.nino}",
+            url = s"$baseUrl/income-tax/cis/deductions/$nino",
+            dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders ="Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 

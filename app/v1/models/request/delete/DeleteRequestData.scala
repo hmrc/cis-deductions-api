@@ -16,7 +16,7 @@
 
 package v1.models.request.delete
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 
 case class DeleteRequestData(nino: Nino, submissionId: String)
 
