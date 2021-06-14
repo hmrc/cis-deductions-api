@@ -17,9 +17,9 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.CreateValidator
-import v1.models.request.create.{CreateRawData, CreateBody, CreateRequestData}
+import v1.models.domain.Nino
+import v1.models.request.create.{CreateBody, CreateRawData, CreateRequestData}
 
 class CreateRequestParser @Inject()(val validator: CreateValidator)
   extends RequestParser[CreateRawData, CreateRequestData] {

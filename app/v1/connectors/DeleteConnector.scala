@@ -18,7 +18,7 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.delete.DeleteRequestData
 
@@ -34,7 +34,7 @@ class DeleteConnector @Inject()(val http: HttpClient,
   ec: ExecutionContext,
   correlationId: String): Future[DesOutcome[Unit]] = {
     delete(
-      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino}/submissionId/${request.submissionId}")
+      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.submissionId}")
     )
   }
 }

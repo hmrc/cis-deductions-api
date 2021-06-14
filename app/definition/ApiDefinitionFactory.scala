@@ -19,11 +19,11 @@ package definition
 import config.{AppConfig, FeatureSwitch}
 import definition.Versions._
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import uk.gov.hmrc.auth.core.ConfidenceLevel
+import utils.Logging
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
+class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
 
   val logger: Logger = Logger(this.getClass)
 

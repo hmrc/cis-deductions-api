@@ -16,12 +16,15 @@
 
 package v1.models.errors
 
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.{Json, OWrites}
 
 case class MtdError(code: String, message: String)
 
 object MtdError {
-  implicit val writes: Writes[MtdError] = Json.writes[MtdError]
+  implicit val writes: OWrites[MtdError] = Json.writes[MtdError]
+
+  implicit def genericWrites[T <: MtdError]: OWrites[T] =
+    writes.contramap[T](c => c: MtdError)
 }
 
 // Format Errors
