@@ -32,9 +32,13 @@ Then go to http://localhost:7781/api-documentation/docs/api/preview and use this
 http://localhost:7796/api/conf/1.0/application.raml
 ```
 
-## Reporting Issues
+## Changelog
 
-You can create a GitHub issue [here](https://github.com/hmrc/cis-deductions-api/issues)
+You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
+
+## Support and Reporting Issues
+
+You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-changelog/issues)
 
 ## API Reference / Documentation 
 
