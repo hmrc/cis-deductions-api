@@ -1,1 +1,1 @@
-You can find the changelog in the [cis-deductions-api](https://github.com/hmrc/cis-deductions-api/wiki) GitHub wiki.
+You can find the changelog in the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/wiki) GitHub wiki.
