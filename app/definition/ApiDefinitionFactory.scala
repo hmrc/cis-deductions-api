@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package definition
 
-import config.{AppConfig, FeatureSwitch}
+import config.AppConfig
 import definition.Versions._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.auth.core.ConfidenceLevel

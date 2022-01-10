@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers.validators
 
 import java.time.Year
-
 import mocks.MockAppConfig
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
@@ -148,12 +148,18 @@ class CreateValidatorSpec extends UnitSpec{
         result shouldBe List(RuleTaxYearNotSupportedError)
       }
       "tax year is dated beyond the latest completed tax year" in new SetUp {
+        private val now = DateTime.now()
+        val (start: String, end: String) = if((now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4) || now.monthOfYear().get() < 4) {
+          (s"${nextTaxYearStart - 1}-04-06", s"${nextTaxYearEnd - 1}-04-05")
+        } else {
+          (s"${nextTaxYearStart}-04-06", s"${nextTaxYearEnd}-04-05")
+        }
         validator.validate(
           CreateRawData(nino, Json.parse(
             s"""
               |{
-              |  "fromDate": "$nextTaxYearStart-04-06" ,
-              |  "toDate": "$nextTaxYearEnd-04-05",
+              |  "fromDate": "$start" ,
+              |  "toDate": "$end",
               |  "contractorName": "Bovis",
               |  "employerRef": "123/AB56797",
               |  "periodData": [
