@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,9 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
     val req = data.body.as[CreateBody]
     val fromDate = req.fromDate
     val toDate = req.toDate
-    val taxYearValidations: List[List[MtdError]] = List(TaxYearDatesValidation.validate(req.fromDate, req.toDate, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = true))
+    val taxYearValidations: List[List[MtdError]] = List(
+      TaxYearDatesValidation.validate(req.fromDate, req.toDate, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = true)
+    )
     val periodDataCheck: List[List[MtdError]] = if (taxYearValidations.flatten.isEmpty) {
       req.periodData.map { period =>
         PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
