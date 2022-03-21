@@ -6,7 +6,7 @@ The CIS Deductions API allows a developer to create, retrieve, amend and delete 
 ## Requirements
 - Scala 2.12.x
 - Java 8
-- sbt > 1.3.7
+- sbt > 1.6.x
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Running the microservice

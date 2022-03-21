@@ -17,6 +17,7 @@
 package utils.enums
 
 import shapeless._
+import scala.annotation.nowarn
 
 // Based on code in https://github.com/milessabin/shapeless/blob/master/examples/src/main/scala/shapeless/examples/enum.scala
 object Values {
@@ -26,7 +27,7 @@ object Values {
   }
 
   object MkValues {
-    implicit def values[E, Impls <: Coproduct](implicit gen: Generic.Aux[E, Impls], v: Aux[E, Impls]): MkValues[E] =
+    implicit def values[E, Impls <: Coproduct](implicit @nowarn("msg=parameter value gen") gen: Generic.Aux[E, Impls], v: Aux[E, Impls]): MkValues[E] =
       new MkValues[E] {
         def values: List[E] = v.values
       }
