@@ -21,7 +21,6 @@ import support.UnitSpec
 
 class EmptyJsonBodySpec extends UnitSpec {
 
-
   "EmptyJsonBody.writes" should {
     "return an empty JSON body" when {
       "called" in {

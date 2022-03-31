@@ -30,9 +30,11 @@ class BaseControllerSpec extends UnitSpec {
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "BaseController", endpointName = "beans")
 
-  val result = Result(ResponseHeader(twoHundred), HttpEntity.NoEntity)
+  val result        = Result(ResponseHeader(twoHundred), HttpEntity.NoEntity)
   val correlationId = "X-123"
-  val baseHeaders: Map[String, String] = Map("X-CorrelationId" -> correlationId, "X-Content-Type-Options" -> "nosniff", "Content-Type" -> "application/json")
+
+  val baseHeaders: Map[String, String] =
+    Map("X-CorrelationId" -> correlationId, "X-Content-Type-Options" -> "nosniff", "Content-Type" -> "application/json")
 
   "BaseController" when {
     "withApiHeaders is called" should {
@@ -52,4 +54,5 @@ class BaseControllerSpec extends UnitSpec {
       }
     }
   }
+
 }

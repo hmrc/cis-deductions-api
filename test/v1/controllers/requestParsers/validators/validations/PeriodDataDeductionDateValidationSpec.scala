@@ -22,12 +22,12 @@ import v1.models.errors._
 
 class PeriodDataDeductionDateValidationSpec extends UnitSpec {
 
-  val validFromDate = "2020-04-06"
-  val validToDate = "2021-04-05"
+  val validFromDate          = "2020-04-06"
+  val validToDate            = "2021-04-05"
   val validDeductionFromDate = "2020-07-06"
-  val validDeductionToDate = "2020-08-05"
-  val validDatesJson = Json.parse(
-    """
+  val validDeductionToDate   = "2020-08-05"
+
+  val validDatesJson = Json.parse("""
       |{
       |  "fromDate": "2020-04-06" ,
       |  "toDate": "2021-04-05",
@@ -51,8 +51,8 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |  ]
       |}
       |""".stripMargin)
-  val invalidDatesJson = Json.parse(
-    """
+
+  val invalidDatesJson = Json.parse("""
       |{
       |  "fromDate": "2020-04-06" ,
       |  "toDate": "2021-04-05",
@@ -134,27 +134,46 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
   "running validatePeriodInsideTaxYear" should {
     "return no errors" when {
       "the provided deductionFromDate and deductionFromDate are inside the provided tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-06-06", "2019-07-05") shouldBe NoValidationErrors
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(
+          "2019-04-06",
+          "2020-04-05",
+          "2019-06-06",
+          "2019-07-05") shouldBe NoValidationErrors
       }
       "the provided deductionFromDate and deductionFromDate are first month inside the provided tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-04-06", "2019-05-05") shouldBe NoValidationErrors
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(
+          "2019-04-06",
+          "2020-04-05",
+          "2019-04-06",
+          "2019-05-05") shouldBe NoValidationErrors
       }
       "the provided deductionFromDate and deductionFromDate are last month inside the provided tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-03-06", "2020-04-05") shouldBe NoValidationErrors
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(
+          "2019-04-06",
+          "2020-04-05",
+          "2020-03-06",
+          "2020-04-05") shouldBe NoValidationErrors
       }
       "the provided deductionFromDate and deductionFromDate are december and jan" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-12-06", "2020-01-05") shouldBe NoValidationErrors
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(
+          "2019-04-06",
+          "2020-04-05",
+          "2019-12-06",
+          "2020-01-05") shouldBe NoValidationErrors
       }
     }
     "return an error" when {
       "the provided deductionFromDate and deductionFromDate are before the provided tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-01-06", "2019-02-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-01-06", "2019-02-05") shouldBe List(
+          RuleUnalignedDeductionsPeriodError)
       }
       "the provided deductionFromDate and deductionFromDate are after the provided tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-05-06", "2020-06-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2020-05-06", "2020-06-05") shouldBe List(
+          RuleUnalignedDeductionsPeriodError)
       }
       "the provided deductionFromDate and deductionFromDate are thirteen months apart with one inside the tax year" in {
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-06-06", "2020-07-05") shouldBe List(RuleUnalignedDeductionsPeriodError)
+        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear("2019-04-06", "2020-04-05", "2019-06-06", "2020-07-05") shouldBe List(
+          RuleUnalignedDeductionsPeriodError)
       }
     }
   }

@@ -36,17 +36,18 @@ import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, Ret
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
-                                   val lookupService: MtdIdLookupService,
-                                   requestParser: RetrieveRequestParser,
-                                   service: RetrieveService,
-                                   auditService: AuditService,
-                                   hateoasFactory: HateoasFactory,
-                                   appConfig: AppConfig,
-                                   cc: ControllerComponents,
-                                   val idGenerator: IdGenerator)
-                                  (implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
+class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
+                                    val lookupService: MtdIdLookupService,
+                                    requestParser: RetrieveRequestParser,
+                                    service: RetrieveService,
+                                    auditService: AuditService,
+                                    hateoasFactory: HateoasFactory,
+                                    appConfig: AppConfig,
+                                    cc: ControllerComponents,
+                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -62,11 +63,14 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
       val rawData = RetrieveRawData(nino, fromDate, toDate, source)
 
       val result = for {
-        parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+        parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
         serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
         vendorResponse <- EitherT.fromEither[Future](
-          hateoasFactory.wrapList(serviceResponse.responseData,
-            retrieve.RetrieveHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData)).asRight[ErrorWrapper]
+          hateoasFactory
+            .wrapList(
+              serviceResponse.responseData,
+              retrieve.RetrieveHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData))
+            .asRight[ErrorWrapper]
         )
       } yield {
         logger.info(
@@ -74,7 +78,14 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
         auditSubmission(
-          createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, None, responseBody = Some(Json.toJson(vendorResponse))))
+          createAuditDetails(
+            rawData,
+            OK,
+            serviceResponse.correlationId,
+            request.userDetails,
+            None,
+            None,
+            responseBody = Some(Json.toJson(vendorResponse))))
 
         Ok(Json.toJson(vendorResponse))
           .withApiHeaders(serviceResponse.correlationId)
@@ -83,7 +94,7 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -96,10 +107,11 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError
-           | RuleMissingToDateError | RuleSourceError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError | RuleMissingToDateError |
+          RuleSourceError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                                      => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                    => InternalServerError(Json.toJson(errorWrapper))
       case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
     }
   }
@@ -108,4 +120,5 @@ class RetrieveController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("RetrieveCisDeductionsForSubcontractor", "retrieve-cis-deductions-for-subcontractor", details)
     auditService.auditEvent(event)
   }
+
 }

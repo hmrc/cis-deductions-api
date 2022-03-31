@@ -25,14 +25,18 @@ import v1.models.request.create.CreateRequestData
 case class CreateResponseModel(submissionId: String)
 
 object CreateResponseModel extends HateoasLinks {
-  implicit val reads: Reads[CreateResponseModel] = Json.reads[CreateResponseModel]
+  implicit val reads: Reads[CreateResponseModel]    = Json.reads[CreateResponseModel]
   implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
 
   implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
+
     override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
       import data._
       Seq(retrieveCISDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
     }
+
   }
+
 }
+
 case class CreateHateoasData(nino: String, requestData: CreateRequestData) extends HateoasData

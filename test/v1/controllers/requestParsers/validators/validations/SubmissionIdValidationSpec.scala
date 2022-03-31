@@ -25,7 +25,7 @@ class SubmissionIdValidationSpec extends UnitSpec {
     "return no errors" when {
       "a valid submission id is supplied" in {
 
-        val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+        val validId          = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
         val validationResult = SubmissionIdValidation.validate(validId)
         validationResult.isEmpty shouldBe true
       }
@@ -33,11 +33,12 @@ class SubmissionIdValidationSpec extends UnitSpec {
 
     "return an error" when {
       "when an invalid submission id is supplied" in {
-        val invalidId = "contractor1"
+        val invalidId        = "contractor1"
         val validationResult = SubmissionIdValidation.validate(invalidId)
         validationResult.isEmpty shouldBe false
         validationResult.head shouldBe SubmissionIdFormatError
       }
     }
   }
+
 }

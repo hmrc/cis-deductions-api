@@ -30,26 +30,27 @@ import scala.concurrent.Future
 
 class DeleteServiceSpec extends UnitSpec {
 
-  val nino = Nino("AA123456A")
-  val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  val nino                   = Nino("AA123456A")
+  val submissionId           = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   implicit val correlationId = "X-123"
 
   val requestData = DeleteRequestData(nino, submissionId)
 
-
   trait Test extends MockDeleteConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new DeleteService(
       connector = mockDeleteConnector
     )
+
   }
 
   "service" should {
     "return a mapped result" when {
       "a service call is successful" in new Test {
-        MockDeleteConnector.deleteDeduction(requestData)
+        MockDeleteConnector
+          .deleteDeduction(requestData)
           .returns(Future.successful(Right(ResponseWrapper("resultId", ()))))
 
         await(service.deleteDeductions(requestData)) shouldBe Right(ResponseWrapper("resultId", ()))
@@ -59,7 +60,8 @@ class DeleteServiceSpec extends UnitSpec {
     def serviceError(desErrorCode: String, error: MtdError): Unit =
       s"return ${error.code} error" when {
         s" ${desErrorCode} desErrorCode is returned from the connector " in new Test {
-          MockDeleteConnector.deleteDeduction(requestData)
+          MockDeleteConnector
+            .deleteDeduction(requestData)
             .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.deleteDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
@@ -71,10 +73,11 @@ class DeleteServiceSpec extends UnitSpec {
       ("SERVER_ERROR", DownstreamError),
       ("SERVICE_UNAVAILABLE", DownstreamError),
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError
+      "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
+      "INVALID_CORRELATIONID"     -> DownstreamError
     )
 
     input.foreach(args => (serviceError _).tupled(args))
   }
+
 }

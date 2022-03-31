@@ -23,7 +23,8 @@ object MandatoryValidation {
   def validate[A](error: MtdError)(input: Option[A]): List[MtdError] = {
     input match {
       case Some(_) => NoValidationErrors
-      case _ => List(error)
+      case _       => List(error)
     }
   }
+
 }

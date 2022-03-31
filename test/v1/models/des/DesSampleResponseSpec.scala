@@ -20,10 +20,10 @@ import play.api.libs.json.Json
 import support.UnitSpec
 
 class DesSampleResponseSpec extends UnitSpec {
+
   "Json reads" should {
     "use specified format" in {
-      val json = Json.parse(
-        """
+      val json = Json.parse("""
           |{
           |  "responseData": "someResponse"
           |}""".stripMargin)
@@ -31,4 +31,5 @@ class DesSampleResponseSpec extends UnitSpec {
       json.as[DesSampleResponse] shouldBe DesSampleResponse("someResponse")
     }
   }
+
 }

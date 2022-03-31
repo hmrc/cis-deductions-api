@@ -62,18 +62,23 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       generatedAt = Instant.now()
     )
 
-    (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String])(_: HeaderCarrier)).expects(*, *, *, *, *)
+    (httpAuditEvent
+      .dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String])(_: HeaderCarrier))
+      .expects(*, *, *, *, *)
       .returns(dataEvent)
 
-    (auditConnector.sendEvent(_ : DataEvent)(_: HeaderCarrier, _: ExecutionContext)).expects(*, *, *)
+    (auditConnector
+      .sendEvent(_: DataEvent)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, *, *)
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
-      "appName" -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List.empty,
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List.empty,
       "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
       "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
     )
+
     val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
@@ -147,7 +152,8 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     "return 400 with error body" when {
       "JsValidationException thrown" in new Test() {
-        private val result = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
+        private val result =
+          handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
         status(result) shouldBe BAD_REQUEST
 
         contentAsJson(result) shouldBe Json.toJson(BadRequestError)
@@ -163,5 +169,5 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       }
     }
   }
-}
 
+}

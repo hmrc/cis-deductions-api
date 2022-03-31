@@ -23,8 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.{Application, Environment, Mode}
 
-trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServerPerSuite
-  with BeforeAndAfterEach with BeforeAndAfterAll {
+trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServerPerSuite with BeforeAndAfterEach with BeforeAndAfterAll {
 
   val mockHost: String = WireMockHelper.host
   val mockPort: String = WireMockHelper.wireMockPort.toString
@@ -32,14 +31,14 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   lazy val client: WSClient = app.injector.instanceOf[WSClient]
 
   def servicesConfig: Map[String, String] = Map(
-    "microservice.services.des.host" -> mockHost,
-    "microservice.services.des.port" -> mockPort,
+    "microservice.services.des.host"           -> mockHost,
+    "microservice.services.des.port"           -> mockPort,
     "microservice.services.mtd-id-lookup.host" -> mockHost,
     "microservice.services.mtd-id-lookup.port" -> mockPort,
-    "microservice.services.auth.host" -> mockHost,
-    "microservice.services.auth.port" -> mockPort,
-    "auditing.consumer.baseUri.port" -> mockPort,
-    "minTaxYearCisDeductions" -> "2019"
+    "microservice.services.auth.host"          -> mockHost,
+    "microservice.services.auth.port"          -> mockPort,
+    "auditing.consumer.baseUri.port"           -> mockPort,
+    "minTaxYearCisDeductions"                  -> "2019"
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()

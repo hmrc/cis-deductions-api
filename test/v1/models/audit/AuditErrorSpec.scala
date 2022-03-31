@@ -27,8 +27,7 @@ class AuditErrorSpec extends UnitSpec {
     "passed an audit error model" should {
       "produce valid json" in {
 
-         val json = Json.parse(
-          s"""
+        val json = Json.parse(s"""
              |{
              |  "errorCode": "FORMAT_NINO"
              |}
@@ -38,4 +37,5 @@ class AuditErrorSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -21,7 +21,9 @@ import v1.models.errors.{EmployerRefFormatError, MtdError}
 object EmployerRefValidation {
 
   val empRefFormat = "[0-9]{3}\\/[^ ]{0,9}"
+
   def validate(empRef: String): List[MtdError] = {
     if (empRef.matches(empRefFormat)) NoValidationErrors else List(EmployerRefFormatError)
   }
+
 }

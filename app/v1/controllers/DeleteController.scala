@@ -32,22 +32,22 @@ import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLoo
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeleteController @Inject()(val authService: EnrolmentsAuthService,
-                                 val lookupService: MtdIdLookupService,
-                                 requestParser: DeleteRequestParser,
-                                 service: DeleteService,
-                                 auditService: AuditService,
-                                 cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext) extends AuthorisedController(cc)
-  with BaseController
-  with Logging {
+class DeleteController @Inject() (val authService: EnrolmentsAuthService,
+                                  val lookupService: MtdIdLookupService,
+                                  requestParser: DeleteRequestParser,
+                                  service: DeleteService,
+                                  auditService: AuditService,
+                                  cc: ControllerComponents,
+                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "DeleteController",
       endpointName = "deleteEndpoint"
     )
-
 
   def deleteRequest(nino: String, submissionId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -57,40 +57,48 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
       val rawData = DeleteRawData(nino, submissionId)
 
       val result = for {
-        parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+        parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
         serviceResponse <- EitherT(service.deleteDeductions(parsedRequest))
       } yield {
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
         auditSubmission(
-          createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, Some(rawData.submissionId), None,
-            responseBody = Some(Json.toJson(serviceResponse.correlationId))))
+          createAuditDetails(
+            rawData,
+            NO_CONTENT,
+            serviceResponse.correlationId,
+            request.userDetails,
+            Some(rawData.submissionId),
+            None,
+            responseBody = Some(Json.toJson(serviceResponse.correlationId))
+          ))
 
-        NoContent.withApiHeaders(serviceResponse.correlationId)
+        NoContent
+          .withApiHeaders(serviceResponse.correlationId)
           .as(MimeTypes.JSON)
       }
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: $resCorrelationId")
 
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(rawData.submissionId), Some(errorWrapper)))
+        auditSubmission(
+          createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(rawData.submissionId), Some(errorWrapper)))
         result
       }.merge
     }
-
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | SubmissionIdFormatError =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
 
@@ -100,4 +108,5 @@ class DeleteController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("DeleteCisDeductionsForSubcontractor", "delete-cis-deductions-for-subcontractor", details)
     auditService.auditEvent(event)
   }
+
 }

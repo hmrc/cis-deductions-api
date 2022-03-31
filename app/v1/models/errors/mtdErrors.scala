@@ -25,22 +25,23 @@ object MtdError {
 
   implicit def genericWrites[T <: MtdError]: OWrites[T] =
     writes.contramap[T](c => c: MtdError)
+
 }
 
 // Format Errors
-object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
-object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid")
-object EmployerRefFormatError extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid")
-object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
-object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
-object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
+object NinoFormatError              extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
+object SubmissionIdFormatError      extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid")
+object EmployerRefFormatError       extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid")
+object TaxYearFormatError           extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object FromDateFormatError          extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
+object ToDateFormatError            extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
 object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid")
-object DeductionToDateFormatError extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid")
-
+object DeductionToDateFormatError   extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
-    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED",
+    extends MtdError(
+      "RULE_TAX_YEAR_NOT_SUPPORTED",
       "The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.")
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
@@ -49,16 +50,16 @@ object RuleTaxYearRangeExceededError
     extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
 
 object RuleDeductionsDateRangeInvalidError
-    extends MtdError("RULE_DEDUCTIONS_DATE_RANGE_INVALID", "The deductions period must align from the 6th of one month to the 5th of the following month")
+    extends MtdError(
+      "RULE_DEDUCTIONS_DATE_RANGE_INVALID",
+      "The deductions period must align from the 6th of one month to the 5th of the following month")
 
-object RuleDateRangeInvalidError
-    extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")
+object RuleDateRangeInvalidError extends MtdError("RULE_DATE_RANGE_INVALID", "The date range should be a valid tax year")
 
 object RuleToDateBeforeFromDateError
     extends MtdError("RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE", "The deductions To date must be after the deductions From date")
 
-object RuleSourceError
-  extends MtdError("RULE_SOURCE_INVALID","The source is invalid" )
+object RuleSourceError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid")
 
 object RuleDeductionAmountError
     extends MtdError("RULE_DEDUCTIONS_AMOUNT", "The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places")
@@ -69,32 +70,28 @@ object RuleCostOfMaterialsError
 object RuleGrossAmountError
     extends MtdError("RULE_GROSS_AMOUNT_PAID", "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places")
 
-object RuleMissingFromDateError
-  extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing")
+object RuleMissingFromDateError extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing")
 
-object RuleMissingToDateError
-  extends MtdError("MISSING_TO_DATE", "The To date parameter is missing")
+object RuleMissingToDateError extends MtdError("MISSING_TO_DATE", "The To date parameter is missing")
 
-object RuleFromDateError
-  extends MtdError("FROM_DATE_NOT_IN_TAX_YEAR", "The from date is not the start of the tax year")
+object RuleFromDateError extends MtdError("FROM_DATE_NOT_IN_TAX_YEAR", "The from date is not the start of the tax year")
 
-object RuleToDateError
-  extends MtdError("TO_DATE_NOT_IN_TAX_YEAR", "The to date is not the end of the tax year")
+object RuleToDateError extends MtdError("TO_DATE_NOT_IN_TAX_YEAR", "The to date is not the end of the tax year")
 
 object RuleUnalignedDeductionsPeriodError
-  extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
+    extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied")
 
-object RuleTaxYearNotEndedError
-  extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The submission has been made before the tax year has ended")
+object RuleTaxYearNotEndedError extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The submission has been made before the tax year has ended")
 
-object RuleDuplicateSubmissionError
-  extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for this tax year")
+object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for this tax year")
 
 object RuleDuplicatePeriodError
-  extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period")
+    extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period")
 
 object RuleDateRangeOutOfDate
-  extends MtdError("RULE_DATE_RANGE_OUT_OF_DATE", "The specified date range is outside the allowable tax years (the current tax year minus four years)")
+    extends MtdError(
+      "RULE_DATE_RANGE_OUT_OF_DATE",
+      "The specified date range is outside the allowable tax years (the current tax year minus four years)")
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
@@ -108,12 +105,12 @@ object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error")
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error")
 
 //Authorisation Errors
-object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
+object UnauthorisedError       extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised")
 object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
 
 // Accept header Errors
-object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
-object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")

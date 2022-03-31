@@ -45,18 +45,35 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     "return a Retrieve Deductions response when a source is supplied" in new Test {
       val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
 
-      val outcome = Right(ResponseWrapper(correlationId, RetrieveResponseModel( Some(0.00), Some(0.00), Some(0.00),
-        Seq(CisDeductions(request.fromDate, request.toDate,Some(""),"",Some(0.00),Some(0.00),Some(0.00),
-          Seq(PeriodData("","",Some(0.00),Some(0.00), Some(0.00), "", Some(""),request.source))))
-      )))
+      val outcome = Right(
+        ResponseWrapper(
+          correlationId,
+          RetrieveResponseModel(
+            Some(0.00),
+            Some(0.00),
+            Some(0.00),
+            Seq(CisDeductions(
+              request.fromDate,
+              request.toDate,
+              Some(""),
+              "",
+              Some(0.00),
+              Some(0.00),
+              Some(0.00),
+              Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+            ))
+          )
+        ))
 
-      MockedHttpClient.get(
-        url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-        dummyDesHeaderCarrierConfig,
-        desRequestHeaders,
-        Seq("AnotherHeader" -> "HeaderValue")
-      ).returns(Future.successful(outcome))
+      MockedHttpClient
+        .get(
+          url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
+            s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
+          dummyDesHeaderCarrierConfig,
+          desRequestHeaders,
+          Seq("AnotherHeader" -> "HeaderValue")
+        )
+        .returns(Future.successful(outcome))
 
       await(connector.retrieve(request)) shouldBe outcome
     }
@@ -67,11 +84,14 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockedHttpClient.get[DesOutcome[RetrieveResponseModel[CisDeductions]]](s"$baseUrl/income-tax/cis/deductions/${nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-          dummyDesHeaderCarrierConfig,
-          desRequestHeaders,
-          Seq("AnotherHeader" -> "HeaderValue"))
+        MockedHttpClient
+          .get[DesOutcome[RetrieveResponseModel[CisDeductions]]](
+            s"$baseUrl/income-tax/cis/deductions/${nino}" +
+              s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
+            dummyDesHeaderCarrierConfig,
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
+          )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
         val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -79,4 +99,5 @@ class RetrieveConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

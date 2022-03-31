@@ -22,7 +22,7 @@ import v1.models.request.delete.DeleteRawData
 
 class DeleteValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino         = "AA123456A"
   private val validSubmissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validator = new DeleteValidator()
@@ -47,4 +47,5 @@ class DeleteValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

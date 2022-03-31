@@ -21,11 +21,11 @@ import v1.controllers.requestParsers.validators.AmendValidator
 import v1.models.domain.Nino
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
-class AmendRequestParser @Inject()(val validator: AmendValidator )
-  extends RequestParser[AmendRawData, AmendRequestData]{
+class AmendRequestParser @Inject() (val validator: AmendValidator) extends RequestParser[AmendRawData, AmendRequestData] {
 
   override protected def requestFor(data: AmendRawData): AmendRequestData = {
     val requestBody = data.body.as[AmendBody]
     AmendRequestData(Nino(data.nino), data.id, requestBody)
   }
+
 }

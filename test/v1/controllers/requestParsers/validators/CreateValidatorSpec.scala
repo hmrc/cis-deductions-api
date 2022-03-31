@@ -25,13 +25,12 @@ import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
 import v1.models.request.create.CreateRawData
 
-class CreateValidatorSpec extends UnitSpec{
+class CreateValidatorSpec extends UnitSpec {
 
-  val nino = "AA123456A"
-  val invalidNino = "GHFG197854"
-  val nextTaxYearEnd = Year.now.getValue + 1
+  val nino             = "AA123456A"
+  val invalidNino      = "GHFG197854"
+  val nextTaxYearEnd   = Year.now.getValue + 1
   val nextTaxYearStart = Year.now.getValue
-
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
@@ -59,7 +58,7 @@ class CreateValidatorSpec extends UnitSpec{
       }
       "invalid nino is provided" in new SetUp {
         private val result = validator.validate(
-          CreateRawData(invalidNino,requestJson)
+          CreateRawData(invalidNino, requestJson)
         )
         result shouldBe List(NinoFormatError)
       }
@@ -131,32 +130,33 @@ class CreateValidatorSpec extends UnitSpec{
       }
       "invalid date range above the maximum threshold is provided" in new SetUp {
         private val result = validator.validate(
-        CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMax)
+          CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMax)
         )
         result shouldBe List(RuleDateRangeInvalidError)
       }
       "invalid date range below the threshold is provided" in new SetUp {
         private val result = validator.validate(
-        CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMin)
+          CreateRawData(nino, requestBodyJsonErrorInvalidDateRangeMin)
         )
         result shouldBe List(RuleDateRangeInvalidError)
       }
       "invalid date range before minimum tax year is provided" in new SetUp {
         private val result = validator.validate(
-        CreateRawData(nino, requestBodyJsonErrorNotSupportedTaxYear)
+          CreateRawData(nino, requestBodyJsonErrorNotSupportedTaxYear)
         )
         result shouldBe List(RuleTaxYearNotSupportedError)
       }
       "tax year is dated beyond the latest completed tax year" in new SetUp {
         private val now = DateTime.now()
-        val (start: String, end: String) = if((now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4) || now.monthOfYear().get() < 4) {
+        val (start: String, end: String) = if ((now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4) || now.monthOfYear().get() < 4) {
           (s"${nextTaxYearStart - 1}-04-06", s"${nextTaxYearEnd - 1}-04-05")
         } else {
           (s"${nextTaxYearStart}-04-06", s"${nextTaxYearEnd}-04-05")
         }
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            s"""
+          CreateRawData(
+            nino,
+            Json.parse(s"""
               |{
               |  "fromDate": "$start" ,
               |  "toDate": "$end",
@@ -179,13 +179,15 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleTaxYearNotEndedError)
       }
       "period falls outside the tax year identified by fromDate and toDate" in new SetUp {
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            """
+          CreateRawData(
+            nino,
+            Json.parse("""
               |{
               |  "fromDate": "2019-04-06" ,
               |  "toDate": "2020-04-05",
@@ -208,13 +210,15 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
       "period falls in the month after the tax year identified by fromDate and toDate" in new SetUp {
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            """
+          CreateRawData(
+            nino,
+            Json.parse("""
               |{
               |  "fromDate": "2019-04-06" ,
               |  "toDate": "2020-04-05",
@@ -237,13 +241,15 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
       "period falls in the month before the tax year identified by fromDate and toDate" in new SetUp {
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            """
+          CreateRawData(
+            nino,
+            Json.parse("""
               |{
               |  "fromDate": "2019-04-06" ,
               |  "toDate": "2020-04-05",
@@ -266,13 +272,15 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
       "deductionToDate precedes the deductionFromDate" in new SetUp {
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            """
+          CreateRawData(
+            nino,
+            Json.parse("""
               |{
               |  "fromDate": "2019-04-06" ,
               |  "toDate": "2020-04-05",
@@ -295,13 +303,15 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
       "deductionToDate is thirteen months after the deductionFromDate" in new SetUp {
         validator.validate(
-          CreateRawData(nino, Json.parse(
-            """
+          CreateRawData(
+            nino,
+            Json.parse("""
               |{
               |  "fromDate": "2019-04-06" ,
               |  "toDate": "2020-04-05",
@@ -324,7 +334,8 @@ class CreateValidatorSpec extends UnitSpec{
               |    }
               |  ]
               |}
-              |""".stripMargin))
+              |""".stripMargin)
+          )
         ) shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
       "invalid employer reference format is provided" in new SetUp {
@@ -335,4 +346,5 @@ class CreateValidatorSpec extends UnitSpec{
       }
     }
   }
+
 }

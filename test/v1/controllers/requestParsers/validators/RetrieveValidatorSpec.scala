@@ -23,7 +23,7 @@ import v1.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidatorSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
+  private val nino        = "AA123456A"
   private val invalidNino = "GHFG197854"
 
   class SetUp extends MockAppConfig {
@@ -78,4 +78,5 @@ class RetrieveValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

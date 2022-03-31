@@ -36,16 +36,16 @@ import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLoo
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CreateController @Inject()(val authService: EnrolmentsAuthService,
-                                 val lookupService: MtdIdLookupService,
-                                 requestParser: CreateRequestParser,
-                                 service: CreateService,
-                                 hateoasFactory: HateoasFactory,
-                                 auditService: AuditService,
-                                 appConfig: AppConfig,
-                                 cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
+class CreateController @Inject() (val authService: EnrolmentsAuthService,
+                                  val lookupService: MtdIdLookupService,
+                                  requestParser: CreateRequestParser,
+                                  service: CreateService,
+                                  hateoasFactory: HateoasFactory,
+                                  auditService: AuditService,
+                                  appConfig: AppConfig,
+                                  cc: ControllerComponents,
+                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
@@ -62,7 +62,7 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
     val rawData = CreateRawData(nino, request.body)
 
     val result = for {
-      parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+      parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
       serviceResponse <- EitherT(service.createDeductions(parsedRequest))
       vendorResponse <- EitherT.fromEither[Future](
         hateoasFactory.wrap(serviceResponse.responseData, CreateHateoasData(nino, parsedRequest)).asRight[ErrorWrapper]
@@ -72,8 +72,15 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
       auditSubmission(
-        createAuditDetails(rawData, OK, serviceResponse.correlationId, request.userDetails, None, None,
-          requestBody = Some(request.body), responseBody = Some(Json.toJson(vendorResponse))))
+        createAuditDetails(
+          rawData,
+          OK,
+          serviceResponse.correlationId,
+          request.userDetails,
+          None,
+          None,
+          requestBody = Some(request.body),
+          responseBody = Some(Json.toJson(vendorResponse))))
 
       Ok(Json.toJson(vendorResponse))
         .withApiHeaders(serviceResponse.correlationId)
@@ -82,29 +89,35 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
 
     result.leftMap { errorWrapper =>
       val resCorrelationId = errorWrapper.correlationId
-      val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+      val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
       logger.warn(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Error response received with CorrelationId: $resCorrelationId")
 
-      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, None, Some(errorWrapper),
-        requestBody = Some(request.body)))
+      auditSubmission(
+        createAuditDetails(
+          rawData,
+          result.header.status,
+          correlationId,
+          request.userDetails,
+          None,
+          Some(errorWrapper),
+          requestBody = Some(request.body)))
       result
     }.merge
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError |
-           DeductionFromDateFormatError | DeductionToDateFormatError | FromDateFormatError |
-           ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError |
-           RuleGrossAmountError | EmployerRefFormatError | RuleTaxYearNotSupportedError =>
+      case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError | DeductionFromDateFormatError | DeductionToDateFormatError |
+          FromDateFormatError | ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
+          EmployerRefFormatError | RuleTaxYearNotSupportedError =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError
-           | RuleTaxYearNotEndedError | RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
+      case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError | RuleTaxYearNotEndedError |
+          RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
         Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
@@ -113,4 +126,5 @@ class CreateController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("CreateCisDeductionsForSubcontractor", "create-cis-deductions-for-subcontractor", details)
     auditService.auditEvent(event)
   }
+
 }

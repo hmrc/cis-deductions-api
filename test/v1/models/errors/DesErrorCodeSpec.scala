@@ -35,4 +35,5 @@ class DesErrorCodeSpec extends UnitSpec {
       json.as[DesErrorCode] shouldBe DesErrorCode("CODE")
     }
   }
+
 }

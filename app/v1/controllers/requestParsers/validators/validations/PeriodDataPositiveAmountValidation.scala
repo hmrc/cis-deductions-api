@@ -28,9 +28,12 @@ object PeriodDataPositiveAmountValidation {
 
     val periodData = (json \ "periodData").as[List[JsValue]]
 
-    periodData.map {
-      period => amountValidation(period, fieldName, error)
-    }.filter(_.isDefined).map(_.get)
+    periodData
+      .map { period =>
+        amountValidation(period, fieldName, error)
+      }
+      .filter(_.isDefined)
+      .map(_.get)
 
   }
 
@@ -38,10 +41,10 @@ object PeriodDataPositiveAmountValidation {
     val amount = (json \ fieldName).asOpt[BigDecimal]
 
     amount match {
-      case Some(value) if value > maxValue || value < minValue  => Some(error)
-      case _ => None
+      case Some(value) if value > maxValue || value < minValue => Some(error)
+      case _                                                   => None
     }
 
   }
-}
 
+}

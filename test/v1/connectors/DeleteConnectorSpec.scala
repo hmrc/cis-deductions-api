@@ -27,12 +27,11 @@ import scala.concurrent.Future
 
 class DeleteConnectorSpec extends ConnectorSpec {
 
-  val nino = "AA123456A"
+  val nino         = "AA123456A"
   val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: DeleteConnector               = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
@@ -48,33 +47,37 @@ class DeleteConnectorSpec extends ConnectorSpec {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockedHttpClient.
-          delete(
+        MockedHttpClient
+          .delete(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
             dummyDesHeaderCarrierConfig,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.delete(request)) shouldBe outcome
       }
     }
 
-  "return a DES error code" when {
-    "the http client returns a Des Error code" in new Test {
-      val outcome = Left(ResponseWrapper(correlationId,DesErrors.single(DesErrorCode("error"))))
+    "return a DES error code" when {
+      "the http client returns a Des Error code" in new Test {
+        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-      MockedHttpClient.delete[DesOutcome[Unit]](url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
-        dummyDesHeaderCarrierConfig,
-        desRequestHeaders,
-        Seq("AnotherHeader" -> "HeaderValue")
-      )
-        .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
+        MockedHttpClient
+          .delete[DesOutcome[Unit]](
+            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
+            dummyDesHeaderCarrierConfig,
+            desRequestHeaders,
+            Seq("AnotherHeader" -> "HeaderValue")
+          )
+          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-      val result: DesOutcome[Unit] = await(connector.delete(request))
-      result shouldBe outcome
+        val result: DesOutcome[Unit] = await(connector.delete(request))
+        result shouldBe outcome
+      }
     }
-  }
 
   }
+
 }

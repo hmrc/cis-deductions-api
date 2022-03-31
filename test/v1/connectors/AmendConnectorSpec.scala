@@ -28,11 +28,11 @@ import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
 
-  val nino = "AA123456A"
+  val nino         = "AA123456A"
   val submissionId = "S4636A77V5KB8625U"
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: AmendConnector                = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
@@ -48,14 +48,15 @@ class AmendConnectorSpec extends ConnectorSpec {
     "return a result" when {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
-        MockedHttpClient.
-          put(
+        MockedHttpClient
+          .put(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
             dummyDesHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
         await(connector.amendDeduction(request)) shouldBe outcome
       }
     }
@@ -78,4 +79,5 @@ class AmendConnectorSpec extends ConnectorSpec {
       }
     }
   }
+
 }

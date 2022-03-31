@@ -22,7 +22,7 @@ import v1.controllers.requestParsers.validators.AmendValidator
 import v1.models.errors.MtdError
 import v1.models.request.amend.AmendRawData
 
-class MockAmendValidator extends MockFactory{
+class MockAmendValidator extends MockFactory {
 
   val mockValidator: AmendValidator = mock[AmendValidator]
 
@@ -33,5 +33,7 @@ class MockAmendValidator extends MockFactory{
         .validate(_: AmendRawData))
         .expects(data)
     }
+
   }
+
 }

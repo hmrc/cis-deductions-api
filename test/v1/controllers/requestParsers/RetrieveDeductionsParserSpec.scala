@@ -24,8 +24,8 @@ import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 class RetrieveDeductionsParserSpec extends UnitSpec {
 
-  val nino = "AA123456A"
-  val invalidNino = "PLKL87654"
+  val nino                           = "AA123456A"
+  val invalidNino                    = "PLKL87654"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockRetrieveValidator {
@@ -68,7 +68,7 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
 
       "a mandatory field is given invalid data" in new Test {
         val inputData = RetrieveRawData(nino, Some("asdf"), Some("231k"), Some("all"))
-          MockValidator
+        MockValidator
           .validate(inputData)
           .returns(List(FromDateFormatError, ToDateFormatError))
 
@@ -98,4 +98,5 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
       }
     }
   }
+
 }

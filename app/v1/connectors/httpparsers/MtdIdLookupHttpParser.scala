@@ -28,13 +28,15 @@ object MtdIdLookupHttpParser extends HttpParser {
 
   implicit val mtdIdLookupHttpReads: HttpReads[MtdIdLookupOutcome] = (_: String, _: String, response: HttpResponse) => {
     response.status match {
-      case OK => response.validateJson[String](mtdIdJsonReads) match {
-        case Some(mtdId) => Right(mtdId)
-        case None => Left(DownstreamError)
-      }
-      case FORBIDDEN => Left(NinoFormatError)
+      case OK =>
+        response.validateJson[String](mtdIdJsonReads) match {
+          case Some(mtdId) => Right(mtdId)
+          case None        => Left(DownstreamError)
+        }
+      case FORBIDDEN    => Left(NinoFormatError)
       case UNAUTHORIZED => Left(InvalidBearerTokenError)
-      case _ => Left(DownstreamError)
+      case _            => Left(DownstreamError)
     }
   }
+
 }

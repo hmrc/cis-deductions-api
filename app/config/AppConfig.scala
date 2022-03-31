@@ -38,16 +38,16 @@ trait AppConfig {
 }
 
 @Singleton
-class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configuration) extends AppConfig {
+class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configuration) extends AppConfig {
 
-  val desBaseUrl: String = config.baseUrl("des")
+  val desBaseUrl: String                         = config.baseUrl("des")
   val desEnv: String                             = config.getString("microservice.services.des.env")
   val desToken: String                           = config.getString("microservice.services.des.token")
   val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
-  val mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
-  val apiGatewayContext: String = config.getString("api.gateway.context")
-  val desCisUrl: String = config.getString("microservice.services.des.cisUrl")
-  val minTaxYearCisDeductions: String = config.getString("minTaxYearCisDeductions")
+  val mtdIdBaseUrl: String                       = config.baseUrl("mtd-id-lookup")
+  val apiGatewayContext: String                  = config.getString("api.gateway.context")
+  val desCisUrl: String                          = config.getString("microservice.services.des.cisUrl")
+  val minTaxYearCisDeductions: String            = config.getString("minTaxYearCisDeductions")
 
   def apiStatus(version: String): String = config.getString(s"api.$version.status")
 
@@ -59,7 +59,9 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
 }
 
 case class ConfidenceLevelConfig(definitionEnabled: Boolean, authValidationEnabled: Boolean)
+
 object ConfidenceLevelConfig {
+
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
@@ -67,6 +69,7 @@ object ConfidenceLevelConfig {
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
   }
+
 }
 
 trait FixedConfig {

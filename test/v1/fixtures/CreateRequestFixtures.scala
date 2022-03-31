@@ -491,6 +491,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorNotSupportedTaxYear = Json.parse(
     """
       |{
@@ -517,6 +518,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorInvalidDateRangeMax = Json.parse(
     """
       |{
@@ -571,21 +573,29 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateBody = CreateBody("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
+  val requestObj: CreateBody = CreateBody(
+    "2019-04-06",
+    "2020-04-05",
+    "Bovis",
+    "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
-  val missingOptionalRequestObj: CreateBody = CreateBody("2019-04-06", "2020-04-05", "Bovis", "123/AB56797",
+  val missingOptionalRequestObj: CreateBody = CreateBody(
+    "2019-04-06",
+    "2020-04-05",
+    "Bovis",
+    "123/AB56797",
     Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)
     )
   )
 
-  val   responseJson: JsValue = Json.parse(
+  val responseJson: JsValue = Json.parse(
     """
       |{
       |"submissionId": "S4636A77V5KB8625U"
@@ -610,8 +620,7 @@ object CreateRequestFixtures {
 
   val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 
-
-  val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
+  val body: JsValue                = Json.parse("""{ "aField" : "aValue" }""")
   val auditErrors: Seq[AuditError] = Seq(AuditError(errorCode = "FORMAT_NINO"))
 
   val auditResponseModelWithBody: AuditResponse =
@@ -648,8 +657,7 @@ object CreateRequestFixtures {
     """.stripMargin
   )
 
-  val hateoasResponse: (String,String) => String = (nino: String, responseId: String) =>
-    s"""
+  val hateoasResponse: (String, String) => String = (nino: String, responseId: String) => s"""
        |{
        |  "submissionId": "$responseId",
        |  "links":[
@@ -669,8 +677,7 @@ object CreateRequestFixtures {
        |""".stripMargin
   )
 
-  val deductionsResponseBody = Json.parse(
-    """
+  val deductionsResponseBody = Json.parse("""
       |{
       |   "submissionId":"someResponse",
       |   "links":[
@@ -717,6 +724,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorFromDate = Json.parse(
     """
       |{
@@ -743,6 +751,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorToDate = Json.parse(
     """
       |{
@@ -769,6 +778,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorDeductionFromDate = Json.parse(
     """
       |{
@@ -795,6 +805,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorDeductionToDate = Json.parse(
     """
       |{
@@ -821,6 +832,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestBodyJsonErrorTaxYearNotSupported = Json.parse(
     """
       |{
@@ -847,6 +859,7 @@ object CreateRequestFixtures {
       |}
         """.stripMargin
   )
+
   val requestInvalidEmpRef = Json.parse(
     """
       |{

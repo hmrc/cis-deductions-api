@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIED OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -29,10 +29,10 @@ import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 class DeleteControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino = "AA123456A"
+    val nino         = "AA123456A"
     val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-    def uri: String = s"/$nino/amendments/$submissionId"
+    def uri: String    = s"/$nino/amendments/$submissionId"
     def desUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
 
     def setupStubs(): StubMapping
@@ -42,6 +42,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the delete endpoint" should {
@@ -66,7 +67,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         def validationErrorTest(requestNino: String, requestId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String         = requestNino
             override val submissionId: String = requestId
 
             override def setupStubs(): StubMapping = {
@@ -115,4 +116,5 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

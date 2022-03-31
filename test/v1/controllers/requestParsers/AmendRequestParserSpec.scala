@@ -25,9 +25,9 @@ import v1.models.request.amend.{AmendRawData, AmendRequestData}
 
 class AmendRequestParserSpec extends UnitSpec {
 
-  val nino = "AA123456A"
-  val invalidNino = "PLKL87654"
-  val submissionId = "S4636A77V5KB8625U"
+  val nino                           = "AA123456A"
+  val invalidNino                    = "PLKL87654"
+  val submissionId                   = "S4636A77V5KB8625U"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockAmendValidator {
@@ -91,4 +91,5 @@ class AmendRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

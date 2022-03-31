@@ -29,4 +29,5 @@ object MtdTaxYearValidation extends FixedConfig {
 
     if (desTaxYear >= minimumTaxYear) NoValidationErrors else List(error)
   }
+
 }

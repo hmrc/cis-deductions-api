@@ -33,19 +33,20 @@ object TaxYearDatesValidation {
     val fromAndToDateErrors = validateFromDate(fromDate) ++ validateToDate(toDate)
 
     fromAndToDateErrors match {
-      case Nil  => validateYears(allowedNumberOfYearsBetweenDates, fromDate, toDate) match {
-        case Nil => taxYearEndedErrors
-        case errs => errs
-      }
+      case Nil =>
+        validateYears(allowedNumberOfYearsBetweenDates, fromDate, toDate) match {
+          case Nil  => taxYearEndedErrors
+          case errs => errs
+        }
       case errs => errs
     }
   }
 
   private def validateTaxYearEnded(fromDate: String, toDate: String): List[MtdError] = {
     val currentDate = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val startDate = LocalDate.parse(fromDate, formatter)
-    val endDate = LocalDate.parse(toDate, formatter)
+    val formatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val startDate   = LocalDate.parse(fromDate, formatter)
+    val endDate     = LocalDate.parse(toDate, formatter)
     (startDate.isBefore(currentDate), endDate.isBefore(currentDate)) match {
       case (false, _)    => List(RuleDateRangeInvalidError)
       case (true, false) => List(RuleTaxYearNotEndedError)
@@ -54,7 +55,7 @@ object TaxYearDatesValidation {
   }
 
   val fromDateFormat = "[0-9]{4}-04-06"
-  val toDateFormat = "[0-9]{4}-04-05"
+  val toDateFormat   = "[0-9]{4}-04-05"
 
   private def validateFromDate(date: String): List[MtdError] = {
     if (date.matches(fromDateFormat)) NoValidationErrors else List(RuleDateRangeInvalidError)
@@ -67,8 +68,8 @@ object TaxYearDatesValidation {
   private def validateYears(allowedNumberOfYearsBetweenDates: Int, fromDate: String, toDate: String): List[MtdError] = {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val startDate = LocalDate.parse(fromDate, formatter)
-    val endDate = LocalDate.parse(toDate, formatter)
-    val diff = endDate.getYear - startDate.getYear
+    val endDate   = LocalDate.parse(toDate, formatter)
+    val diff      = endDate.getYear - startDate.getYear
     if (diff != allowedNumberOfYearsBetweenDates) List(RuleDateRangeInvalidError) else NoValidationErrors
   }
 

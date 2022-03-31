@@ -32,13 +32,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject()(connector: CreateConnector) extends DesResponseMappingSupport with Logging {
+class CreateService @Inject() (connector: CreateConnector) extends DesResponseMappingSupport with Logging {
 
-  def createDeductions(request: CreateRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+  def createDeductions(request: CreateRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
     val result = for {
       desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
     } yield desResponseWrapper
@@ -47,16 +47,17 @@ class CreateService @Inject()(connector: CreateConnector) extends DesResponseMap
 
   private def mappingDesToMtdError =
     Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_PAYLOAD" -> RuleIncorrectOrEmptyBodyError,
-      "INVALID_EMPREF" -> EmployerRefFormatError,
-      "INVALID_REQUEST_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
-      "INVALID_REQUEST_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
+      "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
+      "INVALID_PAYLOAD"                 -> RuleIncorrectOrEmptyBodyError,
+      "INVALID_EMPREF"                  -> EmployerRefFormatError,
+      "INVALID_REQUEST_TAX_YEAR_ALIGN"  -> RuleUnalignedDeductionsPeriodError,
+      "INVALID_REQUEST_DATE_RANGE"      -> RuleDeductionsDateRangeInvalidError,
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
-      "CONFLICT" -> RuleDuplicateSubmissionError,
+      "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError,
-      "INVALID_CORRELATIONID" -> DownstreamError
+      "SERVER_ERROR"                    -> DownstreamError,
+      "SERVICE_UNAVAILABLE"             -> DownstreamError,
+      "INVALID_CORRELATIONID"           -> DownstreamError
     )
+
 }

@@ -42,21 +42,34 @@ object RetrieveResponseModel extends HateoasLinks {
       filteredPeriodData match {
         case Nil => Seq()
         case _ => {
-          Seq(deleteCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false),
-            amendCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false))
+          Seq(
+            deleteCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false)
+          )
         }
       }
     }
+
     override def links(appConfig: AppConfig, data: RetrieveHateoasData): Seq[Link] = {
-      Seq(retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
+      Seq(
+        retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
         createCISDeduction(appConfig, data.nino, isSelf = false))
     }
+
   }
+
   implicit object ResponseFunctor extends Functor[RetrieveResponseModel] {
+
     override def map[A, B](fa: RetrieveResponseModel[A])(f: A => B): RetrieveResponseModel[B] =
       RetrieveResponseModel(fa.totalDeductionAmount, fa.totalCostOfMaterials, fa.totalGrossAmountPaid, fa.cisDeductions.map(f))
+
   }
+
 }
 
-case class RetrieveHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String],
-                               retrieveResponse: RetrieveResponseModel[CisDeductions]) extends HateoasData
+case class RetrieveHateoasData(nino: String,
+                               fromDate: String,
+                               toDate: String,
+                               source: Option[String],
+                               retrieveResponse: RetrieveResponseModel[CisDeductions])
+    extends HateoasData

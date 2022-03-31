@@ -37,4 +37,5 @@ case class FeatureSwitch(value: Option[Configuration]) {
 
     enabled.getOrElse(false)
   }
+
 }

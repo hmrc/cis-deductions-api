@@ -33,9 +33,10 @@ trait MockRetrieveConnector extends MockFactory {
 
     def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DesOutcome[RetrieveResponseModel[CisDeductions]]]] = {
       (mockRetrieveConnector
-        .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _:String))
+        .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

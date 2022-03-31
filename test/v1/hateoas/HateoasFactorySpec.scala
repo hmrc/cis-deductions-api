@@ -114,7 +114,8 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
     "work" in new Test {
 
-      val wrapper = HateoasWrapper(RetrieveResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
+      val wrapper =
+        HateoasWrapper(RetrieveResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
 
       hateoasFactory.wrapList(RetrieveResponse(Seq(response)), Data1("id")) shouldBe wrapper
 
@@ -138,4 +139,5 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
                      |""".stripMargin)
     }
   }
+
 }

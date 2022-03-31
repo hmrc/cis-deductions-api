@@ -53,20 +53,20 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
       "return a list containing an error" when {
         "a request using the current tax year is used" in {
           val currentYear = LocalDate.now().getYear
-          val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-          val startYear = if (LocalDate.now().isAfter(LocalDate.parse(currentYear.toString + "-04-05", formatter))) currentYear else currentYear -1
-          val endYear = startYear + 1
-          val startDate = startYear.toString + "-04-06"
-          val endDate = endYear.toString + "-04-05"
+          val formatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+          val startYear   = if (LocalDate.now().isAfter(LocalDate.parse(currentYear.toString + "-04-05", formatter))) currentYear else currentYear - 1
+          val endYear     = startYear + 1
+          val startDate   = startYear.toString + "-04-06"
+          val endDate     = endYear.toString + "-04-05"
           val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = true)
           validationResult shouldBe List(RuleTaxYearNotEndedError)
         }
         "a request using a future tax year is used" in {
-          val currentYear = LocalDate.now().getYear
-          val startYear = currentYear + 5
-          val endYear = currentYear + 6
-          val startDate = startYear.toString + "-04-06"
-          val endDate = endYear.toString + "-04-05"
+          val currentYear      = LocalDate.now().getYear
+          val startYear        = currentYear + 5
+          val endYear          = currentYear + 6
+          val startDate        = startYear.toString + "-04-06"
+          val endDate          = endYear.toString + "-04-05"
           val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = true)
           validationResult shouldBe List(RuleDateRangeInvalidError)
         }
@@ -76,24 +76,25 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
       "return an empty list" when {
         "a request using the current tax year is used" in {
           val currentYear = LocalDate.now().getYear
-          val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-          val startYear = if (LocalDate.now().isAfter(LocalDate.parse(currentYear.toString + "-04-05", formatter))) currentYear else currentYear -1
-          val endYear = startYear + 1
-          val startDate = startYear.toString + "-04-06"
-          val endDate = endYear.toString + "-04-05"
+          val formatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+          val startYear   = if (LocalDate.now().isAfter(LocalDate.parse(currentYear.toString + "-04-05", formatter))) currentYear else currentYear - 1
+          val endYear     = startYear + 1
+          val startDate   = startYear.toString + "-04-06"
+          val endDate     = endYear.toString + "-04-05"
           val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = false)
           validationResult shouldBe List()
         }
         "a request using a future tax year is used" in {
-          val currentYear = LocalDate.now().getYear
-          val startYear = currentYear + 5
-          val endYear = currentYear + 6
-          val startDate = startYear.toString + "-04-06"
-          val endDate = endYear.toString + "-04-05"
+          val currentYear      = LocalDate.now().getYear
+          val startYear        = currentYear + 5
+          val endYear          = currentYear + 6
+          val startDate        = startYear.toString + "-04-06"
+          val endDate          = endYear.toString + "-04-05"
           val validationResult = TaxYearDatesValidation.validate(startDate, endDate, 1, validateTaxYearEndedFlag = false)
           validationResult shouldBe List()
         }
       }
     }
   }
+
 }

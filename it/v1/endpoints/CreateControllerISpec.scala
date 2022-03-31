@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIED OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -31,7 +31,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
   private trait Test {
     val nino = "AA123456A"
 
-    def uri: String = s"/$nino/amendments"
+    def uri: String    = s"/$nino/amendments"
     def desUri: String = s"/income-tax/cis/deductions/$nino"
 
     def setupStubs(): StubMapping
@@ -41,6 +41,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the create endpoint" should {
@@ -130,4 +131,5 @@ class CreateControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

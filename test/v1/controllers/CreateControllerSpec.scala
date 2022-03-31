@@ -38,7 +38,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateRequestParser
@@ -68,16 +68,16 @@ class CreateControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
   }
 
-  private val nino = "AA123456A"
+  private val nino          = "AA123456A"
   private val correlationId = "X-123"
 
   private val responseId = "S4636A77V5KB8625U"
 
   private val rawCreateRequest = CreateRawData(nino, requestJson)
-  private val createRequest = CreateRequestData(Nino(nino), requestObj)
+  private val createRequest    = CreateRequestData(Nino(nino), requestObj)
 
   private val rawMissingOptionalCreateRequest = CreateRawData(nino, missingOptionalRequestJson)
-  private val missingOptionalCreateRequest = CreateRequestData(Nino(nino), missingOptionalRequestObj)
+  private val missingOptionalCreateRequest    = CreateRequestData(Nino(nino), missingOptionalRequestObj)
 
   val response = CreateResponseModel(responseId)
 
@@ -189,7 +189,7 @@ class CreateControllerSpec
         (RuleDeductionAmountError, BAD_REQUEST),
         (RuleCostOfMaterialsError, BAD_REQUEST),
         (RuleGrossAmountError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (DownstreamError, INTERNAL_SERVER_ERROR)
       )
 
       input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -207,7 +207,8 @@ class CreateControllerSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        val auditResponse: AuditResponse =
+          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
       }
 
@@ -215,17 +216,18 @@ class CreateControllerSpec
         val error = ErrorWrapper(
           correlationId,
           BadRequestError,
-          Some(Seq(
-            EmployerRefFormatError,
-            NinoFormatError,
-            BadRequestError,
-            DeductionToDateFormatError,
-            DeductionFromDateFormatError,
-            ToDateFormatError,
-            FromDateFormatError,
-            RuleTaxYearNotSupportedError,
-            TaxYearFormatError
-          ))
+          Some(
+            Seq(
+              EmployerRefFormatError,
+              NinoFormatError,
+              BadRequestError,
+              DeductionToDateFormatError,
+              DeductionFromDateFormatError,
+              ToDateFormatError,
+              FromDateFormatError,
+              RuleTaxYearNotSupportedError,
+              TaxYearFormatError
+            ))
         )
 
         MockCreateRequestDataParser
@@ -238,17 +240,20 @@ class CreateControllerSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
-          Seq(
-            AuditError(EmployerRefFormatError.code),
-            AuditError(NinoFormatError.code),
-            AuditError(BadRequestError.code),
-            AuditError(DeductionToDateFormatError.code),
-            AuditError(DeductionFromDateFormatError.code),
-            AuditError(ToDateFormatError.code),
-            AuditError(FromDateFormatError.code),
-            AuditError(RuleTaxYearNotSupportedError.code),
-            AuditError(TaxYearFormatError.code))),
+        val auditResponse: AuditResponse = AuditResponse(
+          BAD_REQUEST,
+          Some(
+            Seq(
+              AuditError(EmployerRefFormatError.code),
+              AuditError(NinoFormatError.code),
+              AuditError(BadRequestError.code),
+              AuditError(DeductionToDateFormatError.code),
+              AuditError(DeductionFromDateFormatError.code),
+              AuditError(ToDateFormatError.code),
+              AuditError(FromDateFormatError.code),
+              AuditError(RuleTaxYearNotSupportedError.code),
+              AuditError(TaxYearFormatError.code)
+            )),
           None
         )
 
@@ -294,4 +299,5 @@ class CreateControllerSpec
       input.foreach(args => (serviceErrors _).tupled(args))
     }
   }
+
 }

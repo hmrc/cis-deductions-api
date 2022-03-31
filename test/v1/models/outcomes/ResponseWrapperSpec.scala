@@ -27,4 +27,5 @@ class ResponseWrapperSpec extends UnitSpec {
       response.map(a => a) shouldBe ResponseWrapper("X-123", "Response")
     }
   }
+
 }

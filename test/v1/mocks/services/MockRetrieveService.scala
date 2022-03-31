@@ -28,16 +28,24 @@ import v1.services.RetrieveService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveService extends MockFactory{
+trait MockRetrieveService extends MockFactory {
 
   val mockService: RetrieveService = mock[RetrieveService]
 
   object MockRetrieveService {
-    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler5[RetrieveRequestData, HeaderCarrier, ExecutionContext,
-      EndpointLogContext, String, Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
+
+    def retrieveCisDeductions(requestData: RetrieveRequestData): CallHandler5[
+      RetrieveRequestData,
+      HeaderCarrier,
+      ExecutionContext,
+      EndpointLogContext,
+      String,
+      Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
       (mockService
-        .retrieveDeductions(_:RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .retrieveDeductions(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

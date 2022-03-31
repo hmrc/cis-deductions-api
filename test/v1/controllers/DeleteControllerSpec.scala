@@ -33,14 +33,15 @@ import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockDeleteRequestDataParser
-  with MockDeleteService
-  with MockAppConfig
-  with MockAuditService
-  with MockIdGenerator {
+class DeleteControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockDeleteRequestDataParser
+    with MockDeleteService
+    with MockAppConfig
+    with MockAuditService
+    with MockIdGenerator {
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -60,10 +61,10 @@ class DeleteControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val nino = "AA123456A"
-  private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-  private val correlationId = "X-123"
-  private val deleteRawData = DeleteRawData(nino, submissionId)
+  private val nino              = "AA123456A"
+  private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val correlationId     = "X-123"
+  private val deleteRawData     = DeleteRawData(nino, submissionId)
   private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId)
 
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
@@ -114,7 +115,6 @@ class DeleteControllerSpec extends ControllerBaseSpec
 
           val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
 
-
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(error)
           header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -128,7 +128,7 @@ class DeleteControllerSpec extends ControllerBaseSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (DownstreamError, INTERNAL_SERVER_ERROR)
       )
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
@@ -145,18 +145,13 @@ class DeleteControllerSpec extends ControllerBaseSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        val auditResponse: AuditResponse =
+          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
       }
 
       "multiple errors occur for format errors" in new Test {
-        val error = ErrorWrapper(
-          correlationId,
-          BadRequestError,
-          Some(Seq(
-            BadRequestError,
-            RuleSourceError)
-          ))
+        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, RuleSourceError)))
 
         MockDeleteRequestDataParser
           .parse(deleteRawData)
@@ -168,12 +163,8 @@ class DeleteControllerSpec extends ControllerBaseSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
-          Seq(
-            AuditError(BadRequestError.code),
-            AuditError(RuleSourceError.code))),
-          None
-        )
+        val auditResponse: AuditResponse =
+          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(RuleSourceError.code))), None)
 
         MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
       }
@@ -206,10 +197,11 @@ class DeleteControllerSpec extends ControllerBaseSpec
         (NinoFormatError, BAD_REQUEST),
         (SubmissionIdFormatError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (DownstreamError, INTERNAL_SERVER_ERROR)
       )
       input.foreach(args => (serviceErrors _).tupled(args))
 
     }
   }
+
 }
