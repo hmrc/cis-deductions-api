@@ -25,10 +25,9 @@ case class PeriodData(deductionFromDate: String,
                       grossAmountPaid: Option[BigDecimal],
                       submissionDate: String,
                       submissionId: Option[String],
-                      source: String
-                     )
+                      source: String)
 
 object PeriodData {
-  implicit val reads: Reads[PeriodData] = Json.reads[PeriodData]
+  implicit val reads: Reads[PeriodData]   = Json.reads[PeriodData]
   implicit val writes: Writes[PeriodData] = Json.writes[PeriodData]
 }

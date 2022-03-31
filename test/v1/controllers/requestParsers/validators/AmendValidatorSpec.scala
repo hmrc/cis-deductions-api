@@ -25,7 +25,7 @@ import v1.models.request.amend.AmendRawData
 class AmendValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
-  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val validId   = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validator = new AmendValidator()
 
@@ -86,9 +86,11 @@ class AmendValidatorSpec extends UnitSpec {
         result shouldBe List(RuleGrossAmountError)
       }
       "invalid request body deductionToDate before deductionFromDate" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId,
-          Json.parse(
-            """
+        private val result = validator.validate(
+          AmendRawData(
+            validNino,
+            validId,
+            Json.parse("""
               |{
               |  "periodData": [
               |      {
@@ -108,13 +110,15 @@ class AmendValidatorSpec extends UnitSpec {
               |  ]
               |}
               |""".stripMargin)
-        ))
+          ))
         result shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
       "invalid request body deductionFromDate not yyyy-mm-06" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId,
-          Json.parse(
-            """
+        private val result = validator.validate(
+          AmendRawData(
+            validNino,
+            validId,
+            Json.parse("""
               |{
               |  "periodData": [
               |      {
@@ -134,13 +138,15 @@ class AmendValidatorSpec extends UnitSpec {
               |  ]
               |}
               |""".stripMargin)
-        ))
+          ))
         result shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
       "invalid request body deductionToDate not yyyy-mm-05" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId,
-          Json.parse(
-            """
+        private val result = validator.validate(
+          AmendRawData(
+            validNino,
+            validId,
+            Json.parse("""
               |{
               |  "periodData": [
               |      {
@@ -160,9 +166,10 @@ class AmendValidatorSpec extends UnitSpec {
               |  ]
               |}
               |""".stripMargin)
-        ))
+          ))
         result shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
     }
   }
+
 }

@@ -32,28 +32,30 @@ import scala.concurrent.Future
 
 class CreateServiceSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
+  private val nino           = "AA123456A"
   implicit val correlationId = "X-123"
-  private val submissionId = "123456789"
+  private val submissionId   = "123456789"
 
-  private val requestBody = CreateBody("","","","",Seq(PeriodDetails(0.00,"","",Some(0.00),Some(0.00))))
+  private val requestBody = CreateBody("", "", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
 
   private val requestData = CreateRequestData(Nino(nino), requestBody)
 
   trait Test extends MockCreateConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new CreateService(
       connector = mockCreateConnector
     )
+
   }
 
   "service" when {
     "service call successsful" must {
       "return mapped result" in new Test {
-        MockCreateCisDeductionsConnector.createCisDeduction(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId,CreateResponseModel(submissionId)))))
+        MockCreateCisDeductionsConnector
+          .createCisDeduction(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, CreateResponseModel(submissionId)))))
 
         await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateResponseModel(submissionId)))
       }
@@ -65,7 +67,8 @@ class CreateServiceSpec extends UnitSpec {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockCreateCisDeductionsConnector.createCisDeduction(requestData)
+            MockCreateCisDeductionsConnector
+              .createCisDeduction(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
             await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
@@ -89,4 +92,5 @@ class CreateServiceSpec extends UnitSpec {
       }
     }
   }
+
 }

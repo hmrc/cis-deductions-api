@@ -33,13 +33,18 @@ trait MockAmendService extends MockFactory {
 
   object MockAmendService {
 
-    def submitAmendRequest(requestData: AmendRequestData):
-    CallHandler5[AmendRequestData, HeaderCarrier, ExecutionContext, EndpointLogContext, String, Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def submitAmendRequest(requestData: AmendRequestData): CallHandler5[
+      AmendRequestData,
+      HeaderCarrier,
+      ExecutionContext,
+      EndpointLogContext,
+      String,
+      Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendService
         .amendDeductions(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
-  }
 
+  }
 
 }

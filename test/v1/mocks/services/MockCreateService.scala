@@ -34,13 +34,12 @@ trait MockCreateService extends MockFactory {
 
   object MockCreateService {
 
-    def submitCreateRequest(requestData: CreateRequestData):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
+    def submitCreateRequest(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
       (mockService
         .createDeductions(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
-  }
 
+  }
 
 }

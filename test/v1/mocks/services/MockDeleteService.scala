@@ -33,11 +33,12 @@ trait MockDeleteService extends MockFactory {
 
   object MockDeleteService {
 
-    def deleteRequest(requestData: DeleteRequestData):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def deleteRequest(requestData: DeleteRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteService
         .deleteDeductions(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

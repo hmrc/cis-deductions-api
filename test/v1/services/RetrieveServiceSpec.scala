@@ -32,17 +32,17 @@ import scala.concurrent.Future
 
 class RetrieveServiceSpec extends UnitSpec {
 
-  private val nino = Nino("AA123456A")
+  private val nino           = Nino("AA123456A")
   implicit val correlationId = "X-123"
-  private val fromDate = "2019-04-06"
-  private val toDate = "2020-04-05"
-  private val source = "Contractor"
+  private val fromDate       = "2019-04-06"
+  private val toDate         = "2020-04-05"
+  private val source         = "Contractor"
 
-  val request: RetrieveRequestData = RetrieveRequestData(nino, fromDate, toDate, source)
+  val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   trait Test extends MockRetrieveConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
     val service = new RetrieveService(mockRetrieveConnector)
@@ -51,10 +51,11 @@ class RetrieveServiceSpec extends UnitSpec {
   "RetrieveDeductions" should {
     "return a valid response" when {
       "a valid request is supplied" in new Test {
-        MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
+        MockRetrieveCisDeductionsConnector
+          .retrieveCisDeduction(request)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.retrieveDeductions(request)) shouldBe Right(ResponseWrapper(correlationId,response))
+        await(service.retrieveDeductions(request)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
 
@@ -63,15 +64,16 @@ class RetrieveServiceSpec extends UnitSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockRetrieveCisDeductionsConnector.retrieveCisDeduction(request)
+          MockRetrieveCisDeductionsConnector
+            .retrieveCisDeduction(request)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
       val input = Seq(
-        ("INVALID_TAXABLE_ENTITY_ID" , NinoFormatError),
+        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
-        ("INVALID_DATE_RANGE",RuleDateRangeOutOfDate),
+        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
         ("INVALID_SOURCE", RuleSourceError),
@@ -82,4 +84,5 @@ class RetrieveServiceSpec extends UnitSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

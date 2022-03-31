@@ -31,13 +31,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappingSupport with Logging {
+class AmendService @Inject() (connector: AmendConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendDeductions(request: AmendRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendDeductions(request: AmendRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDesErrors(desErrorMap))
@@ -48,14 +48,15 @@ class AmendService @Inject()(connector: AmendConnector) extends DesResponseMappi
   private def desErrorMap =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_SUBMISSION_ID"-> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"-> DownstreamError,
-      "NO_DATA_FOUND"-> NotFoundError,
-      "INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError,
-      "INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
-      "INVALID_PAYLOAD" -> RuleIncorrectOrEmptyBodyError,
-      "DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError,
-      "SERVICE_ERROR" -> DownstreamError
+      "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "INVALID_TAX_YEAR_ALIGN"    -> RuleUnalignedDeductionsPeriodError,
+      "INVALID_DATE_RANGE"        -> RuleDeductionsDateRangeInvalidError,
+      "INVALID_PAYLOAD"           -> RuleIncorrectOrEmptyBodyError,
+      "DUPLICATE_MONTH"           -> RuleDuplicatePeriodError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError,
+      "SERVICE_ERROR"             -> DownstreamError
     )
+
 }

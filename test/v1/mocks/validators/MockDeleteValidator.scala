@@ -22,7 +22,7 @@ import v1.controllers.requestParsers.validators.DeleteValidator
 import v1.models.errors.MtdError
 import v1.models.request.delete.DeleteRawData
 
-class MockDeleteValidator extends MockFactory{
+class MockDeleteValidator extends MockFactory {
 
   val mockValidator: DeleteValidator = mock[DeleteValidator]
 
@@ -33,5 +33,7 @@ class MockDeleteValidator extends MockFactory{
         .validate(_: DeleteRawData))
         .expects(data)
     }
+
   }
+
 }

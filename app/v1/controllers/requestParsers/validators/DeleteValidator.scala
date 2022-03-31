@@ -23,6 +23,7 @@ import v1.models.request.delete.DeleteRawData
 class DeleteValidator extends Validator[DeleteRawData] {
 
   private val validationSet = List(parameterFormatValidation)
+
   private def parameterFormatValidation: DeleteRawData => List[List[MtdError]] = (data: DeleteRawData) => {
     List(
       NinoValidation.validate(data.nino),
@@ -33,4 +34,5 @@ class DeleteValidator extends Validator[DeleteRawData] {
   override def validate(data: DeleteRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
+
 }

@@ -26,14 +26,12 @@ import v1.models.response.create.CreateResponseModel
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateConnector @Inject()(val http: HttpClient,
-                                val appConfig: AppConfig
-                                      ) extends BaseDesConnector {
+class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
-  def create(request: CreateRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[CreateResponseModel]] = {
+  def create(request: CreateRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DesOutcome[CreateResponseModel]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
@@ -42,4 +40,5 @@ class CreateConnector @Inject()(val http: HttpClient,
       DesUri[CreateResponseModel](s"${appConfig.desCisUrl}/${request.nino.nino}")
     )
   }
+
 }

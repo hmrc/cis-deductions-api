@@ -33,5 +33,7 @@ class MockRetrieveValidator extends MockFactory {
         .validate(_: RetrieveRawData))
         .expects(data)
     }
+
   }
+
 }

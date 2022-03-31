@@ -22,14 +22,16 @@ import v1.controllers.requestParsers.AmendRequestParser
 import v1.models.errors.ErrorWrapper
 import v1.models.request.amend.{AmendRawData, AmendRequestData}
 
-trait MockAmendRequestParser extends MockFactory{
+trait MockAmendRequestParser extends MockFactory {
 
   val mockAmendRequestParser: AmendRequestParser = mock[AmendRequestParser]
 
   object MockAmendRequestDataParser {
+
     def parse(data: AmendRawData): CallHandler[Either[ErrorWrapper, AmendRequestData]] = {
       (mockAmendRequestParser.parseRequest(_: AmendRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

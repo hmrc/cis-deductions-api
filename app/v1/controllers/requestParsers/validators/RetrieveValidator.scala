@@ -23,21 +23,23 @@ import v1.models.request.retrieve.RetrieveRawData
 
 import javax.inject.Inject
 
-class RetrieveValidator @Inject()(appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig{
+class RetrieveValidator @Inject() (appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig {
 
   private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
 
-  private def parameterFormatValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) => List(
-    NinoValidation.validate(data.nino),
-    SourceValidation.validate(data.source),
-    DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-    DateValidation.validate(ToDateFormatError)(data.toDate.get)
-  )
+  private def parameterFormatValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
+    List(
+      NinoValidation.validate(data.nino),
+      SourceValidation.validate(data.source),
+      DateValidation.validate(FromDateFormatError)(data.fromDate.get),
+      DateValidation.validate(ToDateFormatError)(data.toDate.get)
+    )
 
-  private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) => List(
-    MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
-    MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
-  )
+  private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
+    List(
+      MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
+      MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
+    )
 
   private def businessRuleValidator: RetrieveRawData => List[List[MtdError]] = { data =>
     List(

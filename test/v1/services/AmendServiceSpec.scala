@@ -29,54 +29,59 @@ import v1.models.request.amend.AmendRequestData
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendServiceSpec extends UnitSpec{
+class AmendServiceSpec extends UnitSpec {
 
-  val validNino = Nino("AA123456A")
-  val submissionId = "S4636A77V5KB8625U"
+  val validNino              = Nino("AA123456A")
+  val submissionId           = "S4636A77V5KB8625U"
   implicit val correlationId = "X-123"
 
-  val requestData = AmendRequestData(validNino,submissionId,amendRequestObj)
+  val requestData = AmendRequestData(validNino, submissionId, amendRequestObj)
 
   trait Test extends MockAmendConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+
     val service = new AmendService(
       connector = mockAmendConnector
     )
+
   }
 
-    "service" when {
-      "a service call is successful" should {
-        "return a mapped result" in new Test {
-          MockAmendConnector.amendDeduction(requestData)
-            .returns(Future.successful(Right(ResponseWrapper("resultId",()))))
+  "service" when {
+    "a service call is successful" should {
+      "return a mapped result" in new Test {
+        MockAmendConnector
+          .amendDeduction(requestData)
+          .returns(Future.successful(Right(ResponseWrapper("resultId", ()))))
 
-          await(service.amendDeductions(requestData)) shouldBe Right(ResponseWrapper("resultId", ()))
-        }
-      }
-      "a service call is unsuccessful" should {
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"return a $desErrorCode error is returned from the service" in new Test {
-
-            MockAmendConnector.amendDeduction(requestData)
-              .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
-
-            await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
-          }
-
-        val input = Seq(
-          ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
-          ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
-          ("INVALID_SUBMISSION_ID"-> SubmissionIdFormatError),
-          ("INVALID_CORRELATIONID"-> DownstreamError),
-          ("NO_DATA_FOUND"-> NotFoundError),
-          ("INVALID_TAX_YEAR_ALIGN"-> RuleUnalignedDeductionsPeriodError),
-          ("INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError),
-          ("DUPLICATE_MONTH" -> RuleDuplicatePeriodError),
-          ("SERVICE_UNAVAILABLE" -> DownstreamError),
-          ("SERVICE_ERROR" -> DownstreamError)
-        )
-        input.foreach(args => (serviceError _).tupled(args))
+        await(service.amendDeductions(requestData)) shouldBe Right(ResponseWrapper("resultId", ()))
       }
     }
+    "a service call is unsuccessful" should {
+      def serviceError(desErrorCode: String, error: MtdError): Unit =
+        s"return a $desErrorCode error is returned from the service" in new Test {
+
+          MockAmendConnector
+            .amendDeduction(requestData)
+            .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
+
+          await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
+        }
+
+      val input = Seq(
+        ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
+        ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
+        ("INVALID_SUBMISSION_ID"  -> SubmissionIdFormatError),
+        ("INVALID_CORRELATIONID"  -> DownstreamError),
+        ("NO_DATA_FOUND"          -> NotFoundError),
+        ("INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError),
+        ("INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError),
+        ("DUPLICATE_MONTH"        -> RuleDuplicatePeriodError),
+        ("SERVICE_UNAVAILABLE"    -> DownstreamError),
+        ("SERVICE_ERROR"          -> DownstreamError)
+      )
+      input.foreach(args => (serviceError _).tupled(args))
+    }
+  }
+
 }

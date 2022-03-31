@@ -20,7 +20,6 @@ import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
 
-
 class CreateBodySpec extends UnitSpec {
 
   "read from valid JSON" should {
@@ -47,4 +46,5 @@ class CreateBodySpec extends UnitSpec {
       Json.toJson(requestObj) shouldBe requestJson
     }
   }
+
 }

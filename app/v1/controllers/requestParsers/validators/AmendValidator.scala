@@ -22,10 +22,7 @@ import v1.models.request.amend.{AmendBody, AmendRawData}
 
 class AmendValidator extends Validator[AmendRawData] {
 
-  private val validationSet = List(parameterFormatValidation,
-    bodyFormatValidator,
-    bodyRuleValidator,
-    businessRuleValidator)
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyRuleValidator, businessRuleValidator)
 
   private def parameterFormatValidation: AmendRawData => List[List[MtdError]] = (data: AmendRawData) => {
     List(
@@ -60,4 +57,5 @@ class AmendValidator extends Validator[AmendRawData] {
   override def validate(data: AmendRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
+
 }

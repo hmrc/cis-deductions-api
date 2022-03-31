@@ -29,9 +29,11 @@ class AuditResponseSpec extends UnitSpec {
       }
     }
   }
+
   "written to JSON with Audit Errors" should {
     "produce the expected JsObject" in {
       Json.toJson(auditResponseModelWithErrors) shouldBe auditResponseJsonWithErrors
     }
   }
+
 }

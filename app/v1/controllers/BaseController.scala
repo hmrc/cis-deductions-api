@@ -33,13 +33,14 @@ trait BaseController {
     def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
 
       val newHeaders: Seq[(String, String)] = responseHeaders ++ Seq(
-        "X-CorrelationId" -> correlationId,
+        "X-CorrelationId"        -> correlationId,
         "X-Content-Type-Options" -> "nosniff",
-        "Content-Type" -> "application/json"
+        "Content-Type"           -> "application/json"
       )
 
       result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
     }
+
   }
 
   def createAuditDetails[A <: RawData](rawData: A,
@@ -55,14 +56,14 @@ trait BaseController {
         AuditResponse(statusCode, Some(wrapper.auditErrors), None)
       } match {
       case Some(wrapper) => wrapper
-      case None          => statusCode match {
-        case Status.NO_CONTENT => AuditResponse(statusCode, None, None)
-        case _                 => AuditResponse(statusCode, None, responseBody)
-      }
+      case None =>
+        statusCode match {
+          case Status.NO_CONTENT => AuditResponse(statusCode, None, None)
+          case _                 => AuditResponse(statusCode, None, responseBody)
+        }
     }
 
     GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, submissionId, correlationId, requestBody, response)
   }
+
 }
-
-

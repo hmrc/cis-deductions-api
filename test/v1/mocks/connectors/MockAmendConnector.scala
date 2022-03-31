@@ -24,16 +24,16 @@ import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendConnector extends MockFactory{
+trait MockAmendConnector extends MockFactory {
 
-  val mockAmendConnector : AmendConnector = mock[AmendConnector]
+  val mockAmendConnector: AmendConnector = mock[AmendConnector]
 
   object MockAmendConnector {
 
-    def amendDeduction(requestData: AmendRequestData):
-    CallHandler4[AmendRequestData, HeaderCarrier, ExecutionContext, String, Future[DesOutcome[Unit]]] = {
+    def amendDeduction(
+        requestData: AmendRequestData): CallHandler4[AmendRequestData, HeaderCarrier, ExecutionContext, String, Future[DesOutcome[Unit]]] = {
       (mockAmendConnector
-        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _:String))
+        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

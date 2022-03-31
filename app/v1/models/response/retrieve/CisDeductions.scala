@@ -18,7 +18,6 @@ package v1.models.response.retrieve
 
 import play.api.libs.json._
 
-
 case class CisDeductions(fromDate: String,
                          toDate: String,
                          contractorName: Option[String],
@@ -26,10 +25,9 @@ case class CisDeductions(fromDate: String,
                          totalDeductionAmount: Option[BigDecimal],
                          totalCostOfMaterials: Option[BigDecimal],
                          totalGrossAmountPaid: Option[BigDecimal],
-                         periodData: Seq[PeriodData]
-                        )
+                         periodData: Seq[PeriodData])
 
 object CisDeductions {
-  implicit val reads: Reads[CisDeductions] = Json.reads[CisDeductions]
+  implicit val reads: Reads[CisDeductions]    = Json.reads[CisDeductions]
   implicit val writes: OWrites[CisDeductions] = Json.writes[CisDeductions]
 }

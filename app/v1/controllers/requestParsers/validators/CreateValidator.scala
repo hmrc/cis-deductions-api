@@ -22,7 +22,8 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.create.{CreateBody, CreateRawData}
 
-class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
+class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
+
   private val validationSet = List(
     parameterFormatValidator,
     bodyFormatValidator,
@@ -59,9 +60,9 @@ class CreateValidator @Inject()(appConfig: AppConfig) extends Validator[CreateRa
   }
 
   private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[CreateBody]
+    val req      = data.body.as[CreateBody]
     val fromDate = req.fromDate
-    val toDate = req.toDate
+    val toDate   = req.toDate
     val taxYearValidations: List[List[MtdError]] = List(
       TaxYearDatesValidation.validate(req.fromDate, req.toDate, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = true)
     )

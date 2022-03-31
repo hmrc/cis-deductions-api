@@ -30,11 +30,11 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
-    val fromDate = "2019-04-06"
-    val toDate = "2020-04-05"
-    val source = "customer"
-    val queryParams = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    val nino           = "AA123456A"
+    val fromDate       = "2019-04-06"
+    val toDate         = "2020-04-05"
+    val source         = "customer"
+    val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
     val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
 
     def uri: String = s"/$nino/current-position"
@@ -50,6 +50,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         .withQueryStringParameters(queryParams: _*)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the retrieve endpoint" should {
@@ -90,16 +91,20 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       "return error according to spec" when {
 
-        def validationErrorTest(requestNino: String, requestFromDate: String,
-                                requestToDate: String, requestSource: String,
-                                expectedStatus: Int, expectedBody: MtdError, qParams: Option[Seq[(String, String)]]): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestFromDate: String,
+                                requestToDate: String,
+                                requestSource: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError,
+                                qParams: Option[Seq[(String, String)]]): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String     = requestNino
             override val fromDate: String = requestFromDate
-            override val toDate: String = requestToDate
-            override val source: String = requestSource
-            override val queryParams = if(qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+            override val toDate: String   = requestToDate
+            override val source: String   = requestSource
+            override val queryParams = if (qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -120,8 +125,22 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
           ("AA123456B", "2022-04-05", "2021-04-06", "customer", FORBIDDEN, RuleDateRangeInvalidError, None),
-          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
-          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(Seq("toDate" -> "2021-04-05", "source" -> "all")))
+          (
+            "AA123456B",
+            "2020-04-06",
+            "2021-04-05",
+            "customer",
+            BAD_REQUEST,
+            RuleMissingToDateError,
+            Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
+          (
+            "AA123456B",
+            "2020-04-06",
+            "2021-04-05",
+            "customer",
+            BAD_REQUEST,
+            RuleMissingFromDateError,
+            Some(Seq("toDate" -> "2021-04-05", "source" -> "all")))
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -130,8 +149,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     "des service error" when {
 
       def errorBody(code: String): JsValue =
-        Json.parse(
-          s"""{
+        Json.parse(s"""{
              |  "code": "$code",
              |  "reason": "des message"
              |}""".stripMargin)
@@ -161,9 +179,10 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE",FORBIDDEN,RuleDateRangeOutOfDate)
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", FORBIDDEN, RuleDateRangeOutOfDate)
       )
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

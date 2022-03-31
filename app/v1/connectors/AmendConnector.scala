@@ -25,15 +25,14 @@ import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject()(val http: HttpClient,
-                               val appConfig: AppConfig) extends BaseDesConnector  {
+class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
-  def amendDeduction(request: AmendRequestData)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
+  def amendDeduction(request: AmendRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
 
     put(
       body = request.body,
       DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.id}")
     )
   }
+
 }

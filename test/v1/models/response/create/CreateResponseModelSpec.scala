@@ -54,13 +54,13 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
-      val nino = "AA999999A"
-      val fromDate = "fromDate"
-      val toDate = "toDate"
+      val nino           = "AA999999A"
+      val fromDate       = "fromDate"
+      val toDate         = "toDate"
       val contractorName = "name"
-      val employerRef = "reference"
-      val periodData = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
-      val request = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
+      val employerRef    = "reference"
+      val periodData     = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
+      val request        = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
 
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
       CreateResponseModel.CreateLinksFactory
@@ -71,4 +71,5 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
     }
 
   }
+
 }

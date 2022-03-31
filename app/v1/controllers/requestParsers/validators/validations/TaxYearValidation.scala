@@ -26,10 +26,10 @@ object TaxYearValidation {
     if (taxYear.matches(taxYearFormat)) {
 
       val startTaxYearStart: Int = 2
-      val startTaxYearEnd: Int = 4
+      val startTaxYearEnd: Int   = 4
 
       val endTaxYearStart: Int = 5
-      val endTaxYearEnd: Int = 7
+      val endTaxYearEnd: Int   = 7
 
       val start = taxYear.substring(startTaxYearStart, startTaxYearEnd).toInt
       val end   = taxYear.substring(endTaxYearStart, endTaxYearEnd).toInt

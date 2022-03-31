@@ -23,14 +23,13 @@ import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors._
 import v1.models.request.create.{CreateRawData, CreateRequestData}
 
+class CreateRequestParserSpec extends UnitSpec {
 
-class CreateRequestParserSpec extends UnitSpec{
-
-  val nino = "AA123456A"
-  val invalidNino = "PLKL87654"
+  val nino                           = "AA123456A"
+  val invalidNino                    = "PLKL87654"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  trait Test extends  MockCreateValidator{
+  trait Test extends MockCreateValidator {
     lazy val parser = new CreateRequestParser(mockValidator)
   }
 
@@ -68,18 +67,19 @@ class CreateRequestParserSpec extends UnitSpec{
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId,BadRequestError))
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError))
       }
       "Nino format is incorrect" in new Test {
-        val inputData = CreateRawData(nino,requestJson)
+        val inputData = CreateRawData(nino, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId,NinoFormatError))
+        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
     }
   }
+
 }

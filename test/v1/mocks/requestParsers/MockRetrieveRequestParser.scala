@@ -22,14 +22,16 @@ import v1.controllers.requestParsers.RetrieveRequestParser
 import v1.models.errors.ErrorWrapper
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
-trait MockRetrieveRequestParser extends MockFactory{
+trait MockRetrieveRequestParser extends MockFactory {
 
   val mockRequestParser = mock[RetrieveRequestParser]
 
   object MockRetrieveDeductionRequestParser {
 
-    def parse(data: RetrieveRawData): CallHandler[Either[ErrorWrapper,RetrieveRequestData]] = {
+    def parse(data: RetrieveRawData): CallHandler[Either[ErrorWrapper, RetrieveRequestData]] = {
       (mockRequestParser.parseRequest(_: RetrieveRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

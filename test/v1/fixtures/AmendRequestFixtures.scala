@@ -138,6 +138,7 @@ object AmendRequestFixtures {
       |}
       |""".stripMargin
   }
+
   val invalidRequestJson: JsValue = Json.parse {
     """
       |{
@@ -551,7 +552,7 @@ object AmendRequestFixtures {
       |""".stripMargin
   }
 
-  val   responseJson: JsValue = Json.parse(
+  val responseJson: JsValue = Json.parse(
     """
       |{
       |"id": "S4636A77V5KB8625U"
@@ -559,8 +560,7 @@ object AmendRequestFixtures {
       |""".stripMargin
   )
 
-  val hateoasResponse: (String,String) => String = (nino: String, responseId: String) =>
-    s"""
+  val hateoasResponse: (String, String) => String = (nino: String, responseId: String) => s"""
        |{
        |  "id": "$responseId",
        |  "links":[
@@ -599,4 +599,5 @@ object AmendRequestFixtures {
       |}
       |""".stripMargin
   }
+
 }

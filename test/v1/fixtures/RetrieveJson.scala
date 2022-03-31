@@ -18,7 +18,6 @@ package v1.fixtures
 
 import play.api.libs.json.{JsValue, Json}
 
-
 object RetrieveJson {
 
   val multipleDeductionsJson: JsValue = Json.parse(
@@ -109,7 +108,6 @@ object RetrieveJson {
       |]
       |}
       |""".stripMargin
-
   )
 
   val singleDeductionJson: JsValue = Json.parse {
@@ -467,7 +465,6 @@ object RetrieveJson {
       |
       |""".stripMargin
 
-
   val errorJson =
     """
       |{
@@ -510,4 +507,5 @@ object RetrieveJson {
       |]
       |}
       |""".stripMargin
+
 }

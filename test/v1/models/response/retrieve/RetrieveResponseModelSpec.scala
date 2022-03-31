@@ -28,11 +28,13 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
   "RetrieveResponseModel" when {
     "processing a complete response" should {
       "produce a valid model with multiple deductions from json" in {
-        Json.toJson(RetrieveJson.multipleDeductionsJson)
+        Json
+          .toJson(RetrieveJson.multipleDeductionsJson)
           .validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
       }
       "produce a valid model with single deduction from json" in {
-        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.singleDeductionModel)
+        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(
+          RetrieveModels.singleDeductionModel)
       }
       "produce a valid model with single deduction(contractor submission only) from json" in {
         Json.toJson(RetrieveJson.singleDeductionContractorJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe
@@ -53,17 +55,20 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
-      val nino = "mynino"
+      val nino     = "mynino"
       val fromDate = "fromDate"
-      val toDate = "toDate"
+      val toDate   = "toDate"
 
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
-      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
+      RetrieveResponseModel.CreateLinksFactory.links(
+        mockAppConfig,
+        RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
         Seq(
           Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
-          Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor"),
+          Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
         )
     }
 
   }
+
 }

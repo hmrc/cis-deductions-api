@@ -43,6 +43,7 @@ trait HttpParser extends Logging {
         logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
         None
     }
+
   }
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")

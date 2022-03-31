@@ -24,14 +24,16 @@ import v1.models.request.create.CreateRawData
 
 class MockCreateValidator extends MockFactory {
 
-  val mockValidator: CreateValidator =  mock[CreateValidator]
+  val mockValidator: CreateValidator = mock[CreateValidator]
 
   object MockValidator {
 
     def validate(data: CreateRawData): CallHandler1[CreateRawData, List[MtdError]] = {
       (mockValidator
-        .validate(_:CreateRawData))
+        .validate(_: CreateRawData))
         .expects(data)
     }
+
   }
+
 }

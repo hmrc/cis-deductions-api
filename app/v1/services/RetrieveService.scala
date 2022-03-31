@@ -32,13 +32,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject()(connector: RetrieveConnector) extends DesResponseMappingSupport with Logging {
+class RetrieveService @Inject() (connector: RetrieveConnector) extends DesResponseMappingSupport with Logging {
 
-  def retrieveDeductions(request: RetrieveRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
+  def retrieveDeductions(request: RetrieveRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDesErrors(mappingDesToMtdError))
@@ -49,12 +49,13 @@ class RetrieveService @Inject()(connector: RetrieveConnector) extends DesRespons
   private def mappingDesToMtdError: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "NO_DATA_FOUND" -> NotFoundError,
-      "INVALID_DATE_RANGE" -> RuleDateRangeOutOfDate,
-      "INVALID_PERIOD_START" -> FromDateFormatError,
-      "INVALID_PERIOD_END" -> ToDateFormatError,
-      "INVALID_SOURCE" -> RuleSourceError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
+      "INVALID_PERIOD_START"      -> FromDateFormatError,
+      "INVALID_PERIOD_END"        -> ToDateFormatError,
+      "INVALID_SOURCE"            -> RuleSourceError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError
     )
+
 }

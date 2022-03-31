@@ -38,15 +38,16 @@ import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, Retrieve
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockRetrieveRequestParser
-  with MockRetrieveService
-  with MockHateoasFactory
-  with MockAppConfig
-  with MockAuditService
-  with MockIdGenerator {
+class RetrieveControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockRetrieveRequestParser
+    with MockRetrieveService
+    with MockHateoasFactory
+    with MockAppConfig
+    with MockAuditService
+    with MockIdGenerator {
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -68,15 +69,15 @@ class RetrieveControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val nino = "AA123456A"
-  private val fromDate = Some("2019-04-06")
-  private val toDate = Some("2020-04-05")
-  private val sourceRaw = Some("customer")
-  private val sourceAll = "all"
-  private val correlationId = "X-123"
-  private val retrieveRawData = RetrieveRawData(nino, fromDate, toDate, sourceRaw)
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
-  private val optionalFieldMissingRawData = RetrieveRawData(nino, fromDate, toDate, None)
+  private val nino                            = "AA123456A"
+  private val fromDate                        = Some("2019-04-06")
+  private val toDate                          = Some("2020-04-05")
+  private val sourceRaw                       = Some("customer")
+  private val sourceAll                       = "all"
+  private val correlationId                   = "X-123"
+  private val retrieveRawData                 = RetrieveRawData(nino, fromDate, toDate, sourceRaw)
+  private val retrieveRequestData             = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+  private val optionalFieldMissingRawData     = RetrieveRawData(nino, fromDate, toDate, None)
   private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
 
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
@@ -100,7 +101,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
       "a valid request is supplied for a cis get request" in new Test {
 
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -115,12 +116,17 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalDeductionAmount = Some(12345.56),
             totalCostOfMaterials = Some(234234.33),
             totalGrossAmountPaid = Some(2342424.56),
-            Seq(HateoasWrapper(
-              cisDeductions
-              , Seq(deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
-                amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)))
-            )
-          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            Seq(
+              HateoasWrapper(
+                cisDeductions,
+                Seq(
+                  deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
+                  amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                )
+              ))
+          ),
+          Seq(
+            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -140,7 +146,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
       "a valid request is supplied when an optional field is missing" in new Test {
 
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(optionalFieldMissingRawData)
@@ -155,11 +161,10 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalDeductionAmount = Some(12345.56),
             totalCostOfMaterials = Some(234234.33),
             totalGrossAmountPaid = Some(2342424.56),
-            Seq(HateoasWrapper(
-              cisDeductionsMissingOptional
-              , Seq())
-            )
-          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            Seq(HateoasWrapper(cisDeductionsMissingOptional, Seq()))
+          ),
+          Seq(
+            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -179,7 +184,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
 
       "a valid request where response submission id is missing" in new Test {
 
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -194,11 +199,10 @@ class RetrieveControllerSpec extends ControllerBaseSpec
             totalDeductionAmount = Some(12345.56),
             totalCostOfMaterials = Some(234234.33),
             totalGrossAmountPaid = Some(2342424.56),
-            Seq(HateoasWrapper(
-              cisDeductionsNoId
-              , Seq())
-            )
-          ), Seq(retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            Seq(HateoasWrapper(cisDeductionsNoId, Seq()))
+          ),
+          Seq(
+            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -239,7 +243,7 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (DownstreamError, INTERNAL_SERVER_ERROR)
       )
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
@@ -256,7 +260,8 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        val auditResponse: AuditResponse =
+          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
       }
 
@@ -264,18 +269,19 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         val error = ErrorWrapper(
           correlationId,
           BadRequestError,
-          Some(Seq(
-            BadRequestError,
-            RuleDateRangeInvalidError,
-            ToDateFormatError,
-            FromDateFormatError,
-            ToDateFormatError,
-            RuleMissingToDateError,
-            RuleMissingFromDateError,
-            RuleSourceError,
-            RuleDateRangeOutOfDate
-          )
-        ))
+          Some(
+            Seq(
+              BadRequestError,
+              RuleDateRangeInvalidError,
+              ToDateFormatError,
+              FromDateFormatError,
+              ToDateFormatError,
+              RuleMissingToDateError,
+              RuleMissingFromDateError,
+              RuleSourceError,
+              RuleDateRangeOutOfDate
+            ))
+        )
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -287,18 +293,20 @@ class RetrieveControllerSpec extends ControllerBaseSpec
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
-          Seq(
-            AuditError(BadRequestError.code),
-            AuditError(RuleDateRangeInvalidError.code),
-            AuditError(ToDateFormatError.code),
-            AuditError(FromDateFormatError.code),
-            AuditError(ToDateFormatError.code),
-            AuditError(RuleMissingToDateError.code),
-            AuditError(RuleMissingFromDateError.code),
-            AuditError(RuleSourceError.code),
-            AuditError(RuleDateRangeOutOfDate.code)
-          )),
+        val auditResponse: AuditResponse = AuditResponse(
+          BAD_REQUEST,
+          Some(
+            Seq(
+              AuditError(BadRequestError.code),
+              AuditError(RuleDateRangeInvalidError.code),
+              AuditError(ToDateFormatError.code),
+              AuditError(FromDateFormatError.code),
+              AuditError(ToDateFormatError.code),
+              AuditError(RuleMissingToDateError.code),
+              AuditError(RuleMissingFromDateError.code),
+              AuditError(RuleSourceError.code),
+              AuditError(RuleDateRangeOutOfDate.code)
+            )),
           None
         )
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
@@ -339,4 +347,5 @@ class RetrieveControllerSpec extends ControllerBaseSpec
       input.foreach(args => (serviceErrors _).tupled(args))
     }
   }
+
 }

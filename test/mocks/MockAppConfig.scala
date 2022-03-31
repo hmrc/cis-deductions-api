@@ -30,9 +30,9 @@ trait MockAppConfig extends MockFactory {
     def mtdIdBaseUrl: CallHandler[String] = (mockAppConfig.mtdIdBaseUrl _: () => String).expects()
 
     // DES Config
-    def desBaseUrl: CallHandler[String] = (mockAppConfig.desBaseUrl _: () => String).expects()
-    def desToken: CallHandler[String] = (mockAppConfig.desToken _).expects()
-    def desEnvironment: CallHandler[String] = (mockAppConfig.desEnv _).expects()
+    def desBaseUrl: CallHandler[String]                         = (mockAppConfig.desBaseUrl _: () => String).expects()
+    def desToken: CallHandler[String]                           = (mockAppConfig.desToken _).expects()
+    def desEnvironment: CallHandler[String]                     = (mockAppConfig.desEnv _).expects()
     def desEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (mockAppConfig.desEnvironmentHeaders _).expects()
 
     // Business Rule Config
@@ -40,10 +40,14 @@ trait MockAppConfig extends MockFactory {
 
     // API Config
     def featureSwitch: CallHandler[Option[Configuration]] = (mockAppConfig.featureSwitch _: () => Option[Configuration]).expects()
-    def apiGatewayContext: CallHandler[String] = (mockAppConfig.apiGatewayContext _: () => String).expects()
-    def apiStatus: CallHandler[String] = (mockAppConfig.apiStatus: String => String).expects("1.0")
-    def endpointsEnabled: CallHandler[Boolean] = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
-    def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] = (mockAppConfig.confidenceLevelConfig _: () => ConfidenceLevelConfig).expects()
+    def apiGatewayContext: CallHandler[String]            = (mockAppConfig.apiGatewayContext _: () => String).expects()
+    def apiStatus: CallHandler[String]                    = (mockAppConfig.apiStatus: String => String).expects("1.0")
+    def endpointsEnabled: CallHandler[Boolean]            = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
+
+    def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
+      (mockAppConfig.confidenceLevelConfig _: () => ConfidenceLevelConfig).expects()
+
     def desCisUrl: CallHandler[String] = (mockAppConfig.desCisUrl _: () => String).expects()
   }
+
 }

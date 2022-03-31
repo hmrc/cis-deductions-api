@@ -31,35 +31,21 @@ trait HateoasLinks {
     s"${baseUri(appConfig, nino)}/current-position?fromDate=$fromDate&toDate=$toDate$sourceParam"
   }
 
-  //API resource links
-  //L1
-  def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean) : Link =
-    Link (
-      href = baseUri(appConfig, nino) + s"/amendments",
-      method = POST,
-      rel = if(isSelf) SELF else CREATE_CIS)
+  // API resource links
+  // L1
+  def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean): Link =
+    Link(href = baseUri(appConfig, nino) + s"/amendments", method = POST, rel = if (isSelf) SELF else CREATE_CIS)
 
-  //L2
-  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean):
-  Link =
-    Link (
-      href = baseUri(appConfig, nino) + s"/amendments/$id",
-      method = DELETE,
-      rel = if(isSelf) SELF else DELETE_CIS)
+  // L2
+  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
+    Link(href = baseUri(appConfig, nino) + s"/amendments/$id", method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
 
-  //L3
-  def amendCISDeduction(appConfig: AppConfig, nino:String, id: String, isSelf: Boolean):
-  Link =
-    Link (
-      href = baseUri(appConfig, nino) + s"/amendments/$id",
-      method = PUT,
-      rel = if(isSelf) SELF else AMEND_CIS)
+  // L3
+  def amendCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
+    Link(href = baseUri(appConfig, nino) + s"/amendments/$id", method = PUT, rel = if (isSelf) SELF else AMEND_CIS)
 
-  //L4
-  def retrieveCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean):
-  Link =
-    Link (
-      href = retrieveUri(appConfig, nino, fromDate, toDate, source),
-      method = GET,
-      rel = if(isSelf) SELF else RETRIEVE_CIS)
+  // L4
+  def retrieveCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean): Link =
+    Link(href = retrieveUri(appConfig, nino, fromDate, toDate, source), method = GET, rel = if (isSelf) SELF else RETRIEVE_CIS)
+
 }

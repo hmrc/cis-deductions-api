@@ -31,27 +31,28 @@ import v1.models.request.delete.DeleteRequestData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteService @Inject()(connector: DeleteConnector) extends DesResponseMappingSupport with Logging {
+class DeleteService @Inject() (connector: DeleteConnector) extends DesResponseMappingSupport with Logging {
 
-  def deleteDeductions(request: DeleteRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def deleteDeductions(request: DeleteRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.delete(request)).leftMap(mapDesErrors(desErrorMap))
     } yield desResponseWrapper
-      result.value
+    result.value
   }
 
   private def desErrorMap: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "NO_DATA_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
+      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "SERVER_ERROR"              -> DownstreamError,
+      "SERVICE_UNAVAILABLE"       -> DownstreamError
     )
+
 }

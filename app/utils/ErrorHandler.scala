@@ -34,8 +34,8 @@ import v1.models.errors._
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
-  extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
+class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
+    extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
     with Logging {
 
   import httpAuditEvent.dataEvent
@@ -44,11 +44,10 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
 
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(message =
-      s"[ErrorHandler][onClientError] error in version " +
-        s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
-        s"for (${request.method}) [${request.uri}] with status: " +
-        s"$statusCode and message: $message")
+    logger.warn(message = s"[ErrorHandler][onClientError] error in version " +
+      s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
+      s"for (${request.method}) [${request.uri}] with status: " +
+      s"$statusCode and message: $message")
 
     statusCode match {
       case BAD_REQUEST =>
@@ -81,10 +80,9 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.warn(
-      message =
-        s"[ErrorHandler][onServerError] Internal server error in version " +
-          s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
-          s"for (${request.method}) [${request.uri}] -> ",
+      message = s"[ErrorHandler][onServerError] Internal server error in version " +
+        s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
+        s"for (${request.method}) [${request.uri}] -> ",
       ex
     )
 
@@ -97,7 +95,7 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
         (e.reportAs, BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
         (e.reportAs, DownstreamError, "ServerInternalError")
-      case _                         => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
+      case _ => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(
@@ -111,4 +109,5 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
 
     Future.successful(Status(status)(Json.toJson(errorCode)))
   }
+
 }

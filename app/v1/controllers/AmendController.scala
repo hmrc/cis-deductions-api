@@ -32,14 +32,14 @@ import v1.services.{AmendService, AuditService, EnrolmentsAuthService, MtdIdLook
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendController @Inject()(val authService: EnrolmentsAuthService,
-                                val lookupService: MtdIdLookupService,
-                                requestParser: AmendRequestParser,
-                                service: AmendService,
-                                auditService: AuditService,
-                                cc: ControllerComponents,
-                                val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc)
+class AmendController @Inject() (val authService: EnrolmentsAuthService,
+                                 val lookupService: MtdIdLookupService,
+                                 requestParser: AmendRequestParser,
+                                 service: AmendService,
+                                 auditService: AuditService,
+                                 cc: ControllerComponents,
+                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
@@ -56,30 +56,46 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val rawData = AmendRawData(nino, id, request.body)
 
     val result = for {
-      parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+      parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
       serviceResponse <- EitherT(service.amendDeductions(parsedRequest))
     } yield {
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
       auditSubmission(
-        createAuditDetails(rawData, NO_CONTENT, serviceResponse.correlationId, request.userDetails, Some(rawData.id), None,
-          Some(request.body), Some(Json.toJson(serviceResponse.correlationId))))
+        createAuditDetails(
+          rawData,
+          NO_CONTENT,
+          serviceResponse.correlationId,
+          request.userDetails,
+          Some(rawData.id),
+          None,
+          Some(request.body),
+          Some(Json.toJson(serviceResponse.correlationId))
+        ))
 
-      NoContent.withApiHeaders(serviceResponse.correlationId)
+      NoContent
+        .withApiHeaders(serviceResponse.correlationId)
         .as(MimeTypes.JSON)
     }
 
     result.leftMap { errorWrapper =>
       val resCorrelationId = errorWrapper.correlationId
-      val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+      val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
       logger.warn(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Error response received with CorrelationId: $resCorrelationId")
 
-      auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(rawData.id), Some(errorWrapper),
-        Some(request.body)))
+      auditSubmission(
+        createAuditDetails(
+          rawData,
+          result.header.status,
+          correlationId,
+          request.userDetails,
+          Some(rawData.id),
+          Some(errorWrapper),
+          Some(request.body)))
       result
     }.merge
   }
@@ -87,13 +103,11 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.error: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError |
-           DeductionFromDateFormatError | DeductionToDateFormatError |
-           RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
-           SubmissionIdFormatError => BadRequest(Json.toJson(errorWrapper))
-      case RuleDeductionsDateRangeInvalidError |
-           RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
+          RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | SubmissionIdFormatError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case RuleDeductionsDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
+      case NotFoundError                                                                                       => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
@@ -102,4 +116,5 @@ class AmendController @Inject()(val authService: EnrolmentsAuthService,
     val event = AuditEvent("AmendCisDeductionsForSubcontractor", "amend-cis-deductions-for-subcontractor", details)
     auditService.auditEvent(event)
   }
+
 }

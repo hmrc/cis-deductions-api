@@ -26,20 +26,20 @@ import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveConnector @Inject()(val http: HttpClient,
-                                  val appConfig: AppConfig
-                                      ) extends BaseDesConnector {
+class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
 
-  def retrieve(request: RetrieveRequestData)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
+  def retrieve(request: RetrieveRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     get(
-      DesUri[RetrieveResponseModel[CisDeductions]](s"${appConfig.desCisUrl}/${request.nino.nino}" +
-        s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
+      DesUri[RetrieveResponseModel[CisDeductions]](
+        s"${appConfig.desCisUrl}/${request.nino.nino}" +
+          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
     )
   }
+
 }

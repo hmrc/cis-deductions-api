@@ -33,13 +33,14 @@ import v1.models.request.amend.{AmendRawData, AmendRequestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockAmendRequestParser
-  with MockAmendService
-  with MockAuditService
-  with MockIdGenerator {
+class AmendControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockAmendRequestParser
+    with MockAmendService
+    with MockAuditService
+    with MockIdGenerator {
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -59,17 +60,17 @@ class AmendControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val nino = "AA123456A"
-  private val submissionId = "S4636A77V5KB8625U"
+  private val nino          = "AA123456A"
+  private val submissionId  = "S4636A77V5KB8625U"
   private val correlationId = "X-123"
 
-  private val rawAmendRequest = AmendRawData(nino,submissionId ,requestJson)
-  private val amendRequest = AmendRequestData(Nino(nino),submissionId, amendRequestObj)
+  private val rawAmendRequest = AmendRawData(nino, submissionId, requestJson)
+  private val amendRequest    = AmendRequestData(Nino(nino), submissionId, amendRequestObj)
 
-  private val rawMissingOptionalAmendRequest = AmendRawData(nino,submissionId, missingOptionalRequestJson)
-  private val missingOptionalAmendRequest = AmendRequestData(Nino(nino),submissionId, amendMissingOptionalRequestObj)
+  private val rawMissingOptionalAmendRequest = AmendRawData(nino, submissionId, missingOptionalRequestJson)
+  private val missingOptionalAmendRequest    = AmendRequestData(Nino(nino), submissionId, amendMissingOptionalRequestObj)
 
-    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+  def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
       auditType = "AmendCisDeductionsForSubcontractor",
       transactionName = "amend-cis-deductions-for-subcontractor",
@@ -96,7 +97,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .submitAmendRequest(amendRequest)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
+        val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -115,8 +116,7 @@ class AmendControllerSpec extends ControllerBaseSpec
           .submitAmendRequest(missingOptionalAmendRequest)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-
-        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
+        val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(missingOptionalRequestJson)))
 
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -124,68 +124,70 @@ class AmendControllerSpec extends ControllerBaseSpec
         val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(missingOptionalRequestJson))).once()
       }
-      }
     }
+  }
 
-    "return errors as per the spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockAmendRequestDataParser
-            .parse(rawAmendRequest)
-            .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-          val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(requestJson))
-
-          status(result) shouldBe expectedStatus
-          contentAsJson(result) shouldBe Json.toJson(error)
-          header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
-        }
-      }
-
-      val input = Seq(
-        (BadRequestError, BAD_REQUEST),
-        (NinoFormatError, BAD_REQUEST),
-        (DeductionFromDateFormatError, BAD_REQUEST),
-        (DeductionToDateFormatError, BAD_REQUEST),
-        (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
-        (RuleDeductionAmountError, BAD_REQUEST),
-        (RuleCostOfMaterialsError, BAD_REQUEST),
-        (RuleGrossAmountError, BAD_REQUEST),
-        (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
-        (RuleDuplicatePeriodError, FORBIDDEN),
-        (SubmissionIdFormatError,BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
-      )
-
-      input.foreach(args => (errorsFromParserTester _).tupled(args))
-
-      "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
+  "return errors as per the spec" when {
+    def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
+      s"a ${error.code} error is returned from the parser" in new Test {
 
         MockAmendRequestDataParser
           .parse(rawAmendRequest)
-          .returns(Left(error))
+          .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
+        val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(requestJson))
 
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe expectedStatus
         contentAsJson(result) shouldBe Json.toJson(error)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
       }
+    }
 
-      "multiple errors occur for format errors" in new Test {
-        val error = ErrorWrapper(
-          correlationId,
-          BadRequestError,
-          Some(Seq(
+    val input = Seq(
+      (BadRequestError, BAD_REQUEST),
+      (NinoFormatError, BAD_REQUEST),
+      (DeductionFromDateFormatError, BAD_REQUEST),
+      (DeductionToDateFormatError, BAD_REQUEST),
+      (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+      (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
+      (RuleDeductionAmountError, BAD_REQUEST),
+      (RuleCostOfMaterialsError, BAD_REQUEST),
+      (RuleGrossAmountError, BAD_REQUEST),
+      (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
+      (RuleDuplicatePeriodError, FORBIDDEN),
+      (SubmissionIdFormatError, BAD_REQUEST),
+      (DownstreamError, INTERNAL_SERVER_ERROR)
+    )
+
+    input.foreach(args => (errorsFromParserTester _).tupled(args))
+
+    "multiple parser errors occur" in new Test {
+      val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
+
+      MockAmendRequestDataParser
+        .parse(rawAmendRequest)
+        .returns(Left(error))
+
+      val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
+
+      status(result) shouldBe BAD_REQUEST
+      contentAsJson(result) shouldBe Json.toJson(error)
+      header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+      val auditResponse: AuditResponse =
+        AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
+      MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+    }
+
+    "multiple errors occur for format errors" in new Test {
+      val error = ErrorWrapper(
+        correlationId,
+        BadRequestError,
+        Some(
+          Seq(
             BadRequestError,
             DeductionToDateFormatError,
             DeductionFromDateFormatError,
@@ -193,72 +195,76 @@ class AmendControllerSpec extends ControllerBaseSpec
             FromDateFormatError,
             TaxYearFormatError
           ))
-        )
+      )
 
-        MockAmendRequestDataParser
-          .parse(rawAmendRequest)
-          .returns(Left(error))
+      MockAmendRequestDataParser
+        .parse(rawAmendRequest)
+        .returns(Left(error))
 
-        val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
+      val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
 
-        status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(error)
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
+      status(result) shouldBe BAD_REQUEST
+      contentAsJson(result) shouldBe Json.toJson(error)
+      header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(BAD_REQUEST, Some(
+      val auditResponse: AuditResponse = AuditResponse(
+        BAD_REQUEST,
+        Some(
           Seq(
             AuditError(BadRequestError.code),
             AuditError(DeductionToDateFormatError.code),
             AuditError(DeductionFromDateFormatError.code),
             AuditError(ToDateFormatError.code),
             AuditError(FromDateFormatError.code),
-            AuditError(TaxYearFormatError.code))),
-          None
-        )
+            AuditError(TaxYearFormatError.code)
+          )),
+        None
+      )
 
+      MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+    }
+  }
+
+  "return downstream errors as per the spec" when {
+    def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
+      s"a ${mtdError.code} error is returned from the service" in new Test {
+
+        MockAmendRequestDataParser
+          .parse(rawAmendRequest)
+          .returns(Right(amendRequest))
+
+        MockAmendService
+          .submitAmendRequest(amendRequest)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
+
+        val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
+
+        status(result) shouldBe expectedStatus
+        contentAsJson(result) shouldBe Json.toJson(mtdError)
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
         MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
       }
     }
 
-    "return downstream errors as per the spec" when {
-      def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-        s"a ${mtdError.code} error is returned from the service" in new Test {
+    val input = Seq(
+      (BadRequestError, BAD_REQUEST),
+      (NotFoundError, NOT_FOUND),
+      (NinoFormatError, BAD_REQUEST),
+      (DeductionFromDateFormatError, BAD_REQUEST),
+      (DeductionToDateFormatError, BAD_REQUEST),
+      (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+      (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
+      (RuleDeductionAmountError, BAD_REQUEST),
+      (RuleCostOfMaterialsError, BAD_REQUEST),
+      (RuleGrossAmountError, BAD_REQUEST),
+      (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
+      (RuleDuplicatePeriodError, FORBIDDEN),
+      (SubmissionIdFormatError, BAD_REQUEST),
+      (DownstreamError, INTERNAL_SERVER_ERROR)
+    )
+    input.foreach(args => (serviceErrors _).tupled(args))
+  }
 
-          MockAmendRequestDataParser
-            .parse(rawAmendRequest)
-            .returns(Right(amendRequest))
-
-          MockAmendService
-            .submitAmendRequest(amendRequest)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-          val result: Future[Result] = controller.amendRequest(nino,submissionId)(fakePostRequest(Json.toJson(requestJson)))
-
-          status(result) shouldBe expectedStatus
-          contentAsJson(result) shouldBe Json.toJson(mtdError)
-          header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
-        }
-      }
-
-      val input = Seq(
-        (BadRequestError, BAD_REQUEST),
-        (NotFoundError, NOT_FOUND),
-        (NinoFormatError, BAD_REQUEST),
-        (DeductionFromDateFormatError, BAD_REQUEST),
-        (DeductionToDateFormatError, BAD_REQUEST),
-        (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
-        (RuleDeductionAmountError, BAD_REQUEST),
-        (RuleCostOfMaterialsError, BAD_REQUEST),
-        (RuleGrossAmountError, BAD_REQUEST),
-        (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
-        (RuleDuplicatePeriodError, FORBIDDEN),
-        (SubmissionIdFormatError,BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
-      )
-      input.foreach(args => (serviceErrors _).tupled(args))
-    }
 }
