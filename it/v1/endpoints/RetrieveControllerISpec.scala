@@ -43,12 +43,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def request: WSRequest = {
-
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withQueryStringParameters(queryParams: _*)
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
     }
 
   }
