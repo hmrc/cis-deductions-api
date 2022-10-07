@@ -30,7 +30,7 @@ trait AppConfig {
   def mtdIdBaseUrl: String
   def apiGatewayContext: String
   def apiStatus(version: String): String
-  def featureSwitch: Option[Configuration]
+  def featureSwitches: Configuration
   def endpointsEnabled(version: String): Boolean
   def confidenceLevelConfig: ConfidenceLevelConfig
   def desCisUrl: String
@@ -50,9 +50,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val minTaxYearCisDeductions: String            = config.getString("minTaxYearCisDeductions")
 
   def apiStatus(version: String): String = config.getString(s"api.$version.status")
-
-  def featureSwitch: Option[Configuration] = configuration.getOptional[Configuration](s"feature-switch")
-
+  def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
   def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")

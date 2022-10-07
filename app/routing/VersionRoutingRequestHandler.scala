@@ -16,7 +16,7 @@
 
 package routing
 
-import config.{AppConfig, FeatureSwitch}
+import config.{AppConfig, FeatureSwitches}
 import definition.Versions
 import javax.inject.{Inject, Singleton}
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
@@ -42,7 +42,7 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
       filters = filters.filters
     ) {
 
-  private val featureSwitch            = FeatureSwitch(config.featureSwitch)
+  private val featureSwitches            = FeatureSwitches(config.featureSwitches)
   private val unsupportedVersionAction = action(Results.NotFound(Json.toJson(UnsupportedVersionError)))
   private val invalidAcceptHeaderError = action(Results.NotAcceptable(Json.toJson(InvalidAcceptHeaderError)))
 
@@ -53,9 +53,9 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     def apiHandler: Option[Handler] = Versions.getFromRequest(request) match {
       case Some(version) =>
         versionRoutingMap.versionRouter(version) match {
-          case Some(versionRouter) if featureSwitch.isVersionEnabled(version) => routeWith(versionRouter)(request)
-          case Some(_)                                                        => Some(unsupportedVersionAction)
-          case None                                                           => Some(unsupportedVersionAction)
+          case Some(versionRouter) if featureSwitches.isVersionEnabled(version) => routeWith(versionRouter)(request)
+          case Some(_)                                                          => Some(unsupportedVersionAction)
+          case None                                                             => Some(unsupportedVersionAction)
         }
       case None => Some(invalidAcceptHeaderError)
     }
