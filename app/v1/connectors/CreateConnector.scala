@@ -22,18 +22,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
+import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.DownstreamUri.DesUri
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def create(request: CreateRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DesOutcome[CreateResponseModel]] = {
-
-    import v1.connectors.httpparsers.StandardDesHttpParser._
+      correlationId: String): Future[DownstreamOutcome[CreateResponseModel]] = {
 
     post(
       body = request.body,

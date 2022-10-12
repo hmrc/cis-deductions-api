@@ -22,18 +22,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
+import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.DownstreamUri.DesUri
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieve(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
-
-    import v1.connectors.httpparsers.StandardDesHttpParser._
+      correlationId: String): Future[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     get(
       DesUri[RetrieveResponseModel[CisDeductions]](

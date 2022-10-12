@@ -69,7 +69,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
         .get(
           url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
             s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-          dummyDesHeaderCarrierConfig,
+          dummyHeaderCarrierConfig,
           desRequestHeaders,
           Seq("AnotherHeader" -> "HeaderValue")
         )
@@ -85,16 +85,16 @@ class RetrieveConnectorSpec extends ConnectorSpec {
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
         MockedHttpClient
-          .get[DesOutcome[RetrieveResponseModel[CisDeductions]]](
+          .get[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]](
             s"$baseUrl/income-tax/cis/deductions/${nino}" +
               s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
+        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome
       }
     }

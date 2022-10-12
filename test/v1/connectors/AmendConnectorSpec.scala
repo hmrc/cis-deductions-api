@@ -51,7 +51,7 @@ class AmendConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
@@ -67,14 +67,14 @@ class AmendConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[Unit] = await(connector.amendDeduction(request))
+        val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
         result shouldBe outcome
       }
     }

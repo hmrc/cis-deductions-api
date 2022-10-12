@@ -50,7 +50,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
           )
@@ -65,15 +65,15 @@ class DeleteConnectorSpec extends ConnectorSpec {
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
         MockedHttpClient
-          .delete[DesOutcome[Unit]](
+          .delete[DownstreamOutcome[Unit]](
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[Unit] = await(connector.delete(request))
+        val result: DownstreamOutcome[Unit] = await(connector.delete(request))
         result shouldBe outcome
       }
     }

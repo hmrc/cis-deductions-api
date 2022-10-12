@@ -19,7 +19,7 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreateConnector, DesOutcome}
+import v1.connectors.{CreateConnector, DownstreamOutcome}
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
 
@@ -31,7 +31,7 @@ trait MockCreateConnector extends MockFactory {
 
   object MockCreateCisDeductionsConnector {
 
-    def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DesOutcome[CreateResponseModel]]] = {
+    def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DownstreamOutcome[CreateResponseModel]]] = {
       (mockCreateConnector
         .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

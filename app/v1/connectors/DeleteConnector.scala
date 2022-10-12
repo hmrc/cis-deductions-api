@@ -20,15 +20,16 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
-import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.delete.DeleteRequestData
+import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.DownstreamUri.DesUri
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class DeleteConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def delete(request: DeleteRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
+  def delete(request: DeleteRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
     delete(
       DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.submissionId}")
     )

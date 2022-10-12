@@ -52,7 +52,7 @@ class CreateConnectorSpec extends ConnectorSpec {
       MockedHttpClient
         .post(
           url = s"$baseUrl/income-tax/cis/deductions/$nino",
-          dummyDesHeaderCarrierConfig,
+          dummyHeaderCarrierConfig,
           body = request.body,
           desRequestHeaders,
           Seq("AnotherHeader" -> "HeaderValue")
@@ -69,14 +69,14 @@ class CreateConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/cis/deductions/$nino",
-            dummyDesHeaderCarrierConfig,
+            dummyHeaderCarrierConfig,
             body = request.body,
             desRequestHeaders,
             Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
-        val result: DesOutcome[CreateResponseModel] = await(connector.create(request))
+        val result: DownstreamOutcome[CreateResponseModel] = await(connector.create(request))
         result shouldBe outcome
       }
     }
