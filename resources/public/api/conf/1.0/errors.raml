@@ -330,6 +330,8 @@ traits:
             type: types.errorResponse
             examples:
               ruleTaxYearNotSupported:
-                description: The tax year specified does not lie within the supported range
+                description: |
+                  The specified tax year is not supported. Either the tax year specified is before the minimum tax year value,
+                  or it is after the maximum tax year value.
                 value:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
