@@ -33,7 +33,9 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   class Test extends MockHttpClient with MockAppConfig {
     val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
+    val desRequestHeaders: Seq[(String, String)] =
+      Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token", "correlationId" -> correlationId)
+
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
@@ -74,8 +76,9 @@ class RetrieveConnectorSpec extends ConnectorSpec {
           Seq("AnotherHeader" -> "HeaderValue")
         )
         .returns(Future.successful(outcome))
-
-      await(connector.retrieve(request)) shouldBe outcome
+//    income-tax/cis/deductions/AA123456A?periodStart=2019-04-05&periodEnd=2020-04-06&source=contractor
+      val result = await(connector.retrieve(request))
+      result shouldBe outcome
     }
 
     "return a Des Error code" when {

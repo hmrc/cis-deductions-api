@@ -49,7 +49,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   val requiredDesHeaders: Seq[(String, String)] = Seq(
     "Authorization"     -> "Bearer des-token",
     "Environment"       -> "des-environment",
-    "User-Agent"        -> "individuals-reliefs-api",
+    "User-Agent"        -> "individual-cis-deductions-api",
     "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
@@ -66,7 +66,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   val requiredIfsHeaders: Seq[(String, String)] = Seq(
     "Authorization"     -> "Bearer ifs-token",
     "Environment"       -> "ifs-environment",
-    "User-Agent"        -> "individuals-reliefs-api",
+    "User-Agent"        -> "individual-cis-deductions-api",
     "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
@@ -83,7 +83,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   val requiredTysIfsHeaders: Seq[(String, String)] = Seq(
     "Authorization"     -> "Bearer TYS-IFS-token",
     "Environment"       -> "TYS-IFS-environment",
-    "User-Agent"        -> "individuals-reliefs-api",
+    "User-Agent"        -> "individual-cis-deductions-api",
     "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
