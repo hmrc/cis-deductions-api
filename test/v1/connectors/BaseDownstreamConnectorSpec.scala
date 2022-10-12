@@ -25,7 +25,7 @@ import v1.models.outcomes.ResponseWrapper
 
 import scala.concurrent.Future
 
-class BaseDownstreamConnectorSpec extends ConnectorSpec {
+class updBaseDownstreamConnectorSpec extends ConnectorSpec {
   // WLOG
   val body        = "body"
   val outcome     = Right(ResponseWrapper(correlationId, Result(2)))

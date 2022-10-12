@@ -111,7 +111,7 @@ class ErrorWrapperSpec extends UnitSpec {
   }
 
   "When ErrorWrapper has several errors, containsAnyOf" should {
-    val errorWrapper = ErrorWrapper("correlationId", BadrequestError, Some(List(NinoFormatError, TaxYearFormatError, StringFormatError)))
+    val errorWrapper = ErrorWrapper("correlationId", BadRequestError, Some(List(NinoFormatError, TaxYearFormatError, StringFormatError)))
 
     "return false" when {
       "given no matching errors" in {

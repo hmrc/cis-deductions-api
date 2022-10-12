@@ -34,7 +34,7 @@ class CreateValidatorSpec extends UnitSpec {
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
-    MockedAppConfig.minTaxYearCisDeductions.returns("2019")
+    MockAppConfig.minTaxYearCisDeductions.returns("2019")
   }
 
   "running validation" should {

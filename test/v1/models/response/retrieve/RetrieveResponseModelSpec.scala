@@ -59,7 +59,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
       val fromDate = "fromDate"
       val toDate   = "toDate"
 
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
       RetrieveResponseModel.CreateLinksFactory.links(
         mockAppConfig,
         RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
