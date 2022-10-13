@@ -28,7 +28,7 @@ class RetrieveValidatorSpec extends UnitSpec {
 
   class SetUp extends MockAppConfig {
     val validator = new RetrieveValidator(mockAppConfig)
-    MockAppConfig.minTaxYearCisDeductions.returns("2020")
+    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
   }
 
   "running validation" should {

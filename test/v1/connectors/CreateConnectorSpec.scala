@@ -17,8 +17,8 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.PeriodDetails
@@ -36,11 +36,11 @@ class CreateConnectorSpec extends ConnectorSpec {
     val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-    MockAppConfig.desCisUrl returns "income-tax/cis/deductions"
+    MockedAppConfig.desBaseUrl returns baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
   "create" must {
@@ -49,7 +49,7 @@ class CreateConnectorSpec extends ConnectorSpec {
     "post a CreateCisDeductionRequest body and return the result" in new Test {
       val outcome = Right(ResponseWrapper(submissionId, CreateResponseModel(submissionId)))
 
-      MockHttpClient
+      MockedHttpClient
         .post(
           url = s"$baseUrl/income-tax/cis/deductions/$nino",
           dummyHeaderCarrierConfig,
@@ -66,7 +66,7 @@ class CreateConnectorSpec extends ConnectorSpec {
       "the http client returns a Des Error code" in new Test {
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockHttpClient
+        MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/cis/deductions/$nino",
             dummyHeaderCarrierConfig,

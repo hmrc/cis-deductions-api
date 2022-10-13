@@ -17,8 +17,8 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.DeleteRequestData
@@ -33,11 +33,11 @@ class DeleteConnectorSpec extends ConnectorSpec {
   class Test extends MockHttpClient with MockAppConfig {
     val connector: DeleteConnector               = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-    MockAppConfig.desCisUrl returns "income-tax/cis/deductions"
+    MockedAppConfig.desBaseUrl returns baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
   }
 
   "delete" should {
@@ -47,7 +47,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockHttpClient
+        MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
             dummyHeaderCarrierConfig,
@@ -64,7 +64,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
       "the http client returns a Des Error code" in new Test {
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockHttpClient
+        MockedHttpClient
           .delete[DownstreamOutcome[Unit]](
             url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}",
             dummyHeaderCarrierConfig,

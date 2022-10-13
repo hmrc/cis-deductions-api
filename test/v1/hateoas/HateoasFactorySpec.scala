@@ -45,7 +45,7 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   class Test {
-    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
+    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes
   }
 
   "wrap" should {

@@ -101,7 +101,7 @@ class RetrieveControllerSpec
 
       "a valid request is supplied for a cis get request" in new Test {
 
-        MockAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -146,7 +146,7 @@ class RetrieveControllerSpec
 
       "a valid request is supplied when an optional field is missing" in new Test {
 
-        MockAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(optionalFieldMissingRawData)
@@ -184,7 +184,7 @@ class RetrieveControllerSpec
 
       "a valid request where response submission id is missing" in new Test {
 
-        MockAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)

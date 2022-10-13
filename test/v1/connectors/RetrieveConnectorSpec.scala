@@ -17,8 +17,8 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.errors.{DesErrorCode, DesErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
@@ -33,14 +33,13 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   class Test extends MockHttpClient with MockAppConfig {
     val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    val desRequestHeaders: Seq[(String, String)] =
-      Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token", "correlationId" -> correlationId)
+    val desRequestHeaders: Seq[(String, String)] = requiredDesHeaders
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desCisUrl returns "income-tax/cis/deductions"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockedAppConfig.desBaseUrl returns baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "retrieve" should {
@@ -67,16 +66,15 @@ class RetrieveConnectorSpec extends ConnectorSpec {
           )
         ))
 
-      MockHttpClient
+      MockedHttpClient
         .get(
           url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
             s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
           dummyHeaderCarrierConfig,
-          desRequestHeaders,
-          Seq("AnotherHeader" -> "HeaderValue")
+          requiredHeaders = desRequestHeaders
         )
         .returns(Future.successful(outcome))
-//    income-tax/cis/deductions/AA123456A?periodStart=2019-04-05&periodEnd=2020-04-06&source=contractor
+
       val result = await(connector.retrieve(request))
       result shouldBe outcome
     }
@@ -87,13 +85,12 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
 
-        MockHttpClient
+        MockedHttpClient
           .get[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]](
             s"$baseUrl/income-tax/cis/deductions/${nino}" +
               s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
             dummyHeaderCarrierConfig,
-            desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue")
+            requiredHeaders = desRequestHeaders
           )
           .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
 
