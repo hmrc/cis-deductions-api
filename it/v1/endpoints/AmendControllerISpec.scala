@@ -46,6 +46,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the amend endpoint" should {

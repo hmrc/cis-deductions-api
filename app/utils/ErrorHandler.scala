@@ -17,7 +17,6 @@
 package utils
 
 import definition.Versions
-import javax.inject._
 import play.api._
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import v1.models.errors._
 
+import javax.inject._
 import scala.concurrent._
 
 @Singleton

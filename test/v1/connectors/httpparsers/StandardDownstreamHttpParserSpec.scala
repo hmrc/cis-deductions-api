@@ -74,7 +74,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
     "a success code is specified" must {
       "use that status code for success" in {
-        implicit val successCode: SuccessCode           = SuccessCode(PARTIAL_CONTENT)
+        implicit val successCode: SuccessCode                  = SuccessCode(PARTIAL_CONTENT)
         val httpReads: HttpReads[DownstreamOutcome[SomeModel]] = implicitly
 
         val httpResponse = HttpResponse(PARTIAL_CONTENT, desExpectedJson, Map("CorrelationId" -> Seq(correlationId)))
@@ -103,7 +103,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     }
 
     "a success code is specified" must {
-      implicit val successCode: SuccessCode      = SuccessCode(PARTIAL_CONTENT)
+      implicit val successCode: SuccessCode             = SuccessCode(PARTIAL_CONTENT)
       val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
       "use that status code for success" in {
@@ -155,7 +155,8 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         "be able to parse a single error" in {
           val httpResponse = HttpResponse(responseCode, singleErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("CODE"))))
+          httpReads.read(method, url, httpResponse) shouldBe Left(
+            ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("CODE"))))
         }
 
         "be able to parse multiple errors" in {

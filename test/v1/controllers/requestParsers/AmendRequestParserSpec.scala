@@ -17,9 +17,9 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.models.domain.Nino
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.validators.MockAmendValidator
+import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
 import v1.models.request.amend.{AmendRawData, AmendRequestData}
 

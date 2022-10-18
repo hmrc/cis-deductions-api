@@ -48,7 +48,8 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
+        willDelete(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/${request.submissionId}") returns Future
+          .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.delete(request))
         result shouldBe outcome

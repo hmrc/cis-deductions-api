@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import play.api.libs.json.JsValue
 import v1.models.errors._
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object PeriodDataDeductionDateValidation {
 

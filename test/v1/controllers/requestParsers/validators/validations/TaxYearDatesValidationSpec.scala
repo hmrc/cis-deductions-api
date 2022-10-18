@@ -16,12 +16,12 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import support.UnitSpec
 import v1.models.errors.{RuleDateRangeInvalidError, RuleTaxYearNotEndedError}
 import v1.models.utils.JsonErrorValidators
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
 

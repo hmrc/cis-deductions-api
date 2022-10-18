@@ -20,7 +20,7 @@ import play.api.http.Status.{FORBIDDEN, OK, UNAUTHORIZED}
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import v1.connectors.MtdIdLookupOutcome
-import v1.models.errors.{StandardDownstreamError, InvalidBearerTokenError, NinoFormatError}
+import v1.models.errors.{InvalidBearerTokenError, NinoFormatError, StandardDownstreamError}
 
 object MtdIdLookupHttpParser extends HttpParser {
 

@@ -46,7 +46,7 @@ class DeleteValidatorSpec extends UnitSpec {
       }
 
       "given a pre-TYS taxYear param" in {
-        val input = DeleteRawData(validNino, validSubmissionId, Some("2021-22"))
+        val input  = DeleteRawData(validNino, validSubmissionId, Some("2021-22"))
         val result = validator.validate(input)
         result shouldBe List(InvalidTaxYearParameterError)
       }

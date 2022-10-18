@@ -132,8 +132,8 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    val nino                         = "AA123456A"
-    val submissionId                 = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+    val nino         = "AA123456A"
+    val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
     def maybeTaxYear: Option[String]
 
     def downstreamUri: String
@@ -155,13 +155,13 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
   private trait NonTysTest extends Test {
     def maybeTaxYear: Option[String] = None
-    def downstreamUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
+    def downstreamUri: String        = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
   }
 
   private trait TysIfsTest extends Test {
     def maybeTaxYear: Option[String] = Option("2023-24")
-    def downstreamTaxYear: String = "23-24"
-    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino/submissionId/$submissionId"
+    def downstreamTaxYear: String    = "23-24"
+    def downstreamUri: String        = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino/submissionId/$submissionId"
   }
 
 }

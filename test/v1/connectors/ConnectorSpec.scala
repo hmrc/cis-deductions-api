@@ -126,7 +126,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willGet[T](url: String, queryParams: Seq[(String,String)]): CallHandler[Future[T]] = {
+    protected def willGet[T](url: String, queryParams: Seq[(String, String)]): CallHandler[Future[T]] = {
       MockedHttpClient
         .get(
           url = url,

@@ -117,7 +117,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
       case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError | RuleTaxYearNotEndedError |
           RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
         Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
       case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }

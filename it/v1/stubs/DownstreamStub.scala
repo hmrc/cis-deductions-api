@@ -34,5 +34,4 @@ object DownstreamStub extends WireMockMethods {
       .thenReturn(status = status, body)
   }
 
-
 }
