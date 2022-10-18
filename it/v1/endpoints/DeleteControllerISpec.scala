@@ -126,6 +126,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           (Status.BAD_REQUEST, "INVALID_SUBMISSION_ID", Status.BAD_REQUEST, SubmissionIdFormatError),
           (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
         )
+
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }

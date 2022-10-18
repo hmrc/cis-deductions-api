@@ -335,3 +335,14 @@ traits:
                   or it is after the maximum tax year value.
                 value:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
+  invalidTaxYear:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              invalidTaxYear:
+                description: A tax year before 2023-24 was supplied. A request with a tax year parameter is only valid for tax years 2023-24 or later
+                value:
+                  code: INVALID_TAX_YEAR_PARAMETER

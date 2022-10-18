@@ -193,8 +193,9 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     def fromDate = "2019-04-06"
     def toDate   = "2020-04-05"
 
-    val nino                                  = "AA123456A"
-    val source                                = "customer"
+    val nino   = "AA123456A"
+    val source = "customer"
+
     def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
     def downstreamQueryParams: Seq[(String, String)]
 
