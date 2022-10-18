@@ -31,7 +31,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     "given a valid non-TYS request" must {
       "return a valid response from downstream" in new DesTest with Test {
         def fromDate = "2019-04-06"
-        def toDate   = "2020-04-06"
+        def toDate   = "2020-04-05"
 
         val outcome = Right(
           ResponseWrapper(
@@ -53,8 +53,10 @@ class RetrieveConnectorSpec extends ConnectorSpec {
             )
           ))
 
-        willGet(url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}") returns Future.successful(outcome)
+        willGet(
+          url = s"$baseUrl/income-tax/cis/deductions/${nino}",
+          queryParams = List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source)
+        ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome
@@ -63,8 +65,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "given a valid request for a TaxYearSpecific tax year" must {
       "return a 200 for success scenario" in new TysIfsTest with Test {
-        def fromDate = "2023-04-06"
-        def toDate   = "2024-04-06"
+        def fromDate         = "2023-04-06"
+        def toDate           = "2024-04-06"
         def taxYear: TaxYear = TaxYear.fromIso(toDate)
 
         val outcome = Right(
@@ -87,7 +89,10 @@ class RetrieveConnectorSpec extends ConnectorSpec {
             )
           ))
 
-        willGet(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino?startDate=$fromDate&endDate=$toDate&source=${request.source}") returns Future.successful(outcome)
+        willGet(
+          url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
+          queryParams = List("startDate" -> request.fromDate, "endDate" -> request.toDate, "source" -> request.source)
+        ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome

@@ -196,7 +196,7 @@ class DeleteControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson()))).once
         }
       }
 

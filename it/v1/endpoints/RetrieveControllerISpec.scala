@@ -40,15 +40,15 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
 
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri)
-            .thenReturn(status = OK, singleDeductionJson)
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
+            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
         }
 
         val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
@@ -59,7 +59,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
 
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri)
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
             .thenReturn(status = OK, singleDeductionWithoutIdsJson)
         }
 
@@ -72,22 +72,22 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
 
-        override def fromDate: String = "2023-04-05"
-        override def toDate: String   = "2024-05-01"
+        override def fromDate: String = "2023-04-06"
+        override def toDate: String   = "2024-04-05"
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri)
-            .thenReturn(status = OK, singleDeductionJson)
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
+            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
         }
 
-        val response: WSResponse = await(mtdRequest.get())
+        val response: WSResponse = await(mtdRequest().get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
 
       }
 
@@ -101,14 +101,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
                                 expectedBody: MtdError,
                                 qParams: Option[Seq[(String, String)]]): Unit = {
 
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
             override def fromDate: String = requestFromDate
             override def toDate: String   = requestToDate
 
-            override val nino: String     = requestNino
-            override val source: String   = requestSource
+            override def mtdQueryParams: Seq[(String, String)] = qParams.getOrElse(super.mtdQueryParams)
 
-            override val queryParams = qParams.getOrElse(List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source))
+            override val nino: String   = requestNino
+            override val source: String = requestSource
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -168,7 +168,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             DownstreamStub.mockDes(DownstreamStub.GET, downstreamUri, desStatus, errorBody(desCode), None)
           }
 
-          val response: WSResponse = await(mtdRequest.get)
+          val response: WSResponse = await(mtdRequest.get())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
@@ -190,19 +190,20 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    def fromDate       = "2019-04-06"
-    def toDate         = "2020-04-05"
+    def fromDate = "2019-04-06"
+    def toDate   = "2020-04-05"
 
-    val nino           = "AA123456A"
-    val source         = "customer"
-    val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    val nino                                  = "AA123456A"
+    val source                                = "customer"
+    def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    def downstreamQueryParams: Seq[(String, String)]
 
     def setupStubs(): StubMapping
 
     def mtdRequest(): WSRequest = {
       setupStubs()
       buildRequest(s"/$nino/current-position")
-        .withQueryStringParameters(queryParams: _*)
+        .withQueryStringParameters(mtdQueryParams: _*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
@@ -212,18 +213,13 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    def taxYear: String           = "2019-20"
-    def downstreamTaxYear: String = "2020"
-
-    ////// TODO check & deelete:
-    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-
-    def downstreamUri: String     = s"/income-tax/cis/deductions/$nino"
+    def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
-    def taxYear: String           = "2023-24"
     def downstreamTaxYear: String = "23-24"
+    def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
     def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 

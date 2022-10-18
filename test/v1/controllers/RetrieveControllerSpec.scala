@@ -114,11 +114,11 @@ class RetrieveControllerSpec
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe singleDeductionJsonHateoas
+        contentAsJson(result) shouldBe singleDeductionJsonHateoas(fromDate, toDate)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas))).once()
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas(fromDate, toDate)))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas(fromDate, toDate)))).once()
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
@@ -239,7 +239,7 @@ class RetrieveControllerSpec
 
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -286,7 +286,7 @@ class RetrieveControllerSpec
             )),
           None
         )
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
       }
     }
 
@@ -309,7 +309,7 @@ class RetrieveControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
         }
       }
 

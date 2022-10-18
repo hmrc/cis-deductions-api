@@ -36,21 +36,22 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
     import request.nino.nino
     import request.taxYear
 
-    val downstreamUri =
+    val (downstreamUri, queryParams) =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](
-          s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino" +
-            s"?startDate=${request.fromDate}&endDate=${request.toDate}&source=${request.source}"
+        (
+          TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
+          List("startDate" -> request.fromDate, "endDate" -> request.toDate, "source" -> request.source)
         )
       } else {
-        DesUri[RetrieveResponseModel[CisDeductions]](
-          s"income-tax/cis/deductions/$nino" +
-            s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
+        (
+          DesUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/$nino"),
+          List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source)
+        )
       }
 
     import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 
-    get(downstreamUri)
+    get(downstreamUri, queryParams)
   }
 
 }

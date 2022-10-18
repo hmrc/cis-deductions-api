@@ -33,7 +33,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
           .validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
       }
       "produce a valid model with single deduction from json" in {
-        Json.toJson(RetrieveJson.singleDeductionJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(
+        Json.toJson(RetrieveJson.singleDeductionJson()).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(
           RetrieveModels.singleDeductionModel)
       }
       "produce a valid model with single deduction(contractor submission only) from json" in {
