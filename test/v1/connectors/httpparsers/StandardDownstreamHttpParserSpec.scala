@@ -31,14 +31,14 @@ object SomeModel {
   implicit val reads: Reads[SomeModel] = Json.reads
 }
 
-class StandardDesHttpParserSpec extends UnitSpec {
+class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   val method = "POST"
   val url    = "test-url"
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  import v1.connectors.httpparsers.StandardDesHttpParser._
+  import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 
   val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
@@ -61,7 +61,7 @@ class StandardDesHttpParserSpec extends UnitSpec {
       "return an outbound error if a model object cannot be read from the response json" in {
         val badFieldTypeJson: JsValue = Json.obj("incomeSourceId" -> 1234, "incomeSourceName" -> 1234)
         val httpResponse              = HttpResponse(OK, badFieldTypeJson, Map("CorrelationId" -> Seq(correlationId)))
-        val expected                  = ResponseWrapper(correlationId, OutboundError(DownstreamError))
+        val expected                  = ResponseWrapper(correlationId, OutboundError(StandardDownstreamError))
 
         httpReads.read(method, url, httpResponse) shouldBe Left(expected)
       }
@@ -155,21 +155,21 @@ class StandardDesHttpParserSpec extends UnitSpec {
         "be able to parse a single error" in {
           val httpResponse = HttpResponse(responseCode, singleErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("CODE"))))
+          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("CODE"))))
         }
 
         "be able to parse multiple errors" in {
           val httpResponse = HttpResponse(responseCode, multipleErrorsJson, Map("CorrelationId" -> Seq(correlationId)))
 
           httpReads.read(method, url, httpResponse) shouldBe {
-            Left(ResponseWrapper(correlationId, DesErrors(List(DesErrorCode("CODE 1"), DesErrorCode("CODE 2")))))
+            Left(ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("CODE 1"), DownstreamErrorCode("CODE 2")))))
           }
         }
 
         "return an outbound error when the error returned doesn't match the Error model" in {
           val httpResponse = HttpResponse(responseCode, malformedErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
         }
       })
 
@@ -179,13 +179,13 @@ class StandardDesHttpParserSpec extends UnitSpec {
         "return an outbound error when the error returned matches the Error model" in {
           val httpResponse = HttpResponse(responseCode, singleErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
         }
 
         "return an outbound error when the error returned doesn't match the Error model" in {
           val httpResponse = HttpResponse(responseCode, malformedErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+          httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
         }
       })
 
@@ -195,13 +195,13 @@ class StandardDesHttpParserSpec extends UnitSpec {
       "return an outbound error when the error returned matches the Error model" in {
         val httpResponse = HttpResponse(responseCode, singleErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-        httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+        httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
       }
 
       "return an outbound error when the error returned doesn't match the Error model" in {
         val httpResponse = HttpResponse(responseCode, malformedErrorJson, Map("CorrelationId" -> Seq(correlationId)))
 
-        httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+        httpReads.read(method, url, httpResponse) shouldBe Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
       }
     }
 

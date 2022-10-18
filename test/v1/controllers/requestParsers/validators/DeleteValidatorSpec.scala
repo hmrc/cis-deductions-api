@@ -24,26 +24,38 @@ class DeleteValidatorSpec extends UnitSpec {
 
   private val validNino         = "AA123456A"
   private val validSubmissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val rawTaxYear        = "2023-24"
 
   val validator = new DeleteValidator()
 
   "running a delete validation" should {
+
     "return no errors" when {
-      "a valid request is supplied" in {
-        validator.validate(DeleteRawData(validNino, validSubmissionId)) shouldBe Nil
+      "given a valid request" in {
+        validator.validate(DeleteRawData(validNino, validSubmissionId, Some(rawTaxYear))) shouldBe Nil
       }
     }
+
     "return a single error" when {
-      "an invalid nino is supplied" in {
-        validator.validate(DeleteRawData("23456A", validSubmissionId)) shouldBe List(NinoFormatError)
+      "given an invalid nino" in {
+        validator.validate(DeleteRawData("23456A", validSubmissionId, Some(rawTaxYear))) shouldBe List(NinoFormatError)
       }
-      "an invalid submission id is supplied" in {
-        validator.validate(DeleteRawData(validNino, "contractor1")) shouldBe List(SubmissionIdFormatError)
+
+      "given an invalid submission id" in {
+        validator.validate(DeleteRawData(validNino, "contractor1", Some(rawTaxYear))) shouldBe List(SubmissionIdFormatError)
+      }
+
+      "given a pre-TYS taxYear param" in {
+        val input = DeleteRawData(validNino, validSubmissionId, Some("2021-22"))
+        val result = validator.validate(input)
+        result shouldBe List(InvalidTaxYearParameterError)
       }
     }
+
     "return multiple errors" when {
-      "multiple wrong fields are supplied" in {
-        validator.validate(DeleteRawData("2sbt3456A", "idcontract123")) shouldBe List(NinoFormatError, SubmissionIdFormatError)
+      "given multiple wrong fields" in {
+        val result = validator.validate(DeleteRawData("2sbt3456A", "idcontract123", Some("bad-tax-year-format")))
+        result shouldBe List(NinoFormatError, SubmissionIdFormatError, TaxYearFormatError)
       }
     }
   }

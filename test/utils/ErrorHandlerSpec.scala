@@ -165,7 +165,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
-        contentAsJson(result) shouldBe Json.toJson(DownstreamError)
+        contentAsJson(result) shouldBe Json.toJson(StandardDownstreamError)
       }
     }
   }

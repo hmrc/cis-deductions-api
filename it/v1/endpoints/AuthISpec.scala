@@ -24,7 +24,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AuthISpec extends IntegrationBaseSpec {
 
@@ -99,7 +99,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.POST, desUri, Status.OK, deductionsResponseBody, None)
+          DownstreamStub.mockDes(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))

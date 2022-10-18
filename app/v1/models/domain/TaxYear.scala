@@ -18,6 +18,8 @@ package v1.models.domain
 
 import config.FeatureSwitches
 
+import java.time.LocalDate
+
 /** Opaque representation of a tax year.
   *
   * @param value
@@ -59,11 +61,22 @@ final case class TaxYear private (private val value: String) {
 
 object TaxYear {
 
+  val minimumTysTaxYear: Int = 2024
+
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear =
     new TaxYear(taxYear.take(2) + taxYear.drop(5))
+
+  /** @param taxYear
+    *   tax year in extended ISO-8601 format (e.g. 2020-04-05)
+    */
+  def fromIso(taxYear: String): TaxYear = {
+    val date = LocalDate.parse(taxYear)
+    val year = date.getYear.toString
+    new TaxYear(year)
+  }
 
   def fromDownstream(taxYear: String): TaxYear =
     new TaxYear(taxYear)

@@ -18,7 +18,6 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.RetrieveConnector
@@ -27,12 +26,13 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector) extends DesResponseMappingSupport with Logging {
+class RetrieveService @Inject() (connector: RetrieveConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
@@ -41,21 +41,32 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends DesRespon
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDesErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDownstreamErrors(mappingDesToMtdError))
     } yield desResponseWrapper
     result.value
   }
 
-  private def mappingDesToMtdError: Map[String, MtdError] =
-    Map(
+  private def mappingDesToMtdError: Map[String, MtdError] = {
+    val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
       "INVALID_PERIOD_START"      -> FromDateFormatError,
       "INVALID_PERIOD_END"        -> ToDateFormatError,
       "INVALID_SOURCE"            -> RuleSourceError,
-      "SERVER_ERROR"              -> DownstreamError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError
+      "SERVER_ERROR"              -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     )
+
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+      "INVALID_START_DATE"     -> FromDateFormatError,
+      "INVALID_END_DATE"       -> ToDateFormatError,
+      "INVALID_CORRELATIONID"  -> StandardDownstreamError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }

@@ -159,7 +159,7 @@ class AmendControllerSpec
       (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
       (RuleDuplicatePeriodError, FORBIDDEN),
       (SubmissionIdFormatError, BAD_REQUEST),
-      (DownstreamError, INTERNAL_SERVER_ERROR)
+      (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
 
     input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -262,7 +262,7 @@ class AmendControllerSpec
       (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
       (RuleDuplicatePeriodError, FORBIDDEN),
       (SubmissionIdFormatError, BAD_REQUEST),
-      (DownstreamError, INTERNAL_SERVER_ERROR)
+      (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
     input.foreach(args => (serviceErrors _).tupled(args))
   }

@@ -17,9 +17,10 @@
 package config
 
 import com.typesafe.config.Config
-import javax.inject.{Inject, Singleton}
 import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
 
@@ -55,7 +56,6 @@ trait AppConfig {
   def featureSwitches: Configuration
   def endpointsEnabled(version: String): Boolean
   def confidenceLevelConfig: ConfidenceLevelConfig
-  def desCisUrl: String
   def minTaxYearCisDeductions: String
 }
 
@@ -81,7 +81,6 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
 
   val mtdIdBaseUrl: String            = config.baseUrl("mtd-id-lookup")
   val apiGatewayContext: String       = config.getString("api.gateway.context")
-  val desCisUrl: String               = config.getString("microservice.services.des.cisUrl")
   val minTaxYearCisDeductions: String = config.getString("minTaxYearCisDeductions")
 
   def apiStatus(version: String): String         = config.getString(s"api.$version.status")

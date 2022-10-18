@@ -189,7 +189,7 @@ class CreateControllerSpec
         (RuleDeductionAmountError, BAD_REQUEST),
         (RuleCostOfMaterialsError, BAD_REQUEST),
         (RuleGrossAmountError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
       )
 
       input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -286,7 +286,7 @@ class CreateControllerSpec
 
       val input = Seq(
         (NinoFormatError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (EmployerRefFormatError, BAD_REQUEST),
         (RuleUnalignedDeductionsPeriodError, FORBIDDEN),

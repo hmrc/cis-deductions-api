@@ -17,14 +17,13 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
-import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.connectors.DownstreamUri.DesUri
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -37,7 +36,7 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     post(
       body = request.body,
-      DesUri[CreateResponseModel](s"${appConfig.desCisUrl}/${request.nino.nino}")
+      uri = DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino.nino}")
     )
   }
 

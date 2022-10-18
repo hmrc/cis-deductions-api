@@ -118,7 +118,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
           RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
         Forbidden(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

@@ -17,78 +17,78 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import support.IntegrationBaseSpec
-import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import play.api.libs.ws.{WSRequest, WSResponse}
+import support.IntegrationBaseSpec
 import v1.fixtures.RetrieveJson._
 import v1.models.errors._
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-
-    val nino           = "AA123456A"
-    val fromDate       = "2019-04-06"
-    val toDate         = "2020-04-05"
-    val source         = "customer"
-    val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
-    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-
-    def uri: String = s"/$nino/current-position"
-
-    def desUrl: String = s"/income-tax/cis/deductions/$nino"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withQueryStringParameters(queryParams: _*)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
   "Calling the retrieve endpoint" should {
 
-    "return a valid response with status OK" when {
+    "return an OK response" when {
 
-      "valid request is made" in new Test {
+      "a valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionJson, Some(desQueryParams))
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri)
+            .thenReturn(status = OK, singleDeductionJson)
         }
 
-        val response: WSResponse = await(request.get)
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
         response.json shouldBe singleDeductionJsonHateoas
       }
 
-      "valid request is made without any ids" in new Test {
+      "valid request is made without any IDs" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionWithoutIdsJson, Some(desQueryParams))
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri)
+            .thenReturn(status = OK, singleDeductionWithoutIdsJson)
         }
 
-        val response: WSResponse = await(request.get)
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
         response.json shouldBe singleDeductionWithoutIdsJsonHateoas
+      }
+
+      "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
+
+        override def fromDate: String = "2023-04-05"
+        override def toDate: String   = "2024-05-01"
+
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri)
+            .thenReturn(status = OK, singleDeductionJson)
+        }
+
+        val response: WSResponse = await(mtdRequest.get())
+        response.status shouldBe OK
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.json shouldBe singleDeductionJsonHateoas
+
       }
 
       "return error according to spec" when {
@@ -100,13 +100,15 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
                                 expectedStatus: Int,
                                 expectedBody: MtdError,
                                 qParams: Option[Seq[(String, String)]]): Unit = {
+
           s"validation fails with ${expectedBody.code} error" in new Test {
+            override def fromDate: String = requestFromDate
+            override def toDate: String   = requestToDate
 
             override val nino: String     = requestNino
-            override val fromDate: String = requestFromDate
-            override val toDate: String   = requestToDate
             override val source: String   = requestSource
-            override val queryParams = if (qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+
+            override val queryParams = qParams.getOrElse(List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source))
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -114,7 +116,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request.get)
+            val response: WSResponse = await(mtdRequest.get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -157,16 +159,16 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
              |}""".stripMargin)
 
       def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $desCode error and status $desStatus" in new Test {
+        s"des returns an $desCode error and status $desStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.mockDes(DesStub.GET, desUrl, desStatus, errorBody(desCode), None)
+            DownstreamStub.mockDes(DownstreamStub.GET, downstreamUri, desStatus, errorBody(desCode), None)
           }
 
-          val response: WSResponse = await(request.get)
+          val response: WSResponse = await(mtdRequest.get)
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
           response.header("Content-Type") shouldBe Some("application/json")
@@ -175,9 +177,9 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       val input = Seq(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, StandardDownstreamError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
@@ -185,6 +187,47 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       )
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
+  }
+
+  private trait Test {
+    def fromDate       = "2019-04-06"
+    def toDate         = "2020-04-05"
+
+    val nino           = "AA123456A"
+    val source         = "customer"
+    val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+
+
+
+    ////// TODO check & deelete:
+    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+
+
+
+    def setupStubs(): StubMapping
+
+    def mtdRequest(): WSRequest = {
+      setupStubs()
+      buildRequest(s"/$nino/current-position")
+        .withQueryStringParameters(queryParams: _*)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
+    }
+
+  }
+
+  private trait NonTysTest extends Test {
+    def taxYear: String           = "2019-20"
+    def downstreamTaxYear: String = "2020"
+    def downstreamUri: String     = s"/income-tax/cis/deductions/$nino"
+  }
+
+  private trait TysIfsTest extends Test {
+    def taxYear: String           = "2023-24"
+    def downstreamTaxYear: String = "23-24"
+    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }

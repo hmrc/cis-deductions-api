@@ -17,14 +17,12 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
-import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.connectors.DownstreamUri.DesUri
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -35,11 +33,21 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
-    get(
-      DesUri[RetrieveResponseModel[CisDeductions]](
-        s"${appConfig.desCisUrl}/${request.nino.nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
-    )
+    import request.nino.nino
+    import request.taxYear
+
+    val downstreamUri =
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino")
+      } else {
+        DesUri[RetrieveResponseModel[CisDeductions]](
+          s"income-tax/cis/deductions/$nino" +
+            s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
+      }
+
+    import v1.connectors.httpparsers.StandardDownstreamHttpParser._
+
+    get(downstreamUri)
   }
 
 }

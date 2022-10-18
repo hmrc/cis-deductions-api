@@ -27,12 +27,12 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject() (connector: CreateConnector) extends DesResponseMappingSupport with Logging {
+class CreateService @Inject() (connector: CreateConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def createDeductions(request: CreateRequestData)(implicit
       hc: HeaderCarrier,
@@ -40,7 +40,7 @@ class CreateService @Inject() (connector: CreateConnector) extends DesResponseMa
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
     val result = for {
-      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDownstreamErrors(mappingDesToMtdError))
     } yield desResponseWrapper
     result.value
   }
@@ -55,9 +55,9 @@ class CreateService @Inject() (connector: CreateConnector) extends DesResponseMa
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
       "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR"                    -> DownstreamError,
-      "SERVICE_UNAVAILABLE"             -> DownstreamError,
-      "INVALID_CORRELATIONID"           -> DownstreamError
+      "SERVER_ERROR"                    -> StandardDownstreamError,
+      "SERVICE_UNAVAILABLE"             -> StandardDownstreamError,
+      "INVALID_CORRELATIONID"           -> StandardDownstreamError
     )
 
 }

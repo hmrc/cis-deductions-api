@@ -32,14 +32,15 @@ import scala.concurrent.Future
 
 class RetrieveServiceSpec extends UnitSpec {
 
-  private val nino           = Nino("AA123456A")
-  implicit val correlationId = "X-123"
-  private val fromDate       = "2019-04-06"
-  private val toDate         = "2020-04-05"
-  private val source         = "Contractor"
+  private val nino     = Nino("AA123456A")
+  private val fromDate = "2019-04-06"
+  private val toDate   = "2020-04-05"
+  private val source   = "Contractor"
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
+
+  implicit val correlationId = "X-123"
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
@@ -66,7 +67,7 @@ class RetrieveServiceSpec extends UnitSpec {
 
           MockRetrieveCisDeductionsConnector
             .retrieveCisDeduction(request)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -77,8 +78,8 @@ class RetrieveServiceSpec extends UnitSpec {
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
         ("INVALID_SOURCE", RuleSourceError),
-        ("SERVER_ERROR", DownstreamError),
-        ("SERVICE_UNAVAILABLE", DownstreamError)
+        ("SERVER_ERROR", StandardDownstreamError),
+        ("SERVICE_UNAVAILABLE", StandardDownstreamError)
       )
 
       input.foreach(args => (serviceError _).tupled(args))

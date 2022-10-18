@@ -18,7 +18,6 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import config.AppConfig
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -42,7 +41,6 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     service: RetrieveService,
                                     auditService: AuditService,
                                     hateoasFactory: HateoasFactory,
-                                    appConfig: AppConfig,
                                     cc: ControllerComponents,
                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
@@ -60,6 +58,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       implicit val correlationId: String = idGenerator.getCorrelationId
       logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
         s"with correlationId : $correlationId")
+
       val rawData = RetrieveRawData(nino, fromDate, toDate, source)
 
       val result = for {
@@ -69,7 +68,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
           hateoasFactory
             .wrapList(
               serviceResponse.responseData,
-              retrieve.RetrieveHateoasData(nino, fromDate.getOrElse(""), toDate.getOrElse(""), source, serviceResponse.responseData))
+              retrieve.RetrieveHateoasData(nino, rawData.fromDate.getOrElse(""), rawData.toDate.getOrElse(""), source, serviceResponse.responseData)
+            )
             .asRight[ErrorWrapper]
         )
       } yield {
@@ -106,13 +106,26 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
     }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | FromDateFormatError | RuleMissingFromDateError | ToDateFormatError | RuleMissingToDateError |
-          RuleSourceError =>
+
+    errorWrapper.error match {
+      case _
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            FromDateFormatError,
+            ToDateFormatError,
+            RuleMissingFromDateError,
+            RuleMissingToDateError,
+            RuleSourceError,
+            TaxYearFormatError,
+            RuleTaxYearNotSupportedError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
+
       case NotFoundError                                      => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                    => InternalServerError(Json.toJson(errorWrapper))
+      case StandardDownstreamError                            => InternalServerError(Json.toJson(errorWrapper))
       case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
+      case _                                                  => unhandledError(errorWrapper)
     }
   }
 

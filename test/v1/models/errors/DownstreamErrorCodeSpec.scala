@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package v1.models.errors
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
-import support.WireMockMethods
+import play.api.libs.json.Json
+import support.UnitSpec
 
-object DesStub extends WireMockMethods {
+class DownstreamErrorCodeSpec extends UnitSpec {
 
-  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
-    method match {
-      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
-      case _                              => when(method, uri).thenReturn(status, body)
+  "reads" should {
+    val json = Json.parse(
+      """
+        |{
+        |   "code": "CODE",
+        |   "reason": "ignored"
+        |}
+      """.stripMargin
+    )
+
+    "generate the correct error code" in {
+      json.as[DownstreamErrorCode] shouldBe DownstreamErrorCode("CODE")
     }
   }
 
