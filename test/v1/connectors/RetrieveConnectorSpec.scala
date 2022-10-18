@@ -87,7 +87,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
             )
           ))
 
-        willGet(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino") returns Future.successful(outcome)
+        willGet(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino?startDate=$fromDate&endDate=$toDate&source=${request.source}") returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome

@@ -38,7 +38,10 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino")
+        TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](
+          s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino" +
+            s"?startDate=${request.fromDate}&endDate=${request.toDate}&source=${request.source}"
+        )
       } else {
         DesUri[RetrieveResponseModel[CisDeductions]](
           s"income-tax/cis/deductions/$nino" +

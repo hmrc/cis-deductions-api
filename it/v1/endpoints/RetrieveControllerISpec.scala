@@ -197,13 +197,6 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     val source         = "customer"
     val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
 
-
-
-    ////// TODO check & deelete:
-    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-
-
-
     def setupStubs(): StubMapping
 
     def mtdRequest(): WSRequest = {
@@ -221,6 +214,10 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   private trait NonTysTest extends Test {
     def taxYear: String           = "2019-20"
     def downstreamTaxYear: String = "2020"
+
+    ////// TODO check & deelete:
+    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+
     def downstreamUri: String     = s"/income-tax/cis/deductions/$nino"
   }
 

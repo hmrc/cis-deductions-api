@@ -32,12 +32,12 @@ object TaxYearNotSupportedValidation extends FixedConfig {
 
   def validateTys(maybeTaxYear: Option[String]): List[MtdError] = maybeTaxYear.map(validateTys).getOrElse(Nil)
 
-  def validateTys(taxYear: String): List[MtdError] = {
-    val isInt = taxYear.replace("-", "").forall(Character.isDigit)
-    if (isInt) {
+  def validateTys(taxYear: String): List[MtdError] =
+    try {
       val year = TaxYear.fromMtd(taxYear).year
       if (year >= TaxYear.minimumTysTaxYear) NoValidationErrors else List(InvalidTaxYearParameterError)
-    } else NoValidationErrors
-  }
+    } catch {
+      case _: NumberFormatException => NoValidationErrors // has a separate date-format validation
+    }
 
 }

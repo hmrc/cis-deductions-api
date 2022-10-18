@@ -19,7 +19,8 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.http.Status.NO_CONTENT
+import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
@@ -34,16 +35,33 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
     "return a 204 status code" when {
 
-      "any valid request is made" in new Test {
+      "a valid request is made" in new NonTysTest {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDes(DownstreamStub.DELETE, desUri, Status.NO_CONTENT, Json.obj(), None)
+
+          DownstreamStub
+            .when(method = DownstreamStub.DELETE, uri = downstreamUri)
+            .thenReturn(status = NO_CONTENT, JsObject.empty)
         }
-        val response: WSResponse = await(request().delete())
-        response.status shouldBe Status.NO_CONTENT
+        val response: WSResponse = await(mtdRequest().delete())
+        response.status shouldBe NO_CONTENT
       }
+    }
+
+    "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        AuthStub.authorised()
+        MtdIdLookupStub.ninoFound(nino)
+
+        DownstreamStub
+          .when(method = DownstreamStub.DELETE, uri = downstreamUri)
+          .thenReturn(status = NO_CONTENT, JsObject.empty)
+      }
+      val response: WSResponse = await(mtdRequest().delete())
+      response.status shouldBe NO_CONTENT
     }
 
     "return error according to spec" when {
@@ -51,8 +69,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
       "validation error" when {
 
         def validationErrorTest(requestData: DeleteRawData, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
-
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
             override val nino: String                 = requestData.nino
             override val submissionId: String         = requestData.submissionId
             override val maybeTaxYear: Option[String] = requestData.taxYear
@@ -63,7 +80,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request().delete())
+            val response: WSResponse = await(mtdRequest().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -76,23 +93,26 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
         val extraTysInput = Seq(
           (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2023")), Status.BAD_REQUEST, TaxYearFormatError),
-          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021")), Status.BAD_REQUEST, InvalidTaxYearParameterError)
+          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021-22")), Status.BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
         (input ++ extraTysInput).foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
+      "downstream service error" when {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+          s"des returns an $desCode error and status $desStatus" in new NonTysTest {
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.mockDes(DownstreamStub.DELETE, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+
+              DownstreamStub
+                .when(method = DownstreamStub.DELETE, uri = downstreamUri)
+                .thenReturn(status = desStatus, Json.parse(errorBody(desCode)))
             }
 
-            val response: WSResponse = await(request().delete())
+            val response: WSResponse = await(mtdRequest().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -114,24 +134,34 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
   private trait Test {
     val nino                         = "AA123456A"
     val submissionId                 = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-    val maybeTaxYear: Option[String] = Option("2023-24")
+    def maybeTaxYear: Option[String]
+
+    def downstreamUri: String
 
     private def taxYearParam = maybeTaxYear.map(ty => s"?taxYear=$ty").getOrElse("")
 
-    def uri: String    = s"/$nino/amendments/$submissionId$taxYearParam"
-    def desUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
-
     def setupStubs(): StubMapping
 
-    def request(): WSRequest = {
+    def mtdRequest(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"/$nino/amendments/$submissionId$taxYearParam")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
 
+  }
+
+  private trait NonTysTest extends Test {
+    def maybeTaxYear: Option[String] = None
+    def downstreamUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
+  }
+
+  private trait TysIfsTest extends Test {
+    def maybeTaxYear: Option[String] = Option("2023-24")
+    def downstreamTaxYear: String = "23-24"
+    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino/submissionId/$submissionId"
   }
 
 }
