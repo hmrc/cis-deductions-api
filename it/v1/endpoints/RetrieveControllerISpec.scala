@@ -150,7 +150,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "des service error" when {
+    "downstream service error" when {
 
       def errorBody(code: String): JsValue =
         Json.parse(s"""{
@@ -158,14 +158,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
              |  "reason": "des message"
              |}""".stripMargin)
 
-      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $desCode error and status $desStatus" in new NonTysTest {
+      def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"des returns an $downstreamErrorCode error and status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDes(DownstreamStub.GET, downstreamUri, desStatus, errorBody(desCode), None)
+            DownstreamStub.mockDes(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
           }
 
           val response: WSResponse = await(mtdRequest.get())
@@ -175,7 +175,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      val input = Seq(
+      val errors = List(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
@@ -185,7 +185,13 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", FORBIDDEN, RuleDateRangeOutOfDate)
       )
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+
+      val extraTysErrors = List(
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
 

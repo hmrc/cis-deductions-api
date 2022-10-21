@@ -313,7 +313,7 @@ class RetrieveControllerSpec
         }
       }
 
-      val input = Seq(
+      val errors = List(
         (NinoFormatError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND),
         (StandardDownstreamError, INTERNAL_SERVER_ERROR),
@@ -321,7 +321,12 @@ class RetrieveControllerSpec
         (ToDateFormatError, BAD_REQUEST),
         (RuleDateRangeOutOfDate, FORBIDDEN)
       )
-      input.foreach(args => (serviceErrors _).tupled(args))
+
+      val extraTysErrors = List(
+        (RuleTaxYearNotSupportedError, BAD_REQUEST)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
     }
   }
 

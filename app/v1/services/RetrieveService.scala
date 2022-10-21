@@ -59,10 +59,11 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends Downstrea
     )
 
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"      -> StandardDownstreamError,
-      "INVALID_START_DATE"    -> FromDateFormatError,
-      "INVALID_END_DATE"      -> ToDateFormatError,
-      "INVALID_CORRELATIONID" -> StandardDownstreamError
+      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+      "INVALID_START_DATE"     -> FromDateFormatError,
+      "INVALID_END_DATE"       -> ToDateFormatError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATIONID"  -> StandardDownstreamError
     )
 
     errors ++ extraTysErrors

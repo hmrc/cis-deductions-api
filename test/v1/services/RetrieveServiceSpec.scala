@@ -84,7 +84,8 @@ class RetrieveServiceSpec extends UnitSpec {
       )
 
       val extraTysErrors = Seq(
-        ("INVALID_TAX_YEAR", StandardDownstreamError)
+        ("INVALID_TAX_YEAR", StandardDownstreamError),
+        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
       )
 
       (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
