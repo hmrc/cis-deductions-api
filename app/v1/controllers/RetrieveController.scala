@@ -105,8 +105,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-
+  private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case _
           if errorWrapper.containsAnyOf(
@@ -122,12 +121,17 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
           ) =>
         BadRequest(Json.toJson(errorWrapper))
 
-      case NotFoundError                                      => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError                            => InternalServerError(Json.toJson(errorWrapper))
-      case RuleDateRangeOutOfDate | RuleDateRangeInvalidError => Forbidden(Json.toJson(errorWrapper))
-      case _                                                  => unhandledError(errorWrapper)
+      case _
+          if errorWrapper.containsAnyOf(
+            RuleDateRangeOutOfDate,
+            RuleDateRangeInvalidError
+          ) =>
+        Forbidden(Json.toJson(errorWrapper))
+
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case _                       => unhandledError(errorWrapper)
     }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("RetrieveCisDeductionsForSubcontractor", "retrieve-cis-deductions-for-subcontractor", details)

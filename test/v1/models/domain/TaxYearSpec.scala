@@ -38,6 +38,31 @@ class TaxYearSpec extends UnitSpec {
       }
     }
 
+    "constructed from an ISO date" should {
+      "be the expected year, taking into account the UK tax year start date" in {
+
+        def test(datesAndExpectedYears: Seq[(String, Int)]): Unit = {
+          datesAndExpectedYears.foreach { case (date, expectedYear) =>
+            withClue(s"Given $date:") {
+              val result = TaxYear.fromIso(date)
+              result.year shouldBe expectedYear
+            }
+          }
+        }
+
+        val input = List(
+          "2025-01-01" -> 2025,
+          "2025-04-01" -> 2025,
+          "2025-04-06" -> 2026,
+          "2023-06-01" -> 2024,
+          "2026-01-01" -> 2026,
+          "2021-12-31" -> 2022
+        )
+
+        test(input)
+      }
+    }
+
     "constructed from a downstream tax year" should {
       "return the downstream tax value" in {
         TaxYear.fromDownstream("2019").asDownstream shouldBe "2019"

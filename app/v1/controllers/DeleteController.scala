@@ -93,8 +93,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-
+  private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case _
           if errorWrapper.containsAnyOf(
@@ -111,7 +110,6 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
       case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _                       => unhandledError(errorWrapper)
     }
-  }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
     val event = AuditEvent("DeleteCisDeductionsForSubcontractor", "delete-cis-deductions-for-subcontractor", details)

@@ -17,6 +17,7 @@
 package v1.models.domain
 
 import config.FeatureSwitches
+import v1.models.domain.TaxYear.minimumTysTaxYear
 
 import java.time.LocalDate
 
@@ -54,7 +55,8 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= 2024
+  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =
+    featureSwitches.isTaxYearSpecificApiEnabled && year >= minimumTysTaxYear
 
   override def toString: String = s"TaxYear($value)"
 }
@@ -63,19 +65,32 @@ object TaxYear {
 
   val minimumTysTaxYear: Int = 2024
 
+  /** UK tax year starts on 6 April.
+    */
+  private val taxYearMonthStart = 4
+  private val taxYearDayStart   = 6
+
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear =
     new TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  /** @param taxYear
-    *   tax year in extended ISO-8601 format (e.g. 2020-04-05)
+  /** @param date
+    *   the date in extended ISO-8601 format (e.g. 2020-04-05)
     */
-  def fromIso(taxYear: String): TaxYear = {
-    val date = LocalDate.parse(taxYear)
-    val year = date.getYear.toString
+  def fromIso(date: String): TaxYear = {
+    val date1 = LocalDate.parse(date)
+    val year = (
+      if (isPreviousTaxYear(date1)) date1.getYear else date1.getYear + 1
+    ).toString
+
     new TaxYear(year)
+  }
+
+  private def isPreviousTaxYear(date: LocalDate): Boolean = {
+    val taxYearStartDate = LocalDate.of(date.getYear, taxYearMonthStart, taxYearDayStart)
+    date.isBefore(taxYearStartDate)
   }
 
   def fromDownstream(taxYear: String): TaxYear =

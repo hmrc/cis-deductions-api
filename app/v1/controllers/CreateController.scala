@@ -109,14 +109,35 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
   }
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | NinoFormatError | BadRequestError | DeductionFromDateFormatError | DeductionToDateFormatError |
-          FromDateFormatError | ToDateFormatError | RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError |
-          EmployerRefFormatError | RuleTaxYearNotSupportedError =>
+    errorWrapper.error match {
+      case _
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            FromDateFormatError,
+            ToDateFormatError,
+            RuleIncorrectOrEmptyBodyError,
+            DeductionFromDateFormatError,
+            DeductionToDateFormatError,
+            RuleDeductionAmountError,
+            RuleCostOfMaterialsError,
+            RuleGrossAmountError,
+            EmployerRefFormatError,
+            RuleTaxYearNotSupportedError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDeductionsDateRangeInvalidError | RuleTaxYearNotEndedError |
-          RuleDuplicatePeriodError | RuleDuplicateSubmissionError =>
+
+      case _
+          if errorWrapper.containsAnyOf(
+            RuleDateRangeInvalidError,
+            RuleUnalignedDeductionsPeriodError,
+            RuleDeductionsDateRangeInvalidError,
+            RuleTaxYearNotEndedError,
+            RuleDuplicatePeriodError,
+            RuleDuplicateSubmissionError
+          ) =>
         Forbidden(Json.toJson(errorWrapper))
+
       case NotFoundError           => NotFound(Json.toJson(errorWrapper))
       case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }

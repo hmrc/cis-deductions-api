@@ -18,16 +18,18 @@ package v1.controllers.requestParsers.validators.validations
 
 import config.FixedConfig
 import v1.models.domain.TaxYear
-import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import v1.models.errors.{InvalidTaxYearParameterError, MtdError}
 
-object TaxYearNotSupportedValidation extends FixedConfig {
+object TaxYearTysParameterValidation extends FixedConfig {
 
-  /** @param taxYear
-    *   In format YYYY-YY
-    */
-  def validate(taxYear: String): List[MtdError] = {
-    val year = TaxYear.fromMtd(taxYear).year
-    if (year >= minimumTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
-  }
+  def validate(maybeTaxYear: Option[String]): List[MtdError] = maybeTaxYear.map(validate).getOrElse(Nil)
+
+  def validate(taxYear: String): List[MtdError] =
+    try {
+      val year = TaxYear.fromMtd(taxYear).year
+      if (year >= TaxYear.minimumTysTaxYear) NoValidationErrors else List(InvalidTaxYearParameterError)
+    } catch {
+      case _: NumberFormatException => NoValidationErrors // has a separate date-format validation
+    }
 
 }
