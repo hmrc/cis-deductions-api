@@ -99,7 +99,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDes(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
+          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
 
         val response: WSResponse = await(request().post(Json.parse(requestJson)))

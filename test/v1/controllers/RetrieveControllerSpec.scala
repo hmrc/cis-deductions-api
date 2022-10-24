@@ -323,6 +323,7 @@ class RetrieveControllerSpec
       )
 
       val extraTysErrors = List(
+        (RuleTaxYearRangeInvalidError, BAD_REQUEST),
         (RuleTaxYearNotSupportedError, BAD_REQUEST)
       )
 

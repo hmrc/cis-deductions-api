@@ -155,22 +155,39 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       def errorBody(code: String): JsValue =
         Json.parse(s"""{
              |  "code": "$code",
-             |  "reason": "des message"
+             |  "reason": "downstream error message"
              |}""".stripMargin)
 
       def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $downstreamErrorCode error and status $downstreamStatus" in new NonTysTest {
+        s"downstream returns $downstreamErrorCode with status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDes(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
+            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
           }
 
           val response: WSResponse = await(mtdRequest.get())
-          response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      def tysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysIfsTest {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
+          }
+
+          val response: WSResponse = await(mtdRequest.get())
+          response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
@@ -185,19 +202,20 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", FORBIDDEN, RuleDateRangeOutOfDate)
       )
+      errors.foreach(args => (serviceErrorTest _).tupled(args))
 
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
-
-      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+      extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
     }
   }
 
   private trait Test {
-    def fromDate = "2019-04-06"
-    def toDate   = "2020-04-05"
+    def fromDate: String
+    def toDate: String
 
     val nino   = "AA123456A"
     val source = "customer"
@@ -220,11 +238,15 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
+    def fromDate              = "2019-04-06"
+    def toDate                = "2020-04-05"
     def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
     def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
+    def fromDate                  = "2023-04-06"
+    def toDate                    = "2024-04-05"
     def downstreamTaxYear: String = "23-24"
     def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
     def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"

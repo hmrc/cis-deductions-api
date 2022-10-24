@@ -57,7 +57,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDes(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
+          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe Status.OK
@@ -109,7 +109,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.mockDes(DownstreamStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+              DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))

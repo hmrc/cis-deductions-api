@@ -58,6 +58,8 @@ final case class TaxYear private (private val value: String) {
   def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =
     featureSwitches.isTaxYearSpecificApiEnabled && year >= minimumTysTaxYear
 
+  def isTys(implicit featureSwitches: FeatureSwitches): Boolean = useTaxYearSpecificApi
+
   override def toString: String = s"TaxYear($value)"
 }
 

@@ -117,7 +117,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
             RuleMissingToDateError,
             RuleSourceError,
             TaxYearFormatError,
-            RuleTaxYearNotSupportedError
+            RuleTaxYearNotSupportedError,
+            RuleTaxYearRangeInvalidError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
 

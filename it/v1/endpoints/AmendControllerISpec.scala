@@ -58,7 +58,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDes(DownstreamStub.PUT, desUri, Status.NO_CONTENT, Json.obj(), None)
+          DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, Status.NO_CONTENT, Json.obj(), None)
         }
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
         response.status shouldBe Status.NO_CONTENT
@@ -110,7 +110,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.mockDes(DownstreamStub.PUT, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+              DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))

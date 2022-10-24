@@ -16,6 +16,8 @@
 
 package v1.services
 
+import mocks.MockAppConfig
+import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
@@ -30,14 +32,17 @@ import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveServiceSpec extends UnitSpec {
+class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
 
-  private val nino     = Nino("AA123456A")
-  private val fromDate = "2019-04-06"
-  private val toDate   = "2020-04-05"
-  private val source   = "Contractor"
+  private val nino        = Nino("AA123456A")
+  private val fromDate    = "2019-04-06"
+  private val toDate      = "2020-04-05"
+  private val tysFromDate = "2023-04-06"
+  private val tysToDate   = "2024-04-05"
+  private val source      = "Contractor"
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
+  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   implicit val correlationId = "X-123"
@@ -46,7 +51,9 @@ class RetrieveServiceSpec extends UnitSpec {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockRetrieveConnector)
+    MockedAppConfig.featureSwitches returns Configuration.empty
+
+    val service = new RetrieveService(mockRetrieveConnector, mockAppConfig)
   }
 
   "RetrieveDeductions" should {
@@ -61,34 +68,40 @@ class RetrieveServiceSpec extends UnitSpec {
     }
 
     "return error response" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        runTest(downstreamErrorCode, error, request)
 
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+      def tysServiceError(downstreamErrorCode: String, error: MtdError): Unit =
+        runTest(downstreamErrorCode, error, tysRequest)
+
+      def runTest(downstreamErrorCode: String, error: MtdError, request: RetrieveRequestData): Unit =
+        s"downstream returns $downstreamErrorCode, for TY ${request.taxYear.year}" in new Test {
 
           MockRetrieveCisDeductionsConnector
             .retrieveCisDeduction(request)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val errors = Seq(
+        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
-        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
+        ("INVALID_TAX_YEAR", StandardDownstreamError),
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
         ("INVALID_SOURCE", RuleSourceError),
         ("SERVER_ERROR", StandardDownstreamError),
         ("SERVICE_UNAVAILABLE", StandardDownstreamError)
       )
+      errors.foreach(args => (serviceError _).tupled(args))
 
       val extraTysErrors = Seq(
-        ("INVALID_TAX_YEAR", StandardDownstreamError),
+        ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
       )
-
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      extraTysErrors.foreach(args => (tysServiceError _).tupled(args))
     }
   }
 

@@ -18,6 +18,7 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
+import config.{AppConfig, FeatureSwitches}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.RetrieveConnector
@@ -32,7 +33,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector) extends DownstreamResponseMappingSupport with Logging {
+class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends DownstreamResponseMappingSupport with Logging {
+
+  implicit private lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
@@ -40,17 +43,19 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends Downstrea
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
 
+    val errorMapping = if (request.taxYear.isTys) errorMapForTys else errorMap
+
     val result = for {
-      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDownstreamErrors(mappingDesToMtdError))
+      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDownstreamErrors(errorMapping))
     } yield desResponseWrapper
     result.value
   }
 
-  private def mappingDesToMtdError: Map[String, MtdError] = {
-    val errors = Map(
+  private val errorMap: Map[String, MtdError] =
+    Map(
+      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
       "INVALID_PERIOD_START"      -> FromDateFormatError,
       "INVALID_PERIOD_END"        -> ToDateFormatError,
       "INVALID_SOURCE"            -> RuleSourceError,
@@ -58,15 +63,14 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends Downstrea
       "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     )
 
-    val extraTysErrors = Map(
+  private val errorMapForTys: Map[String, MtdError] =
+    errorMap ++ Map(
+      "INVALID_DATE_RANGE"     -> RuleTaxYearRangeInvalidError,
       "INVALID_TAX_YEAR"       -> StandardDownstreamError,
       "INVALID_START_DATE"     -> FromDateFormatError,
       "INVALID_END_DATE"       -> ToDateFormatError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_CORRELATIONID"  -> StandardDownstreamError
     )
-
-    errors ++ extraTysErrors
-  }
 
 }

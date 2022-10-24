@@ -22,7 +22,7 @@ import support.WireMockMethods
 
 object DownstreamStub extends WireMockMethods {
 
-  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
+  def mockDownstream(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
     method match {
       case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
       case _                              => when(method, uri).thenReturn(status, body)
