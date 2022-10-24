@@ -22,7 +22,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: The remote endpoint has indicated that no data can be found for the given NINO
+              description: The remote endpoint has indicated that no data can be found for the given NINO.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -33,7 +33,7 @@ traits:
             type: types.errorResponse
             examples:
               clientOrAgentNotAuthorised:
-                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf'
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
                 value:
                   code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
@@ -44,7 +44,7 @@ traits:
             type: types.errorResponse
             examples:
               formatNino:
-                description: The format of the supplied NINO field is not valid
+                description: The format of the supplied NINO field is not valid.
                 value:
                   code: FORMAT_NINO
   formatSubmissionId:
@@ -66,7 +66,7 @@ traits:
               type: types.errorResponse
               examples:
                 formatSubmissionId:
-                  description: The format of the Employer Reference number is invalid
+                  description: The format of the Employer Reference number is invalid.
                   value:
                     code: FORMAT_EMPLOYER_REFERENCE
   formatTaxYear:
@@ -77,7 +77,7 @@ traits:
             type: types.errorResponse
             examples:
               formatTaxYear:
-                description: The format of the supplied tax year field is not valid
+                description: The format of the supplied tax year field is not valid.
                 value:
                   code: FORMAT_TAX_YEAR
   incorrectOrEmptyBody:
@@ -88,7 +88,7 @@ traits:
             type: types.errorResponse
             examples:
               incorrectOrEmptyBody:
-                description: An empty or non-matching body was submitted
+                description: An empty or non-matching body was submitted.
                 value:
                   code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
   formatDeductionsFromDate:
@@ -99,7 +99,7 @@ traits:
             type: types.errorResponse
             examples:
               formatDeductionsFromDate:
-                description: The deductions From date is not a valid date format
+                description: The deductions From date is not a valid date format.
                 value:
                   code: FORMAT_DEDUCTIONS_FROM_DATE
   formatDeductionsToDate:
@@ -110,7 +110,7 @@ traits:
             type: types.errorResponse
             examples:
               formatDeductionsToDate:
-                description: The deductions To date is not a valid date format
+                description: The deductions To date is not a valid date format.
                 value:
                   code: FORMAT_DEDUCTIONS_TO_DATE
   ruleDeductionsAmount:
@@ -132,7 +132,7 @@ traits:
             type: types.errorResponse
             examples:
               formatFromDate:
-                description: The From date is not a valid format
+                description: The From date is not a valid format.
                 value:
                   code: FORMAT_FROM_DATE
   formatToDate:
@@ -143,7 +143,7 @@ traits:
             type: types.errorResponse
             examples:
               formatToDate:
-                description: The To date is not a valid format
+                description: The To date is not a valid format.
                 value:
                   code: FORMAT_TO_DATE
   ruleCostOfMaterials:
@@ -154,7 +154,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleCostOfMaterials:
-                description: The cost of materials should be a positive number less than 99999999999.99  up to 2 decimal places
+                description: The cost of materials should be a positive number less than 99999999999.99  up to 2 decimal places.
                 value:
                   code: RULE_COST_OF_MATERIALS
   ruleGrossAmountPaid:
@@ -165,7 +165,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleGrossAmountPaid:
-                description: The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places
+                description: The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places.
                 value:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
@@ -190,6 +190,17 @@ traits:
                   description: The specified date range is outside the allowable tax years (the current tax year minus four years).
                   value:
                     code: RULE_DATE_RANGE_OUT_OF_DATE
+  ruleTaxYearRangeInvalid:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTaxYearRangeInvalid:
+                description: The specified date range is outside the allowable tax years (the current tax year minus four years).
+                value:
+                  code: RULE_TAX_YEAR_RANGE_INVALID
   ruleDeductionsDateRangeInvalid:
     responses:
       403:
@@ -198,7 +209,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDeductionsDateRangeInvalid:
-                description: The deductions period does not align from the 6th of one month to the 5th of the following month
+                description: The deductions period does not align from the 6th of one month to the 5th of the following month.
                 value:
                   code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
   rangeDeductionsToDateBeforeDeductionsFromDate:
@@ -209,7 +220,7 @@ traits:
             type: types.errorResponse
             examples:
               rangeDeductionsToDateBeforeDeductionsFromDate:
-                description: The deductions To date must be after the Deductions From date
+                description: The deductions To date must be after the Deductions From date.
                 value:
                   code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
   ruleTaxYearNotEnded:
@@ -220,7 +231,7 @@ traits:
               type: types.errorResponse
               examples:
                 ruleTaxYearNotEnded:
-                  description: The submission has been made before the tax year has ended
+                  description: The submission has been made before the tax year has ended.
                   value:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleDuplicateSubmission:
@@ -231,7 +242,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicateSubmission:
-                description: CIS deductions already exists for this tax year
+                description: CIS deductions already exists for this tax year.
                 value:
                   code: RULE_DUPLICATE_SUBMISSION
   missingFromDate:
@@ -242,7 +253,7 @@ traits:
             type: types.errorResponse
             examples:
               missingFromDate:
-                description: The From date parameter is missing
+                description: The From date parameter is missing.
                 value:
                   code: MISSING_FROM_DATE
   missingToDate:
@@ -253,7 +264,7 @@ traits:
             type: types.errorResponse
             examples:
               missingToDate:
-                description: The To date parameter is missing
+                description: The To date parameter is missing.
                 value:
                   code: MISSING_TO_DATE
   ruleSourceInvalid:
@@ -264,7 +275,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleSourceInvalid:
-                description: The source of data should be one of these All (Blended view), Customer or Contractor
+                description: The source of data should be one of these All (Blended view), Customer or Contractor.
                 value:
                   code: RULE_SOURCE_INVALID
   ruleFromDate:
@@ -275,7 +286,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleFromDate:
-                description: The from date is not the start of the tax year
+                description: The from date is not the start of the tax year.
                 value:
                   code: RULE_FROM_DATE
   ruleToDate:
@@ -286,7 +297,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleToDate:
-                description: The to date is not the end of the tax year
+                description: The to date is not the end of the tax year.
                 value:
                   code: RULE_TO_DATE
   formatCisSubmissionID:
@@ -297,7 +308,7 @@ traits:
               type: types.errorResponse
               examples:
                 formatCisSubmissionID:
-                  description: The format of the CIS deductions submission ID is not valid
+                  description: The format of the CIS deductions submission ID is not valid.
                   value:
                     code: FORMAT_CIS_SUBMISSION_ID
   ruleUnalignedDeductionsPeriod:
@@ -308,7 +319,7 @@ traits:
              type: types.errorResponse
              examples:
                ruleUnalignedDeductionsPeriod:
-                 description: The deductions periods do not align with the tax year supplied
+                 description: The deductions periods do not align with the tax year supplied.
                  value:
                    code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
   ruleDuplicatePeriod:
@@ -319,7 +330,7 @@ traits:
             type: types.errorResponse
             examples:
               ruleDuplicatePeriod:
-                description: More than one deduction period has been supplied for the same month or period
+                description: More than one deduction period has been supplied for the same month or period.
                 value:
                   code: RULE_DUPLICATE_PERIOD
   ruleTaxYearNotSupported:
@@ -343,6 +354,7 @@ traits:
             type: types.errorResponse
             examples:
               invalidTaxYear:
-                description: A tax year before 2023-24 was supplied. A request with a tax year parameter is only valid for tax years 2023-24 or later
+                description: |
+                  A tax year before 2023-24 was supplied. A request with a tax year parameter is only valid for tax years 2023-24 or later.
                 value:
                   code: INVALID_TAX_YEAR_PARAMETER
