@@ -17,21 +17,22 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.Inject
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.amend.AmendRequestData
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendDeduction(request: AmendRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
+  def amendDeduction(
+      request: AmendRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     put(
       body = request.body,
-      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.id}")
+      DesUri[Unit](s"income-tax/cis/deductions/${request.nino.nino}/submissionId/${request.id}")
     )
   }
 

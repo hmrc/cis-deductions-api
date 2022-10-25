@@ -19,13 +19,13 @@ package v1.controllers
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveJson._
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRequestDataParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, _}
+import v1.mocks.services._
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
@@ -42,6 +42,14 @@ class DeleteControllerSpec
     with MockAppConfig
     with MockAuditService
     with MockIdGenerator {
+
+  private val nino              = "AA123456A"
+  private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val rawTaxYear        = "2022-23"
+  private val taxYear           = TaxYear.fromMtd(rawTaxYear)
+  private val correlationId     = "X-123"
+  private val deleteRawData     = DeleteRawData(nino, submissionId, Some(rawTaxYear))
+  private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId, Some(taxYear))
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -61,12 +69,6 @@ class DeleteControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val nino              = "AA123456A"
-  private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-  private val correlationId     = "X-123"
-  private val deleteRawData     = DeleteRawData(nino, submissionId)
-  private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId)
-
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
       auditType = "DeleteCisDeductionsForSubcontractor",
@@ -82,9 +84,9 @@ class DeleteControllerSpec
       )
     )
 
-  "DeleteCis" should {
+  "Delete CIS Deductions" should {
     "return a successful response with status 204 (No Content)" when {
-      "a valid request is supplied for a cis get request" in new Test {
+      "a valid request is supplied" in new Test {
 
         MockDeleteRequestDataParser
           .parse(deleteRawData)
@@ -94,7 +96,7 @@ class DeleteControllerSpec
           .deleteRequest(deleteRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
+        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
         status(result) shouldBe NO_CONTENT
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -113,7 +115,7 @@ class DeleteControllerSpec
             .parse(deleteRawData)
             .returns(Left(ErrorWrapper(correlationId, error)))
 
-          val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
+          val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(error)
@@ -128,9 +130,14 @@ class DeleteControllerSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
       )
-      input.foreach(args => (errorsFromParserTester _).tupled(args))
+
+      val extraTysInput = Seq(
+        (TaxYearFormatError, BAD_REQUEST)
+      )
+
+      (input ++ extraTysInput).foreach(args => (errorsFromParserTester _).tupled(args))
 
       "multiple parser errors occur" in new Test {
         val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
@@ -139,7 +146,7 @@ class DeleteControllerSpec
           .parse(deleteRawData)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
+        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -157,7 +164,7 @@ class DeleteControllerSpec
           .parse(deleteRawData)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
+        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -182,14 +189,14 @@ class DeleteControllerSpec
             .deleteRequest(deleteRequestData)
             .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
-          val result: Future[Result] = controller.deleteRequest(nino, submissionId)(fakeRequest)
+          val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(mtdError)
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson()))).once
         }
       }
 
@@ -197,9 +204,16 @@ class DeleteControllerSpec
         (NinoFormatError, BAD_REQUEST),
         (SubmissionIdFormatError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
       )
-      input.foreach(args => (serviceErrors _).tupled(args))
+
+      val extraTysInput = Seq(
+        (TaxYearFormatError, BAD_REQUEST),
+        (RuleTaxYearNotSupportedError, BAD_REQUEST),
+        (InvalidTaxYearParameterError, BAD_REQUEST)
+      )
+
+      (input ++ extraTysInput).foreach(args => (serviceErrors _).tupled(args))
 
     }
   }

@@ -23,9 +23,9 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.errors._
 import v1.fixtures.CreateRequestFixtures._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.models.errors._
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateControllerISpec extends IntegrationBaseSpec {
 
@@ -57,7 +57,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.POST, desUri, Status.OK, deductionsResponseBody, None)
+          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe Status.OK
@@ -109,7 +109,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.mockDes(DesStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+              DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -119,9 +119,9 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
           (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (Status.BAD_REQUEST, "INVALID_EMPREF", Status.BAD_REQUEST, EmployerRefFormatError),

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package v1.connectors
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
-import support.WireMockMethods
+sealed trait DownstreamUri[Resp] {
+  val value: String
+}
 
-object DesStub extends WireMockMethods {
+object DownstreamUri {
+  final case class DesUri[Resp](value: String) extends DownstreamUri[Resp]
 
-  def mockDes(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
-    method match {
-      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
-      case _                              => when(method, uri).thenReturn(status, body)
-    }
-  }
+  final case class IfsUri[Resp](value: String) extends DownstreamUri[Resp]
 
+  final case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
 }

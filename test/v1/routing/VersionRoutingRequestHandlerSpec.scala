@@ -27,7 +27,7 @@ import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.libs.json.Json
-import play.api.mvc.{EssentialAction, _}
+import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -76,8 +76,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockF
     private val filters                      = mock[HttpFilters]
     (filters.filters _).stubs().returns(Seq.empty)
 
-    MockedAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("""version-1.enabled = true
-                                                                                         |version-2.enabled = true""".stripMargin))))
+    MockedAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("""version-1.enabled = true
+                                                                                         |version-2.enabled = true""".stripMargin)))
 
     val requestHandler: VersionRoutingRequestHandler =
       new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockAppConfig, filters, action)

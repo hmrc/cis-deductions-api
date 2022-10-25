@@ -17,29 +17,41 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieve(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DesOutcome[RetrieveResponseModel[CisDeductions]]] = {
+      correlationId: String): Future[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
-    import v1.connectors.httpparsers.StandardDesHttpParser._
+    import request.nino.nino
+    import request.taxYear
 
-    get(
-      DesUri[RetrieveResponseModel[CisDeductions]](
-        s"${appConfig.desCisUrl}/${request.nino.nino}" +
-          s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}")
-    )
+    val (downstreamUri, queryParams) =
+      if (taxYear.useTaxYearSpecificApi) {
+        (
+          TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
+          List("startDate" -> request.fromDate, "endDate" -> request.toDate, "source" -> request.source)
+        )
+      } else {
+        (
+          DesUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/$nino"),
+          List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source)
+        )
+      }
+
+    import v1.connectors.httpparsers.StandardDownstreamHttpParser._
+
+    get(downstreamUri, queryParams)
   }
 
 }

@@ -16,10 +16,7 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.models.domain.Nino
-import v1.mocks.MockHttpClient
-import v1.models.errors.{DesErrorCode, DesErrors}
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
@@ -28,76 +25,92 @@ import scala.concurrent.Future
 
 class RetrieveConnectorSpec extends ConnectorSpec {
 
-  val nino = "AA123456A"
+  private val nino = "AA123456A"
 
-  class Test extends MockHttpClient with MockAppConfig {
-    val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
+  "Retrieve connector" when {
+    "given a valid non-TYS request" must {
+      "return a valid response from downstream" in new DesTest with Test {
+        def fromDate = "2019-04-06"
+        def toDate   = "2020-04-05"
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desCisUrl returns "income-tax/cis/deductions"
-    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-  }
-
-  "retrieve" should {
-    "return a Retrieve Deductions response when a source is supplied" in new Test {
-      val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
-
-      val outcome = Right(
-        ResponseWrapper(
-          correlationId,
-          RetrieveResponseModel(
-            Some(0.00),
-            Some(0.00),
-            Some(0.00),
-            Seq(CisDeductions(
-              request.fromDate,
-              request.toDate,
-              Some(""),
-              "",
+        val outcome = Right(
+          ResponseWrapper(
+            correlationId,
+            RetrieveResponseModel(
               Some(0.00),
               Some(0.00),
               Some(0.00),
-              Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
-            ))
-          )
-        ))
+              Seq(CisDeductions(
+                request.fromDate,
+                request.toDate,
+                Some(""),
+                "",
+                Some(0.00),
+                Some(0.00),
+                Some(0.00),
+                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+              ))
+            )
+          ))
 
-      MockedHttpClient
-        .get(
-          url = s"$baseUrl/income-tax/cis/deductions/${nino}" +
-            s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-          dummyDesHeaderCarrierConfig,
-          desRequestHeaders,
-          Seq("AnotherHeader" -> "HeaderValue")
-        )
-        .returns(Future.successful(outcome))
+        willGet(
+          url = s"$baseUrl/income-tax/cis/deductions/${nino}",
+          queryParams = List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source)
+        ) returns Future.successful(outcome)
 
-      await(connector.retrieve(request)) shouldBe outcome
-    }
-
-    "return a Des Error code" when {
-      "the http client returns a Des Error code" in new Test {
-        val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), "2019-04-05", "2020-04-06", "contractor")
-
-        val outcome = Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))
-
-        MockedHttpClient
-          .get[DesOutcome[RetrieveResponseModel[CisDeductions]]](
-            s"$baseUrl/income-tax/cis/deductions/${nino}" +
-              s"?periodStart=${request.fromDate}&periodEnd=${request.toDate}&source=${request.source}",
-            dummyDesHeaderCarrierConfig,
-            desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("error"))))))
-
-        val result: DesOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
+        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
         result shouldBe outcome
       }
     }
+
+    "given a valid request for a TaxYearSpecific tax year" must {
+      "return a 200 for success scenario" in new TysIfsTest with Test {
+        def fromDate         = "2023-04-06"
+        def toDate           = "2024-04-06"
+        def taxYear: TaxYear = TaxYear.fromIso(toDate)
+
+        val outcome = Right(
+          ResponseWrapper(
+            correlationId,
+            RetrieveResponseModel(
+              Some(0.00),
+              Some(0.00),
+              Some(0.00),
+              Seq(CisDeductions(
+                request.fromDate,
+                request.toDate,
+                Some(""),
+                "",
+                Some(0.00),
+                Some(0.00),
+                Some(0.00),
+                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+              ))
+            )
+          ))
+
+        willGet(
+          url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
+          queryParams = List("startDate" -> request.fromDate, "endDate" -> request.toDate, "source" -> request.source)
+        ) returns Future.successful(outcome)
+
+        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
+        result shouldBe outcome
+      }
+    }
+  }
+
+  trait Test { _: ConnectorTest =>
+    def fromDate: String
+    def toDate: String
+
+    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, "contractor")
+
+    MockedAppConfig.desBaseUrl returns baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
 }

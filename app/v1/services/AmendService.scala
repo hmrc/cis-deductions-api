@@ -18,7 +18,6 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendConnector
@@ -26,12 +25,13 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendService @Inject() (connector: AmendConnector) extends DesResponseMappingSupport with Logging {
+class AmendService @Inject() (connector: AmendConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def amendDeductions(request: AmendRequestData)(implicit
       hc: HeaderCarrier,
@@ -40,7 +40,7 @@ class AmendService @Inject() (connector: AmendConnector) extends DesResponseMapp
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDownstreamErrors(desErrorMap))
     } yield desResponseWrapper
     result.value
   }
@@ -49,14 +49,14 @@ class AmendService @Inject() (connector: AmendConnector) extends DesResponseMapp
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"     -> DownstreamError,
+      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_TAX_YEAR_ALIGN"    -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"        -> RuleDeductionsDateRangeInvalidError,
       "INVALID_PAYLOAD"           -> RuleIncorrectOrEmptyBodyError,
       "DUPLICATE_MONTH"           -> RuleDuplicatePeriodError,
-      "SERVICE_UNAVAILABLE"       -> DownstreamError,
-      "SERVICE_ERROR"             -> DownstreamError
+      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+      "SERVICE_ERROR"             -> StandardDownstreamError
     )
 
 }

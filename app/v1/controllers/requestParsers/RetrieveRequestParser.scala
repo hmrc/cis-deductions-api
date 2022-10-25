@@ -16,15 +16,20 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
 import v1.controllers.requestParsers.validators.RetrieveValidator
 import v1.models.domain.Nino
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
+import javax.inject.Inject
+
 class RetrieveRequestParser @Inject() (val validator: RetrieveValidator) extends RequestParser[RetrieveRawData, RetrieveRequestData] {
 
-  override protected def requestFor(data: RetrieveRawData): RetrieveRequestData = {
-    RetrieveRequestData(Nino(data.nino), data.fromDate.get, data.toDate.get, data.source.getOrElse("all"))
-  }
+  override protected def requestFor(data: RetrieveRawData): RetrieveRequestData =
+    RetrieveRequestData(
+      nino = Nino(data.nino),
+      fromDate = data.fromDate.getOrElse(throw new Exception("Unexpected missing fromDate")),
+      toDate = data.toDate.getOrElse(throw new Exception("Unexpected missing toDate")),
+      source = data.source.getOrElse("all")
+    )
 
 }

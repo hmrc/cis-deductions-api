@@ -16,10 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
 import v1.controllers.requestParsers.validators.AmendValidator
 import v1.models.domain.Nino
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
+
+import javax.inject.Inject
 
 class AmendRequestParser @Inject() (val validator: AmendValidator) extends RequestParser[AmendRawData, AmendRequestData] {
 

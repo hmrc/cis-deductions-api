@@ -19,7 +19,6 @@ package v1.controllers
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveJson._
 import v1.fixtures.RetrieveModels._
@@ -28,6 +27,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
@@ -49,36 +49,16 @@ class RetrieveControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new RetrieveController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      requestParser = mockRequestParser,
-      service = mockService,
-      hateoasFactory = mockHateoasFactory,
-      auditService = mockAuditService,
-      appConfig = mockAppConfig,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
-
   private val nino                            = "AA123456A"
-  private val fromDate                        = Some("2019-04-06")
-  private val toDate                          = Some("2020-04-05")
+  private val fromDate                        = "2019-04-06"
+  private val toDate                          = "2020-04-05"
   private val sourceRaw                       = Some("customer")
   private val sourceAll                       = "all"
   private val correlationId                   = "X-123"
-  private val retrieveRawData                 = RetrieveRawData(nino, fromDate, toDate, sourceRaw)
-  private val retrieveRequestData             = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
-  private val optionalFieldMissingRawData     = RetrieveRawData(nino, fromDate, toDate, None)
-  private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate.get, toDate.get, sourceAll)
+  private val retrieveRawData                 = RetrieveRawData(nino, Some(fromDate), Some(toDate), sourceRaw)
+  private val retrieveRequestData             = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
+  private val optionalFieldMissingRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), None)
+  private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
 
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
@@ -96,11 +76,8 @@ class RetrieveControllerSpec
     )
 
   "RetrieveCis" should {
-
     "return a successful response with status 200 (OK)" when {
-
-      "a valid request is supplied for a cis get request" in new Test {
-
+      "given a valid request" in new Test {
         MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
 
         MockRetrieveDeductionRequestParser
@@ -126,22 +103,22 @@ class RetrieveControllerSpec
               ))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate.get, toDate.get, sourceRaw, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, response))
           .returns(responseWithHateoas)
 
-        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
         status(result) shouldBe OK
-        contentAsJson(result) shouldBe singleDeductionJsonHateoas
+        contentAsJson(result) shouldBe singleDeductionJsonHateoas(fromDate, toDate)
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas))).once()
+        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(singleDeductionJsonHateoas(fromDate, toDate)))
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJsonHateoas(fromDate, toDate)))).once()
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
@@ -164,15 +141,15 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsMissingOptional, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate.get, toDate.get, None, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, None, response))
           .returns(responseWithHateoas)
 
-        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, None)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), None)(fakeGetRequest)
 
         status(result) shouldBe OK
         contentAsJson(result) shouldBe singleDeductionJsonHateoasMissingOptionalField
@@ -202,15 +179,15 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsNoId, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate.get, toDate.get, sourceRaw, isSelf = true),
+            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
             createCISDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(responseNoId, RetrieveHateoasData(nino, fromDate.get, toDate.get, sourceRaw, responseNoId))
+          .wrapList(responseNoId, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, responseNoId))
           .returns(responseWithHateoas)
 
-        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
         status(result) shouldBe OK
         contentAsJson(result) shouldBe singleDeductionJsonHateoasNoId
@@ -229,7 +206,7 @@ class RetrieveControllerSpec
             .parse(retrieveRawData)
             .returns(Left(ErrorWrapper(correlationId, error)))
 
-          val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+          val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(error)
@@ -243,7 +220,7 @@ class RetrieveControllerSpec
       val input = Seq(
         (BadRequestError, BAD_REQUEST),
         (NinoFormatError, BAD_REQUEST),
-        (DownstreamError, INTERNAL_SERVER_ERROR)
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
       )
       input.foreach(args => (errorsFromParserTester _).tupled(args))
 
@@ -254,7 +231,7 @@ class RetrieveControllerSpec
           .parse(retrieveRawData)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -262,7 +239,7 @@ class RetrieveControllerSpec
 
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -287,7 +264,7 @@ class RetrieveControllerSpec
           .parse(retrieveRawData)
           .returns(Left(error))
 
-        val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+        val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
         status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.toJson(error)
@@ -309,7 +286,7 @@ class RetrieveControllerSpec
             )),
           None
         )
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
       }
     }
 
@@ -325,27 +302,52 @@ class RetrieveControllerSpec
             .retrieveCisDeductions(retrieveRequestData)
             .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
-          val result: Future[Result] = controller.retrieveDeductions(nino, fromDate, toDate, sourceRaw)(fakeGetRequest)
+          val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
           status(result) shouldBe expectedStatus
           contentAsJson(result) shouldBe Json.toJson(mtdError)
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
         }
       }
 
-      val input = Seq(
+      val errors = List(
         (NinoFormatError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND),
-        (DownstreamError, INTERNAL_SERVER_ERROR),
+        (StandardDownstreamError, INTERNAL_SERVER_ERROR),
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
         (RuleDateRangeOutOfDate, FORBIDDEN)
       )
-      input.foreach(args => (serviceErrors _).tupled(args))
+
+      val extraTysErrors = List(
+        (RuleTaxYearRangeInvalidError, BAD_REQUEST),
+        (RuleTaxYearNotSupportedError, BAD_REQUEST)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
     }
+  }
+
+  trait Test {
+    val hc: HeaderCarrier = HeaderCarrier()
+
+    val controller = new RetrieveController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      requestParser = mockRequestParser,
+      service = mockService,
+      hateoasFactory = mockHateoasFactory,
+      auditService = mockAuditService,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
 }

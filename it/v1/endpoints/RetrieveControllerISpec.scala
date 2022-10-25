@@ -17,78 +17,78 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import support.IntegrationBaseSpec
-import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import play.api.libs.ws.{WSRequest, WSResponse}
+import support.IntegrationBaseSpec
 import v1.fixtures.RetrieveJson._
 import v1.models.errors._
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-
-    val nino           = "AA123456A"
-    val fromDate       = "2019-04-06"
-    val toDate         = "2020-04-05"
-    val source         = "customer"
-    val queryParams    = Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
-    val desQueryParams = Seq("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-
-    def uri: String = s"/$nino/current-position"
-
-    def desUrl: String = s"/income-tax/cis/deductions/$nino"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withQueryStringParameters(queryParams: _*)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
   "Calling the retrieve endpoint" should {
 
-    "return a valid response with status OK" when {
+    "return an OK response" when {
 
-      "valid request is made" in new Test {
+      "a valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionJson, Some(desQueryParams))
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
+            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
         }
 
-        val response: WSResponse = await(request.get)
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
       }
 
-      "valid request is made without any ids" in new Test {
+      "valid request is made without any IDs" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.GET, desUrl, OK, singleDeductionWithoutIdsJson, Some(desQueryParams))
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
+            .thenReturn(status = OK, singleDeductionWithoutIdsJson)
         }
 
-        val response: WSResponse = await(request.get)
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
         response.json shouldBe singleDeductionWithoutIdsJsonHateoas
+      }
+
+      "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
+
+        override def fromDate: String = "2023-04-06"
+        override def toDate: String   = "2024-04-05"
+
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+
+          DownstreamStub
+            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
+            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
+        }
+
+        val response: WSResponse = await(mtdRequest().get())
+        response.status shouldBe OK
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
+
       }
 
       "return error according to spec" when {
@@ -100,13 +100,15 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
                                 expectedStatus: Int,
                                 expectedBody: MtdError,
                                 qParams: Option[Seq[(String, String)]]): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String     = requestNino
-            override val fromDate: String = requestFromDate
-            override val toDate: String   = requestToDate
-            override val source: String   = requestSource
-            override val queryParams = if (qParams.isDefined) qParams.get else Seq("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+            override def fromDate: String = requestFromDate
+            override def toDate: String   = requestToDate
+
+            override def mtdQueryParams: Seq[(String, String)] = qParams.getOrElse(super.mtdQueryParams)
+
+            override val nino: String   = requestNino
+            override val source: String = requestSource
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -114,7 +116,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request.get)
+            val response: WSResponse = await(mtdRequest.get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -148,43 +150,106 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "des service error" when {
+    "downstream service error" when {
 
       def errorBody(code: String): JsValue =
         Json.parse(s"""{
              |  "code": "$code",
-             |  "reason": "des message"
+             |  "reason": "downstream error message"
              |}""".stripMargin)
 
-      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $desCode error and status $desStatus" in new Test {
+      def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns $downstreamErrorCode with status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DesStub.mockDes(DesStub.GET, desUrl, desStatus, errorBody(desCode), None)
+            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
           }
 
-          val response: WSResponse = await(request.get)
-          response.status shouldBe expectedStatus
+          val response: WSResponse = await(mtdRequest.get())
           response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
       }
 
-      val input = Seq(
+      def tysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysIfsTest {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
+          }
+
+          val response: WSResponse = await(mtdRequest.get())
+          response.json shouldBe Json.toJson(expectedBody)
+          response.status shouldBe expectedStatus
+          response.header("Content-Type") shouldBe Some("application/json")
+        }
+      }
+
+      val errors = List(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, DownstreamError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, StandardDownstreamError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", FORBIDDEN, RuleDateRangeOutOfDate)
       )
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(args => (serviceErrorTest _).tupled(args))
+
+      val extraTysErrors = List(
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+      )
+      extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
     }
+  }
+
+  private trait Test {
+    def fromDate: String
+    def toDate: String
+
+    val nino   = "AA123456A"
+    val source = "customer"
+
+    def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    def downstreamQueryParams: Seq[(String, String)]
+
+    def setupStubs(): StubMapping
+
+    def mtdRequest(): WSRequest = {
+      setupStubs()
+      buildRequest(s"/$nino/current-position")
+        .withQueryStringParameters(mtdQueryParams: _*)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
+    }
+
+  }
+
+  private trait NonTysTest extends Test {
+    def fromDate              = "2019-04-06"
+    def toDate                = "2020-04-05"
+    def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+  }
+
+  private trait TysIfsTest extends Test {
+    def fromDate                  = "2023-04-06"
+    def toDate                    = "2024-04-05"
+    def downstreamTaxYear: String = "23-24"
+    def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
+    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }
