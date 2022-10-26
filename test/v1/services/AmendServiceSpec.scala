@@ -17,11 +17,11 @@
 package v1.services
 
 import support.UnitSpec
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
@@ -63,7 +63,7 @@ class AmendServiceSpec extends UnitSpec {
 
           MockAmendConnector
             .amendDeduction(requestData)
-            .returns(Future.successful(Left(ResponseWrapper("resultId", DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper("resultId", DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
         }
@@ -72,13 +72,13 @@ class AmendServiceSpec extends UnitSpec {
         ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
         ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
         ("INVALID_SUBMISSION_ID"  -> SubmissionIdFormatError),
-        ("INVALID_CORRELATIONID"  -> DownstreamError),
+        ("INVALID_CORRELATIONID"  -> StandardDownstreamError),
         ("NO_DATA_FOUND"          -> NotFoundError),
         ("INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError),
         ("INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError),
         ("DUPLICATE_MONTH"        -> RuleDuplicatePeriodError),
-        ("SERVICE_UNAVAILABLE"    -> DownstreamError),
-        ("SERVICE_ERROR"          -> DownstreamError)
+        ("SERVICE_UNAVAILABLE"    -> StandardDownstreamError),
+        ("SERVICE_ERROR"          -> StandardDownstreamError)
       )
       input.foreach(args => (serviceError _).tupled(args))
     }

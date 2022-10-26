@@ -29,7 +29,11 @@ object MtdError {
 }
 
 // Format Errors
-object NinoFormatError              extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
+object NinoFormatError   extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
+object StringFormatError extends MtdError("FORMAT_STRING", "The supplied string format is not valid")
+object DateFormatError   extends MtdError("FORMAT_DATE", "The supplied date format is not valid")
+object ValueFormatError  extends MtdError("FORMAT_VALUE", "The supplied value format is not valid")
+
 object SubmissionIdFormatError      extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid")
 object EmployerRefFormatError       extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid")
 object TaxYearFormatError           extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
@@ -90,10 +94,22 @@ object RuleDateRangeOutOfDate
       "RULE_DATE_RANGE_OUT_OF_DATE",
       "The specified date range is outside the allowable tax years (the current tax year minus four years)")
 
+object RuleTaxYearRangeInvalidError
+    extends MtdError(
+      "RULE_TAX_YEAR_RANGE_INVALID",
+      "The specified date range is outside the allowable tax years (the current tax year minus four years)")
+
+object InvalidTaxYearParameterError
+    extends MtdError(
+      code = "INVALID_TAX_YEAR_PARAMETER",
+      message = "A tax year before 2023-24 was supplied"
+    )
+
 //Standard Errors
+
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
 
-object DownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
+object StandardDownstreamError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred")
 
 object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request")
 

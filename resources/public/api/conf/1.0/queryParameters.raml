@@ -21,3 +21,9 @@ traits:
       source:
         description: 'The source of amended data. Defaults to `all`. Limited to the following possible values: <b><ul><li>`all`<li>`contractor`<li>`customer`</b>'
         required: false
+  taxYear:
+    queryParameters:
+      source:
+        description: 'The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The parameter value must be at least 2023-24. No gaps are allowed, for example, 2023-25 is not valid'
+        example: "2023-24"
+        required: false

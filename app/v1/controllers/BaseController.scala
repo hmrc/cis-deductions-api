@@ -16,17 +16,25 @@
 
 package v1.controllers
 
-import play.api.libs.json.JsValue
+import play.api.http.Status
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import play.api.mvc.Results.InternalServerError
 import utils.Logging
 import v1.models.audit.{AuditResponse, GenericAuditDetail}
 import v1.models.auth.UserDetails
-import v1.models.errors.ErrorWrapper
+import v1.models.errors.{ErrorWrapper, StandardDownstreamError}
 import v1.models.request.RawData
-import play.api.http.Status
 
 trait BaseController {
   self: Logging =>
+
+  protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
+    logger.error(
+      s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+        s"Unhandled error: $errorWrapper")
+    InternalServerError(Json.toJson(StandardDownstreamError))
+  }
 
   implicit class Response(result: Result) {
 

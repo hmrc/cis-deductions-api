@@ -25,7 +25,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendControllerISpec extends IntegrationBaseSpec {
 
@@ -46,6 +46,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the amend endpoint" should {
@@ -57,7 +58,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.mockDes(DesStub.PUT, desUri, Status.NO_CONTENT, Json.obj(), None)
+          DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, Status.NO_CONTENT, Json.obj(), None)
         }
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
         response.status shouldBe Status.NO_CONTENT
@@ -109,7 +110,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.mockDes(DesStub.PUT, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+              DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, desStatus, Json.parse(errorBody(desCode)), None)
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))
@@ -120,12 +121,12 @@ class AmendControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           (Status.NOT_FOUND, "NO_DATA_FOUND", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
           (Status.BAD_REQUEST, "INVALID_SUBMISSION_ID", Status.BAD_REQUEST, SubmissionIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (Status.UNPROCESSABLE_ENTITY, "INVALID_TAX_YEAR_ALIGN", Status.FORBIDDEN, RuleUnalignedDeductionsPeriodError),
           (Status.UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError),
           (Status.UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", Status.FORBIDDEN, RuleDuplicatePeriodError)

@@ -17,15 +17,21 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.models.domain.Nino
 import v1.mocks.validators.MockRetrieveValidator
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
-class RetrieveDeductionsParserSpec extends UnitSpec {
+class RetrieveRequestParserSpec extends UnitSpec {
 
-  val nino                           = "AA123456A"
-  val invalidNino                    = "PLKL87654"
+  private val nino        = "AA123456A"
+  private val invalidNino = "PLKL87654"
+
+  private val fromDate = "2019-04-06"
+  private val toDate   = "2020-04-05"
+
+  private val validRawInput = RetrieveRawData(nino, Some(fromDate), Some(toDate), Some("all"))
+
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockRetrieveValidator {
@@ -33,61 +39,64 @@ class RetrieveDeductionsParserSpec extends UnitSpec {
   }
 
   "parser" should {
-    "accept a valid input" when {
-      "a valid retrieve deduction request has been made" in new Test {
-        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all"))
+    "parse correctly" when {
+      "given valid raw data" in new Test {
         MockValidator
-          .validate(inputData)
+          .validate(validRawInput)
           .returns(Nil)
 
-        private val result = parser.parseRequest(inputData)
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
+        private val result = parser.parseRequest(validRawInput)
+        result shouldBe Right(RetrieveRequestData(Nino(nino), fromDate, toDate, "all"))
       }
 
-      "a valid retrieve deduction request has been made with the optional field returning none" in new Test {
-        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None)
+      "given valid raw data with no Source specified" in new Test {
+        val inputData = validRawInput.copy(source = None)
+
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
-        private val result = parser.parseRequest(inputData)
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", "all"))
+        val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
+        result shouldBe Right(RetrieveRequestData(Nino(nino), fromDate, toDate, "all"))
       }
     }
 
     "reject invalid input" when {
-      "an invalid nino is given" in new Test {
-        val inputData = RetrieveRawData(invalidNino, Some("2018-04-05"), Some("2019-04-06"), Some("customer"))
+      "given an invalid NINO" in new Test {
+        val inputData = validRawInput.copy(nino = invalidNino)
+
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
-        private val result = parser.parseRequest(inputData)
+        val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
-      "a mandatory field is given invalid data" in new Test {
-        val inputData = RetrieveRawData(nino, Some("asdf"), Some("231k"), Some("all"))
+      "given multiple invalid field values" in new Test {
+        val inputData = validRawInput.copy(fromDate = Some("asdf"), toDate = Some("231k"))
+
         MockValidator
           .validate(inputData)
           .returns(List(FromDateFormatError, ToDateFormatError))
 
-        private val result = parser.parseRequest(inputData)
+        val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(FromDateFormatError, ToDateFormatError))))
       }
 
-      "an invalid source is given" in new Test {
-        val inputData = RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("fruit source"))
+      "given an invalid source" in new Test {
+        val inputData = validRawInput.copy(source = Some("wrong source"))
+
         MockValidator
           .validate(inputData)
           .returns(List(RuleSourceError))
 
-        private val result = parser.parseRequest(inputData)
+        val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
         result shouldBe Left(ErrorWrapper(correlationId, RuleSourceError))
       }
 
-      "the to date given is before the from date" in new Test {
-        val inputData = RetrieveRawData(nino, Some("2020-04-06"), Some("2019-04-05"), Some("contractor"))
+      "toDate is earlier than fromDate" in new Test {
+        val inputData = validRawInput.copy(fromDate = Some("2020-04-06"), toDate = Some("2019-04-05"))
 
         MockValidator
           .validate(inputData)

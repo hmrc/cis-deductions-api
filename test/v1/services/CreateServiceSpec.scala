@@ -69,7 +69,7 @@ class CreateServiceSpec extends UnitSpec {
 
             MockCreateCisDeductionsConnector
               .createCisDeduction(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
             await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -83,9 +83,9 @@ class CreateServiceSpec extends UnitSpec {
           ("INVALID_REQUEST_BEFORE_TAX_YEAR", RuleTaxYearNotEndedError),
           ("CONFLICT", RuleDuplicateSubmissionError),
           ("INVALID_REQUEST_DUPLICATE_MONTH", RuleDuplicatePeriodError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError),
-          ("INVALID_CORRELATIONID", DownstreamError)
+          ("SERVER_ERROR", StandardDownstreamError),
+          ("SERVICE_UNAVAILABLE", StandardDownstreamError),
+          ("INVALID_CORRELATIONID", StandardDownstreamError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

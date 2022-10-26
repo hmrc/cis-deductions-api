@@ -17,21 +17,31 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.delete.DeleteRequestData
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDesConnector {
+class DeleteConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def delete(request: DeleteRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DesOutcome[Unit]] = {
-    delete(
-      DesUri[Unit](s"${appConfig.desCisUrl}/${request.nino.nino}/submissionId/${request.submissionId}")
-    )
+  def delete(request: DeleteRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
+
+    import request.nino.nino
+    import request.submissionId
+
+    val downstreamUri =
+      request.taxYear match {
+        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
+          TaxYearSpecificIfsUri[Unit](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/$submissionId")
+        case _ =>
+          DesUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
+      }
+
+    delete(downstreamUri)
   }
 
 }

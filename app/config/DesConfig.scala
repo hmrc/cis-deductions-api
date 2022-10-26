@@ -14,27 +14,11 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package config
 
-import support.UnitSpec
-
-class DesTaxYearSpec extends UnitSpec {
-
-  val mtdValue = "2018-19"
-  val desValue = "2019"
-
-  "DesTaxYear" when {
-    "toString is called" should {
-      "return the value instead of a String representation of the case class" in {
-        DesTaxYear(desValue).toString shouldBe desValue
-      }
-    }
-
-    "fromMtd is called" should {
-      "return the DES representation of the tax year" in {
-        DesTaxYear.fromMtd(mtdValue) shouldBe DesTaxYear(desValue)
-      }
-    }
-  }
-
-}
+case class DownstreamConfig(
+    baseUrl: String,
+    env: String,
+    token: String,
+    environmentHeaders: Option[Seq[String]]
+)

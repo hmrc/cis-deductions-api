@@ -16,7 +16,6 @@
 
 package v1.services
 
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, Writes}
 import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,6 +25,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.play.bootstrap.config.AppName
 import v1.models.audit.AuditEvent
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

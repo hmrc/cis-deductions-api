@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package v1.models.request
+package v1.controllers.requestParsers.validators.validations
 
-/** Represents a tax year for DES
-  *
-  * @param value
-  *   the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import config.FixedConfig
+import v1.models.domain.TaxYear
+import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 
-object DesTaxYear {
-
-  val taxYearStart: Int = 2
-  val taxYearEnd: Int   = 5
+object TaxYearNotSupportedValidation extends FixedConfig {
 
   /** @param taxYear
-    *   tax year in MTD format (e.g. 2017-18)
+    *   In format YYYY-YY
     */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(taxYearStart) + taxYear.drop(taxYearEnd))
+  def validate(taxYear: String): List[MtdError] = {
+    val year = TaxYear.fromMtd(taxYear).year
+    if (year >= minimumTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
+  }
 
 }

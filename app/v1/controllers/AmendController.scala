@@ -102,13 +102,31 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
-    (errorWrapper.error: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | DeductionFromDateFormatError | DeductionToDateFormatError |
-          RuleDeductionAmountError | RuleCostOfMaterialsError | RuleGrossAmountError | SubmissionIdFormatError =>
+    errorWrapper.error match {
+      case _
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            RuleIncorrectOrEmptyBodyError,
+            DeductionFromDateFormatError,
+            DeductionToDateFormatError,
+            RuleDeductionAmountError,
+            RuleCostOfMaterialsError,
+            RuleGrossAmountError,
+            SubmissionIdFormatError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
-      case RuleDeductionsDateRangeInvalidError | RuleUnalignedDeductionsPeriodError | RuleDuplicatePeriodError => Forbidden(Json.toJson(errorWrapper))
-      case NotFoundError                                                                                       => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+
+      case _
+          if errorWrapper.containsAnyOf(
+            RuleDeductionsDateRangeInvalidError,
+            RuleUnalignedDeductionsPeriodError,
+            RuleDuplicatePeriodError
+          ) =>
+        Forbidden(Json.toJson(errorWrapper))
+
+      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
+      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

@@ -110,16 +110,16 @@ object RetrieveJson {
       |""".stripMargin
   )
 
-  val singleDeductionJson: JsValue = Json.parse {
-    """
+  def singleDeductionJson(fromDate: String = "2019-04-06", toDate: String = "2020-04-05"): JsValue = Json.parse {
+    s"""
       |{
       | "totalDeductionAmount": 12345.56,
       | "totalCostOfMaterials": 234234.33,
       | "totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2019-04-06" ,
-      |    "toDate": "2020-04-05",
+      |    "fromDate": "$fromDate",
+      |    "toDate": "$toDate",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -235,16 +235,16 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionJsonHateoas: JsValue = Json.parse {
-    """
+  def singleDeductionJsonHateoas(fromDate: String, toDate: String): JsValue = Json.parse {
+    s"""
       |{
       |"totalDeductionAmount": 12345.56,
       |"totalCostOfMaterials": 234234.33,
       |"totalGrossAmountPaid": 2342424.56,
       | "cisDeductions" : [
       |  {
-      |    "fromDate": "2019-04-06",
-      |    "toDate": "2020-04-05",
+      |    "fromDate": "$fromDate",
+      |    "toDate": "$toDate",
       |    "contractorName": "contractor Name",
       |    "employerRef": "123/AA12345",
       |    "totalDeductionAmount": 3543.55,
@@ -288,7 +288,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=$fromDate&toDate=$toDate&source=customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },

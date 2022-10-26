@@ -18,9 +18,10 @@ package definition
 
 import config.AppConfig
 import definition.Versions._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {

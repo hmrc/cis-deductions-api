@@ -48,20 +48,20 @@ trait HttpParser extends Logging {
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")
 
-  private val multipleErrorReads: Reads[Seq[DesErrorCode]] = (__ \ "failures").read[Seq[DesErrorCode]]
+  private val multipleErrorReads: Reads[Seq[DownstreamErrorCode]] = (__ \ "failures").read[Seq[DownstreamErrorCode]]
 
-  private val bvrErrorReads: Reads[Seq[DesErrorCode]] = {
-    implicit val errorIdReads: Reads[DesErrorCode] = (__ \ "id").read[String].map(DesErrorCode(_))
-    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[Seq[DesErrorCode]]
+  private val bvrErrorReads: Reads[Seq[DownstreamErrorCode]] = {
+    implicit val errorIdReads: Reads[DownstreamErrorCode] = (__ \ "id").read[String].map(DownstreamErrorCode(_))
+    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[Seq[DownstreamErrorCode]]
   }
 
-  def parseErrors(response: HttpResponse): DesError = {
-    val singleError         = response.validateJson[DesErrorCode].map(err => DesErrors(Seq(err)))
-    lazy val multipleErrors = response.validateJson(multipleErrorReads).map(errs => DesErrors(errs))
+  def parseErrors(response: HttpResponse): DownstreamError = {
+    val singleError         = response.validateJson[DownstreamErrorCode].map(err => DownstreamErrors(Seq(err)))
+    lazy val multipleErrors = response.validateJson(multipleErrorReads).map(errs => DownstreamErrors(errs))
     lazy val bvrErrors      = response.validateJson(bvrErrorReads).map(errs => OutboundError(BVRError, Some(errs.map(_.toMtd))))
     lazy val unableToParseJsonError = {
       logger.warn(s"unable to parse errors from response: ${response.body}")
-      OutboundError(DownstreamError)
+      OutboundError(StandardDownstreamError)
     }
 
     singleError orElse multipleErrors orElse bvrErrors getOrElse unableToParseJsonError
