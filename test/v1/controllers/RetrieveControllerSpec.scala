@@ -100,14 +100,14 @@ class RetrieveControllerSpec
               HateoasWrapper(
                 cisDeductions,
                 Seq(
-                  deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
-                  amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                  deleteCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
+                  amendCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
                 )
               ))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
@@ -144,8 +144,8 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsMissingOptional, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
@@ -182,8 +182,8 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsNoId, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory

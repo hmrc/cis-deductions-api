@@ -46,32 +46,32 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
     MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
 
-  "createCISDeduction" when {
+  "createCisDeduction" when {
     "generate the correct link with isSelf set to true" in new Test {
-      val link         = createCISDeduction(mockAppConfig, nino, isSelf = true)
+      val link         = createCisDeduction(mockAppConfig, nino, isSelf = true)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments"
 
       link shouldBe Link(expectedHref, POST, "self")
     }
 
     "generate the correct link with isSelf set to false" in new Test {
-      val link         = createCISDeduction(mockAppConfig, nino, isSelf = false)
+      val link         = createCisDeduction(mockAppConfig, nino, isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments"
 
       link shouldBe Link(expectedHref, POST, "create-cis-deductions-for-subcontractor")
     }
   }
 
-  "deleteCISDeduction" when {
+  "deleteCisDeduction" when {
     "generate the correct link with isSelf set to true" in new TysDisabledTest {
-      val link         = deleteCISDeduction(mockAppConfig, nino, submissionId, None, isSelf = true)
+      val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, None, isSelf = true)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, DELETE, "self")
     }
 
     "generate the correct link with isSelf set to false" in new TysDisabledTest {
-      val link         = deleteCISDeduction(mockAppConfig, nino, submissionId, None, isSelf = false)
+      val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, None, isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, DELETE, "delete-cis-deductions-for-subcontractor")
@@ -79,7 +79,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
     "TYS feature switch is disabled" should {
       "not include tax year query parameter given a TYS tax year" in new TysDisabledTest {
-        val link         = deleteCISDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
+        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
         val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
         link shouldBe Link(expectedHref, DELETE, "self")
@@ -88,14 +88,14 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
     "TYS feature switch is enabled" should {
       "not include tax year query parameter given a non-TYS tax year" in new TysEnabledTest {
-        val link         = deleteCISDeduction(mockAppConfig, nino, submissionId, Some(taxYear2023), isSelf = true)
+        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2023), isSelf = true)
         val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
         link shouldBe Link(expectedHref, DELETE, "self")
       }
 
       "include tax year query parameter given a TYS tax year" in new TysEnabledTest {
-        val link         = deleteCISDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
+        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
         val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
         link shouldBe Link(expectedHref, DELETE, "self")
@@ -103,39 +103,39 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
     }
   }
 
-  "amendCISDeduction" when {
+  "amendCisDeduction" when {
     "generate the correct link with isSelf set to true" in new Test {
-      val link         = amendCISDeduction(mockAppConfig, nino, submissionId, isSelf = true)
+      val link         = amendCisDeduction(mockAppConfig, nino, submissionId, isSelf = true)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, PUT, "self")
     }
 
     "generate the correct link with isSelf set to false" in new Test {
-      val link         = amendCISDeduction(mockAppConfig, nino, submissionId, isSelf = false)
+      val link         = amendCisDeduction(mockAppConfig, nino, submissionId, isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, PUT, "amend-cis-deductions-for-subcontractor")
     }
   }
 
-  "retrieveCISDeduction" when {
+  "retrieveCisDeduction" when {
     "generate the correct link with isSelf set to true" in new Test {
-      val link         = retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, None, isSelf = true)
+      val link         = retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, None, isSelf = true)
       val expectedHref = "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05"
 
       link shouldBe Link(expectedHref, GET, "self")
     }
 
     "generate the correct link with isSelf set to false" in new Test {
-      val link         = retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, None, isSelf = false)
+      val link         = retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, None, isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05"
 
       link shouldBe Link(expectedHref, GET, "retrieve-cis-deductions-for-subcontractor")
     }
 
     "generate the correct link with source provided" in new Test {
-      val link         = retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, Some(source), isSelf = false)
+      val link         = retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(source), isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer"
 
       link shouldBe Link(expectedHref, GET, "retrieve-cis-deductions-for-subcontractor")

@@ -43,16 +43,16 @@ object RetrieveResponseModel extends HateoasLinks {
         case None => Seq()
         case Some(submissionId) =>
           Seq(
-            deleteCISDeduction(appConfig, data.nino, submissionId, Some(data.taxYear), isSelf = false),
-            amendCISDeduction(appConfig, data.nino, submissionId, isSelf = false)
+            deleteCisDeduction(appConfig, data.nino, submissionId, Some(data.taxYear), isSelf = false),
+            amendCisDeduction(appConfig, data.nino, submissionId, isSelf = false)
           )
       }
     }
 
     override def links(appConfig: AppConfig, data: RetrieveHateoasData): Seq[Link] = {
       Seq(
-        retrieveCISDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
-        createCISDeduction(appConfig, data.nino, isSelf = false))
+        retrieveCisDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
+        createCisDeduction(appConfig, data.nino, isSelf = false))
     }
 
   }
