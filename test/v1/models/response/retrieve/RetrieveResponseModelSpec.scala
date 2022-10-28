@@ -17,11 +17,14 @@
 package v1.models.response.retrieve
 
 import mocks.MockAppConfig
+import play.api.Configuration
+import v1.fixtures.RetrieveModels.cisDeductions
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures._
+import v1.models.domain.TaxYear
 import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{GET, POST}
+import v1.models.hateoas.Method.{DELETE, GET, POST, PUT}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
@@ -54,18 +57,48 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
   }
 
   "LinksFactory" should {
-    "return the correct links" in {
-      val nino     = "mynino"
-      val fromDate = "fromDate"
-      val toDate   = "toDate"
+    val nino     = "mynino"
+    val fromDate = "fromDate"
+    val toDate   = "toDate"
+    val taxYear  = TaxYear.fromMtd("2023-24")
 
+    "return the correct links" in {
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
-      RetrieveResponseModel.CreateLinksFactory.links(
-        mockAppConfig,
-        RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
+
+      val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+
+      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
         Seq(
           Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
           Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
+        )
+    }
+
+    "return the correct item links with TYS disabled" in {
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+
+      val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+      val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+
+      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
+        Seq(
+          Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
+          Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")
+        )
+    }
+
+    "return the correct item links with TYS enabled and the tax year is TYS" in {
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
+
+      val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+      val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
+
+      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
+        Seq(
+          Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
+          Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")
         )
     }
 

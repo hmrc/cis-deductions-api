@@ -16,12 +16,22 @@
 
 package v1.hateoas
 
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
+import v1.models.domain.TaxYear
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
+
+  private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
+    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+
+    maybeTaxYear match {
+      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
+      case _                              => uri
+    }
+  }
 
   private def baseUri(appConfig: AppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
@@ -33,19 +43,22 @@ trait HateoasLinks {
 
   // API resource links
   // L1
-  def createCISDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean): Link =
+  def createCisDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean): Link =
     Link(href = baseUri(appConfig, nino) + s"/amendments", method = POST, rel = if (isSelf) SELF else CREATE_CIS)
 
   // L2
-  def deleteCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
-    Link(href = baseUri(appConfig, nino) + s"/amendments/$id", method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
+  def deleteCisDeduction(appConfig: AppConfig, nino: String, id: String, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
+    val uri = baseUri(appConfig, nino) + s"/amendments/$id"
+
+    Link(href = withTaxYearParameter(appConfig, uri, taxYear), method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
+  }
 
   // L3
-  def amendCISDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
+  def amendCisDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
     Link(href = baseUri(appConfig, nino) + s"/amendments/$id", method = PUT, rel = if (isSelf) SELF else AMEND_CIS)
 
   // L4
-  def retrieveCISDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean): Link =
+  def retrieveCisDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean): Link =
     Link(href = retrieveUri(appConfig, nino, fromDate, toDate, source), method = GET, rel = if (isSelf) SELF else RETRIEVE_CIS)
 
 }

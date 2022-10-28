@@ -32,7 +32,7 @@ object CreateResponseModel extends HateoasLinks {
 
     override def links(appConfig: AppConfig, data: CreateHateoasData): Seq[Link] = {
       import data._
-      Seq(retrieveCISDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
+      Seq(retrieveCisDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
     }
 
   }

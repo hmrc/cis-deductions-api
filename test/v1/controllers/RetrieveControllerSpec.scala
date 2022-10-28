@@ -17,6 +17,7 @@
 package v1.controllers
 
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +28,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
@@ -52,6 +53,7 @@ class RetrieveControllerSpec
   private val nino                            = "AA123456A"
   private val fromDate                        = "2019-04-06"
   private val toDate                          = "2020-04-05"
+  private val taxYear                         = TaxYear.fromMtd("2019-20")
   private val sourceRaw                       = Some("customer")
   private val sourceAll                       = "all"
   private val correlationId                   = "X-123"
@@ -79,6 +81,7 @@ class RetrieveControllerSpec
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
         MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -97,18 +100,18 @@ class RetrieveControllerSpec
               HateoasWrapper(
                 cisDeductions,
                 Seq(
-                  deleteCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false),
-                  amendCISDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                  deleteCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
+                  amendCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
                 )
               ))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear, response))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
@@ -122,8 +125,8 @@ class RetrieveControllerSpec
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
-
         MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
           .parse(optionalFieldMissingRawData)
@@ -141,12 +144,12 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsMissingOptional, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, None, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, response))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), None)(fakeGetRequest)
@@ -160,8 +163,8 @@ class RetrieveControllerSpec
       }
 
       "a valid request where response submission id is missing" in new Test {
-
         MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -179,12 +182,12 @@ class RetrieveControllerSpec
             Seq(HateoasWrapper(cisDeductionsNoId, Seq()))
           ),
           Seq(
-            retrieveCISDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-            createCISDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockHateoasFactory
-          .wrapList(responseNoId, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, responseNoId))
+          .wrapList(responseNoId, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear, responseNoId))
           .returns(responseWithHateoas)
 
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
