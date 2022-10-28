@@ -17,9 +17,11 @@
 package v1.models.response.retrieve
 
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures._
+import v1.models.domain.TaxYear
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{GET, POST}
 
@@ -54,15 +56,31 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
   }
 
   "LinksFactory" should {
-    "return the correct links" in {
-      val nino     = "mynino"
-      val fromDate = "fromDate"
-      val toDate   = "toDate"
+    val nino     = "mynino"
+    val fromDate = "fromDate"
+    val toDate   = "toDate"
+    val taxYear  = TaxYear.fromMtd("2023-24")
 
+    "return the correct links with TYS disabled" in {
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
-      RetrieveResponseModel.CreateLinksFactory.links(
-        mockAppConfig,
-        RetrieveHateoasData(nino, fromDate, toDate, None, RetrieveModels.multipleDeductionsModel)) shouldBe
+      MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+
+      val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+
+      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
+        Seq(
+          Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
+          Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
+        )
+    }
+
+    "return the correct links with TYS enabled and the tax year is TYS" in {
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
+
+      val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+
+      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
         Seq(
           Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
           Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")

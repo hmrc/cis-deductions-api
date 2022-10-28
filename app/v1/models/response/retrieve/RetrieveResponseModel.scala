@@ -20,6 +20,7 @@ import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.domain.TaxYear
 import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
@@ -36,17 +37,15 @@ object RetrieveResponseModel extends HateoasLinks {
   implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveHateoasData] {
 
     override def itemLinks(appConfig: AppConfig, data: RetrieveHateoasData, item: CisDeductions): Seq[Link] = {
-      val filteredPeriodData = item.periodData.filter(_.submissionId.isDefined)
-      val submissionIdOption = filteredPeriodData.headOption.map(_.submissionId.get)
+      val submissionIds = item.periodData.flatMap(_.submissionId)
 
-      filteredPeriodData match {
-        case Nil => Seq()
-        case _ => {
+      submissionIds.headOption match {
+        case None => Seq()
+        case Some(submissionId) =>
           Seq(
-            deleteCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false),
-            amendCISDeduction(appConfig, data.nino, submissionIdOption.getOrElse(""), isSelf = false)
+            deleteCISDeduction(appConfig, data.nino, submissionId, Some(data.taxYear), isSelf = false),
+            amendCISDeduction(appConfig, data.nino, submissionId, isSelf = false)
           )
-        }
       }
     }
 
@@ -71,5 +70,6 @@ case class RetrieveHateoasData(nino: String,
                                fromDate: String,
                                toDate: String,
                                source: Option[String],
+                               taxYear: TaxYear,
                                retrieveResponse: RetrieveResponseModel[CisDeductions])
     extends HateoasData

@@ -64,15 +64,18 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       val result = for {
         parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
         serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
-        vendorResponse <- EitherT.fromEither[Future](
-          hateoasFactory
-            .wrapList(
-              serviceResponse.responseData,
-              retrieve.RetrieveHateoasData(nino, rawData.fromDate.getOrElse(""), rawData.toDate.getOrElse(""), source, serviceResponse.responseData)
-            )
-            .asRight[ErrorWrapper]
-        )
       } yield {
+        val hateoasData = retrieve.RetrieveHateoasData(
+          nino,
+          parsedRequest.fromDate,
+          parsedRequest.toDate,
+          source,
+          parsedRequest.taxYear,
+          serviceResponse.responseData
+        )
+
+        val vendorResponse = hateoasFactory.wrapList(serviceResponse.responseData, hateoasData)
+
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
