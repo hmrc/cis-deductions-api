@@ -62,12 +62,13 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
       val periodData     = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
       val request        = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
 
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
-      CreateResponseModel.CreateLinksFactory
-        .links(mockAppConfig, CreateHateoasData(nino, request)) shouldBe
-        Seq(
-          Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "retrieve-cis-deductions-for-subcontractor")
-        )
+      () =>
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        CreateResponseModel.CreateLinksFactory
+          .links(mockAppConfig, CreateHateoasData(nino, request)) shouldBe
+          Seq(
+            Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "retrieve-cis-deductions-for-subcontractor")
+          )
     }
 
   }

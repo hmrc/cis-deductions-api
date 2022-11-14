@@ -44,7 +44,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
         }
 
-        val response: WSResponse = await(mtdRequest.get())
+        val response: WSResponse = await(mtdRequest().get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
@@ -63,7 +63,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             .thenReturn(status = OK, singleDeductionWithoutIdsJson)
         }
 
-        val response: WSResponse = await(mtdRequest.get())
+        val response: WSResponse = await(mtdRequest().get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
@@ -116,7 +116,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(mtdRequest.get())
+            val response: WSResponse = await(mtdRequest().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -168,7 +168,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
           }
 
-          val response: WSResponse = await(mtdRequest.get())
+          val response: WSResponse = await(mtdRequest().get())
           response.json shouldBe Json.toJson(expectedBody)
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
@@ -185,7 +185,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
           }
 
-          val response: WSResponse = await(mtdRequest.get())
+          val response: WSResponse = await(mtdRequest().get())
           response.json shouldBe Json.toJson(expectedBody)
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")

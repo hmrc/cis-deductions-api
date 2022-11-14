@@ -187,13 +187,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait IfsTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
-
-    MockedAppConfig.ifsBaseUrl returns baseUrl
-    MockedAppConfig.ifsToken returns "ifs-token"
-    MockedAppConfig.ifsEnvironment returns "ifs-environment"
-    MockedAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-
     MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
+    MockedAppConfig.ifsBaseUrl.returns(baseUrl)
+    MockedAppConfig.ifsToken.returns("ifs-token")
+    MockedAppConfig.ifsEnvironment.returns("ifs-environment")
+    MockedAppConfig.ifsEnvironmentHeaders.returns(Some(allowedIfsHeaders))
+
   }
 
   protected trait TysIfsTest extends ConnectorTest {
@@ -201,12 +200,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
 
-    MockedAppConfig.tysIfsBaseUrl returns baseUrl
-    MockedAppConfig.tysIfsToken returns "TYS-IFS-token"
-    MockedAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
-    MockedAppConfig.tysIfsEnvironmentHeaders returns Some(allowedIfsHeaders)
+    MockedAppConfig.tysIfsBaseUrl.returns(baseUrl)
+    MockedAppConfig.tysIfsToken.returns("TYS-IFS-token")
+    MockedAppConfig.tysIfsEnvironment.returns("TYS-IFS-environment")
+    MockedAppConfig.tysIfsEnvironmentHeaders.returns(Some(allowedIfsHeaders))
 
-    MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
+    MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true))
   }
 
 }

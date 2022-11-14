@@ -20,6 +20,8 @@ import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.enums.Enums
 
+import scala.collection.immutable.Seq
+
 case class Parameter(name: String, required: Boolean = false)
 
 object Parameter {
@@ -69,8 +71,9 @@ case class APIDefinition(name: String,
   require(versions.nonEmpty, "at least one version is required")
   require(uniqueVersions, "version numbers must be unique")
 
-  private def uniqueVersions = {
-    !versions.map(_.version).groupBy(identity).mapValues(_.size).exists(_._2 > 1)
+  private def uniqueVersions: Boolean = {
+    val foundVersions: Seq[String] = versions.map(_.version)
+    foundVersions.distinct == foundVersions
   }
 
 }

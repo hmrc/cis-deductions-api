@@ -154,7 +154,7 @@ class DeleteControllerSpec
 
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -173,7 +173,7 @@ class DeleteControllerSpec
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(RuleSourceError.code))), None)
 
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
       }
     }
 
@@ -196,7 +196,7 @@ class DeleteControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson()))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson()))).once()
         }
       }
 

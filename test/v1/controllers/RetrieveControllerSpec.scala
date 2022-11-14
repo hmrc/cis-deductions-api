@@ -80,7 +80,7 @@ class RetrieveControllerSpec
   "RetrieveCis" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
         MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
@@ -125,7 +125,7 @@ class RetrieveControllerSpec
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
         MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
@@ -163,7 +163,8 @@ class RetrieveControllerSpec
       }
 
       "a valid request where response submission id is missing" in new Test {
-        MockedAppConfig.apiGatewayContext returns "individuals/deductions/cis" anyNumberOfTimes ()
+
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
         MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
@@ -242,7 +243,7 @@ class RetrieveControllerSpec
 
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once()
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -289,7 +290,7 @@ class RetrieveControllerSpec
             )),
           None
         )
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once()
       }
     }
 
@@ -312,7 +313,8 @@ class RetrieveControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once
+
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson(fromDate, toDate)))).once()
         }
       }
 
