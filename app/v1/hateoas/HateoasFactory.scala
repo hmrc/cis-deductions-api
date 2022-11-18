@@ -22,7 +22,6 @@ import config.AppConfig
 import v1.models.hateoas._
 
 import javax.inject.Inject
-import scala.language.higherKinds
 
 class HateoasFactory @Inject() (appConfig: AppConfig) {
 

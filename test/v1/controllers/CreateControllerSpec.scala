@@ -129,7 +129,7 @@ class CreateControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
       }
 
       "a valid request is supplied when an optional field is missing" in new Test {
@@ -153,7 +153,7 @@ class CreateControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(OK, None, Some(parsedHateoas))
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(missingOptionalRequestJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(missingOptionalRequestJson))).once()
       }
     }
 
@@ -172,7 +172,7 @@ class CreateControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
         }
       }
 
@@ -209,7 +209,7 @@ class CreateControllerSpec
 
         val auditResponse: AuditResponse =
           AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
       }
 
       "multiple errors occur for format errors" in new Test {
@@ -257,7 +257,7 @@ class CreateControllerSpec
           None
         )
 
-        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
       }
     }
 
@@ -280,7 +280,7 @@ class CreateControllerSpec
           header("X-CorrelationId", result) shouldBe Some(correlationId)
 
           val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once
+          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(requestJson))).once()
         }
       }
 

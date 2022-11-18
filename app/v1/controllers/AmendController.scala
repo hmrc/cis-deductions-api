@@ -125,8 +125,8 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
           ) =>
         Forbidden(Json.toJson(errorWrapper))
 
-      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case _             => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
