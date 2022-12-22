@@ -123,12 +123,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
             RuleCostOfMaterialsError,
             RuleGrossAmountError,
             EmployerRefFormatError,
-            RuleTaxYearNotSupportedError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case _
-          if errorWrapper.containsAnyOf(
+            RuleTaxYearNotSupportedError,
             RuleDateRangeInvalidError,
             RuleUnalignedDeductionsPeriodError,
             RuleDeductionsDateRangeInvalidError,
@@ -136,7 +131,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
             RuleDuplicatePeriodError,
             RuleDuplicateSubmissionError
           ) =>
-        Forbidden(Json.toJson(errorWrapper))
+        BadRequest(Json.toJson(errorWrapper))
 
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case _             => InternalServerError(Json.toJson(errorWrapper))

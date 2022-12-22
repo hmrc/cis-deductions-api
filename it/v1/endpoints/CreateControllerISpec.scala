@@ -18,7 +18,7 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
@@ -57,10 +57,10 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, Status.OK, deductionsResponseBody, None)
+          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, OK, deductionsResponseBody, None)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.json shouldBe deductionsResponseBody
       }
     }
@@ -85,19 +85,19 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA1123A", requestBodyJson, Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", emptyRequest, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123456A", requestInvalidEmpRef, Status.BAD_REQUEST, EmployerRefFormatError),
-          ("AA123456A", requestRuleDeductionAmountJson, Status.BAD_REQUEST, RuleDeductionAmountError),
-          ("AA123456A", requestInvalidRuleCostOfMaterialsJson, Status.BAD_REQUEST, RuleCostOfMaterialsError),
-          ("AA123456A", requestInvalidGrossAmountJson, Status.BAD_REQUEST, RuleGrossAmountError),
-          ("AA123456A", requestInvalidDateRangeJson, Status.FORBIDDEN, RuleDateRangeInvalidError),
-          ("AA123456A", requestBodyJsonErrorFromDate, Status.BAD_REQUEST, FromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorToDate, Status.BAD_REQUEST, ToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionToDate, Status.BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionFromDate, Status.BAD_REQUEST, DeductionFromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorTaxYearNotSupported, Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
-          ("AA123456A", requestBodyJsonFromDate13MonthsBeforeToDate, Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError)
+          ("AA1123A", requestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", emptyRequest, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", requestInvalidEmpRef, BAD_REQUEST, EmployerRefFormatError),
+          ("AA123456A", requestRuleDeductionAmountJson, BAD_REQUEST, RuleDeductionAmountError),
+          ("AA123456A", requestInvalidRuleCostOfMaterialsJson, BAD_REQUEST, RuleCostOfMaterialsError),
+          ("AA123456A", requestInvalidGrossAmountJson, BAD_REQUEST, RuleGrossAmountError),
+          ("AA123456A", requestInvalidDateRangeJson, BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA123456A", requestBodyJsonErrorFromDate, BAD_REQUEST, FromDateFormatError),
+          ("AA123456A", requestBodyJsonErrorToDate, BAD_REQUEST, ToDateFormatError),
+          ("AA123456A", requestBodyJsonErrorDeductionToDate, BAD_REQUEST, DeductionToDateFormatError),
+          ("AA123456A", requestBodyJsonErrorDeductionFromDate, BAD_REQUEST, DeductionFromDateFormatError),
+          ("AA123456A", requestBodyJsonErrorTaxYearNotSupported, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", requestBodyJsonFromDate13MonthsBeforeToDate, BAD_REQUEST, RuleDeductionsDateRangeInvalidError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -119,17 +119,17 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          (Status.BAD_REQUEST, "INVALID_EMPREF", Status.BAD_REQUEST, EmployerRefFormatError),
-          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_TAX_YEAR_ALIGN", Status.FORBIDDEN, RuleUnalignedDeductionsPeriodError),
-          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DATE_RANGE", Status.FORBIDDEN, RuleDeductionsDateRangeInvalidError),
-          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_BEFORE_TAX_YEAR", Status.FORBIDDEN, RuleTaxYearNotEndedError),
-          (Status.CONFLICT, "CONFLICT", Status.FORBIDDEN, RuleDuplicateSubmissionError),
-          (Status.UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DUPLICATE_MONTH", Status.FORBIDDEN, RuleDuplicatePeriodError)
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          (BAD_REQUEST, "INVALID_EMPREF", BAD_REQUEST, EmployerRefFormatError),
+          (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_TAX_YEAR_ALIGN", BAD_REQUEST, RuleUnalignedDeductionsPeriodError),
+          (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DATE_RANGE", BAD_REQUEST, RuleDeductionsDateRangeInvalidError),
+          (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_BEFORE_TAX_YEAR", BAD_REQUEST, RuleTaxYearNotEndedError),
+          (CONFLICT, "CONFLICT", BAD_REQUEST, RuleDuplicateSubmissionError),
+          (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

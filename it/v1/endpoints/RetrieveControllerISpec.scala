@@ -128,7 +128,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
-          ("AA123456B", "2022-04-05", "2021-04-06", "customer", FORBIDDEN, RuleDateRangeInvalidError, None),
+          ("AA123456B", "2022-04-05", "2021-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
           (
             "AA123456B",
             "2020-04-06",
@@ -200,7 +200,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", FORBIDDEN, RuleDateRangeOutOfDate)
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDate)
       )
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 

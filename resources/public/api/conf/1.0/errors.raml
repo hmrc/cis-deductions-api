@@ -170,7 +170,7 @@ traits:
                   code: RULE_GROSS_AMOUNT_PAID
   ruleDateRangeInvalid:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -181,7 +181,7 @@ traits:
                   code: RULE_DATE_RANGE_INVALID
   ruleDateRangeOutOfDate:
       responses:
-        403:
+        400:
           body:
             application/json:
               type: types.errorResponse
@@ -203,7 +203,7 @@ traits:
                   code: RULE_TAX_YEAR_RANGE_INVALID
   ruleDeductionsDateRangeInvalid:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -225,7 +225,7 @@ traits:
                   code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
   ruleTaxYearNotEnded:
       responses:
-        403:
+        400:
           body:
             application/json:
               type: types.errorResponse
@@ -236,7 +236,7 @@ traits:
                     code: RULE_TAX_YEAR_NOT_ENDED
   ruleDuplicateSubmission:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -313,7 +313,7 @@ traits:
                     code: FORMAT_CIS_SUBMISSION_ID
   ruleUnalignedDeductionsPeriod:
      responses:
-        403:
+        400:
          body:
            application/json:
              type: types.errorResponse
@@ -324,7 +324,7 @@ traits:
                    code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
   ruleDuplicatePeriod:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse

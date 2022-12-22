@@ -324,7 +324,7 @@ class RetrieveControllerSpec
         (StandardDownstreamError, INTERNAL_SERVER_ERROR),
         (FromDateFormatError, BAD_REQUEST),
         (ToDateFormatError, BAD_REQUEST),
-        (RuleDateRangeOutOfDate, FORBIDDEN)
+        (RuleDateRangeOutOfDate, BAD_REQUEST)
       )
 
       val extraTysErrors = List(
