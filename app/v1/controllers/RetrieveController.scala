@@ -121,16 +121,11 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
             RuleSourceError,
             TaxYearFormatError,
             RuleTaxYearNotSupportedError,
-            RuleTaxYearRangeInvalidError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case _
-          if errorWrapper.containsAnyOf(
+            RuleTaxYearRangeInvalidError,
             RuleDateRangeOutOfDate,
             RuleDateRangeInvalidError
           ) =>
-        Forbidden(Json.toJson(errorWrapper))
+        BadRequest(Json.toJson(errorWrapper))
 
       case NotFoundError           => NotFound(Json.toJson(errorWrapper))
       case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))

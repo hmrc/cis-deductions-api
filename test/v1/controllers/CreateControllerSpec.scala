@@ -289,11 +289,11 @@ class CreateControllerSpec
         (StandardDownstreamError, INTERNAL_SERVER_ERROR),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
         (EmployerRefFormatError, BAD_REQUEST),
-        (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
-        (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
-        (RuleTaxYearNotEndedError, FORBIDDEN),
-        (RuleDuplicateSubmissionError, FORBIDDEN),
-        (RuleDuplicatePeriodError, FORBIDDEN),
+        (RuleUnalignedDeductionsPeriodError, BAD_REQUEST),
+        (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
+        (RuleTaxYearNotEndedError, BAD_REQUEST),
+        (RuleDuplicateSubmissionError, BAD_REQUEST),
+        (RuleDuplicatePeriodError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND)
       )
       input.foreach(args => (serviceErrors _).tupled(args))

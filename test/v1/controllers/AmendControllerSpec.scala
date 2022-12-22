@@ -151,12 +151,12 @@ class AmendControllerSpec
       (DeductionFromDateFormatError, BAD_REQUEST),
       (DeductionToDateFormatError, BAD_REQUEST),
       (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-      (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
+      (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
       (RuleDeductionAmountError, BAD_REQUEST),
       (RuleCostOfMaterialsError, BAD_REQUEST),
       (RuleGrossAmountError, BAD_REQUEST),
-      (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
-      (RuleDuplicatePeriodError, FORBIDDEN),
+      (RuleUnalignedDeductionsPeriodError, BAD_REQUEST),
+      (RuleDuplicatePeriodError, BAD_REQUEST),
       (SubmissionIdFormatError, BAD_REQUEST),
       (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
@@ -254,12 +254,12 @@ class AmendControllerSpec
       (DeductionFromDateFormatError, BAD_REQUEST),
       (DeductionToDateFormatError, BAD_REQUEST),
       (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-      (RuleDeductionsDateRangeInvalidError, FORBIDDEN),
+      (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
       (RuleDeductionAmountError, BAD_REQUEST),
       (RuleCostOfMaterialsError, BAD_REQUEST),
       (RuleGrossAmountError, BAD_REQUEST),
-      (RuleUnalignedDeductionsPeriodError, FORBIDDEN),
-      (RuleDuplicatePeriodError, FORBIDDEN),
+      (RuleUnalignedDeductionsPeriodError, BAD_REQUEST),
+      (RuleDuplicatePeriodError, BAD_REQUEST),
       (SubmissionIdFormatError, BAD_REQUEST),
       (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
