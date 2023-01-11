@@ -32,7 +32,7 @@ class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) 
 
     put(
       body = request.body,
-      DesUri[Unit](s"income-tax/cis/deductions/${request.nino.nino}/submissionId/${request.id}")
+      DesUri[Unit](s"income-tax/cis/deductions/${request.nino}/submissionId/${request.id}")
     )
   }
 

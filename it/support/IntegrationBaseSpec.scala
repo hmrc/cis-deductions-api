@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,11 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   override def afterAll(): Unit = {
     stopWireMock()
     super.afterAll()
+  }
+
+  override def beforeEach(): Unit = {
+    resetWireMock()
+    super.beforeEach()
   }
 
   def buildRequest(path: String): WSRequest = client.url(s"http://localhost:$port$path").withFollowRedirects(false)
