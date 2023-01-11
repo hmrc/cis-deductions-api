@@ -30,11 +30,10 @@ class DeleteConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
   def delete(request: DeleteRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request.nino.nino
-    import request.submissionId
+    import request._
 
     val downstreamUri =
-      request.taxYear match {
+      taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
           TaxYearSpecificIfsUri[Unit](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/$submissionId")
         case _ =>
