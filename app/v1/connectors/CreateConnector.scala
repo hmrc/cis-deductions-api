@@ -36,7 +36,7 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     post(
       body = request.body,
-      uri = DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino.nino}")
+      uri = DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino}")
     )
   }
 
