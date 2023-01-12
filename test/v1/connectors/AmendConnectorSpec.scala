@@ -16,11 +16,8 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
 import v1.fixtures.AmendRequestFixtures._
-import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
-import v1.models.errors.{DownstreamErrorCode, DownstreamErrors}
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
 
@@ -30,51 +27,50 @@ class AmendConnectorSpec extends ConnectorSpec {
 
   val nino         = "AA123456A"
   val submissionId = "S4636A77V5KB8625U"
+  val taxYearIso   = "2020-04-05"
 
-  class Test extends MockHttpClient with MockAppConfig {
-    val connector: AmendConnector                = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+  trait Test { _: ConnectorTest =>
 
+    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+    val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
   }
 
-  "amend" should {
-    val request = AmendRequestData(Nino(nino), submissionId, amendRequestObj)
+  "AmendConnector" should {
 
     "return a result" when {
-      "the downstream call is successful" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-        MockedHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
-            dummyHeaderCarrierConfig,
-            body = request.body,
-            desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
-        await(connector.amendDeduction(request)) shouldBe outcome
-      }
-    }
-    "return a Des Error code" when {
-      "the http client returns a Des Error code" in new Test {
-        val outcome = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("error"))))
 
-        MockedHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.id}",
-            dummyHeaderCarrierConfig,
-            body = request.body,
-            desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("error"))))))
+      "the downstream call is successful" in new DesTest with Test {
+
+        private val outcome = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(
+          url = s"$baseUrl/income-tax/cis/deductions/$nino/$submissionId/submissionId",
+          body = amendRequestObj
+        )
+          .returns(Future.successful(outcome))
 
         val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
+
         result shouldBe outcome
+      }
+
+      "the downstream call is successful for a TYS tax year" in new TysIfsTest with Test {
+
+        override protected def taxYear: TaxYear = TaxYear.fromIso(taxYearIso)
+
+        private val outcome = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(
+          url = s"$baseUrl/income-tax/23-24/cis/deductions/$nino/$submissionId",
+          body = amendRequestObj
+        )
+          .returns(Future.successful(outcome))
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
+
+        result shouldBe outcome
+
       }
     }
   }

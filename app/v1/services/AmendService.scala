@@ -39,14 +39,12 @@ class AmendService @Inject() (connector: AmendConnector) extends DownstreamRespo
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.amendDeduction(request)).leftMap(mapDownstreamErrors(desErrorMap))
-    } yield desResponseWrapper
-    result.value
+    connector.amendDeduction(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
-  private def desErrorMap =
-    Map(
+  private val downstreamErrorMap: Map[String, MtdError] = {
+    val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
       "INVALID_CORRELATIONID"     -> StandardDownstreamError,
@@ -58,5 +56,12 @@ class AmendService @Inject() (connector: AmendConnector) extends DownstreamRespo
       "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
       "SERVICE_ERROR"             -> StandardDownstreamError
     )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+      "INVALID_CORRELATION_ID" -> StandardDownstreamError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+    )
+    errors ++ extraTysErrors
+  }
 
 }

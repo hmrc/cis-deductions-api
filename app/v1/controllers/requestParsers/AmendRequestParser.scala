@@ -17,7 +17,8 @@
 package v1.controllers.requestParsers
 
 import v1.controllers.requestParsers.validators.AmendValidator
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
+import v1.models.errors.RuleIncorrectOrEmptyBodyError
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
 import javax.inject.Inject
@@ -26,7 +27,21 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
 
   override protected def requestFor(data: AmendRawData): AmendRequestData = {
     val requestBody = data.body.as[AmendBody]
-    AmendRequestData(Nino(data.nino), data.id, requestBody)
+
+    // As the request body can have multiple period detail objects, and as the deductionToDate (which is used to validate
+    // the tax year in TYS requests) must be the same for each PeriodDetails periodData object, we will take the first
+    // one to represent the tax year
+    val taxYear: TaxYear = requestBody.periodData.headOption match {
+
+      case Some(periodDetails) => TaxYear.fromIso(periodDetails.deductionToDate)
+      case None =>
+        throw new Exception(
+          s"code: ${RuleIncorrectOrEmptyBodyError.code}," +
+            s" message: ${RuleIncorrectOrEmptyBodyError.message}")
+
+      // **write tests for this in requestparser spec**
+    }
+    AmendRequestData(Nino(data.nino), data.id, taxYear, requestBody)
   }
 
 }

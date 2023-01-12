@@ -29,55 +29,40 @@ import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-    val nino         = "AA123456A"
-    val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-
-    def uri: String    = s"/$nino/amendments/$submissionId"
-    def desUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
   "Calling the amend endpoint" should {
 
     "return a 204 status code" when {
 
-      "any valid request is made" in new Test {
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, NO_CONTENT, Json.obj(), None)
-        }
+      "any valid request is made" in new NonTysTest {
+
+        override def setupStubs(): Unit =
+          DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj(), None)
+
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
         response.status shouldBe NO_CONTENT
+
+      }
+
+      "any valid TYS request is made" in new TysIfsTest {
+
+        override def setupStubs(): Unit =
+          DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj(), None)
+
+        val response: WSResponse = await(request().put(Json.parse(requestJson)))
+        response.status shouldBe NO_CONTENT
+
       }
     }
+
     "return error according to spec" when {
 
       "validation error" when {
+
         def validationErrorTest(requestNino: String, requestId: String, body: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
             override val nino: String         = requestNino
             override val submissionId: String = requestId
-
-            override def setupStubs(): StubMapping = {
-              AuditStub.audit()
-              AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(nino)
-            }
 
             val response: WSResponse = await(request().put(body))
             response.status shouldBe expectedStatus
@@ -98,15 +83,13 @@ class AmendControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
-            override def setupStubs(): StubMapping = {
-              AuditStub.audit()
-              AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.mockDownstream(DownstreamStub.PUT, desUri, desStatus, Json.parse(errorBody(desCode)), None)
-            }
+      "downstream service error" when {
+
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+
+            override def setupStubs(): Unit =
+              DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, downstreamStatus, Json.parse(errorBody(downstreamCode)), None)
 
             val response: WSResponse = await(request().put(requestBodyJson))
             response.status shouldBe expectedStatus
@@ -114,11 +97,10 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val errors = List(
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_SUBMISSION_ID", BAD_REQUEST, SubmissionIdFormatError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
@@ -126,9 +108,54 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDeductionsDateRangeInvalidError),
           (UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+
+        val extraTysErrors = List(
+          (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+        )
+        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
+  }
+
+  private trait Test {
+
+    val nino         = "AA123456A"
+    val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+
+    val mtdUri: String = s"/$nino/amendments/$submissionId"
+
+    def taxYear: Option[String]
+
+    def downstreamUri: String
+
+    def setupStubs(): Unit = ()
+
+    def request(): WSRequest = {
+      AuthStub.authorised()
+      AuditStub.audit()
+      MtdIdLookupStub.ninoFound(nino)
+      setupStubs()
+      buildRequest(mtdUri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
+    }
+
+  }
+
+  private trait NonTysTest extends Test {
+
+    val taxYear: Option[String] = None
+    val downstreamUri: String   = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
+  }
+
+  private trait TysIfsTest extends Test {
+
+    val taxYear: Option[String] = Some("2023-24")
+    val downstreamUri: String   = s"/income-tax/23-24/cis/deductions/$nino/submissionId/$submissionId"
   }
 
 }

@@ -31,25 +31,28 @@ import scala.concurrent.Future
 
 class AmendServiceSpec extends UnitSpec {
 
-  val validNino              = Nino("AA123456A")
-  val submissionId           = "S4636A77V5KB8625U"
-  implicit val correlationId = "X-123"
+  val nino         = Nino("AA123456A")
+  val submissionId = "S4636A77V5KB8625U"
 
-  val requestData = AmendRequestData(validNino, submissionId, amendRequestObj)
+  implicit val correlationId: String = "X-123"
+
+  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, amendRequestObj)
 
   trait Test extends MockAmendConnector {
+
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new AmendService(
-      connector = mockAmendConnector
-    )
+    val service = new AmendService(connector = mockAmendConnector)
 
   }
 
   "service" when {
+
     "a service call is successful" should {
+
       "return a mapped result" in new Test {
+
         MockAmendConnector
           .amendDeduction(requestData)
           .returns(Future.successful(Right(ResponseWrapper("resultId", ()))))
@@ -58,29 +61,36 @@ class AmendServiceSpec extends UnitSpec {
       }
     }
     "a service call is unsuccessful" should {
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"return a $desErrorCode error is returned from the service" in new Test {
+
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"return a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockAmendConnector
             .amendDeduction(requestData)
-            .returns(Future.successful(Left(ResponseWrapper("resultId", DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper("resultId", DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           await(service.amendDeductions(requestData)) shouldBe Left(ErrorWrapper("resultId", error))
         }
 
-      val input = Seq(
-        ("INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError),
-        ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
-        ("INVALID_SUBMISSION_ID"  -> SubmissionIdFormatError),
-        ("INVALID_CORRELATIONID"  -> StandardDownstreamError),
-        ("NO_DATA_FOUND"          -> NotFoundError),
-        ("INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError),
-        ("INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError),
-        ("DUPLICATE_MONTH"        -> RuleDuplicatePeriodError),
-        ("SERVICE_UNAVAILABLE"    -> StandardDownstreamError),
-        ("SERVICE_ERROR"          -> StandardDownstreamError)
+      val errors = List(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_PAYLOAD"           -> RuleIncorrectOrEmptyBodyError,
+        "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
+        "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+        "NO_DATA_FOUND"             -> NotFoundError,
+        "INVALID_TAX_YEAR_ALIGN"    -> RuleUnalignedDeductionsPeriodError,
+        "INVALID_DATE_RANGE"        -> RuleDeductionsDateRangeInvalidError,
+        "DUPLICATE_MONTH"           -> RuleDuplicatePeriodError,
+        "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
+        "SERVICE_ERROR"             -> StandardDownstreamError
       )
-      input.foreach(args => (serviceError _).tupled(args))
+      val extraTysErrors = List(
+        "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+        "INVALID_CORRELATION_ID" -> StandardDownstreamError,
+        "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

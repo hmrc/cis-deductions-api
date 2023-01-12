@@ -24,7 +24,7 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockAmendRequestParser
 import v1.mocks.services.{MockAmendService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.{AmendRawData, AmendRequestData}
@@ -62,12 +62,13 @@ class AmendControllerSpec
   private val nino          = "AA123456A"
   private val submissionId  = "S4636A77V5KB8625U"
   private val correlationId = "X-123"
+  private val taxYear       = TaxYear.fromIso("2019-07-05")
 
-  private val rawAmendRequest = AmendRawData(nino, submissionId, requestJson)
-  private val amendRequest    = AmendRequestData(Nino(nino), submissionId, amendRequestObj)
+  private val rawData     = AmendRawData(nino, submissionId, requestJson)
+  private val requestData = AmendRequestData(Nino(nino), submissionId, taxYear, amendRequestObj)
 
   private val rawMissingOptionalAmendRequest = AmendRawData(nino, submissionId, missingOptionalRequestJson)
-  private val missingOptionalAmendRequest    = AmendRequestData(Nino(nino), submissionId, amendMissingOptionalRequestObj)
+  private val missingOptionalAmendRequest    = AmendRequestData(Nino(nino), submissionId, taxYear, amendMissingOptionalRequestObj)
 
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
@@ -84,16 +85,18 @@ class AmendControllerSpec
       )
     )
 
-  "amendRequest" should {
+  "requestData" should {
+
     "return a successful response with status 204 (NO CONTENT)" when {
-      "a valid request is supplied for a cis post request" in new Test {
+
+      "a valid request is supplied for a cis PUT request" in new Test {
 
         MockAmendRequestDataParser
-          .parse(rawAmendRequest)
-          .returns(Right(amendRequest))
+          .parse(rawData)
+          .returns(Right(requestData))
 
         MockAmendService
-          .submitAmendRequest(amendRequest)
+          .submitAmendRequest(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
         val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
@@ -127,11 +130,12 @@ class AmendControllerSpec
   }
 
   "return errors as per the spec" when {
+
     def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
       s"a ${error.code} error is returned from the parser" in new Test {
 
         MockAmendRequestDataParser
-          .parse(rawAmendRequest)
+          .parse(rawData)
           .returns(Left(ErrorWrapper(correlationId, error, None)))
 
         val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(requestJson))
@@ -155,8 +159,6 @@ class AmendControllerSpec
       (RuleDeductionAmountError, BAD_REQUEST),
       (RuleCostOfMaterialsError, BAD_REQUEST),
       (RuleGrossAmountError, BAD_REQUEST),
-      (RuleUnalignedDeductionsPeriodError, BAD_REQUEST),
-      (RuleDuplicatePeriodError, BAD_REQUEST),
       (SubmissionIdFormatError, BAD_REQUEST),
       (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
@@ -164,10 +166,11 @@ class AmendControllerSpec
     input.foreach(args => (errorsFromParserTester _).tupled(args))
 
     "multiple parser errors occur" in new Test {
-      val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
+
+      val error: ErrorWrapper = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
 
       MockAmendRequestDataParser
-        .parse(rawAmendRequest)
+        .parse(rawData)
         .returns(Left(error))
 
       val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
@@ -182,7 +185,8 @@ class AmendControllerSpec
     }
 
     "multiple errors occur for format errors" in new Test {
-      val error = ErrorWrapper(
+
+      val error: ErrorWrapper = ErrorWrapper(
         correlationId,
         BadRequestError,
         Some(
@@ -197,7 +201,7 @@ class AmendControllerSpec
       )
 
       MockAmendRequestDataParser
-        .parse(rawAmendRequest)
+        .parse(rawData)
         .returns(Left(error))
 
       val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
@@ -225,15 +229,16 @@ class AmendControllerSpec
   }
 
   "return downstream errors as per the spec" when {
+
     def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
       s"a ${mtdError.code} error is returned from the service" in new Test {
 
         MockAmendRequestDataParser
-          .parse(rawAmendRequest)
-          .returns(Right(amendRequest))
+          .parse(rawData)
+          .returns(Right(requestData))
 
         MockAmendService
-          .submitAmendRequest(amendRequest)
+          .submitAmendRequest(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
         val result: Future[Result] = controller.amendRequest(nino, submissionId)(fakePostRequest(Json.toJson(requestJson)))
@@ -251,18 +256,14 @@ class AmendControllerSpec
       (BadRequestError, BAD_REQUEST),
       (NotFoundError, NOT_FOUND),
       (NinoFormatError, BAD_REQUEST),
-      (DeductionFromDateFormatError, BAD_REQUEST),
-      (DeductionToDateFormatError, BAD_REQUEST),
-      (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
       (RuleDeductionsDateRangeInvalidError, BAD_REQUEST),
-      (RuleDeductionAmountError, BAD_REQUEST),
-      (RuleCostOfMaterialsError, BAD_REQUEST),
-      (RuleGrossAmountError, BAD_REQUEST),
+      (RuleTaxYearNotSupportedError, BAD_REQUEST),
       (RuleUnalignedDeductionsPeriodError, BAD_REQUEST),
       (RuleDuplicatePeriodError, BAD_REQUEST),
       (SubmissionIdFormatError, BAD_REQUEST),
       (StandardDownstreamError, INTERNAL_SERVER_ERROR)
     )
+
     input.foreach(args => (serviceErrors _).tupled(args))
   }
 

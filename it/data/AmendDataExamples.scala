@@ -37,7 +37,7 @@ object AmendDataExamples {
     s"""
        |      {
        |        "code": "$code",
-       |        "reason": "des message"
+       |        "reason": "downstream message"
        |      }
     """.stripMargin
 

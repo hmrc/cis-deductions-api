@@ -228,6 +228,59 @@ object AmendRequestFixtures {
       |""".stripMargin
   }
 
+  val missingDeductionToDateRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  }
+
+  val invalidRequestForDifferentTaxYearsJson: JsValue = Json.parse {
+    """
+      |{
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2017-07-06",
+      |      "deductionToDate": "2017-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  }
+
+  val emptyRequestJson: JsValue = Json.parse {
+    """
+      |{}
+      |""".stripMargin
+
+}
+
   val invalidFromDateFormatRequestJson: JsValue = Json.parse {
     """
       |{
