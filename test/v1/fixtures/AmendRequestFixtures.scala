@@ -285,7 +285,7 @@ object AmendRequestFixtures {
       |}
       |""".stripMargin
 
-}
+  }
 
   val invalidFromDateFormatRequestJson: JsValue = Json.parse {
     """

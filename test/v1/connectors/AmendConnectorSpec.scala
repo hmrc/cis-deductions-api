@@ -27,13 +27,14 @@ class AmendConnectorSpec extends ConnectorSpec {
 
   val nino         = "AA123456A"
   val submissionId = "S4636A77V5KB8625U"
-  val taxYearIso   = "2020-04-05"
 
   trait Test { _: ConnectorTest =>
 
+    def taxYearIso: String
+
     val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
+    lazy val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
   }
 
   "AmendConnector" should {
@@ -42,10 +43,12 @@ class AmendConnectorSpec extends ConnectorSpec {
 
       "the downstream call is successful" in new DesTest with Test {
 
+        def taxYearIso: String = "2019-07-05"
+
         private val outcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino/$submissionId/submissionId",
+          url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/$submissionId",
           body = amendRequestObj
         )
           .returns(Future.successful(outcome))
@@ -56,6 +59,8 @@ class AmendConnectorSpec extends ConnectorSpec {
       }
 
       "the downstream call is successful for a TYS tax year" in new TysIfsTest with Test {
+
+        def taxYearIso: String = "2023-12-01"
 
         override protected def taxYear: TaxYear = TaxYear.fromIso(taxYearIso)
 

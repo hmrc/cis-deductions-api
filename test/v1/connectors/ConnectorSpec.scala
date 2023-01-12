@@ -187,15 +187,18 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait IfsTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
-    MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
+
     MockedAppConfig.ifsBaseUrl.returns(baseUrl)
     MockedAppConfig.ifsToken.returns("ifs-token")
     MockedAppConfig.ifsEnvironment.returns("ifs-environment")
     MockedAppConfig.ifsEnvironmentHeaders.returns(Some(allowedIfsHeaders))
 
+    MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
+
   }
 
   protected trait TysIfsTest extends ConnectorTest {
+
     protected def taxYear: TaxYear
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders

@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
@@ -31,12 +31,13 @@ import scala.concurrent.Future
 
 class AmendServiceSpec extends UnitSpec {
 
-  val nino         = Nino("AA123456A")
-  val submissionId = "S4636A77V5KB8625U"
+  private val nino         = Nino("AA123456A")
+  private val submissionId = "S4636A77V5KB8625U"
+  private val taxYear      = TaxYear.fromIso("2019-07-05")
 
   implicit val correlationId: String = "X-123"
 
-  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, ???, amendRequestObj)
+  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, taxYear, amendRequestObj)
 
   trait Test extends MockAmendConnector {
 

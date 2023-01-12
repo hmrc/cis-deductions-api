@@ -35,7 +35,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
       "any valid request is made" in new NonTysTest {
 
         override def setupStubs(): Unit =
-          DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj(), None)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj())
 
         val response: WSResponse = await(request().put(Json.parse(requestJson)))
         response.status shouldBe NO_CONTENT
@@ -45,9 +45,9 @@ class AmendControllerISpec extends IntegrationBaseSpec {
       "any valid TYS request is made" in new TysIfsTest {
 
         override def setupStubs(): Unit =
-          DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj(), None)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, NO_CONTENT, Json.obj())
 
-        val response: WSResponse = await(request().put(Json.parse(requestJson)))
+        val response: WSResponse = await(request().put(Json.parse(requestTysJson)))
         response.status shouldBe NO_CONTENT
 
       }
@@ -62,6 +62,8 @@ class AmendControllerISpec extends IntegrationBaseSpec {
 
             override val nino: String         = requestNino
             override val submissionId: String = requestId
+
+            override def setupStubs(): Unit = MtdIdLookupStub.ninoFound(requestNino)
 
             val response: WSResponse = await(request().put(body))
             response.status shouldBe expectedStatus
@@ -79,6 +81,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleGrossAmountPaid, BAD_REQUEST, RuleGrossAmountError),
           ("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", requestBodyJsonErrorRuleDeductionAmount, BAD_REQUEST, RuleDeductionAmountError)
         )
+
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
@@ -113,6 +116,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
+
         (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
@@ -123,9 +127,7 @@ class AmendControllerISpec extends IntegrationBaseSpec {
     val nino         = "AA123456A"
     val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-    val mtdUri: String = s"/$nino/amendments/$submissionId"
-
-    def taxYear: Option[String]
+    def mtdUri: String = s"/$nino/amendments/$submissionId"
 
     def downstreamUri: String
 
@@ -147,14 +149,12 @@ class AmendControllerISpec extends IntegrationBaseSpec {
 
   private trait NonTysTest extends Test {
 
-    val taxYear: Option[String] = None
-    val downstreamUri: String   = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
+    def downstreamUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
   }
 
   private trait TysIfsTest extends Test {
 
-    val taxYear: Option[String] = Some("2023-24")
-    val downstreamUri: String   = s"/income-tax/23-24/cis/deductions/$nino/submissionId/$submissionId"
+    def downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino/$submissionId"
   }
 
 }

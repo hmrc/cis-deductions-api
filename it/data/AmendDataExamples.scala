@@ -63,6 +63,28 @@ object AmendDataExamples {
        |}
        |""".stripMargin
 
+  val requestTysJson: String =
+    s"""
+       |{
+       |  "periodData": [
+       |    {
+       |      "deductionAmount": 355.00,
+       |      "deductionFromDate": "2023-06-06",
+       |      "deductionToDate": "2023-07-05",
+       |      "costOfMaterials": 35.00,
+       |      "grossAmountPaid": 1457.00
+       |    },
+       |    {
+       |      "deductionAmount": 355.00,
+       |      "deductionFromDate": "2023-07-06",
+       |      "deductionToDate": "2023-08-05",
+       |      "costOfMaterials": 35.00,
+       |      "grossAmountPaid": 1457.00
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
+
   val requestBodyJson: JsValue = Json.parse(
     """
       |{
