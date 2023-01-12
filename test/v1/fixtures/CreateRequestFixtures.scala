@@ -574,11 +574,11 @@ object CreateRequestFixtures {
   )
 
   val requestObj: CreateBody = CreateBody(
-    "2019-04-06",
-    "2020-04-05",
-    "Bovis",
-    "123/AB56797",
-    Seq(
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
+    contractorName = "Bovis",
+    employerRef = "123/AB56797",
+    periodData = Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )

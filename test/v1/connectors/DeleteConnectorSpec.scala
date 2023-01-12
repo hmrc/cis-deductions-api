@@ -30,7 +30,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
   "DeleteConnector" when {
     "called for a non-TYS tax year" should {
       "return a successful result" in new DesTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
+        def taxYear:  TaxYear = TaxYear.fromMtd("2019-20")
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 

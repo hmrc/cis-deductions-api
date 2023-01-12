@@ -16,67 +16,50 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.mocks.MockHttpClient
+import v1.fixtures.CreateRequestFixtures.requestObj
 import v1.models.domain.Nino
-import v1.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amend.PeriodDetails
-import v1.models.request.create.{CreateBody, CreateRequestData}
+import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
 
 import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {
 
-  val nino         = "AA123456A"
-  val submissionId = "123456789"
+  trait Test { _: ConnectorTest =>
+    val toDate: String
 
-  class Test extends MockHttpClient with MockAppConfig {
     val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    val outcome = Right(ResponseWrapper(correlationId, CreateResponseModel("123456789")))
+
+    lazy val request = CreateRequestData(Nino("AA123456A"), requestObj.copy(toDate = toDate))
   }
 
-  "create" must {
-    val request = CreateRequestData(Nino(nino), CreateBody("", "", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00)))))
+  "create" should {
+    "return the expected response for a non-TYS request" when {
+      "a valid request is made" in new DesTest with Test {
+        val toDate = "2022-06-01"
 
-    "post a CreateCisDeductionRequest body and return the result" in new Test {
-      val outcome = Right(ResponseWrapper(submissionId, CreateResponseModel(submissionId)))
+        willPost(
+          url = s"$baseUrl/income-tax/cis/deductions/AA123456A",
+          body = request.body
+        ).returns(Future.successful(outcome))
 
-      MockedHttpClient
-        .post(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino",
-          dummyHeaderCarrierConfig,
-          body = request.body,
-          desRequestHeaders,
-          Seq("AnotherHeader" -> "HeaderValue")
-        )
-        .returns(Future.successful(outcome))
-
-      await(connector.create(request)) shouldBe outcome
+        await(connector.create(request)) shouldBe outcome
+      }
     }
 
-    "return a Des Error code" when {
-      "the http client returns a Des Error code" in new Test {
-        val outcome = Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("error"))))
+    "return the expected response for a TYS request" when {
+      "a valid request is made" in new TysIfsTest with Test {
+        val toDate = "2023-06-01"
 
-        MockedHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/cis/deductions/$nino",
-            dummyHeaderCarrierConfig,
-            body = request.body,
-            desRequestHeaders,
-            Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("error"))))))
+        willPost(
+          url = s"$baseUrl/income-tax/23-24/cis/deductions/AA123456A",
+          body = request.body
+        ).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[CreateResponseModel] = await(connector.create(request))
-        result shouldBe outcome
+        await(connector.create(request)) shouldBe outcome
       }
     }
   }

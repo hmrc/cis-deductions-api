@@ -23,7 +23,6 @@ import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.TaxYear
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -196,7 +195,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   }
 
   protected trait TysIfsTest extends ConnectorTest {
-    protected def taxYear: TaxYear
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
 

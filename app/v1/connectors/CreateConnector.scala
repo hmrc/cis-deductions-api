@@ -34,6 +34,13 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[CreateResponseModel]] = {
 
+    import request._
+
+    val url = if (taxYear.useTaxYearSpecificApi) {
+      TaxYearSpecificIfsUri[""]
+    } else {
+      DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino}")
+    }
     post(
       body = request.body,
       uri = DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino}")
