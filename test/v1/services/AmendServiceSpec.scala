@@ -36,7 +36,7 @@ class AmendServiceSpec extends UnitSpec {
 
   implicit val correlationId: String = "X-123"
 
-  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, amendRequestObj)
+  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, ???, amendRequestObj)
 
   trait Test extends MockAmendConnector {
 

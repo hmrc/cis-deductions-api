@@ -16,7 +16,6 @@
 
 package v1.endpoints
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import data.AmendDataExamples._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

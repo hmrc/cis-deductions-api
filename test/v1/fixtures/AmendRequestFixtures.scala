@@ -274,9 +274,15 @@ object AmendRequestFixtures {
 
   }
 
-  val emptyRequestJson: JsValue = Json.parse {
+  val emptyPeriodArrayJson: JsValue = Json.parse {
     """
-      |{}
+      |{
+      |  "fromDate": "last week" ,
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "BV40092",
+      |  "periodData": []
+      |}
       |""".stripMargin
 
 }
