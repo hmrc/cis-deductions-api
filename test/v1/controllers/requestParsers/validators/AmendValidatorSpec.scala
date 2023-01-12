@@ -60,10 +60,9 @@ class AmendValidatorSpec extends UnitSpec {
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
       "an empty JSON array is supplied as the request body" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, emptyRequestJson))
+        private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodArrayJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-      // ADD TEST TO PUT AN EMPTY PERIOD SEQ IN TO MAKE SURE GIVES YOU RuleIncorrectOrEmptyBodyError
 
       "invalid request body Deduction fromDate format is provided" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidDeductionFromDateFormatRequestJson))
