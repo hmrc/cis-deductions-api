@@ -18,7 +18,6 @@ package v1.controllers.requestParsers
 
 import v1.controllers.requestParsers.validators.AmendValidator
 import v1.models.domain.{Nino, TaxYear}
-import v1.models.errors.RuleIncorrectOrEmptyBodyError
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
 import javax.inject.Inject
@@ -34,10 +33,8 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
     val taxYear: TaxYear = requestBody.periodData.headOption match {
 
       case Some(periodDetails) => TaxYear.fromIso(periodDetails.deductionToDate)
-      case None =>
-        throw new Exception("Unable to locate `deductionToDate` in request body")
+      case None                => throw new Exception("Unable to locate `deductionToDate` in request body")
 
-      // write tests for this in request parser spec
     }
     AmendRequestData(Nino(data.nino), data.id, taxYear, requestBody)
   }

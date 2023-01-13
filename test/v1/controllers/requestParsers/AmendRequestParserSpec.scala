@@ -69,15 +69,6 @@ class AmendRequestParserSpec extends UnitSpec {
     }
     "Reject invalid input" when {
 
-      "No deductionToDate can be found in the request body" in new Test {
-
-        val inputData: AmendRawData = AmendRawData(nino, submissionId, missingDeductionToDateRequestJson)
-
-        private val result = parser.parseRequest(inputData)
-
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError))
-      }
-
       "mandatory field is given invalid data" in new Test {
 
         val inputData: AmendRawData = AmendRawData(nino, submissionId, invalidRequestJson)

@@ -57,9 +57,9 @@ class AmendValidatorSpec extends UnitSpec {
       }
       "multiple periodDate objects are present with deductionToDate fields pointing to more than one tax year" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidRequestForDifferentTaxYearsJson))
-        result shouldBe List(RuleIncorrectOrEmptyBodyError)
+        result shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
-      "an empty JSON array is supplied as the request body" in new AmendValidator {
+      "an empty JSON period array is supplied as the request body" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodArrayJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }

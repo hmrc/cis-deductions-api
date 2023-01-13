@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
+import v1.controllers.requestParsers.validators.validations.{PeriodDataValidation, _}
 import v1.models.errors._
 import v1.models.request.amend.{AmendBody, AmendRawData}
 
@@ -43,7 +43,9 @@ class AmendValidator extends Validator[AmendRawData] {
       PeriodDataPositiveAmountValidation.validate(data.body, "costOfMaterials", RuleCostOfMaterialsError),
       PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
       PeriodDataDeductionDateValidation.validateDate(data.body, "deductionFromDate", DeductionFromDateFormatError),
-      PeriodDataDeductionDateValidation.validateDate(data.body, "deductionToDate", DeductionToDateFormatError)
+      PeriodDataDeductionDateValidation.validateDate(data.body, "deductionToDate", DeductionToDateFormatError),
+      PeriodDataValidation.isPeriodDataEmpty(data),
+      PeriodDataDeductionDateValidation.isTaxYearSameForMultiplePeriods(data)
     )
   }
 
