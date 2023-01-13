@@ -36,7 +36,8 @@ class CreateServiceSpec extends UnitSpec {
   implicit val correlationId = "X-123"
   private val submissionId   = "123456789"
 
-  private val requestBody = CreateBody("", toDate = "2020-06-01", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
+  private val requestBody =
+    CreateBody(fromDate = "2020-05-06", toDate = "2020-06-05", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
 
   private val requestData = CreateRequestData(Nino(nino), requestBody)
 
