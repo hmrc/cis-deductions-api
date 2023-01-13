@@ -49,7 +49,6 @@ class AmendValidator extends Validator[AmendRawData] {
   }
 
   private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
-
     val req = data.body.as[AmendBody]
 
     val dateOrderValidations = req.periodData.map { period =>

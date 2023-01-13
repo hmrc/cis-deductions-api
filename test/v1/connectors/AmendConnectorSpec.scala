@@ -45,17 +45,17 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         def taxYearIso: String = "2019-07-05"
 
-        private val outcome = Right(ResponseWrapper(correlationId, ()))
+        private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
           url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/$submissionId",
           body = amendRequestObj
         )
-          .returns(Future.successful(outcome))
+          .returns(Future.successful(expectedOutcome))
 
         val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
 
-        result shouldBe outcome
+        result shouldBe expectedOutcome
       }
 
       "the downstream call is successful for a TYS tax year" in new TysIfsTest with Test {
@@ -64,17 +64,17 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         override protected def taxYear: TaxYear = TaxYear.fromIso(taxYearIso)
 
-        private val outcome = Right(ResponseWrapper(correlationId, ()))
+        private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
           url = s"$baseUrl/income-tax/23-24/cis/deductions/$nino/$submissionId",
           body = amendRequestObj
         )
-          .returns(Future.successful(outcome))
+          .returns(Future.successful(expectedOutcome))
 
         val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
 
-        result shouldBe outcome
+        result shouldBe expectedOutcome
 
       }
     }

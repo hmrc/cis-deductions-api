@@ -149,7 +149,7 @@ class AmendControllerSpec
       }
     }
 
-    val input = Seq(
+    val input = List(
       (BadRequestError, BAD_REQUEST),
       (NinoFormatError, BAD_REQUEST),
       (DeductionFromDateFormatError, BAD_REQUEST),
@@ -252,7 +252,7 @@ class AmendControllerSpec
       }
     }
 
-    val input = Seq(
+    val input = List(
       (BadRequestError, BAD_REQUEST),
       (NotFoundError, NOT_FOUND),
       (NinoFormatError, BAD_REQUEST),

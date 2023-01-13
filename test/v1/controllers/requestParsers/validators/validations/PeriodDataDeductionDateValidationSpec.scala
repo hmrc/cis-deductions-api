@@ -58,10 +58,6 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  /*
-  Add another test for boundary tax years - same year different tax year, same tax year different year
-   */
-
   val validRawData: AmendRawData = AmendRawData(nino = nino, id = submissionId, body = requestDatesJson())
 
   val validRawDataDifferentCalendarYears: AmendRawData = AmendRawData(
