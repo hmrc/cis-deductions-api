@@ -30,7 +30,10 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
   val validDeductionFromDate = "2020-07-06"
   val validDeductionToDate   = "2020-08-05"
 
-  val validDatesJson: JsValue = Json.parse("""
+  def requestDatesJson(deductionFromDate1: String = "2020-06-06",
+                       deductionToDate1: String = "2020-07-05",
+                       deductionFromDate2: String = "2020-07-06",
+                       deductionToDate2: String = "2020-08-05"): JsValue = Json.parse(s"""
       |{
       |  "fromDate": "2020-04-06" ,
       |  "toDate": "2021-04-05",
@@ -39,15 +42,15 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |  "periodData": [
       |      {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
+      |      "deductionFromDate": "$deductionFromDate1",
+      |      "deductionToDate": "$deductionToDate1",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
+      |      "deductionFromDate": "$deductionFromDate2",
+      |      "deductionToDate": "$deductionToDate2",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
@@ -55,46 +58,50 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val invalidDatesJson: JsValue = Json.parse("""
-      |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2021-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "123/AB56797",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "20420-06-06",
-      |      "deductionToDate": "20250-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin)
+  /*
+  Add another test for boundary tax years - same year different tax year, same tax year different year
+   */
 
-  val validRawData: AmendRawData   = AmendRawData(nino, submissionId, validDatesJson)
-  val invalidRawData: AmendRawData = AmendRawData(nino, submissionId, invalidDatesJson)
+  val validRawData: AmendRawData = AmendRawData(nino = nino, id = submissionId, body = requestDatesJson())
+
+  val validRawDataDifferentCalendarYears: AmendRawData = AmendRawData(
+    nino = nino,
+    id = submissionId,
+    body = requestDatesJson(
+      deductionFromDate1 = "2018-12-01",
+      deductionToDate1 = "2019-01-01",
+      deductionFromDate2 = "2019-02-01",
+      deductionToDate2 = "2019-03-01")
+  )
+
+  val invalidRawData: AmendRawData = AmendRawData(
+    nino = nino,
+    id = submissionId,
+    body = requestDatesJson(deductionFromDate1 = "2018-06-06", deductionToDate1 = "2018-07-05")
+  )
+
+  val invalidRawDataSameCalendarYear: AmendRawData = AmendRawData(
+    nino = nino,
+    id = submissionId,
+    body = requestDatesJson(
+      deductionFromDate1 = "2019-01-01",
+      deductionToDate1 = "2019-02-01",
+      deductionFromDate2 = "2019-07-01",
+      deductionToDate2 = "2019-08-01")
+  )
 
   "running validateDate" should {
     "return no errors" when {
       "a json is submitted with a valid From date" in {
         PeriodDataDeductionDateValidation.validateDate(
-          validDatesJson,
+          requestDatesJson(),
           "deductionFromDate",
           DeductionFromDateFormatError
         ) shouldBe NoValidationErrors
       }
       "a json is submitted with a valid To date" in {
         PeriodDataDeductionDateValidation.validateDate(
-          validDatesJson,
+          requestDatesJson(),
           "deductionToDate",
           DeductionToDateFormatError
         ) shouldBe NoValidationErrors
@@ -103,14 +110,14 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
     "return an error" when {
       "a json is submitted with an invalid From date" in {
         PeriodDataDeductionDateValidation.validateDate(
-          invalidDatesJson,
+          requestDatesJson(deductionFromDate1 = "20420-06-06"),
           "deductionFromDate",
           DeductionFromDateFormatError
         ) shouldBe List(DeductionFromDateFormatError)
       }
       "a json is submitted with an invalid To date" in {
         PeriodDataDeductionDateValidation.validateDate(
-          invalidDatesJson,
+          requestDatesJson(deductionToDate1 = "20250-07-05"),
           "deductionToDate",
           DeductionToDateFormatError
         ) shouldBe List(DeductionToDateFormatError)
@@ -182,15 +189,22 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
         }
       }
     }
-    "running isTaxYearSameForMultiplePeriods" should {
+    "running validateTaxYearForMultiplePeriods" should {
       "return no errors" when {
         "a json is submitted with multiple deductionToDates pointing to the same tax year" in {
-          PeriodDataDeductionDateValidation.isTaxYearSameForMultiplePeriods(validRawData) shouldBe NoValidationErrors
+          PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(validRawData) shouldBe NoValidationErrors
+        }
+        "a json is submitted with multiple deductionToDates pointing to the same tax year but are of different calendar years" in {
+          PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(validRawDataDifferentCalendarYears) shouldBe NoValidationErrors
         }
       }
       "return an error" when {
         "a json is submitted with multiple deductionToDates pointing to different tax years" in {
-          PeriodDataDeductionDateValidation.isTaxYearSameForMultiplePeriods(invalidRawData) shouldBe List(RuleUnalignedDeductionsPeriodError)
+          PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(invalidRawData) shouldBe List(RuleUnalignedDeductionsPeriodError)
+        }
+        "a json is submitted with multiple deductionToDates pointing to different tax years but are of the same calendar year" in {
+          PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(invalidRawDataSameCalendarYear) shouldBe List(
+            RuleUnalignedDeductionsPeriodError)
         }
       }
     }

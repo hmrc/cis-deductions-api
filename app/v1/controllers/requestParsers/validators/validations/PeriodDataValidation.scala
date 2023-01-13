@@ -21,7 +21,7 @@ import v1.models.request.amend.{AmendBody, AmendRawData}
 
 object PeriodDataValidation {
 
-  def isPeriodDataEmpty(data: AmendRawData): List[MtdError] = {
+  def emptyPeriodDataValidation(data: AmendRawData): List[MtdError] = {
     val requestBody = data.body.as[AmendBody]
 
     if (requestBody.periodData.isEmpty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors

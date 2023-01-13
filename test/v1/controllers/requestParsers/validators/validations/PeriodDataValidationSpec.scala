@@ -59,15 +59,15 @@ class PeriodDataValidationSpec extends UnitSpec {
   val validRawData: AmendRawData   = AmendRawData(nino, submissionId, populatedPeriodDataRequestJson)
   val invalidRawData: AmendRawData = AmendRawData(nino, submissionId, missingPeriodDataRequestJson)
 
-  "running isPeriodDataEmpty" should {
+  "running emptyPeriodDataValidation" should {
     "return no errors" when {
       "the periodData array is populated" in {
-        PeriodDataValidation.isPeriodDataEmpty(validRawData) shouldBe NoValidationErrors
+        PeriodDataValidation.emptyPeriodDataValidation(validRawData) shouldBe NoValidationErrors
       }
     }
     "return an error" when {
       "the periodData array is empty" in {
-        PeriodDataValidation.isPeriodDataEmpty(invalidRawData) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        PeriodDataValidation.emptyPeriodDataValidation(invalidRawData) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
     }
   }
