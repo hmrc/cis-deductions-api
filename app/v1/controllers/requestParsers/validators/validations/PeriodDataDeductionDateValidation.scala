@@ -67,9 +67,14 @@ object PeriodDataDeductionDateValidation {
 
   def isTaxYearSameForMultiplePeriods(data: AmendRawData): List[MtdError] = {
 
-    val requestBody = data.body.as[AmendBody]
+    val requestBody                   = data.body.as[AmendBody]
     val distinctTaxYears: Seq[String] = requestBody.periodData.collect(_.deductionToDate).map(_.substring(0, 4)).distinct
-    if (distinctTaxYears.length == 1 || requestBody.periodData.isEmpty) NoValidationErrors else List(RuleUnalignedDeductionsPeriodError)
+
+    if (requestBody.periodData.isEmpty) {
+      List(RuleIncorrectOrEmptyBodyError)
+    } else {
+      if (distinctTaxYears.length == 1) NoValidationErrors else List(RuleUnalignedDeductionsPeriodError)
+    }
   }
 
   def validatePeriodInsideTaxYear(fromDate: String, toDate: String, deductionFromDate: String, deductionToDate: String): List[MtdError] = {
