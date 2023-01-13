@@ -36,7 +36,7 @@ class CreateServiceSpec extends UnitSpec {
   implicit val correlationId = "X-123"
   private val submissionId   = "123456789"
 
-  private val requestBody = CreateBody("", "", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
+  private val requestBody = CreateBody("", toDate = "2020-06-01", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
 
   private val requestData = CreateRequestData(Nino(nino), requestBody)
 
@@ -64,17 +64,17 @@ class CreateServiceSpec extends UnitSpec {
     "unsuccessful" must {
       "map errors according to spec" when {
 
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockCreateCisDeductionsConnector
               .createCisDeduction(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.createDeductions(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = Seq(
+        val errors = List(
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
           ("INVALID_EMPREF", EmployerRefFormatError),
@@ -88,7 +88,17 @@ class CreateServiceSpec extends UnitSpec {
           ("INVALID_CORRELATIONID", StandardDownstreamError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val extraTysErrors = List(
+          ("INVALID_TAX_YEAR", StandardDownstreamError),
+          ("INVALID_CORRELATION_ID", StandardDownstreamError),
+          ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+          ("INVALID_TAX_YEAR_ALIGN", RuleUnalignedDeductionsPeriodError),
+          ("EARLY_SUBMISSION", RuleTaxYearNotEndedError),
+          ("INVALID_DATE_RANGE", RuleDeductionsDateRangeInvalidError),
+          ("DUPLICATE_MONTH", RuleDuplicatePeriodError)
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
@@ -39,14 +38,13 @@ class CreateService @Inject() (connector: CreateConnector) extends DownstreamRes
       ec: ExecutionContext,
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
-    val result = for {
-      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDownstreamErrors(mappingDesToMtdError))
-    } yield desResponseWrapper
-    result.value
+
+    connector.create(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def mappingDesToMtdError =
-    Map(
+  private val downstreamErrorMap = {
+
+    val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
       "INVALID_PAYLOAD"                 -> RuleIncorrectOrEmptyBodyError,
       "INVALID_EMPREF"                  -> EmployerRefFormatError,
@@ -59,5 +57,18 @@ class CreateService @Inject() (connector: CreateConnector) extends DownstreamRes
       "SERVICE_UNAVAILABLE"             -> StandardDownstreamError,
       "INVALID_CORRELATIONID"           -> StandardDownstreamError
     )
+
+    val extraTysErrors = Map(
+      "INVALID_CORRELATION_ID" -> StandardDownstreamError,
+      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
+      "INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError,
+      "DUPLICATE_MONTH"        -> RuleDuplicatePeriodError,
+      "EARLY_SUBMISSION"       -> RuleTaxYearNotEndedError
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }

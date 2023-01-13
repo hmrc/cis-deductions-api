@@ -17,8 +17,9 @@
 package v1.connectors
 
 import config.AppConfig
+import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
@@ -36,15 +37,15 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     import request._
 
-    val url = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[""]
+    val (url, statusCode) = if (taxYear.useTaxYearSpecificApi) {
+      (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
     } else {
-      DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino}")
+      (DesUri[CreateResponseModel](s"income-tax/cis/deductions/$nino"), OK)
     }
-    post(
-      body = request.body,
-      uri = DesUri[CreateResponseModel](s"income-tax/cis/deductions/${request.nino}")
-    )
+
+    implicit val successCode: SuccessCode = SuccessCode(statusCode)
+
+    post(body, url)
   }
 
 }

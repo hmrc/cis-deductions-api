@@ -17,6 +17,7 @@
 package v1.controllers
 
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -63,6 +64,7 @@ class CreateControllerSpec
       idGenerator = mockIdGenerator
     )
 
+    MockedAppConfig.featureSwitches.returns(Configuration("allowTemporalValidationSuspension.enabled" -> true)).anyNumberOfTimes()
     MockIdGenerator.getCorrelationId.returns(correlationId)
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
@@ -284,7 +286,7 @@ class CreateControllerSpec
         }
       }
 
-      val input = Seq(
+      val errors = List(
         (NinoFormatError, BAD_REQUEST),
         (StandardDownstreamError, INTERNAL_SERVER_ERROR),
         (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
@@ -296,7 +298,12 @@ class CreateControllerSpec
         (RuleDuplicatePeriodError, BAD_REQUEST),
         (NotFoundError, NOT_FOUND)
       )
-      input.foreach(args => (serviceErrors _).tupled(args))
+
+      val extraTysErrors = List(
+        (RuleTaxYearNotSupportedError, BAD_REQUEST)
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
     }
   }
 

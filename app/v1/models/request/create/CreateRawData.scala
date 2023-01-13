@@ -19,4 +19,4 @@ package v1.models.request.create
 import play.api.libs.json.JsValue
 import v1.models.request.RawData
 
-case class CreateRawData(nino: String, body: JsValue) extends RawData
+case class CreateRawData(nino: String, body: JsValue, temporalValidationEnabled: Boolean = true) extends RawData
