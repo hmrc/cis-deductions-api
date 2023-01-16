@@ -27,9 +27,8 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
   override protected def requestFor(data: AmendRawData): AmendRequestData = {
     val requestBody = data.body.as[AmendBody]
 
-    /* As the request body can have multiple period detail objects, and as the deductionToDate (which is used to validate
-    the tax year in TYS requests) must be the same for each PeriodDetails periodData object, we will take the first
-    one to represent the tax year */
+    /* The `deductionToDate` fields in the PeriodDetails periodData objects are validated to ensure all dates point to
+    the same tax year */
     val taxYear: TaxYear = requestBody.periodData.headOption match {
 
       case Some(periodDetails) => TaxYear.fromIso(periodDetails.deductionToDate)

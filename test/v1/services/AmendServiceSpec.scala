@@ -31,23 +31,6 @@ import scala.concurrent.Future
 
 class AmendServiceSpec extends UnitSpec {
 
-  private val nino         = Nino("AA123456A")
-  private val submissionId = "S4636A77V5KB8625U"
-  private val taxYear      = TaxYear.fromIso("2019-07-05")
-
-  implicit val correlationId: String = "X-123"
-
-  val requestData: AmendRequestData = AmendRequestData(nino, submissionId, taxYear, amendRequestObj)
-
-  trait Test extends MockAmendConnector {
-
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    val service = new AmendService(connector = mockAmendConnector)
-
-  }
-
   "service" when {
 
     "a service call is successful" should {
@@ -93,6 +76,23 @@ class AmendServiceSpec extends UnitSpec {
 
       (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
+  }
+
+  trait Test extends MockAmendConnector {
+
+    private val nino         = Nino("AA123456A")
+    private val submissionId = "S4636A77V5KB8625U"
+    private val taxYear      = TaxYear.fromIso("2019-07-05")
+
+    implicit val correlationId: String = "X-123"
+
+    val requestData: AmendRequestData = AmendRequestData(nino, submissionId, taxYear, amendRequestObj)
+
+    implicit val hc: HeaderCarrier              = HeaderCarrier()
+    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+
+    val service = new AmendService(connector = mockAmendConnector)
+
   }
 
 }

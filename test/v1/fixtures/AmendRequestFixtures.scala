@@ -274,7 +274,7 @@ object AmendRequestFixtures {
 
   }
 
-  val emptyPeriodArrayJson: JsValue = Json.parse {
+  val emptyPeriodDataJson: JsValue = Json.parse {
     """
       |{
       |  "fromDate": "last week" ,

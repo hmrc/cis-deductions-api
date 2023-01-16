@@ -148,12 +148,10 @@ class AmendControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino/submissionId/$submissionId"
   }
 
   private trait TysIfsTest extends Test {
-
     val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino/$submissionId"
   }
 

@@ -25,18 +25,6 @@ import scala.concurrent.Future
 
 class AmendConnectorSpec extends ConnectorSpec {
 
-  val nino         = "AA123456A"
-  val submissionId = "S4636A77V5KB8625U"
-
-  trait Test { _: ConnectorTest =>
-
-    def taxYearIso: String
-
-    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
-
-    lazy val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
-  }
-
   "AmendConnector" should {
 
     "return a result" when {
@@ -76,6 +64,19 @@ class AmendConnectorSpec extends ConnectorSpec {
 
       }
     }
+  }
+
+  trait Test {
+    _: ConnectorTest =>
+
+    val nino         = "AA123456A"
+    val submissionId = "S4636A77V5KB8625U"
+
+    def taxYearIso: String
+
+    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
+    lazy val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
   }
 
 }

@@ -33,12 +33,12 @@ class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) 
     import request._
 
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$id")
+      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
     } else {
-      DesUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$id")
+      DesUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
     }
 
-    put(body = body, uri = downstreamUri)
+    put(body, downstreamUri)
   }
 
 }

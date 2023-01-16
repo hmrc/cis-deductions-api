@@ -60,7 +60,7 @@ class AmendValidatorSpec extends UnitSpec {
         result shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
       "an empty JSON period array is supplied as the request body" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodArrayJson))
+        private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodDataJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
 
