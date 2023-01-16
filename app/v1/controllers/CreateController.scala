@@ -18,7 +18,7 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
 import play.api.http.MimeTypes
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
@@ -59,15 +59,18 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
     implicit val correlationId: String = idGenerator.getCorrelationId
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
-    val rawData = CreateRawData(nino, request.body)
+    val rawData = CreateRawData(
+      nino = nino,
+      body = request.body,
+      temporalValidationEnabled = FeatureSwitches()(appConfig).isTemporalValidationEnabled
+    )
 
     val result = for {
       parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
       serviceResponse <- EitherT(service.createDeductions(parsedRequest))
-      vendorResponse <- EitherT.fromEither[Future](
-        hateoasFactory.wrap(serviceResponse.responseData, CreateHateoasData(nino, parsedRequest)).asRight[ErrorWrapper]
-      )
     } yield {
+      val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, CreateHateoasData(nino, parsedRequest))
+
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
           s"Success response received with CorrelationId: ${serviceResponse.correlationId}")

@@ -28,10 +28,14 @@ import java.time.Year
 
 class CreateValidatorSpec extends UnitSpec {
 
-  val nino             = "AA123456A"
-  val invalidNino      = "GHFG197854"
-  val nextTaxYearEnd   = Year.now.getValue + 1
-  val nextTaxYearStart = Year.now.getValue
+  val nino        = "AA123456A"
+  val invalidNino = "GHFG197854"
+
+  val now                 = DateTime.now()
+  val currentYear         = Year.now.getValue
+  val taxYearEndsThisYear = now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4 || now.monthOfYear().get() < 4
+
+  val (taxYearStart, taxYearEnd) = if (taxYearEndsThisYear) (currentYear - 1, currentYear) else (currentYear, currentYear + 1)
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
@@ -148,19 +152,13 @@ class CreateValidatorSpec extends UnitSpec {
         result shouldBe List(RuleTaxYearNotSupportedError)
       }
       "tax year is dated beyond the latest completed tax year" in new SetUp {
-        private val now = DateTime.now()
-        val (start: String, end: String) = if ((now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4) || now.monthOfYear().get() < 4) {
-          (s"${nextTaxYearStart - 1}-04-06", s"${nextTaxYearEnd - 1}-04-05")
-        } else {
-          (s"${nextTaxYearStart}-04-06", s"${nextTaxYearEnd}-04-05")
-        }
         validator.validate(
           CreateRawData(
             nino,
             Json.parse(s"""
               |{
-              |  "fromDate": "$start" ,
-              |  "toDate": "$end",
+              |  "fromDate": "$taxYearStart-04-06" ,
+              |  "toDate": "$taxYearEnd-04-05",
               |  "contractorName": "Bovis",
               |  "employerRef": "123/AB56797",
               |  "periodData": [
@@ -183,6 +181,38 @@ class CreateValidatorSpec extends UnitSpec {
               |""".stripMargin)
           )
         ) shouldBe List(RuleTaxYearNotEndedError)
+      }
+      "tax year is dated beyond the latest completed tax year but temporal validation is disabled" in new SetUp {
+        validator.validate(
+          CreateRawData(
+            nino,
+            Json.parse(s"""
+                 |{
+                 |  "fromDate": "$taxYearStart-04-06" ,
+                 |  "toDate": "$taxYearEnd-04-05",
+                 |  "contractorName": "Bovis",
+                 |  "employerRef": "123/AB56797",
+                 |  "periodData": [
+                 |      {
+                 |      "deductionAmount": 355.00,
+                 |      "deductionFromDate": "$taxYearStart-06-06",
+                 |      "deductionToDate": "$taxYearStart-07-05",
+                 |      "costOfMaterials": 35.00,
+                 |      "grossAmountPaid": 1457.00
+                 |    },
+                 |    {
+                 |      "deductionAmount": 355.00,
+                 |      "deductionFromDate": "$taxYearStart-07-06",
+                 |      "deductionToDate": "$taxYearStart-08-05",
+                 |      "costOfMaterials": 35.00,
+                 |      "grossAmountPaid": 1457.00
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin),
+            temporalValidationEnabled = false
+          )
+        ) shouldBe Nil
       }
       "period falls outside the tax year identified by fromDate and toDate" in new SetUp {
         validator.validate(
