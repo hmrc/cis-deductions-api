@@ -65,7 +65,11 @@ class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateR
     val fromDate = req.fromDate
     val toDate   = req.toDate
     val taxYearValidations: List[List[MtdError]] = List(
-      TaxYearDatesValidation.validate(req.fromDate, req.toDate, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = true)
+      TaxYearDatesValidation.validate(
+        req.fromDate,
+        req.toDate,
+        allowedNumberOfYearsBetweenDates = 1,
+        validateTaxYearEndedFlag = data.temporalValidationEnabled)
     )
     val periodDataCheck: List[List[MtdError]] = if (taxYearValidations.flatten.isEmpty) {
       req.periodData.map { period =>

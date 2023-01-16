@@ -16,6 +16,8 @@
 
 package v1.models.request.create
 
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 
-case class CreateRequestData(nino: Nino, body: CreateBody)
+case class CreateRequestData(nino: Nino, body: CreateBody) {
+  val taxYear: TaxYear = TaxYear.fromIso(body.toDate)
+}
