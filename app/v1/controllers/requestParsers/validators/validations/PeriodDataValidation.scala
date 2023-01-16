@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request.amend
+package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.{Nino, TaxYear}
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.request.amend.{AmendBody, AmendRawData}
 
-case class AmendRequestData(nino: Nino, submissionId: String, taxYear: TaxYear, body: AmendBody)
+object PeriodDataValidation {
+
+  def emptyPeriodDataValidation(data: AmendRawData): List[MtdError] = {
+    val requestBody = data.body.as[AmendBody]
+
+    if (requestBody.periodData.isEmpty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
+  }
+
+}

@@ -19,74 +19,92 @@ package v1.controllers.requestParsers
 import support.UnitSpec
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.validators.MockAmendValidator
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
 import v1.models.request.amend.{AmendRawData, AmendRequestData}
 
 class AmendRequestParserSpec extends UnitSpec {
 
-  val nino                           = "AA123456A"
-  val invalidNino                    = "PLKL87654"
-  val submissionId                   = "S4636A77V5KB8625U"
+  val nino         = "AA123456A"
+  val invalidNino  = "PLKL87654"
+  val submissionId = "S4636A77V5KB8625U"
+  val taxYear      = "2019-07-05"
+
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   trait Test extends MockAmendValidator {
+
     lazy val parser = new AmendRequestParser(mockValidator)
   }
 
   "parser" should {
+
     "accept a valid input" when {
+
       "a cis deduction has been passed" in new Test {
-        val inputData = AmendRawData(nino, submissionId, requestJson)
+
+        val inputData: AmendRawData = AmendRawData(nino, submissionId, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, amendRequestObj))
+
+        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYear), amendRequestObj))
       }
 
       "Missing option field has passed" in new Test {
-        val inputData = AmendRawData(nino, submissionId, missingOptionalRequestJson)
+
+        val inputData: AmendRawData = AmendRawData(nino, submissionId, missingOptionalRequestJson)
 
         MockValidator
           .validate(inputData)
           .returns(Nil)
 
         private val result = parser.parseRequest(inputData)
-        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, amendMissingOptionalRequestObj))
+
+        result shouldBe Right(AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYear), amendMissingOptionalRequestObj))
       }
     }
     "Reject invalid input" when {
+
       "mandatory field is given invalid data" in new Test {
-        val inputData = AmendRawData(nino, submissionId, invalidRequestJson)
+
+        val inputData: AmendRawData = AmendRawData(nino, submissionId, invalidRequestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(BadRequestError))
 
         private val result = parser.parseRequest(inputData)
+
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError))
       }
+
       "Nino format is incorrect" in new Test {
-        val inputData = AmendRawData(invalidNino, submissionId, requestJson)
+
+        val inputData: AmendRawData = AmendRawData(invalidNino, submissionId, requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
+
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
+
       "Id format is incorrect" in new Test {
-        val inputData = AmendRawData(nino, "id", requestJson)
+
+        val inputData: AmendRawData = AmendRawData(nino, "id", requestJson)
 
         MockValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
         private val result = parser.parseRequest(inputData)
+
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
     }

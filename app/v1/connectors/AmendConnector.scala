@@ -18,7 +18,7 @@ package v1.connectors
 
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.amend.AmendRequestData
 
@@ -30,10 +30,15 @@ class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) 
   def amendDeduction(
       request: AmendRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    put(
-      body = request.body,
-      DesUri[Unit](s"income-tax/cis/deductions/${request.nino}/submissionId/${request.id}")
-    )
+    import request._
+
+    val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
+      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
+    } else {
+      DesUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
+    }
+
+    put(body, downstreamUri)
   }
 
 }
