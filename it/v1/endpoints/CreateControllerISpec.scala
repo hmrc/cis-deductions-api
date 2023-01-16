@@ -16,7 +16,6 @@
 
 package v1.endpoints
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -29,54 +28,36 @@ import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-    val nino = "AA123456A"
-
-    def uri: String    = s"/$nino/amendments"
-    def desUri: String = s"/income-tax/cis/deductions/$nino"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
-        )
-    }
-
-  }
-
   "Calling the create endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, OK, deductionsResponseBody, None)
+      "any valid request is made" in new NonTysTest {
+        override def setupStubs(): Unit = {
+          DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, OK, deductionsResponseBody, None)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe OK
         response.json shouldBe deductionsResponseBody
+      }
+
+      "any valid request is made for a Tax Year Specific (TYS) tax year" in new TysIfsTest {
+        override def setupStubs(): Unit = {
+          DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, CREATED, deductionsResponseBody, None)
+        }
+
+        val response: WSResponse = await(request().post(requestBodyJsonTys))
+        response.json shouldBe deductionsResponseBodyTys
+        response.status shouldBe OK
       }
     }
     "return error according to spec" when {
 
       "validation error" when {
         def validationErrorTest(requestNino: String, body: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
             override val nino: String = requestNino
-
-            override def setupStubs(): StubMapping = {
-              AuditStub.audit()
-              AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(nino)
-            }
 
             val response: WSResponse = await(request().post(body))
             response.status shouldBe expectedStatus
@@ -84,7 +65,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val input = List(
           ("AA1123A", requestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", emptyRequest, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123456A", requestInvalidEmpRef, BAD_REQUEST, EmployerRefFormatError),
@@ -102,14 +83,11 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
-            override def setupStubs(): StubMapping = {
-              AuditStub.audit()
-              AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.mockDownstream(DownstreamStub.POST, desUri, desStatus, Json.parse(errorBody(desCode)), None)
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+            override def setupStubs(): Unit = {
+              DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, downstreamStatus, Json.parse(errorBody(downstreamCode)), None)
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -118,7 +96,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val errors = List(
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
@@ -131,9 +109,54 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           (CONFLICT, "CONFLICT", BAD_REQUEST, RuleDuplicateSubmissionError),
           (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+
+        val extraTysErrors = List(
+          (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (UNPROCESSABLE_ENTITY, "INVALID_TAX_YEAR_ALIGN", BAD_REQUEST, RuleUnalignedDeductionsPeriodError),
+          (UNPROCESSABLE_ENTITY, "EARLY_SUBMISSION", BAD_REQUEST, RuleTaxYearNotEndedError),
+          (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDeductionsDateRangeInvalidError),
+          (UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
+  }
+
+  private trait Test {
+    val nino = "AA123456A"
+
+    val downstreamUri: String
+
+    def setupStubs(): Unit = {}
+
+    def request(): WSRequest = {
+      AuditStub.audit()
+      AuthStub.authorised()
+      MtdIdLookupStub.ninoFound(nino)
+      setupStubs()
+
+      buildRequest(s"/$nino/amendments")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+        )
+    }
+
+  }
+
+  private trait NonTysTest extends Test {
+    val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+  }
+
+  private trait TysIfsTest extends Test {
+    val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino"
+
+    override def request(): WSRequest =
+      super.request().addHttpHeaders("suspend-temporal-validations" -> "true")
+
   }
 
 }

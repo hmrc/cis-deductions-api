@@ -574,11 +574,11 @@ object CreateRequestFixtures {
   )
 
   val requestObj: CreateBody = CreateBody(
-    "2019-04-06",
-    "2020-04-05",
-    "Bovis",
-    "123/AB56797",
-    Seq(
+    fromDate = "2019-04-06",
+    toDate = "2020-04-05",
+    contractorName = "Bovis",
+    employerRef = "123/AB56797",
+    periodData = Seq(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
@@ -690,6 +690,19 @@ object CreateRequestFixtures {
       |}
     """.stripMargin)
 
+  val deductionsResponseBodyTys = Json.parse("""
+      |{
+      |   "submissionId":"someResponse",
+      |   "links":[
+      |      {
+      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2023-04-06&toDate=2024-04-05",
+      |         "method":"GET",
+      |         "rel":"retrieve-cis-deductions-for-subcontractor"
+      |      }
+      |   ]
+      |}
+    """.stripMargin)
+
   def errorBody(code: String): String =
     s"""
        |      {
@@ -717,6 +730,33 @@ object CreateRequestFixtures {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-07-06",
       |      "deductionToDate": "2019-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+        """.stripMargin
+  )
+
+  val requestBodyJsonTys = Json.parse(
+    """
+      |{
+      |  "fromDate": "2023-04-06" ,
+      |  "toDate": "2024-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "123/AB56797",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2023-06-06",
+      |      "deductionToDate": "2023-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2023-07-06",
+      |      "deductionToDate": "2023-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }

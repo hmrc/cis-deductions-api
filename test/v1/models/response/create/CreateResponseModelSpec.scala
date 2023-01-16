@@ -55,8 +55,8 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
   "LinksFactory" should {
     "return the correct links" in {
       val nino           = "AA999999A"
-      val fromDate       = "fromDate"
-      val toDate         = "toDate"
+      val fromDate       = "2020-05-06"
+      val toDate         = "2020-06-05"
       val contractorName = "name"
       val employerRef    = "reference"
       val periodData     = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
