@@ -37,7 +37,7 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     import request._
 
-    val (url, statusCode) = if (taxYear.useTaxYearSpecificApi) {
+    val (downstreamUri, statusCode) = if (taxYear.useTaxYearSpecificApi) {
       (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
     } else {
       (DesUri[CreateResponseModel](s"income-tax/cis/deductions/$nino"), OK)
@@ -45,7 +45,7 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     implicit val successCode: SuccessCode = SuccessCode(statusCode)
 
-    post(body, url)
+    post(body, downstreamUri)
   }
 
 }
