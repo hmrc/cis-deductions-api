@@ -198,8 +198,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait TysIfsTest extends ConnectorTest {
 
-    protected def taxYear: TaxYear
-
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
 
     MockedAppConfig.tysIfsBaseUrl.returns(baseUrl)

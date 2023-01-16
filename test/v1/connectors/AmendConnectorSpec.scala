@@ -62,8 +62,6 @@ class AmendConnectorSpec extends ConnectorSpec {
 
         def taxYearIso: String = "2023-12-01"
 
-        override protected def taxYear: TaxYear = TaxYear.fromIso(taxYearIso)
-
         private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
