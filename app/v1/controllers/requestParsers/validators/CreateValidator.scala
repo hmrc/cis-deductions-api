@@ -53,6 +53,7 @@ class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateR
       PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
       PeriodDataDeductionDateValidation.validateDate(data.body, "deductionFromDate", DeductionFromDateFormatError),
       PeriodDataDeductionDateValidation.validateDate(data.body, "deductionToDate", DeductionToDateFormatError),
+      PeriodDataValidation.emptyPeriodDataValidation(data.body),
       DateValidation.validate(FromDateFormatError)(req.fromDate),
       DateValidation.validate(ToDateFormatError)(req.toDate),
       MinTaxYearValidation.validate(req.fromDate, appConfig.minTaxYearCisDeductions.toInt),

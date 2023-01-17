@@ -61,6 +61,10 @@ class CreateValidatorSpec extends UnitSpec {
         )
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+      "an empty JSON period array is supplied as the request body" in new SetUp {
+        private val result = validator.validate(CreateRawData(nino, missingPeriodDataRequestJson))
+        result shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
       "invalid nino is provided" in new SetUp {
         private val result = validator.validate(
           CreateRawData(invalidNino, requestJson)
