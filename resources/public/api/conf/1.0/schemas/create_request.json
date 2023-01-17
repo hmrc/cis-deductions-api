@@ -25,7 +25,7 @@
       "example": "123/AB56797"
     },
     "periodData": {
-      "description": "List of items that make up the overall deductions.",
+      "description": "List of items that make up the overall deductions. At least one item is required.",
       "type": "array",
       "items": {
         "title": "item",

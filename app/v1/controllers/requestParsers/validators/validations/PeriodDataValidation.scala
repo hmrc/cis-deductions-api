@@ -16,15 +16,15 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import play.api.libs.json.JsValue
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v1.models.request.amend.{AmendBody, AmendRawData}
 
 object PeriodDataValidation {
 
-  def emptyPeriodDataValidation(data: AmendRawData): List[MtdError] = {
-    val requestBody = data.body.as[AmendBody]
+  def emptyPeriodDataValidation(json: JsValue): List[MtdError] = {
+    val periodData = (json \ "periodData").as[List[JsValue]]
 
-    if (requestBody.periodData.isEmpty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
+    if (periodData.isEmpty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
   }
 
 }

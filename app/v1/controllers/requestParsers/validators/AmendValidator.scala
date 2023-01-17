@@ -44,7 +44,7 @@ class AmendValidator extends Validator[AmendRawData] {
       PeriodDataPositiveAmountValidation.validate(data.body, "grossAmountPaid", RuleGrossAmountError),
       PeriodDataDeductionDateValidation.validateDate(data.body, "deductionFromDate", DeductionFromDateFormatError),
       PeriodDataDeductionDateValidation.validateDate(data.body, "deductionToDate", DeductionToDateFormatError),
-      PeriodDataValidation.emptyPeriodDataValidation(data)
+      PeriodDataValidation.emptyPeriodDataValidation(data.body)
     )
   }
 

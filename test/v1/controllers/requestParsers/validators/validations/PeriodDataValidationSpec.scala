@@ -19,18 +19,13 @@ package v1.controllers.requestParsers.validators.validations
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.errors.RuleIncorrectOrEmptyBodyError
-import v1.models.request.amend.AmendRawData
 
 class PeriodDataValidationSpec extends UnitSpec {
-
-  val nino         = "AA123456A"
-  val submissionId = "S4636A77V5KB8625U"
 
   val missingPeriodDataRequestJson: JsValue = Json.parse {
     """
       |{
-      |  "periodData": [
-      |  ]
+      |  "periodData": []
       |}
       |""".stripMargin
   }
@@ -38,7 +33,7 @@ class PeriodDataValidationSpec extends UnitSpec {
   val populatedPeriodDataRequestJson: JsValue = Json.parse("""
       |{
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2020-06-06",
       |      "deductionToDate": "2020-07-05",
@@ -56,18 +51,16 @@ class PeriodDataValidationSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val validRawData: AmendRawData   = AmendRawData(nino, submissionId, populatedPeriodDataRequestJson)
-  val invalidRawData: AmendRawData = AmendRawData(nino, submissionId, missingPeriodDataRequestJson)
-
   "running emptyPeriodDataValidation" should {
     "return no errors" when {
       "the periodData array is populated" in {
-        PeriodDataValidation.emptyPeriodDataValidation(validRawData) shouldBe NoValidationErrors
+        PeriodDataValidation.emptyPeriodDataValidation(populatedPeriodDataRequestJson) shouldBe NoValidationErrors
       }
     }
+
     "return an error" when {
       "the periodData array is empty" in {
-        PeriodDataValidation.emptyPeriodDataValidation(invalidRawData) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        PeriodDataValidation.emptyPeriodDataValidation(missingPeriodDataRequestJson) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
     }
   }
