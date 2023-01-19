@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request.amend
+package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.{Nino, TaxYear}
+import play.api.libs.json.JsValue
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 
-case class AmendRequestData(nino: Nino, submissionId: String, taxYear: TaxYear, body: AmendBody)
+object PeriodDataValidation {
+
+  def emptyPeriodDataValidation(json: JsValue): List[MtdError] = {
+    val periodData = (json \ "periodData").as[List[JsValue]]
+
+    if (periodData.isEmpty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
+  }
+
+}

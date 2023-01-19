@@ -22,6 +22,8 @@ import v1.fixtures.AmendRequestFixtures._
 import v1.models.errors._
 import v1.models.request.amend.AmendRawData
 
+import scala.List
+
 class AmendValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
@@ -53,6 +55,15 @@ class AmendValidatorSpec extends UnitSpec {
         private val result = validator.validate(AmendRawData(validNino, validId, missingMandatoryFieldRequestJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+      "multiple periodDate objects are present with deductionToDate fields pointing to more than one tax year" in new AmendValidator {
+        private val result = validator.validate(AmendRawData(validNino, validId, invalidRequestForDifferentTaxYearsJson))
+        result shouldBe List(RuleUnalignedDeductionsPeriodError)
+      }
+      "an empty JSON period array is supplied as the request body" in new AmendValidator {
+        private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodDataJson))
+        result shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+
       "invalid request body Deduction fromDate format is provided" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidDeductionFromDateFormatRequestJson))
         result shouldBe List(DeductionFromDateFormatError)

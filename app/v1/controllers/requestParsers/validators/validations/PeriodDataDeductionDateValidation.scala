@@ -17,7 +17,9 @@
 package v1.controllers.requestParsers.validators.validations
 
 import play.api.libs.json.JsValue
+import v1.models.domain.TaxYear
 import v1.models.errors._
+import v1.models.request.amend.{AmendBody, AmendRawData}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -62,6 +64,14 @@ object PeriodDataDeductionDateValidation {
       case (false, false) => List(RuleDeductionsDateRangeInvalidError)
       case _              => NoValidationErrors
     }
+  }
+
+  def validateTaxYearForMultiplePeriods(data: AmendRawData): List[MtdError] = {
+
+    val requestBody                = data.body.as[AmendBody]
+    val distinctTaxYears: Seq[Int] = requestBody.periodData.collect(_.deductionToDate).map(TaxYear.fromIso(_).year).distinct
+
+    if (distinctTaxYears.length == 1) NoValidationErrors else List(RuleUnalignedDeductionsPeriodError)
   }
 
   def validatePeriodInsideTaxYear(fromDate: String, toDate: String, deductionFromDate: String, deductionToDate: String): List[MtdError] = {

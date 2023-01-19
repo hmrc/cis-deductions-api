@@ -37,7 +37,7 @@ object AmendDataExamples {
     s"""
        |      {
        |        "code": "$code",
-       |        "reason": "des message"
+       |        "reason": "downstream message"
        |      }
     """.stripMargin
 
@@ -56,6 +56,28 @@ object AmendDataExamples {
        |      "deductionAmount": 355.00,
        |      "deductionFromDate": "2019-07-06",
        |      "deductionToDate": "2019-08-05",
+       |      "costOfMaterials": 35.00,
+       |      "grossAmountPaid": 1457.00
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
+
+  val requestTysJson: String =
+    s"""
+       |{
+       |  "periodData": [
+       |    {
+       |      "deductionAmount": 355.00,
+       |      "deductionFromDate": "2023-06-06",
+       |      "deductionToDate": "2023-07-05",
+       |      "costOfMaterials": 35.00,
+       |      "grossAmountPaid": 1457.00
+       |    },
+       |    {
+       |      "deductionAmount": 355.00,
+       |      "deductionFromDate": "2023-07-06",
+       |      "deductionToDate": "2023-08-05",
        |      "costOfMaterials": 35.00,
        |      "grossAmountPaid": 1457.00
        |    }

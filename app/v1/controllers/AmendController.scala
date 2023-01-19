@@ -53,6 +53,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
     implicit val correlationId: String = idGenerator.getCorrelationId
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
+
     val rawData = AmendRawData(nino, id, request.body)
 
     val result = for {
@@ -116,7 +117,8 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
             RuleGrossAmountError,
             RuleDeductionsDateRangeInvalidError,
             RuleUnalignedDeductionsPeriodError,
-            RuleDuplicatePeriodError
+            RuleDuplicatePeriodError,
+            RuleTaxYearNotSupportedError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
 

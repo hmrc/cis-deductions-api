@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers
 
 import v1.controllers.requestParsers.validators.AmendValidator
-import v1.models.domain.Nino
+import v1.models.domain.{Nino, TaxYear}
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
 import javax.inject.Inject
@@ -26,7 +26,16 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
 
   override protected def requestFor(data: AmendRawData): AmendRequestData = {
     val requestBody = data.body.as[AmendBody]
-    AmendRequestData(Nino(data.nino), data.id, requestBody)
+
+    /* The `deductionToDate` fields in the PeriodDetails periodData objects are validated to ensure all dates point to
+    the same tax year */
+    val taxYear: TaxYear = requestBody.periodData.headOption match {
+
+      case Some(periodDetails) => TaxYear.fromIso(periodDetails.deductionToDate)
+      case None                => throw new Exception("Unable to locate `deductionToDate` in request body")
+
+    }
+    AmendRequestData(Nino(data.nino), data.id, taxYear, requestBody)
   }
 
 }
