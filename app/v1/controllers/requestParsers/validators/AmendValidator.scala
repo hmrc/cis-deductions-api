@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors._
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors._
 import v1.models.request.amend.{AmendBody, AmendRawData}
 
 class AmendValidator extends Validator[AmendRawData] {

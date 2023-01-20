@@ -16,14 +16,14 @@
 
 package v1.services
 
+import api.controllers.EndpointLogContext
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector
-import v1.models.domain.{Nino, TaxYear}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global

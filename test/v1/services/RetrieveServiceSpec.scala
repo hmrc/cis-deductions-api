@@ -16,16 +16,16 @@
 
 package v1.services
 
+import api.controllers.EndpointLogContext
+import api.fixtures.RetrieveModels._
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
-import v1.models.domain.Nino
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 

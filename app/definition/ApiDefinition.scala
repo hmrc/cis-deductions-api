@@ -20,8 +20,6 @@ import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.enums.Enums
 
-import scala.collection.immutable.Seq
-
 case class Parameter(name: String, required: Boolean = false)
 
 object Parameter {

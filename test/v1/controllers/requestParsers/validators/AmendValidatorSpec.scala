@@ -16,13 +16,11 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.fixtures.AmendRequestFixtures._
-import v1.models.errors._
 import v1.models.request.amend.AmendRawData
-
-import scala.List
 
 class AmendValidatorSpec extends UnitSpec {
 

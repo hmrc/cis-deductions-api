@@ -16,18 +16,20 @@
 
 package v1.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.fixtures.RetrieveJson._
+import api.mocks.MockIdGenerator
+import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.fixtures.RetrieveJson._
-import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRequestDataParser
 import v1.mocks.services._
-import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.{Nino, TaxYear}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global

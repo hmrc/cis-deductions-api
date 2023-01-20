@@ -16,6 +16,11 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.hateoas.HateoasFactory
+import api.models.audit.{AuditEvent, GenericAuditDetail}
+import api.models.errors._
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import config.{AppConfig, FeatureSwitches}
@@ -26,12 +31,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreateRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.audit._
-import v1.models.errors._
 import v1.models.request.create.CreateRawData
 import v1.models.response.create.CreateHateoasData
-import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.CreateService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

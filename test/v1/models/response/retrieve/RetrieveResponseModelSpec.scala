@@ -16,15 +16,15 @@
 
 package v1.models.response.retrieve
 
+import api.fixtures.RetrieveModels.cisDeductions
+import api.fixtures.{RetrieveJson, RetrieveModels}
+import api.models.domain.TaxYear
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.fixtures.RetrieveModels.cisDeductions
-import v1.fixtures._
-import v1.models.domain.TaxYear
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{DELETE, GET, POST, PUT}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 

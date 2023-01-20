@@ -16,16 +16,16 @@
 
 package v1.services
 
-import cats.implicits._
+import api.controllers.EndpointLogContext
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.support.DownstreamResponseMappingSupport
+import cats.implicits.toBifunctorOps
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.CreateConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
-import v1.support.DownstreamResponseMappingSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

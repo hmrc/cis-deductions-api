@@ -16,6 +16,10 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.models.audit.{AuditEvent, GenericAuditDetail}
+import api.models.errors._
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
@@ -24,10 +28,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.DeleteRequestParser
-import v1.models.audit.{AuditEvent, GenericAuditDetail}
-import v1.models.errors._
 import v1.models.request.delete.DeleteRawData
-import v1.services.{AuditService, DeleteService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.DeleteService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

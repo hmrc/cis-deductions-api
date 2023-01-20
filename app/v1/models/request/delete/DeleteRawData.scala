@@ -16,6 +16,6 @@
 
 package v1.models.request.delete
 
-import v1.models.request.RawData
+import api.models.request.RawData
 
 case class DeleteRawData(nino: String, submissionId: String, taxYear: Option[String]) extends RawData
