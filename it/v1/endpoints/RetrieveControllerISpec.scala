@@ -118,7 +118,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
             val response: WSResponse = await(mtdRequest().get())
             response.status shouldBe expectedStatus
-            response.json shouldBe Json.toJson(expectedBody)
+            response.json shouldBe expectedBody.asJson
             response.header("Content-Type") shouldBe Some("application/json")
           }
         }
@@ -169,7 +169,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(mtdRequest().get())
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
@@ -186,7 +186,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(mtdRequest().get())
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }

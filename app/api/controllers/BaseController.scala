@@ -22,9 +22,7 @@ import api.models.auth.UserDetails
 import api.models.errors.{ErrorWrapper, StandardDownstreamError}
 import api.models.request.RawData
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
-import play.api.mvc.Results.InternalServerError
+import play.api.libs.json.JsValue
 import utils.Logging
 
 trait BaseController {

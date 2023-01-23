@@ -31,13 +31,15 @@ object AuditHandler {
             auditType: String,
             transactionName: String,
             pathParams: Map[String, String],
-            queryParams: Option[Map[String, Option[String]]] = None,
+            queryParams: Option[Map[String, Option[String]]] =
+              None, // Think I can maybe remove the queryParams here and make pathParams just params and if want to
             requestBody: Option[JsValue] = None,
             includeResponse: Boolean = false): AuditHandler = new AuditHandler(
     auditService = auditService,
     auditType = auditType,
     transactionName = transactionName,
     params = pathParams,
+    queryParams = queryParams,
     requestBody = requestBody,
     responseBodyMap = if (includeResponse) identity else _ => None
   )
@@ -61,7 +63,7 @@ case class AuditHandler(auditService: AuditService,
 
       val detail = GenericAuditDetail(
         userDetails = userDetails,
-        params = params,
+        pathParams = params,
         queryParams = queryParams,
         requestBody = requestBody,
         `X-CorrelationId` = ctx.correlationId,

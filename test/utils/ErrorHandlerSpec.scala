@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.http.Status
 import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, RequestHeader}
+import play.api.mvc.{AnyContentAsEmpty, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
@@ -43,6 +43,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
   def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
 
   class Test() {
+
     val method = "some-method"
 
     val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(versionHeader)
@@ -52,7 +53,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     val eventTags: Map[String, String] = Map("transactionName" -> "event.transactionName")
 
-    val dataEvent = DataEvent(
+    val dataEvent: DataEvent = DataEvent(
       auditSource = "auditSource",
       auditType = "event.auditType",
       eventId = "",
@@ -61,7 +62,9 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       generatedAt = Instant.now()
     )
 
-    (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier)).expects(*, *, *, *, *, *)
+    (httpAuditEvent
+      .dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier))
+      .expects(*, *, *, *, *, *)
       .returns(dataEvent)
 
     (auditConnector
@@ -83,46 +86,46 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     "return 404 with error body" when {
       s"URI not found" in new Test() {
 
-        private val result = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
-        status(result) shouldBe Status.NOT_FOUND
+        private val result: Future[Result] = handler.onClientError(requestHeader, NOT_FOUND, "test")
+        status(result) shouldBe NOT_FOUND
 
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
 
     "return 400 with error body" when {
       "JsValidationException thrown and header is supplied" in new Test() {
-        private val result = handler.onClientError(requestHeader, BAD_REQUEST, "test")
+        private val result: Future[Result] = handler.onClientError(requestHeader, BAD_REQUEST, "test")
         status(result) shouldBe BAD_REQUEST
 
-        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+        contentAsJson(result) shouldBe BadRequestError.asJson
       }
     }
 
     "return 401 with error body" when {
       "unauthorised and header is supplied" in new Test() {
-        private val result = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
+        private val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe Json.toJson(ClientNotAuthenticatedError)
+        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
       }
     }
 
     "return 415 with error body" when {
       "unsupported body and header is supplied" in new Test() {
-        private val result = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
+        private val result: Future[Result] = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
         status(result) shouldBe UNSUPPORTED_MEDIA_TYPE
 
-        contentAsJson(result) shouldBe Json.toJson(InvalidBodyTypeError)
+        contentAsJson(result) shouldBe InvalidBodyTypeError.asJson
       }
     }
 
     "return 405 with error body" when {
       "invalid method type" in new Test() {
-        private val result = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
+        private val result: Future[Result] = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
         status(result) shouldBe METHOD_NOT_ALLOWED
 
-        contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test"))
+        contentAsJson(result) shouldBe MtdError("INVALID_REQUEST", "test", BAD_REQUEST).asJson
       }
     }
   }
@@ -131,38 +134,38 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     "return 404 with error body" when {
       "NotFoundException thrown" in new Test() {
-        private val result = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
+        private val result: Future[Result] = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
         status(result) shouldBe NOT_FOUND
 
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
 
     "return 401 with error body" when {
       "AuthorisationException thrown" in new Test() {
-        private val result = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
+        private val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe Json.toJson(ClientNotAuthenticatedError)
+        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
       }
     }
 
     "return 400 with error body" when {
       "JsValidationException thrown" in new Test() {
-        private val result =
+        private val result: Future[Result] =
           handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
         status(result) shouldBe BAD_REQUEST
 
-        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+        contentAsJson(result) shouldBe BadRequestError.asJson
       }
     }
 
     "return 500 with error body" when {
       "other exception thrown" in new Test() {
-        private val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
+        private val result: Future[Result] = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
-        contentAsJson(result) shouldBe Json.toJson(StandardDownstreamError)
+        contentAsJson(result) shouldBe StandardDownstreamError.asJson
       }
     }
   }

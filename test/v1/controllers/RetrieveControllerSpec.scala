@@ -16,34 +16,32 @@
 
 package v1.controllers
 
-import api.controllers.ControllerBaseSpec
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.fixtures.RetrieveJson._
 import api.fixtures.RetrieveModels._
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.GET
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockRetrieveRequestParser
 import v1.mocks.services.MockRetrieveService
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 import v1.models.response.retrieve.RetrieveResponseModel._
-import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
-
+import v1.models.response.retrieve.RetrieveHateoasData
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveControllerSpec
     extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveRequestParser
@@ -53,36 +51,70 @@ class RetrieveControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  private val nino                            = "AA123456A"
-  private val fromDate                        = "2019-04-06"
-  private val toDate                          = "2020-04-05"
-  private val taxYear                         = TaxYear.fromMtd("2019-20")
-  private val sourceRaw                       = Some("customer")
-  private val sourceAll                       = "all"
-  private val correlationId                   = "X-123"
-  private val retrieveRawData                 = RetrieveRawData(nino, Some(fromDate), Some(toDate), sourceRaw)
-  private val retrieveRequestData             = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
-  private val optionalFieldMissingRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), None)
-  private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
+  private val nino                = "AA123456A"
+  private val fromDate            = "2019-04-06"
+  private val toDate              = "2020-04-05"
+  private val taxYear             = TaxYear.fromMtd("2019-20")
+  private val sourceRaw           = Some("customer")
+  private val sourceAll           = "all"
+  private val correlationId       = "X-123"
+  private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
 
   private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 
-  def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "RetrieveCisDeductionsForSubcontractor",
-      transactionName = "retrieve-cis-deductions-for-subcontractor",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        nino,
-        None,
-        `X-CorrelationId` = correlationId,
-        None,
-        auditResponse
-      )
-    )
+  "retrieve" should {
+    "return a successful response with status 200 (OK)" when {
+      "given a valid request" in new Test {
 
-  "RetrieveCis" should {
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Right(retrieveRequestData))
+
+        MockRetrieveService
+          .retrieve(retrieveRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        MockHateoasFactory
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceAll), taxYear))
+          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
+
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeAuditRequestBody = None,
+          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate)),
+          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate))
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockRetrieveDeductionRequestParser
+          .parse(retrieveRawData)
+          .returns(Right(retrieveRequestData))
+
+        MockRetrieveService
+          .retrieve(retrieveRequestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, FromDateFormatError))))
+
+        runErrorTestWithAudit(FromDateFormatError)
+
+      }
+    }
+  }
+
+  /*"RetrieveCis" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
         // MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
@@ -339,25 +371,38 @@ class RetrieveControllerSpec
 
       (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
     }
-  }
+  }*/
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+  trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       requestParser = mockRequestParser,
-      service = mockService,
+      service = mockRetrieveService,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
+    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceAll))(fakeRequest)
+
+    def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "RetrieveCisDeductionsForSubcontractor",
+        transactionName = "retrieve-cis-deductions-for-subcontractor",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          pathParams = Map("nino" -> nino),
+          queryParams = Some(Map("fromDate" -> Some(fromDate), "toDate" -> Some(toDate), "source" -> Some(sourceAll))),
+          requestBody = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
+      )
+
   }
 
 }

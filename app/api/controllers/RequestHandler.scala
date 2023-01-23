@@ -18,7 +18,7 @@ package api.controllers
 
 import api.controllers.requestParsers.RequestParser
 import api.hateoas.{HateoasFactory, HateoasLinksFactory}
-import api.models.errors.{ErrorWrapper, InternalError}
+import api.models.errors.{ErrorWrapper, StandardDownstreamError}
 import api.models.hateoas.{HateoasData, HateoasWrapper}
 import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
@@ -182,7 +182,7 @@ object RequestHandler {
         logger.error(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Unhandled error: $errorWrapper")
-        InternalServerError(Json.toJson(InternalError))
+        InternalServerError(StandardDownstreamError.asJson)
       }
 
     }

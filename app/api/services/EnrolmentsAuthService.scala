@@ -17,7 +17,7 @@
 package api.services
 
 import api.models.auth.UserDetails
-import api.models.errors.{StandardDownstreamError, ClientNotAuthenticatedError}
+import api.models.errors.{ClientNotAuthenticatedError, ClientNotAuthorisedError, StandardDownstreamError}
 import api.models.outcomes.outcomes.AuthOutcome
 import config.AppConfig
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
@@ -68,12 +68,12 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
             logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
             Left(StandardDownstreamError)
         }
-      case _ ~ _ =>
-        logger.warn(s"[EnrolmentsAuthService][authorised] Invalid AffinityGroup.")
-        Future.successful(Left(ClientNotAuthenticatedError))
+      case unexpected =>
+        logger.error(s"[EnrolmentsAuthService][authorised] Unexpected AuthorisedFunction: $unexpected")
+        Future.successful(Left(ClientNotAuthorisedError))
     } recoverWith {
-      case _: MissingBearerToken     => Future.successful(Left(ClientNotAuthenticatedError))
-      case _: AuthorisationException => Future.successful(Left(ClientNotAuthenticatedError))
+      case _: MissingBearerToken     => Future.successful(Left(ClientNotAuthorisedError))
+      case _: AuthorisationException => Future.successful(Left(ClientNotAuthorisedError))
       case error =>
         logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
         Future.successful(Left(StandardDownstreamError))

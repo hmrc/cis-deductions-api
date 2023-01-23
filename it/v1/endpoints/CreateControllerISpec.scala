@@ -61,7 +61,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
             val response: WSResponse = await(request().post(body))
             response.status shouldBe expectedStatus
-            response.json shouldBe Json.toJson(expectedBody)
+            response.json shouldBe expectedBody.asJson
           }
         }
 

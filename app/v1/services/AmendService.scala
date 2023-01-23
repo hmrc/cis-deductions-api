@@ -16,13 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
+import api.services.BaseService
 import cats.implicits.toBifunctorOps
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.AmendConnector
 import v1.models.request.amend.AmendRequestData
 
@@ -30,19 +28,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendService @Inject() (connector: AmendConnector) extends DownstreamResponseMappingSupport with Logging {
+class AmendService @Inject() (connector: AmendConnector) extends BaseService {
 
-  def amendDeductions(request: AmendRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendDeductions(
+      request: AmendRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendDeduction(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+    connector.amendDeduction(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
 
   }
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
@@ -60,6 +55,7 @@ class AmendService @Inject() (connector: AmendConnector) extends DownstreamRespo
       "INVALID_CORRELATION_ID" -> StandardDownstreamError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
+
     errors ++ extraTysErrors
   }
 

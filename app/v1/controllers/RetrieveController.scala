@@ -16,7 +16,6 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
 import api.controllers.{AuditHandler, AuthorisedController, BaseController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -26,9 +25,8 @@ import v1.controllers.requestParsers._
 import v1.models.request.retrieve.RetrieveRawData
 import v1.models.response.retrieve.RetrieveHateoasData
 import v1.services.RetrieveService
-
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     val lookupService: MtdIdLookupService,
@@ -48,7 +46,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       endpointName = "retrieveEndpoint"
     )
 
-  def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
+  def retrieve(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -64,7 +62,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
           auditType = "RetrieveCisDeductionsForSubcontractor",
           transactionName = "retrieve-cis-deductions-for-subcontractor",
           pathParams = Map("nino" -> nino),
-          queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source))
+          queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)),
+          requestBody = None
         ))
 
       requestHandler.handleRequest(rawData)

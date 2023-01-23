@@ -16,12 +16,11 @@
 
 package v1.mocks.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
 import v1.services.CreateService
@@ -30,14 +29,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockCreateService extends MockFactory {
 
-  val mockService: CreateService = mock[CreateService]
+  val mockCreateService: CreateService = mock[CreateService]
 
   object MockCreateService {
 
-    def submitCreateRequest(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
-      (mockService
-        .createDeductions(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
-        .expects(requestData, *, *, *, *)
+    def create(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
+      (mockCreateService
+        .createDeductions(_: CreateRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

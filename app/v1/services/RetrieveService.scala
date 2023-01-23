@@ -16,14 +16,12 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
-import cats.data.EitherT
+import api.services.BaseService
+import cats.implicits.toBifunctorOps
 import config.{AppConfig, FeatureSwitches}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.RetrieveConnector
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -32,22 +30,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends DownstreamResponseMappingSupport with Logging {
+class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends BaseService {
 
   implicit private lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]] = {
 
-    val errorMapping = if (request.taxYear.isTys) errorMapForTys else errorMap
+    val errorMapping = if (request.taxYear.isTys) errorMapTys else errorMap
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.retrieve(request)).leftMap(mapDownstreamErrors(errorMapping))
-    } yield desResponseWrapper
-    result.value
+    connector.retrieve(request).map(_.leftMap(mapDownstreamErrors(errorMapping)))
+
   }
 
   private val errorMap: Map[String, MtdError] =
@@ -62,7 +56,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
     )
 
-  private val errorMapForTys: Map[String, MtdError] =
+  private val errorMapTys: Map[String, MtdError] =
     errorMap ++ Map(
       "INVALID_DATE_RANGE"     -> RuleTaxYearRangeInvalidError,
       "INVALID_TAX_YEAR"       -> StandardDownstreamError,

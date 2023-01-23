@@ -30,22 +30,6 @@ import scala.concurrent.Future
 
 class AuthorisedControllerSpec extends ControllerBaseSpec {
 
-  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    class TestController extends AuthorisedController(cc) {
-      override val authService: EnrolmentsAuthService = mockEnrolmentsAuthService
-      override val lookupService: MtdIdLookupService  = mockMtdIdLookupService
-
-      def action(nino: String): Action[AnyContent] = authorisedAction(nino).async {
-        Future.successful(Ok(Json.obj()))
-      }
-
-    }
-
-    lazy val target = new TestController()
-  }
-
   val nino  = "AA123456A"
   val mtdId = "X123567890"
 
@@ -135,22 +119,6 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "the MTD user is not authenticated" should {
-    "return a 401" in new Test {
-
-      MockedMtdIdLookupService
-        .lookup(nino)
-        .returns(Future.successful(Right(mtdId)))
-
-      MockedEnrolmentsAuthService
-        .authorised(predicate)
-        .returns(Future.successful(Left(ClientNotAuthenticatedError)))
-
-      private val result = target.action(nino)(fakeGetRequest)
-      status(result) shouldBe FORBIDDEN
-    }
-  }
-
   "the MTD user is not authorised" should {
     "return a 403" in new Test {
 
@@ -165,6 +133,23 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
+  }
+
+  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
+
+    val hc: HeaderCarrier = HeaderCarrier()
+
+    class TestController extends AuthorisedController(cc) {
+      override val authService: EnrolmentsAuthService = mockEnrolmentsAuthService
+      override val lookupService: MtdIdLookupService  = mockMtdIdLookupService
+
+      def action(nino: String): Action[AnyContent] = authorisedAction(nino).async {
+        Future.successful(Ok(Json.obj()))
+      }
+
+    }
+
+    lazy val target = new TestController()
   }
 
 }

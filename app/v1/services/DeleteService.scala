@@ -16,13 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
-import cats.data.EitherT
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
+import api.services.BaseService
+import cats.implicits.toBifunctorOps
 import v1.connectors.DeleteConnector
 import v1.models.request.delete.DeleteRequestData
 
@@ -30,21 +28,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteService @Inject() (connector: DeleteConnector) extends DownstreamResponseMappingSupport with Logging {
+class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
 
-  def deleteDeductions(request: DeleteRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def deleteDeductions(
+      request: DeleteRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.delete(request)).leftMap(mapDownstreamErrors(errorMap))
-    } yield desResponseWrapper
-    result.value
+    connector.delete(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
+
   }
 
-  private def errorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,

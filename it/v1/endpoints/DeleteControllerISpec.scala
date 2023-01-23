@@ -19,7 +19,7 @@ package v1.endpoints
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
@@ -87,13 +87,13 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (DeleteRawData("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None), Status.BAD_REQUEST, NinoFormatError),
-          (DeleteRawData("AA123456A", "4cc-81f5-e6acd1099f3c", None), Status.BAD_REQUEST, SubmissionIdFormatError)
+          (DeleteRawData("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None), BAD_REQUEST, NinoFormatError),
+          (DeleteRawData("AA123456A", "4cc-81f5-e6acd1099f3c", None), BAD_REQUEST, SubmissionIdFormatError)
         )
 
         val extraTysInput = Seq(
-          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2023")), Status.BAD_REQUEST, TaxYearFormatError),
-          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021-22")), Status.BAD_REQUEST, InvalidTaxYearParameterError)
+          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2023")), BAD_REQUEST, TaxYearFormatError),
+          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021-22")), BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
         (input ++ extraTysInput).foreach(args => (validationErrorTest _).tupled(args))
@@ -119,12 +119,12 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.NOT_FOUND, "NO_DATA_FOUND", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, StandardDownstreamError),
-          (Status.BAD_REQUEST, "INVALID_SUBMISSION_ID", Status.BAD_REQUEST, SubmissionIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", Status.BAD_REQUEST, NinoFormatError)
+          (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+          (BAD_REQUEST, "INVALID_SUBMISSION_ID", BAD_REQUEST, SubmissionIdFormatError),
+          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

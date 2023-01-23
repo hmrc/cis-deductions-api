@@ -16,7 +16,7 @@
 
 package api.models.errors
 
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, NOT_FOUND, UNAUTHORIZED, UNSUPPORTED_MEDIA_TYPE}
+import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, NOT_FOUND, UNAUTHORIZED, UNSUPPORTED_MEDIA_TYPE}
 
 // MtdError types that are common across MTD APIs.
 
@@ -124,6 +124,7 @@ object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error", 
 object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error", INTERNAL_SERVER_ERROR)
 
 //Authorisation Errors
+object ClientNotAuthorisedError    extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN)
 object ClientNotAuthenticatedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client and/or agent is not authorised", UNAUTHORIZED)
 object InvalidBearerTokenError     extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized", UNAUTHORIZED)
 

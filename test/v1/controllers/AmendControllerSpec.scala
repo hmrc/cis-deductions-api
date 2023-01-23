@@ -54,7 +54,7 @@ class AmendControllerSpec
   private val rawMissingOptionalAmendRequestData = AmendRawData(nino, submissionId, missingOptionalRequestJson)
   private val missingOptionalAmendRequestData    = AmendRequestData(Nino(nino), submissionId, taxYear, amendMissingOptionalRequestObj)
 
-  "requestData" should {
+  "amendCis" should {
     "return a successful response with status 204 (NO CONTENT)" when {
       "a valid request is supplied for a cis PUT request" in new Test {
         MockAmendRequestDataParser
@@ -136,7 +136,7 @@ class AmendControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "submissionId" -> submissionId),
+          pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

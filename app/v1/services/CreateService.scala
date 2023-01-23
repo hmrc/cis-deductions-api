@@ -16,13 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
+import api.services.BaseService
 import cats.implicits.toBifunctorOps
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.CreateConnector
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
@@ -31,19 +29,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject() (connector: CreateConnector) extends DownstreamResponseMappingSupport with Logging {
+class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
   def createDeductions(request: CreateRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
 
-    connector.create(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+    connector.create(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val downstreamErrorMap = {
-
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
       "INVALID_PAYLOAD"                 -> RuleIncorrectOrEmptyBodyError,
