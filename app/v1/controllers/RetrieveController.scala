@@ -17,16 +17,14 @@
 package v1.controllers
 
 import api.controllers.RequestContextImplicits.toCorrelationId
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
+import api.controllers.{AuditHandler, AuthorisedController, BaseController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import cats.data.EitherT
-import cats.implicits._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers._
 import v1.models.request.retrieve.RetrieveRawData
-import v1.models.response.retrieve.{RetrieveHateoasData, RetrieveResponseModel}
+import v1.models.response.retrieve.RetrieveHateoasData
 import v1.services.RetrieveService
 
 import javax.inject.Inject
@@ -56,26 +54,18 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
 
       val rawData = RetrieveRawData(nino, fromDate, toDate, source)
 
-      /*val hateoasData = for {
-        parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-        serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
-      } yield {
-        RetrieveHateoasData(
-          nino,
-          parsedRequest.fromDate,
-          parsedRequest.toDate,
-          source,
-          parsedRequest.taxYear,
-          serviceResponse.responseData
-        )
-      }*/
-
       val requestHandler = RequestHandler
         .withParser(requestParser)
         .withService(service.retrieveDeductions)
-        .withHateoasResult(hateoasFactory)(RetrieveHateoasData())
-        // .withHateoasResult(hateoasFactory)(hateoasData)
-        .withAuditing()
+        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((request, _) =>
+          RetrieveHateoasData(nino, request.fromDate, request.toDate, source, request.taxYear)))
+        .withAuditing(AuditHandler(
+          auditService = auditService,
+          auditType = "RetrieveCisDeductionsForSubcontractor",
+          transactionName = "retrieve-cis-deductions-for-subcontractor",
+          pathParams = Map("nino" -> nino),
+          queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source))
+        ))
 
       requestHandler.handleRequest(rawData)
     }

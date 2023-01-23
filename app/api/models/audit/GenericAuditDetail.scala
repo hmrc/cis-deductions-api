@@ -23,6 +23,7 @@ import play.api.libs.json.{JsPath, JsValue, OWrites}
 case class GenericAuditDetail(userType: String,
                               agentReferenceNumber: Option[String],
                               params: Map[String, String],
+                              queryParams: Option[Map[String, Option[String]]] = None,
                               requestBody: Option[JsValue],
                               `X-CorrelationId`: String,
                               auditResponse: AuditResponse)
@@ -33,6 +34,7 @@ object GenericAuditDetail {
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
       JsPath.write[Map[String, String]] and
+      JsPath.writeNullable[Map[String, Option[String]]] and
       (JsPath \ "request").writeNullable[JsValue] and
       (JsPath \ "X-CorrelationId").write[String] and
       (JsPath \ "response").write[AuditResponse]
@@ -40,6 +42,7 @@ object GenericAuditDetail {
 
   def apply(userDetails: UserDetails,
             params: Map[String, String],
+            queryParams: Option[Map[String, Option[String]]] = None,
             requestBody: Option[JsValue],
             `X-CorrelationId`: String,
             auditResponse: AuditResponse): GenericAuditDetail = {
@@ -48,6 +51,7 @@ object GenericAuditDetail {
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
       params = params,
+      queryParams = queryParams,
       requestBody = requestBody,
       `X-CorrelationId` = `X-CorrelationId`,
       auditResponse = auditResponse

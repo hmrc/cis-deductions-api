@@ -58,7 +58,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
         auditService = auditService,
         auditType = "AmendCisDeductionsForSubcontractor",
         transactionName = "amend-cis-deductions-for-subcontractor",
-        params = Map("nino" -> nino, "submissionId" -> submissionId),
+        pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
         requestBody = Some(request.body)
       ))
 

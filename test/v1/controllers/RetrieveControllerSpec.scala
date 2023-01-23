@@ -97,10 +97,10 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear, response))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear))
           .returns(HateoasWrapper(response, Seq(testHateoasLink)))
 
-        /*val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
             totalDeductionAmount = Some(12345.56),
             totalCostOfMaterials = Some(234234.33),
@@ -117,7 +117,7 @@ class RetrieveControllerSpec
           Seq(
             retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
             createCisDeduction(mockAppConfig, nino, isSelf = false))
-        )*/
+        )
 
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
