@@ -33,7 +33,7 @@ trait MockAmendService extends MockFactory {
 
   object MockAmendService {
 
-    def submitAmendRequest(requestData: AmendRequestData): CallHandler5[
+    def amend(requestData: AmendRequestData): CallHandler5[
       AmendRequestData,
       HeaderCarrier,
       ExecutionContext,

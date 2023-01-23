@@ -25,7 +25,8 @@ import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdI
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.GET
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
@@ -64,6 +65,8 @@ class RetrieveControllerSpec
   private val optionalFieldMissingRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), None)
   private val optionalFieldMissingRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
 
+  private val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
+
   def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
     AuditEvent(
       auditType = "RetrieveCisDeductionsForSubcontractor",
@@ -82,8 +85,8 @@ class RetrieveControllerSpec
   "RetrieveCis" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
-        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
-        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+        // MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        // MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -93,7 +96,11 @@ class RetrieveControllerSpec
           .retrieveCisDeductions(retrieveRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+        MockHateoasFactory
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear, response))
+          .returns(HateoasWrapper(response, Seq(testHateoasLink)))
+
+        /*val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
             totalDeductionAmount = Some(12345.56),
             totalCostOfMaterials = Some(234234.33),
@@ -110,11 +117,7 @@ class RetrieveControllerSpec
           Seq(
             retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
             createCisDeduction(mockAppConfig, nino, isSelf = false))
-        )
-
-        MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear, response))
-          .returns(responseWithHateoas)
+        )*/
 
         val result: Future[Result] = controller.retrieveDeductions(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeGetRequest)
 
@@ -354,7 +357,7 @@ class RetrieveControllerSpec
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
+    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
 }

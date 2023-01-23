@@ -66,10 +66,4 @@ object RetrieveResponseModel extends HateoasLinks {
 
 }
 
-case class RetrieveHateoasData(nino: String,
-                               fromDate: String,
-                               toDate: String,
-                               source: Option[String],
-                               taxYear: TaxYear,
-                               retrieveResponse: RetrieveResponseModel[CisDeductions])
-    extends HateoasData
+case class RetrieveHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String], taxYear: TaxYear) extends HateoasData

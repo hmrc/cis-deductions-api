@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package utils
+package api.controllers
 
-import support.UnitSpec
+import api.models.errors.ErrorWrapper
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.mvc.Results.Status
 
-class IdGeneratorSpec extends UnitSpec {
+case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
 
-  val generator        = new IdGenerator
-  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
+object ErrorHandling {
 
-  "IdGenerator" should {
-    "generate a correlation id" when {
-      "getCorrelationId is called" in {
-        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
-      }
-    }
+  val Default: ErrorHandling = ErrorHandling { case errorWrapper: ErrorWrapper =>
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
   }
 
 }

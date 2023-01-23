@@ -36,7 +36,7 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
       case None                => throw new Exception("Unable to locate `deductionToDate` in request body")
 
     }
-    AmendRequestData(Nino(data.nino), data.id, taxYear, requestBody)
+    AmendRequestData(Nino(data.nino), data.submissionId, taxYear, requestBody)
   }
 
 }

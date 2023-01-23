@@ -30,28 +30,6 @@ import utils.Logging
 trait BaseController {
   self: Logging =>
 
-  protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
-    logger.error(
-      s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-        s"Unhandled error: $errorWrapper")
-    InternalServerError(Json.toJson(StandardDownstreamError))
-  }
-
-  implicit class Response(result: Result) {
-
-    def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
-
-      val newHeaders: Seq[(String, String)] = responseHeaders ++ Seq(
-        "X-CorrelationId"        -> correlationId,
-        "X-Content-Type-Options" -> "nosniff",
-        "Content-Type"           -> "application/json"
-      )
-
-      result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
-    }
-
-  }
-
   def createAuditDetails[A <: RawData](rawData: A,
                                        statusCode: Int,
                                        correlationId: String,

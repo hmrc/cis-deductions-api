@@ -58,7 +58,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
     )
 
   def createRequest(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-    implicit val correlationId: String = idGenerator.getCorrelationId
+    implicit val correlationId: String = idGenerator.generateCorrelationId
     logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
       s"with correlationId : $correlationId")
     val rawData = CreateRawData(
@@ -111,36 +111,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
           requestBody = Some(request.body)))
       result
     }.merge
-  }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            FromDateFormatError,
-            ToDateFormatError,
-            RuleIncorrectOrEmptyBodyError,
-            DeductionFromDateFormatError,
-            DeductionToDateFormatError,
-            RuleDeductionAmountError,
-            RuleCostOfMaterialsError,
-            RuleGrossAmountError,
-            EmployerRefFormatError,
-            RuleTaxYearNotSupportedError,
-            RuleDateRangeInvalidError,
-            RuleUnalignedDeductionsPeriodError,
-            RuleDeductionsDateRangeInvalidError,
-            RuleTaxYearNotEndedError,
-            RuleDuplicatePeriodError,
-            RuleDuplicateSubmissionError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case _             => InternalServerError(Json.toJson(errorWrapper))
-    }
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {

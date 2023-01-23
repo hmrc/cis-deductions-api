@@ -19,4 +19,4 @@ package v1.models.request.amend
 import api.models.request.RawData
 import play.api.libs.json.JsValue
 
-case class AmendRawData(nino: String, id: String, body: JsValue) extends RawData
+case class AmendRawData(nino: String, submissionId: String, body: JsValue) extends RawData

@@ -59,11 +59,11 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val validRawData: AmendRawData = AmendRawData(nino = nino, id = submissionId, body = requestDatesJson())
+  val validRawData: AmendRawData = AmendRawData(nino = nino, submissionId = submissionId, body = requestDatesJson())
 
   val validRawDataDifferentCalendarYears: AmendRawData = AmendRawData(
     nino = nino,
-    id = submissionId,
+    submissionId = submissionId,
     body = requestDatesJson(
       deductionFromDate1 = "2018-12-01",
       deductionToDate1 = "2019-01-01",
@@ -73,13 +73,13 @@ class PeriodDataDeductionDateValidationSpec extends UnitSpec {
 
   val invalidRawData: AmendRawData = AmendRawData(
     nino = nino,
-    id = submissionId,
+    submissionId = submissionId,
     body = requestDatesJson(deductionFromDate1 = "2018-06-06", deductionToDate1 = "2018-07-05")
   )
 
   val invalidRawDataSameCalendarYear: AmendRawData = AmendRawData(
     nino = nino,
-    id = submissionId,
+    submissionId = submissionId,
     body = requestDatesJson(
       deductionFromDate1 = "2019-01-01",
       deductionToDate1 = "2019-02-01",

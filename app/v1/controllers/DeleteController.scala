@@ -53,7 +53,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
 
   def deleteRequest(nino: String, submissionId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
         s"with correlationId : $correlationId")
       val rawData = DeleteRawData(nino, submissionId, taxYear)
@@ -93,24 +93,6 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
           createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, Some(rawData.submissionId), Some(errorWrapper)))
         result
       }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            SubmissionIdFormatError,
-            TaxYearFormatError,
-            RuleTaxYearNotSupportedError,
-            InvalidTaxYearParameterError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _                       => unhandledError(errorWrapper)
     }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
