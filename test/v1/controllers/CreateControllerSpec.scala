@@ -84,7 +84,7 @@ class CreateControllerSpec
           expectedStatus = OK,
           maybeAuditRequestBody = Some(requestJson),
           maybeExpectedResponseBody = Some(parsedHateoas),
-          maybeAuditResponseBody = None
+          maybeAuditResponseBody = Some(parsedHateoas)
         )
       }
     }

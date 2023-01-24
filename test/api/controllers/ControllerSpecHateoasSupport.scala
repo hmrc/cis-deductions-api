@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
-package api.models.request
+package api.controllers
 
-trait RawData
+import api.models.hateoas.Link
+import api.models.hateoas.Method.GET
+import play.api.libs.json.{JsObject, Json}
+
+trait ControllerSpecHateoasSupport {
+
+  val hateoaslinks: Seq[Link] = Seq(Link(href = "/foo/bar", method = GET, rel = "test-relationship"))
+
+  val hateoaslinksJson: JsObject = Json
+    .parse("""
+             |{
+             |  "links": [{
+             |    "href": "/foo/bar",
+             |    "method": "GET",
+             |    "rel": "test-relationship"
+             |  }]
+             |}""".stripMargin)
+    .as[JsObject]
+
+}

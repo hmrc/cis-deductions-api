@@ -62,7 +62,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
           transactionName = "retrieve-cis-deductions-for-subcontractor",
           pathParams = Map("nino" -> nino),
           queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)),
-          requestBody = None
+          requestBody = None,
+          includeResponse = true
         ))
 
       requestHandler.handleRequest(rawData)

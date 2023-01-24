@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
-package api.models.request
+package v1
 
-trait RawData
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
+
+package object services {
+
+  type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
+
+}

@@ -31,8 +31,7 @@ object AuditHandler {
             auditType: String,
             transactionName: String,
             pathParams: Map[String, String],
-            queryParams: Option[Map[String, Option[String]]] =
-              None, // Think I can maybe remove the queryParams here and make pathParams just params and if want to
+            queryParams: Option[Map[String, Option[String]]] = None,
             requestBody: Option[JsValue] = None,
             includeResponse: Boolean = false): AuditHandler = new AuditHandler(
     auditService = auditService,

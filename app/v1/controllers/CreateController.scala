@@ -66,7 +66,8 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         auditType = "CreateCisDeductionsForSubcontractor",
         transactionName = "create-cis-deductions-for-subcontractor",
         pathParams = Map("nino" -> nino),
-        requestBody = Some(request.body)
+        requestBody = Some(request.body),
+        includeResponse = true
       ))
       .withHateoasResultFrom(hateoasFactory) { (request, _) =>
         CreateHateoasData(nino, request)

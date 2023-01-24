@@ -30,7 +30,14 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
-class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService {
+class ControllerBaseSpec
+    extends UnitSpec
+    with Status
+    with MimeTypes
+    with HeaderNames
+    with ResultExtractors
+    with MockAuditService
+    with ControllerSpecHateoasSupport {
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 

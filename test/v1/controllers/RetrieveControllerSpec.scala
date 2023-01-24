@@ -27,6 +27,7 @@ import api.models.errors._
 import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockRetrieveRequestParser
@@ -34,6 +35,7 @@ import v1.mocks.services.MockRetrieveService
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 import v1.models.response.retrieve.RetrieveResponseModel._
 import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -54,28 +56,31 @@ class RetrieveControllerSpec
   private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), sourceRaw)
   private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
 
-  val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
-    RetrieveResponseModel(
-      totalDeductionAmount = Some(12345.56),
-      totalCostOfMaterials = Some(234234.33),
-      totalGrossAmountPaid = Some(2342424.56),
-      Seq(
-        HateoasWrapper(
-          cisDeductions,
-          Seq(
-            deleteCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
-            amendCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
-          )
-        ))
-    ),
-    Seq(
-      retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
-      createCisDeduction(mockAppConfig, nino, isSelf = false))
-  )
-
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
+
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+
+        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
+          RetrieveResponseModel(
+            totalDeductionAmount = Some(12345.56),
+            totalCostOfMaterials = Some(234234.33),
+            totalGrossAmountPaid = Some(2342424.56),
+            Seq(
+              HateoasWrapper(
+                cisDeductions,
+                Seq(
+                  deleteCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
+                  amendCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                )
+              ))
+          ),
+          Seq(
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false))
+        )
 
         MockRetrieveDeductionRequestParser
           .parse(retrieveRawData)
@@ -137,7 +142,7 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceAll))(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -147,7 +152,7 @@ class RetrieveControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           pathParams = Map("nino" -> nino),
-          queryParams = Some(Map("fromDate" -> Some(fromDate), "toDate" -> Some(toDate), "source" -> Some(sourceAll))),
+          queryParams = Some(Map("fromDate" -> Some(fromDate), "toDate" -> Some(toDate), "source" -> sourceRaw)),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
