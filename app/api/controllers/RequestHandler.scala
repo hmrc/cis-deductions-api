@@ -25,7 +25,7 @@ import api.models.request.RawData
 import cats.data.EitherT
 import cats.implicits._
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
 import utils.Logging

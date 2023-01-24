@@ -20,6 +20,7 @@ import api.controllers.EndpointLogContext
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 import utils.Logging
 
@@ -30,13 +31,13 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
   val correlationId = "someCorrelationId"
 
-  object Error1 extends MtdError("msg", "code1")
+  object Error1 extends MtdError("msg", "code1", BAD_REQUEST)
 
-  object Error2 extends MtdError("msg", "code2")
+  object Error2 extends MtdError("msg", "code2", BAD_REQUEST)
 
-  object ErrorBvrMain extends MtdError("msg", "bvrMain")
+  object ErrorBvrMain extends MtdError("msg", "bvrMain", BAD_REQUEST)
 
-  object ErrorBvr extends MtdError("msg", "bvr")
+  object ErrorBvr extends MtdError("msg", "bvr", BAD_REQUEST)
 
   val errorCodeMap: PartialFunction[String, MtdError] = {
     case "ERR1" => Error1

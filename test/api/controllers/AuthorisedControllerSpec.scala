@@ -17,7 +17,7 @@
 package api.controllers
 
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.errors.{InvalidBearerTokenError, NinoFormatError, StandardDownstreamError, ClientNotAuthenticatedError}
+import api.models.errors.{ClientNotAuthenticatedError, InvalidBearerTokenError, NinoFormatError, StandardDownstreamError}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
@@ -103,7 +103,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .returns(Future.successful(Left(ClientNotAuthenticatedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
-      status(result) shouldBe FORBIDDEN
+      status(result) shouldBe UNAUTHORIZED
     }
   }
 
@@ -131,7 +131,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .returns(Future.successful(Left(ClientNotAuthenticatedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
-      status(result) shouldBe FORBIDDEN
+      status(result) shouldBe UNAUTHORIZED
     }
   }
 

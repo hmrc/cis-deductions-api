@@ -22,13 +22,12 @@ import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdI
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors.MtdError
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
 
 class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService {
@@ -73,7 +72,7 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
       status(result) shouldBe expectedError.httpStatus
       header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-      contentAsJson(result) shouldBe Json.toJson(expectedError)
+      contentAsJson(result) shouldBe expectedError.asJson
     }
 
     protected def callController(): Future[Result]
@@ -99,12 +98,12 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
 
     protected def checkAuditOkEvent(expectedStatus: Int, maybeRequestBody: Option[JsValue], maybeAuditResponseBody: Option[JsValue]): Unit = {
       val auditResponse: AuditResponse = AuditResponse(expectedStatus, None, maybeAuditResponseBody)
-      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once
+      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once()
     }
 
     protected def checkAuditErrorEvent(expectedError: MtdError, maybeRequestBody: Option[JsValue]): Unit = {
       val auditResponse: AuditResponse = AuditResponse(expectedError.httpStatus, Some(Seq(AuditError(expectedError.code))), None)
-      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once
+      MockedAuditService.verifyAuditEvent(event(auditResponse, maybeRequestBody)).once()
     }
 
   }

@@ -19,7 +19,7 @@ package api.models.errors
 import play.api.libs.json.{Json, Reads}
 
 case class DownstreamErrorCode(code: String) {
-  def toMtd: MtdError = MtdError(code = code, message = "")
+  def toMtd(httpStatus: Int): MtdError = MtdError(code = code, message = "", httpStatus = httpStatus)
 }
 
 object DownstreamErrorCode {
@@ -31,7 +31,7 @@ sealed trait DownstreamError
 case class DownstreamErrors(errors: Seq[DownstreamErrorCode]) extends DownstreamError
 
 object DownstreamErrors {
-  def single(error: DownstreamErrorCode): DownstreamErrors = DownstreamErrors(Seq(error))
+  def single(error: DownstreamErrorCode): DownstreamErrors = DownstreamErrors(List(error))
 }
 
 case class OutboundError(error: MtdError, errors: Option[Seq[MtdError]] = None) extends DownstreamError

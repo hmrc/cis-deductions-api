@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, BaseController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.{AppConfig, FeatureSwitches}
@@ -41,7 +41,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   cc: ControllerComponents,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -51,7 +50,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
     )
 
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-
     implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
     val rawData = CreateRawData(
@@ -68,7 +66,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         auditType = "CreateCisDeductionsForSubcontractor",
         transactionName = "create-cis-deductions-for-subcontractor",
         pathParams = Map("nino" -> nino),
-        requestBody = None
+        requestBody = Some(request.body)
       ))
       .withHateoasResultFrom(hateoasFactory) { (request, _) =>
         CreateHateoasData(nino, request)

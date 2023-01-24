@@ -17,7 +17,7 @@
 package api.services
 
 import api.mocks.connectors.MockMtdIdLookupConnector
-import api.models.errors.{ClientNotAuthenticatedError, ClientNotAuthorisedError, NinoFormatError, StandardDownstreamError}
+import api.models.errors.{ClientNotAuthorisedError, NinoFormatError, StandardDownstreamError}
 
 import scala.concurrent.Future
 

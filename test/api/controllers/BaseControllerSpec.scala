@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.controllers
+/*package api.controllers
 
 import play.api.http.HttpEntity
 import play.api.mvc.{ResponseHeader, Result}
@@ -55,4 +55,4 @@ class BaseControllerSpec extends UnitSpec {
     }
   }
 
-}
+}*/

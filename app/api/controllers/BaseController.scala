@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package api.controllers
+/*package api.controllers
 
 import api.models.audit
 import api.models.audit.{AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
-import api.models.errors.{ErrorWrapper, StandardDownstreamError}
+import api.models.errors.ErrorWrapper
 import api.models.request.RawData
 import play.api.http.Status
 import play.api.libs.json.JsValue
@@ -51,4 +51,4 @@ trait BaseController {
     audit.GenericAuditDetail(userDetails.userType, userDetails.agentReferenceNumber, rawData.nino, submissionId, correlationId, requestBody, response)
   }
 
-}
+}*/

@@ -38,7 +38,7 @@ object AuditHandler {
     auditService = auditService,
     auditType = auditType,
     transactionName = transactionName,
-    params = pathParams,
+    pathParams = pathParams,
     queryParams = queryParams,
     requestBody = requestBody,
     responseBodyMap = if (includeResponse) identity else _ => None
@@ -49,8 +49,8 @@ object AuditHandler {
 case class AuditHandler(auditService: AuditService,
                         auditType: String,
                         transactionName: String,
-                        params: Map[String, String],
-                        queryParams: Option[Map[String, Option[String]]] = None,
+                        pathParams: Map[String, String],
+                        queryParams: Option[Map[String, Option[String]]],
                         requestBody: Option[JsValue],
                         responseBodyMap: Option[JsValue] => Option[JsValue])
     extends RequestContextImplicits {
@@ -63,7 +63,7 @@ case class AuditHandler(auditService: AuditService,
 
       val detail = GenericAuditDetail(
         userDetails = userDetails,
-        pathParams = params,
+        pathParams = pathParams,
         queryParams = queryParams,
         requestBody = requestBody,
         `X-CorrelationId` = ctx.correlationId,

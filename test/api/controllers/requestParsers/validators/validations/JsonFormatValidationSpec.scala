@@ -18,6 +18,7 @@ package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.MtdError
 import api.models.utils.JsonErrorValidators
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Json, Reads}
 import support.UnitSpec
 
@@ -27,7 +28,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
   implicit val testDataObjectReads: Reads[TestDataObject] = Json.reads[TestDataObject]
 
-  val someError = MtdError("SOME_CODE", "some message")
+  val someError = MtdError("SOME_CODE", "some message", BAD_REQUEST)
 
   "validate" should {
     "return no errors" when {

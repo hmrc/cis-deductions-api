@@ -17,8 +17,7 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.MockIdGenerator
-import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
@@ -29,32 +28,22 @@ import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.requestParsers.MockAmendRequestParser
 import v1.mocks.services.MockAmendService
 import v1.models.request.amend.{AmendRawData, AmendRequestData}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
     with MockAmendRequestParser
     with MockAmendService
-    with MockAuditService
-    with MockIdGenerator {
+    with MockAuditService {
 
-  private val nino          = "AA123456A"
-  private val submissionId  = "S4636A77V5KB8625U"
-  private val correlationId = "X-123"
-  private val taxYear       = TaxYear.fromIso("2019-07-05")
+  private val submissionId = "S4636A77V5KB8625U"
+  private val taxYear      = TaxYear.fromIso("2019-07-05")
+  private val rawData      = AmendRawData(nino, submissionId, requestJson)
+  private val requestData  = AmendRequestData(Nino(nino), submissionId, taxYear, amendRequestObj)
 
-  private val rawData     = AmendRawData(nino, submissionId, requestJson)
-  private val requestData = AmendRequestData(Nino(nino), submissionId, taxYear, amendRequestObj)
-
-  private val rawMissingOptionalAmendRequestData = AmendRawData(nino, submissionId, missingOptionalRequestJson)
-  private val missingOptionalAmendRequestData    = AmendRequestData(Nino(nino), submissionId, taxYear, amendMissingOptionalRequestObj)
-
-  "amendCis" should {
+  "amend" should {
     "return a successful response with status 204 (NO CONTENT)" when {
       "a valid request is supplied for a cis PUT request" in new Test {
         MockAmendRequestDataParser
@@ -63,23 +52,6 @@ class AmendControllerSpec
 
         MockAmendService
           .amend(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
-
-        runOkTestWithAudit(
-          expectedStatus = NO_CONTENT,
-          maybeExpectedResponseBody = None,
-          maybeAuditRequestBody = Some(requestJson),
-          maybeAuditResponseBody = None
-        )
-      }
-
-      "a valid request is supplied for a cis PUT request with optional fields missing" in new Test {
-        MockAmendRequestDataParser
-          .parse(rawMissingOptionalAmendRequestData)
-          .returns(Right(missingOptionalAmendRequestData))
-
-        MockAmendService
-          .amend(missingOptionalAmendRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
 
         runOkTestWithAudit(
@@ -137,6 +109,7 @@ class AmendControllerSpec
           userType = "Individual",
           agentReferenceNumber = None,
           pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
+          queryParams = None,
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
