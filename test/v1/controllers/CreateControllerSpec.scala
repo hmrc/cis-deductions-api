@@ -82,9 +82,9 @@ class CreateControllerSpec
 
         runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(parsedHateoas),
           maybeAuditRequestBody = Some(requestJson),
-          maybeAuditResponseBody = Some(responseJson)
+          maybeExpectedResponseBody = Some(parsedHateoas),
+          maybeAuditResponseBody = None
         )
       }
     }
