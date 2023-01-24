@@ -48,14 +48,14 @@ class CreateService @Inject() (connector: CreateConnector) extends BaseService {
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
       "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR"                    -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"             -> StandardDownstreamError,
-      "INVALID_CORRELATIONID"           -> StandardDownstreamError
+      "SERVER_ERROR"                    -> InternalError,
+      "SERVICE_UNAVAILABLE"             -> InternalError,
+      "INVALID_CORRELATIONID"           -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID" -> StandardDownstreamError,
-      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+      "INVALID_CORRELATION_ID" -> InternalError,
+      "INVALID_TAX_YEAR"       -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError,

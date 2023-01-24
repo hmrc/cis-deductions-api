@@ -30,7 +30,7 @@ trait DownstreamResponseMappingSupport {
 
     lazy val defaultErrorCodeMapping: String => MtdError = { code =>
       logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
-      StandardDownstreamError
+      InternalError
     }
 
     downstreamResponseWrapper match {
@@ -40,11 +40,11 @@ trait DownstreamResponseMappingSupport {
       case ResponseWrapper(correlationId, DownstreamErrors(errorCodes)) =>
         val mtdErrors = errorCodes.map(error => errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping))
 
-        if (mtdErrors.contains(StandardDownstreamError)) {
+        if (mtdErrors.contains(InternalError)) {
           logger.warn(
             s"[${logContext.controllerName}] [${logContext.endpointName}] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errorCodes.map(_.code).mkString(",")}. Revert to ISE")
-          ErrorWrapper(correlationId, StandardDownstreamError, None)
+          ErrorWrapper(correlationId, InternalError, None)
         } else {
           errors.ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors))
         }

@@ -41,18 +41,18 @@ class AmendService @Inject() (connector: AmendConnector) extends BaseService {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "INVALID_CORRELATIONID"     -> InternalError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_TAX_YEAR_ALIGN"    -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"        -> RuleDeductionsDateRangeInvalidError,
       "INVALID_PAYLOAD"           -> RuleIncorrectOrEmptyBodyError,
       "DUPLICATE_MONTH"           -> RuleDuplicatePeriodError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError,
-      "SERVICE_ERROR"             -> StandardDownstreamError
+      "SERVICE_UNAVAILABLE"       -> InternalError,
+      "SERVICE_ERROR"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
-      "INVALID_CORRELATION_ID" -> StandardDownstreamError,
+      "INVALID_TAX_YEAR"       -> InternalError,
+      "INVALID_CORRELATION_ID" -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 

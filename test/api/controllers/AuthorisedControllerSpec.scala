@@ -17,7 +17,7 @@
 package api.controllers
 
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.errors.{ClientNotAuthenticatedError, InvalidBearerTokenError, NinoFormatError, StandardDownstreamError}
+import api.models.errors.{ClientNotAuthenticatedError, InvalidBearerTokenError, NinoFormatError, InternalError}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
@@ -62,7 +62,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
         MockedEnrolmentsAuthService
           .authorised(predicate)
-          .returns(Future.successful(Left(StandardDownstreamError)))
+          .returns(Future.successful(Left(InternalError)))
 
         private val result = target.action(nino)(fakeGetRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
@@ -112,7 +112,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedMtdIdLookupService
         .lookup(nino)
-        .returns(Future.successful(Left(StandardDownstreamError)))
+        .returns(Future.successful(Left(InternalError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe INTERNAL_SERVER_ERROR

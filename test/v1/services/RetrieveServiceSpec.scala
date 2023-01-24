@@ -88,12 +88,12 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
         ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
-        ("INVALID_TAX_YEAR", StandardDownstreamError),
+        ("INVALID_TAX_YEAR", InternalError),
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
         ("INVALID_SOURCE", RuleSourceError),
-        ("SERVER_ERROR", StandardDownstreamError),
-        ("SERVICE_UNAVAILABLE", StandardDownstreamError)
+        ("SERVER_ERROR", InternalError),
+        ("SERVICE_UNAVAILABLE", InternalError)
       )
       errors.foreach(args => (serviceError _).tupled(args))
 

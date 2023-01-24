@@ -17,7 +17,7 @@
 package api.connectors.httpparsers
 
 import api.connectors.DownstreamOutcome
-import api.models.errors.{OutboundError, StandardDownstreamError}
+import api.models.errors.{OutboundError, InternalError}
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status._
 import play.api.libs.json.Reads
@@ -38,7 +38,7 @@ object StandardDownstreamHttpParser extends HttpParser {
       doRead(url, response) { correlationId =>
         response.validateJson[A] match {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
-          case None      => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
+          case None      => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
         }
       }
 
@@ -61,7 +61,7 @@ object StandardDownstreamHttpParser extends HttpParser {
             s"Success response received from downstream with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
       case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY | GONE => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _ => Left(ResponseWrapper(correlationId, OutboundError(StandardDownstreamError)))
+      case _ => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 
