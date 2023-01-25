@@ -16,14 +16,14 @@
 
 package v1.endpoints
 
+import api.fixtures.RetrieveJson._
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.fixtures.RetrieveJson._
-import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
@@ -118,7 +118,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
             val response: WSResponse = await(mtdRequest().get())
             response.status shouldBe expectedStatus
-            response.json shouldBe Json.toJson(expectedBody)
+            response.json shouldBe expectedBody.asJson
             response.header("Content-Type") shouldBe Some("application/json")
           }
         }
@@ -169,7 +169,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(mtdRequest().get())
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
@@ -186,7 +186,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(mtdRequest().get())
-          response.json shouldBe Json.toJson(expectedBody)
+          response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
         }
@@ -194,9 +194,9 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       val errors = List(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, StandardDownstreamError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
@@ -205,7 +205,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 
       val extraTysErrors = List(
-        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, StandardDownstreamError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )

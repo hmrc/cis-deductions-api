@@ -16,24 +16,17 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
-import play.api.http.MimeTypes
-import play.api.libs.json.Json
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
+import api.hateoas.HateoasFactory
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers._
-import v1.hateoas.HateoasFactory
-import v1.models.audit.{AuditEvent, GenericAuditDetail}
-import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
-import v1.models.response.retrieve
-import v1.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService, RetrieveService}
-
+import v1.models.response.retrieve.RetrieveHateoasData
+import v1.services.RetrieveService
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     val lookupService: MtdIdLookupService,
@@ -44,7 +37,6 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     cc: ControllerComponents,
                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -53,88 +45,28 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       endpointName = "retrieveEndpoint"
     )
 
-  def retrieveDeductions(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
+  def retrieve(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData = RetrieveRawData(nino, fromDate, toDate, source)
 
-      val result = for {
-        parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-        serviceResponse <- EitherT(service.retrieveDeductions(parsedRequest))
-      } yield {
-        val hateoasData = retrieve.RetrieveHateoasData(
-          nino,
-          parsedRequest.fromDate,
-          parsedRequest.toDate,
-          source,
-          parsedRequest.taxYear,
-          serviceResponse.responseData
-        )
+      val requestHandler = RequestHandler
+        .withParser(requestParser)
+        .withService(service.retrieveDeductions)
+        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((request, _) =>
+          RetrieveHateoasData(nino, request.fromDate, request.toDate, source, request.taxYear)))
+        .withAuditing(AuditHandler(
+          auditService = auditService,
+          auditType = "RetrieveCisDeductionsForSubcontractor",
+          transactionName = "retrieve-cis-deductions-for-subcontractor",
+          pathParams = Map("nino" -> nino),
+          queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)),
+          requestBody = None,
+          includeResponse = true
+        ))
 
-        val vendorResponse = hateoasFactory.wrapList(serviceResponse.responseData, hateoasData)
-
-        logger.info(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-        auditSubmission(
-          createAuditDetails(
-            rawData,
-            OK,
-            serviceResponse.correlationId,
-            request.userDetails,
-            None,
-            None,
-            responseBody = Some(Json.toJson(vendorResponse))))
-
-        Ok(Json.toJson(vendorResponse))
-          .withApiHeaders(serviceResponse.correlationId)
-          .as(MimeTypes.JSON)
-      }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-
-        auditSubmission(createAuditDetails(rawData, result.header.status, correlationId, request.userDetails, None, Some(errorWrapper)))
-        result
-      }.merge
+      requestHandler.handleRequest(rawData)
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            FromDateFormatError,
-            ToDateFormatError,
-            RuleMissingFromDateError,
-            RuleMissingToDateError,
-            RuleSourceError,
-            TaxYearFormatError,
-            RuleTaxYearNotSupportedError,
-            RuleTaxYearRangeInvalidError,
-            RuleDateRangeOutOfDate,
-            RuleDateRangeInvalidError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case NotFoundError           => NotFound(Json.toJson(errorWrapper))
-      case StandardDownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _                       => unhandledError(errorWrapper)
-    }
-
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("RetrieveCisDeductionsForSubcontractor", "retrieve-cis-deductions-for-subcontractor", details)
-    auditService.auditEvent(event)
-  }
 
 }

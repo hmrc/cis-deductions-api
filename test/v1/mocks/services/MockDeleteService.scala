@@ -16,12 +16,11 @@
 
 package v1.mocks.services
 
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.DeleteRequestData
 import v1.services.DeleteService
 
@@ -33,10 +32,10 @@ trait MockDeleteService extends MockFactory {
 
   object MockDeleteService {
 
-    def deleteRequest(requestData: DeleteRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def delete(requestData: DeleteRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteService
-        .deleteDeductions(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
-        .expects(requestData, *, *, *, *)
+        .deleteDeductions(_: DeleteRequestData)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

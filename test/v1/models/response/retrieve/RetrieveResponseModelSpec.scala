@@ -16,15 +16,15 @@
 
 package v1.models.response.retrieve
 
+import api.fixtures.RetrieveModels.cisDeductions
+import api.fixtures.{RetrieveJson, RetrieveModels}
+import api.models.domain.TaxYear
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
-import v1.fixtures.RetrieveModels.cisDeductions
-import v1.fixtures._
-import v1.models.domain.TaxYear
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{DELETE, GET, POST, PUT}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
@@ -65,7 +65,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     "return the correct links" in { () =>
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-      val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+      val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
 
       RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
         Seq(
@@ -79,7 +79,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
       MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-      val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+      val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
       val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
@@ -94,7 +94,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
       () =>
         MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
-        val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear, RetrieveModels.multipleDeductionsModel)
+        val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
         val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
         RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe

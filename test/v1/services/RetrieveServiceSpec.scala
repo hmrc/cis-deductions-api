@@ -16,16 +16,16 @@
 
 package v1.services
 
+import api.controllers.EndpointLogContext
+import api.fixtures.RetrieveModels._
+import api.models.domain.Nino
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
-import v1.models.domain.Nino
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
@@ -88,12 +88,12 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
         ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
-        ("INVALID_TAX_YEAR", StandardDownstreamError),
+        ("INVALID_TAX_YEAR", InternalError),
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
         ("INVALID_SOURCE", RuleSourceError),
-        ("SERVER_ERROR", StandardDownstreamError),
-        ("SERVICE_UNAVAILABLE", StandardDownstreamError)
+        ("SERVER_ERROR", InternalError),
+        ("SERVICE_UNAVAILABLE", InternalError)
       )
       errors.foreach(args => (serviceError _).tupled(args))
 

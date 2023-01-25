@@ -16,43 +16,77 @@
 
 package v1.controllers
 
-import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.mocks.services.MockAuditService
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.fixtures.RetrieveJson._
-import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRequestDataParser
 import v1.mocks.services._
-import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.{Nino, TaxYear}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockDeleteRequestDataParser
     with MockDeleteService
-    with MockAppConfig
-    with MockAuditService
-    with MockIdGenerator {
+    with MockAuditService {
 
-  private val nino              = "AA123456A"
   private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   private val rawTaxYear        = "2022-23"
   private val taxYear           = TaxYear.fromMtd(rawTaxYear)
-  private val correlationId     = "X-123"
   private val deleteRawData     = DeleteRawData(nino, submissionId, Some(rawTaxYear))
   private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId, Some(taxYear))
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+  "delete" should {
+    "return a successful response with status 204 (No Content)" when {
+      "a valid request is supplied" in new Test {
+
+        MockDeleteRequestDataParser
+          .parse(deleteRawData)
+          .returns(Right(deleteRequestData))
+
+        MockDeleteService
+          .delete(deleteRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
+
+        runOkTestWithAudit(expectedStatus = NO_CONTENT)
+
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+
+        MockDeleteRequestDataParser
+          .parse(deleteRawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockDeleteRequestDataParser
+          .parse(deleteRawData)
+          .returns(Right(deleteRequestData))
+
+        MockDeleteService
+          .delete(deleteRequestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, SubmissionIdFormatError))))
+
+        runErrorTestWithAudit(SubmissionIdFormatError)
+
+      }
+    }
+  }
+
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new DeleteController(
       authService = mockEnrolmentsAuthService,
@@ -64,158 +98,23 @@ class DeleteControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+    protected def callController(): Future[Result] = controller.delete(nino, submissionId, Some(rawTaxYear))(fakeRequest)
 
-  def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "DeleteCisDeductionsForSubcontractor",
-      transactionName = "delete-cis-deductions-for-subcontractor",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        nino,
-        Some(submissionId),
-        `X-CorrelationId` = correlationId,
-        None,
-        auditResponse
-      )
-    )
-
-  "Delete CIS Deductions" should {
-    "return a successful response with status 204 (No Content)" when {
-      "a valid request is supplied" in new Test {
-
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Right(deleteRequestData))
-
-        MockDeleteService
-          .deleteRequest(deleteRequestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
-
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
-
-        status(result) shouldBe NO_CONTENT
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(NO_CONTENT, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
-
-      }
-    }
-
-    "return the error as per spec" when {
-      def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-        s"a ${error.code} error is returned from the parser" in new Test {
-
-          MockDeleteRequestDataParser
-            .parse(deleteRawData)
-            .returns(Left(ErrorWrapper(correlationId, error)))
-
-          val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
-
-          status(result) shouldBe expectedStatus
-          contentAsJson(result) shouldBe Json.toJson(error)
-          header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
-
-        }
-      }
-
-      val input = Seq(
-        (BadRequestError, BAD_REQUEST),
-        (NinoFormatError, BAD_REQUEST),
-        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
+    def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "DeleteCisDeductionsForSubcontractor",
+        transactionName = "delete-cis-deductions-for-subcontractor",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
+          queryParams = Some(Map("taxYear" -> Some(rawTaxYear))),
+          requestBody = maybeRequestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
       )
 
-      val extraTysInput = Seq(
-        (TaxYearFormatError, BAD_REQUEST)
-      )
-
-      (input ++ extraTysInput).foreach(args => (errorsFromParserTester _).tupled(args))
-
-      "multiple parser errors occur" in new Test {
-        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, NinoFormatError)))
-
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Left(error))
-
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
-
-        status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(error)
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse =
-          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(NinoFormatError.code))), None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
-      }
-
-      "multiple errors occur for format errors" in new Test {
-        val error = ErrorWrapper(correlationId, BadRequestError, Some(Seq(BadRequestError, RuleSourceError)))
-
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Left(error))
-
-        val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
-
-        status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(error)
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse =
-          AuditResponse(BAD_REQUEST, Some(Seq(AuditError(BadRequestError.code), AuditError(RuleSourceError.code))), None)
-
-        MockedAuditService.verifyAuditEvent(event(auditResponse, None)).once()
-      }
-    }
-
-    "return downstream errors as per the spec" when {
-      def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-        s"a ${mtdError.code} error is returned from the service" in new Test {
-
-          MockDeleteRequestDataParser
-            .parse(deleteRawData)
-            .returns(Right(deleteRequestData))
-
-          MockDeleteService
-            .deleteRequest(deleteRequestData)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-          val result: Future[Result] = controller.deleteRequest(nino, submissionId, Some(rawTaxYear))(fakeRequest)
-
-          status(result) shouldBe expectedStatus
-          contentAsJson(result) shouldBe Json.toJson(mtdError)
-          header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-          val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-          MockedAuditService.verifyAuditEvent(event(auditResponse, Some(singleDeductionJson()))).once()
-        }
-      }
-
-      val input = Seq(
-        (NinoFormatError, BAD_REQUEST),
-        (SubmissionIdFormatError, BAD_REQUEST),
-        (NotFoundError, NOT_FOUND),
-        (StandardDownstreamError, INTERNAL_SERVER_ERROR)
-      )
-
-      val extraTysInput = Seq(
-        (TaxYearFormatError, BAD_REQUEST),
-        (RuleTaxYearNotSupportedError, BAD_REQUEST),
-        (InvalidTaxYearParameterError, BAD_REQUEST)
-      )
-
-      (input ++ extraTysInput).foreach(args => (serviceErrors _).tupled(args))
-
-    }
   }
 
 }

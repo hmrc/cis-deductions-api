@@ -20,6 +20,7 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
+import Status._
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
@@ -55,7 +56,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   "GET /api/definition" should {
     "return a 200 with the correct response body" in {
       val response: WSResponse = await(buildRequest("/api/definition").get())
-      response.status shouldBe Status.OK
+      response.status shouldBe OK
       Json.parse(response.body) shouldBe apiDefinitionJson
     }
   }
@@ -63,7 +64,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   "a documentation request" must {
     "return the documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
-      response.status shouldBe Status.OK
+      response.status shouldBe OK
       response.body[String] should startWith("#%RAML 1.0")
     }
   }
