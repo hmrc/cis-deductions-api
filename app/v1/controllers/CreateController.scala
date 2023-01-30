@@ -65,7 +65,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         auditService = auditService,
         auditType = "CreateCisDeductionsForSubcontractor",
         transactionName = "create-cis-deductions-for-subcontractor",
-        pathParams = Map("nino" -> nino),
+        params = Map("nino" -> nino),
         requestBody = Some(request.body),
         includeResponse = true
       ))

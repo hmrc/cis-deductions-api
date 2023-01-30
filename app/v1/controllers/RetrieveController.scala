@@ -56,15 +56,22 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
         .withService(service.retrieveDeductions)
         .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((request, _) =>
           RetrieveHateoasData(nino, request.fromDate, request.toDate, source, request.taxYear)))
-        .withAuditing(AuditHandler(
-          auditService = auditService,
-          auditType = "RetrieveCisDeductionsForSubcontractor",
-          transactionName = "retrieve-cis-deductions-for-subcontractor",
-          pathParams = Map("nino" -> nino),
-          queryParams = Some(Map("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)),
-          requestBody = None,
-          includeResponse = true
-        ))
+        .withAuditing {
+          val params =
+            Map("nino" -> nino) ++
+              fromDate.map(x => "fromDate" -> x) ++
+              toDate.map(x => "toDate" -> x) ++
+              source.map(x => "source" -> x)
+
+          AuditHandler(
+            auditService = auditService,
+            auditType = "RetrieveCisDeductionsForSubcontractor",
+            transactionName = "retrieve-cis-deductions-for-subcontractor",
+            params = params,
+            requestBody = None,
+            includeResponse = true
+          )
+        }
 
       requestHandler.handleRequest(rawData)
     }

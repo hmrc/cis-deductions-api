@@ -108,8 +108,7 @@ class AmendControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
-          queryParams = None,
+          params = Map("nino" -> nino, "submissionId" -> submissionId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

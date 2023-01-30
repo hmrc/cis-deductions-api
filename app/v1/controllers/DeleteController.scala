@@ -51,14 +51,17 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
       val requestHandler = RequestHandler
         .withParser(requestParser)
         .withService(service.deleteDeductions)
-        .withAuditing(AuditHandler(
-          auditService = auditService,
-          auditType = "DeleteCisDeductionsForSubcontractor",
-          transactionName = "delete-cis-deductions-for-subcontractor",
-          pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
-          queryParams = Some(Map("taxYear" -> taxYear)),
-          requestBody = None
-        ))
+        .withAuditing {
+          val params = Map("nino" -> nino, "submissionId" -> submissionId) ++ taxYear.map(x => "taxYear" -> x)
+
+          AuditHandler(
+            auditService = auditService,
+            auditType = "DeleteCisDeductionsForSubcontractor",
+            transactionName = "delete-cis-deductions-for-subcontractor",
+            params = params,
+            requestBody = None
+          )
+        }
 
       requestHandler.handleRequest(rawData)
     }

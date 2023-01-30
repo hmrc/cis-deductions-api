@@ -190,7 +190,7 @@ class RequestHandlerSpec
         mockAuditService,
         auditType = auditType,
         transactionName = txName,
-        pathParams = params,
+        params = params,
         requestBody = requestBody,
         includeResponse = includeResponse
       )
@@ -207,8 +207,7 @@ class RequestHandlerSpec
             transactionName = txName,
             GenericAuditDetail(
               userDetails,
-              pathParams = params,
-              queryParams = None,
+              params = params,
               requestBody = requestBody,
               `X-CorrelationId` = correlationId,
               auditResponse = auditResponse)

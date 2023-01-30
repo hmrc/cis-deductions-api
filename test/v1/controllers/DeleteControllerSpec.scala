@@ -107,8 +107,7 @@ class DeleteControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          pathParams = Map("nino" -> nino, "submissionId" -> submissionId),
-          queryParams = Some(Map("taxYear" -> Some(rawTaxYear))),
+          params = Map("nino" -> nino, "submissionId" -> submissionId, "taxYear" -> rawTaxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
