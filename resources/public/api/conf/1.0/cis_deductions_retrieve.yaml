@@ -45,6 +45,7 @@ get:
     - $ref: './common/queryParameters.yaml#/components/parameters/from'
     - $ref: './common/queryParameters.yaml#/components/parameters/to'
     - $ref: './common/queryParameters.yaml#/components/parameters/source'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
     - $ref: './common/headers.yaml#/components/parameters/acceptJson'
     - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
     - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'

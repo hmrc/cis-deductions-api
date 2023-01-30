@@ -10,12 +10,21 @@ components:
         example: application/vnd.hmrc.1.0+json
       required: true
 
-    authorization:
+    authorizationReadScopeHeader:
       name: "Authorization"
       in: header
       description: |
-        An OAuth 2.0 Bearer Token with the <b>write:self-assessment</b> or <b>read:self-assessment</b> scope.
+        An OAuth 2.0 Bearer Token with the *read:self-assessment* scope.
+      schema:
+        type: string
+        example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+      required: true
 
+    authorizationWriteScopeHeader:
+      name: "Authorization"
+      in: header
+      description: |
+        An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
       schema:
         type: string
         example: Bearer bb7fed3fe10dd235a2ccda3d50fb
