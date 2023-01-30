@@ -20,7 +20,9 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
-import Status._
+import Status.OK
+import io.swagger.v3.parser.OpenAPIV3Parser
+import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
@@ -61,11 +63,28 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     }
   }
 
-  "a documentation request" must {
+  "a RAML documentation request" must {
     "return the documentation" in {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
       response.status shouldBe OK
       response.body[String] should startWith("#%RAML 1.0")
+    }
+  }
+
+  "an OAS documentation request" must {
+    "return the documentation that passes OAS V3 parser" in {
+      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
+      response.status shouldBe Status.OK
+
+      val contents     = response.body[String]
+      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+      parserResult.isSuccess shouldBe true
+
+      val openAPI = Option(parserResult.get.getOpenAPI)
+      openAPI.isEmpty shouldBe false
+      openAPI.get.getOpenapi shouldBe "3.0.3"
+      openAPI.get.getInfo.getTitle shouldBe "CIS Deductions (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "1.0"
     }
   }
 
