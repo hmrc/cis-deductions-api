@@ -51,10 +51,9 @@ class RetrieveControllerSpec
   private val fromDate            = "2019-04-06"
   private val toDate              = "2020-04-05"
   private val taxYear             = TaxYear.fromMtd("2019-20")
-  private val sourceRaw           = Some("customer")
-  private val sourceAll           = "all"
-  private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), sourceRaw)
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceAll)
+  private val sourceRaw           = "customer"
+  private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), Some(sourceRaw))
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -78,7 +77,7 @@ class RetrieveControllerSpec
               ))
           ),
           Seq(
-            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, sourceRaw, isSelf = true),
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw), isSelf = true),
             createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -91,7 +90,7 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, sourceRaw, taxYear))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw), taxYear))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
@@ -142,7 +141,7 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), sourceRaw)(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw))(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -151,8 +150,7 @@ class RetrieveControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          pathParams = Map("nino" -> nino),
-          queryParams = Some(Map("fromDate" -> Some(fromDate), "toDate" -> Some(toDate), "source" -> sourceRaw)),
+          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
