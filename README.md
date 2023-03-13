@@ -19,19 +19,6 @@ Run unit tests: `sbt test`
 
 Run integration tests: `sbt it:test`
 
-## Vieweing RAML
-To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:
-
-```
-./run_local_with_dependencies.sh
-```
-
-Then go to http://localhost:7781/api-documentation/docs/api/preview and use this port and version:
-
-```
-http://localhost:7796/api/conf/1.0/application.raml
-```
-
 ## Changelog
 
 You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
