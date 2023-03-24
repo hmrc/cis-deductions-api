@@ -98,6 +98,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleUnalignedDeductionsPeriod'
           RULE_DUPLICATE_PERIOD:
             $ref: './common/errors.yaml#/components/examples/ruleDuplicatePeriod'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
   "403":
     description: Forbidden
     content:
