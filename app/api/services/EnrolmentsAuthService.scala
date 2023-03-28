@@ -46,6 +46,8 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
 
   def buildPredicate(predicate: Predicate): Predicate =
     if (appConfig.confidenceLevelConfig.authValidationEnabled) {
+      // Deliberately leaving hardcoded 200 confidence level here, despite it being available in the app config.
+      // See https://jira.tools.tax.service.gov.uk/browse/MTDSA-15545 for explanation.
       predicate and ((Individual and ConfidenceLevel.L200) or Organisation or Agent)
     } else {
       predicate
