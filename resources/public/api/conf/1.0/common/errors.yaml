@@ -206,6 +206,13 @@ components:
         code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
         message: The deductions periods do not align with the tax year supplied
 
+    ruleTaxYearRangeExceeded:
+      description: |
+        The tax year range is exceeded.  A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_EXCEEDED
+        message: Tax year range exceeded. A tax year range of one year is required
+
     # 403
     clientOrAgentNotAuthorised:
       description: |
