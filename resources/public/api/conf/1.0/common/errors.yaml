@@ -58,6 +58,13 @@ components:
         code: FORMAT_TAX_YEAR
         message: The provided tax year is invalid
 
+    ruleTaxYearRangeExceeded:
+      description: |
+        The tax year range is exceeded.  A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_EXCEEDED
+        message: Tax year range exceeded. A tax year range of one year is required
+
     formatToDate:
       description: |
         The To date is not a valid format.
