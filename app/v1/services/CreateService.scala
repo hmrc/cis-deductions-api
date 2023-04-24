@@ -18,8 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.BaseService
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v1.connectors.CreateConnector
 import v1.models.request.create.CreateRequestData
@@ -31,9 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
-  def createDeductions(request: CreateRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+  def createDeductions(
+      request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
 
     connector.create(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
