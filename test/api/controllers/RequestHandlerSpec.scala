@@ -27,6 +27,7 @@ import api.models.errors.{ErrorWrapper, NinoFormatError}
 import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
+import api.services.ServiceOutcome
 import config.AppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
@@ -36,7 +37,6 @@ import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import v1.services.ServiceOutcome
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}

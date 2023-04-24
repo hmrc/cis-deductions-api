@@ -18,8 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.BaseService
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v1.connectors.DeleteConnector
 import v1.models.request.delete.DeleteRequestData
@@ -30,8 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
 
-  def deleteDeductions(
-      request: DeleteRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def deleteDeductions(request: DeleteRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.delete(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
 
