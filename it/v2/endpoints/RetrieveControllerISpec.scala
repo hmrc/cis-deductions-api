@@ -230,7 +230,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       buildRequest(s"/$nino/current-position")
         .withQueryStringParameters(mtdQueryParams: _*)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
