@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v2.mocks.requestParsers
 
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.RetrieveRequestParser
-import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
+import v2.controllers.requestParsers.RetrieveRequestParser
+import v2.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 trait MockRetrieveRequestParser extends MockFactory {
 

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v1.controllers
+package v2.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import v1.fixtures.RetrieveJson._
-import v1.fixtures.RetrieveModels._
+import v2.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveModels._
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -30,11 +30,11 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockRetrieveRequestParser
-import v1.mocks.services.MockRetrieveService
-import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
-import v1.models.response.retrieve.RetrieveResponseModel._
-import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
+import v2.mocks.requestParsers.MockRetrieveRequestParser
+import v2.mocks.services.MockRetrieveService
+import v2.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
+import v2.models.response.retrieve.RetrieveResponseModel._
+import v2.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

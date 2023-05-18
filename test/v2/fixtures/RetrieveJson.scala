@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.fixtures
+package v2.fixtures
 
 import play.api.libs.json.{JsValue, Json}
 
@@ -112,45 +112,45 @@ object RetrieveJson {
 
   def singleDeductionJson(fromDate: String = "2019-04-06", toDate: String = "2020-04-05"): JsValue = Json.parse {
     s"""
-      |{
-      | "totalDeductionAmount": 12345.56,
-      | "totalCostOfMaterials": 234234.33,
-      | "totalGrossAmountPaid": 2342424.56,
-      | "cisDeductions" : [
-      |  {
-      |    "fromDate": "$fromDate",
-      |    "toDate": "$toDate",
-      |    "contractorName": "contractor Name",
-      |    "employerRef": "123/AA12345",
-      |    "totalDeductionAmount": 3543.55,
-      |    "totalCostOfMaterials": 6644.67,
-      |    "totalGrossAmountPaid": 3424.12,
-      |    "periodData": [
-      |      {
-      |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2019-06-06",
-      |        "deductionToDate": "2019-07-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-07-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
-      |      },
-      |      {
-      |        "deductionAmount": 355.00,
-      |        "deductionFromDate": "2019-07-06",
-      |        "deductionToDate": "2019-08-05",
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-08-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
-      |      }
-      |    ]
-      |  }
-      |]
-      |}
-      |""".stripMargin
+       |{
+       | "totalDeductionAmount": 12345.56,
+       | "totalCostOfMaterials": 234234.33,
+       | "totalGrossAmountPaid": 2342424.56,
+       | "cisDeductions" : [
+       |  {
+       |    "fromDate": "$fromDate",
+       |    "toDate": "$toDate",
+       |    "contractorName": "contractor Name",
+       |    "employerRef": "123/AA12345",
+       |    "totalDeductionAmount": 3543.55,
+       |    "totalCostOfMaterials": 6644.67,
+       |    "totalGrossAmountPaid": 3424.12,
+       |    "periodData": [
+       |      {
+       |        "deductionAmount": 355.00,
+       |        "deductionFromDate": "2019-06-06",
+       |        "deductionToDate": "2019-07-05",
+       |        "costOfMaterials": 35.00,
+       |        "grossAmountPaid": 1457.00,
+       |        "submissionDate": "2020-07-11T16:38:57.489Z",
+       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+       |        "source": "customer"
+       |      },
+       |      {
+       |        "deductionAmount": 355.00,
+       |        "deductionFromDate": "2019-07-06",
+       |        "deductionToDate": "2019-08-05",
+       |        "costOfMaterials": 35.00,
+       |        "grossAmountPaid": 1457.00,
+       |        "submissionDate": "2020-08-11T16:38:57.489Z",
+       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+       |        "source": "customer"
+       |      }
+       |    ]
+       |  }
+       |]
+       |}
+       |""".stripMargin
   }
 
   val singleDeductionWithoutIdsJson: JsValue = Json.parse {
@@ -237,69 +237,69 @@ object RetrieveJson {
 
   def singleDeductionJsonHateoas(fromDate: String, toDate: String, taxYearParam: String = ""): JsValue = Json.parse {
     s"""
-      |{
-      |"totalDeductionAmount": 12345.56,
-      |"totalCostOfMaterials": 234234.33,
-      |"totalGrossAmountPaid": 2342424.56,
-      | "cisDeductions" : [
-      |  {
-      |    "fromDate": "$fromDate",
-      |    "toDate": "$toDate",
-      |    "contractorName": "contractor Name",
-      |    "employerRef": "123/AA12345",
-      |    "totalDeductionAmount": 3543.55,
-      |    "totalCostOfMaterials": 6644.67,
-      |    "totalGrossAmountPaid": 3424.12,
-      |    "periodData": [
-      |      {
-      |        "deductionFromDate": "2019-06-06",
-      |        "deductionToDate": "2019-07-05",
-      |        "deductionAmount": 355.00,
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-07-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
-      |      },
-      |      {
-      |        "deductionFromDate": "2019-07-06",
-      |        "deductionToDate": "2019-08-05",
-      |        "deductionAmount": 355.00,
-      |        "costOfMaterials": 35.00,
-      |        "grossAmountPaid": 1457.00,
-      |        "submissionDate": "2020-08-11T16:38:57.489Z",
-      |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |        "source": "customer"
-      |      }
-      |    ],
-      |    "links": [
-      |                {
-      |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c$taxYearParam",
-      |                    "method": "DELETE",
-      |                    "rel": "delete-cis-deductions-for-subcontractor"
-      |                },
-      |                {
-      |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-      |                    "method": "PUT",
-      |                    "rel": "amend-cis-deductions-for-subcontractor"
-      |                }
-      |            ]
-      |  }
-      |],
-      |    "links": [
-      |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=$fromDate&toDate=$toDate&source=customer",
-      |            "method": "GET",
-      |            "rel": "self"
-      |        },
-      |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/amendments",
-      |            "method": "POST",
-      |            "rel": "create-cis-deductions-for-subcontractor"
-      |        }
-      |    ]
-      |}
-      |""".stripMargin
+       |{
+       |"totalDeductionAmount": 12345.56,
+       |"totalCostOfMaterials": 234234.33,
+       |"totalGrossAmountPaid": 2342424.56,
+       | "cisDeductions" : [
+       |  {
+       |    "fromDate": "$fromDate",
+       |    "toDate": "$toDate",
+       |    "contractorName": "contractor Name",
+       |    "employerRef": "123/AA12345",
+       |    "totalDeductionAmount": 3543.55,
+       |    "totalCostOfMaterials": 6644.67,
+       |    "totalGrossAmountPaid": 3424.12,
+       |    "periodData": [
+       |      {
+       |        "deductionFromDate": "2019-06-06",
+       |        "deductionToDate": "2019-07-05",
+       |        "deductionAmount": 355.00,
+       |        "costOfMaterials": 35.00,
+       |        "grossAmountPaid": 1457.00,
+       |        "submissionDate": "2020-07-11T16:38:57.489Z",
+       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+       |        "source": "customer"
+       |      },
+       |      {
+       |        "deductionFromDate": "2019-07-06",
+       |        "deductionToDate": "2019-08-05",
+       |        "deductionAmount": 355.00,
+       |        "costOfMaterials": 35.00,
+       |        "grossAmountPaid": 1457.00,
+       |        "submissionDate": "2020-08-11T16:38:57.489Z",
+       |        "submissionId": "4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+       |        "source": "customer"
+       |      }
+       |    ],
+       |    "links": [
+       |                {
+       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c$taxYearParam",
+       |                    "method": "DELETE",
+       |                    "rel": "delete-cis-deductions-for-subcontractor"
+       |                },
+       |                {
+       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
+       |                    "method": "PUT",
+       |                    "rel": "amend-cis-deductions-for-subcontractor"
+       |                }
+       |            ]
+       |  }
+       |],
+       |    "links": [
+       |        {
+       |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=$fromDate&toDate=$toDate&source=customer",
+       |            "method": "GET",
+       |            "rel": "self"
+       |        },
+       |        {
+       |            "href": "/individuals/deductions/cis/AA123456A/amendments",
+       |            "method": "POST",
+       |            "rel": "create-cis-deductions-for-subcontractor"
+       |        }
+       |    ]
+       |}
+       |""".stripMargin
   }
 
   val singleDeductionWithoutIdsJsonHateoas: JsValue = Json.parse {

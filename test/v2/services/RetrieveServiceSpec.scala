@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package v1.services
+package v2.services
 
 import api.controllers.EndpointLogContext
-import v1.fixtures.RetrieveModels._
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -25,9 +24,10 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.connectors.MockRetrieveConnector
-import v1.models.request.retrieve.RetrieveRequestData
-import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
+import v2.fixtures.RetrieveModels._
+import v2.mocks.connectors.MockRetrieveConnector
+import v2.models.request.retrieve.RetrieveRequestData
+import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
