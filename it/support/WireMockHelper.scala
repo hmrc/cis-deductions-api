@@ -25,7 +25,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 
 object WireMockHelper extends Eventually with IntegrationPatience {
 
-  val wireMockPort: Int = 11111
+  val wireMockPort: Int = 11113
   val host: String      = "localhost"
 }
 
