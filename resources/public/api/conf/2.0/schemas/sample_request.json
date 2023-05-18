@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Sample Endpoint",
+  "description": "Sample Endpoint",
+  "type": "object",
+  "properties": {
+    "data": {
+      "description": "a field defined within the schema",
+      "type": "string",
+      "example": "example"
+    }
+  },
+  "required": [
+    "data"
+  ]
+}
