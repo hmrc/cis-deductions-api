@@ -1,0 +1,111 @@
+get:
+  summary: Retrieve CIS Deductions for Subcontractor
+  description: |
+    This endpoint allows a developer to retrieve a customer's latest CIS deductions data and whether it was submitted by a contractor or user. A National Insurance number and submission ID must be provided.
+    
+    ### Test data
+    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Header Value (Gov-Test-Scenario)</th>
+                <th>Scenario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><p>N/A - DEFAULT</p></td>
+                <td><p>Simulate success response with customer and contractor deductions.</p></td>
+            </tr>
+            <tr>
+                <td><p>N/A - DEFAULT<br>using source <strong>all</strong></p></td>
+                <td><p>Simulate success response with customer and contractor deductions.</p></td>
+            </tr>
+            <tr>
+                <td><p>N/A - DEFAULT<br>using source <strong>contractor</strong></p></td>
+                <td><p>Simulate success response with contractor deductions.</p></td>
+            </tr>
+            <tr>
+                <td><p>N/A - DEFAULT<br>using source <strong>customer</strong></p></td>
+                <td><p>Simulate success response with customer deductions.</p></td>
+            </tr>
+            <tr>
+                <td><p>DATE_RANGE_OUT_OF_DATE</p></td>
+                <td><p>Simulate error when retrieving data which is outside the allowable tax years.</p></td>
+            </tr>
+            <tr>
+                <td><p>NOT_FOUND</p></td>
+                <td><p>Simulate the scenario where no data is found.</p></td>
+            </tr>
+        </tbody>
+    </table>
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/queryParameters.yaml#/components/parameters/from'
+    - $ref: './common/queryParameters.yaml#/components/parameters/to'
+    - $ref: './common/queryParameters.yaml#/components/parameters/source'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/acceptJson'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - read:self-assessment
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/list_response.json'
+          examples:
+            example-response:
+              description: Example Response
+              value:
+                $ref: './examples/list_response_1.json'
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            RULE_DATE_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleDateRangeInvalid'
+            RULE_DATE_RANGE_OUT_OF_DATE:
+              $ref: './common/errors.yaml#/components/examples/ruleDateRangeOutOfDate'
+            FORMAT_FROM_DATE:
+              $ref: './common/errors.yaml#/components/examples/formatFromDate'
+            MISSING_FROM_DATE:
+              $ref: './common/errors.yaml#/components/examples/missingFromDate'
+            FORMAT_TO_DATE:
+              $ref: './common/errors.yaml#/components/examples/formatToDate'
+            MISSING_TO_DATE:
+              $ref: './common/errors.yaml#/components/examples/missingToDate'
+            RULE_SOURCE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleSourceInvalid'
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

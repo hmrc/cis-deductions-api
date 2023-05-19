@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.fixtures.RetrieveModels._
+import v1.fixtures.RetrieveModels._
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper

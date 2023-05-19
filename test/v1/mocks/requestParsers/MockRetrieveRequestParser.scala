@@ -24,7 +24,7 @@ import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 trait MockRetrieveRequestParser extends MockFactory {
 
-  val mockRequestParser = mock[RetrieveRequestParser]
+  val mockRequestParser: RetrieveRequestParser = mock[RetrieveRequestParser]
 
   object MockRetrieveDeductionRequestParser {
 

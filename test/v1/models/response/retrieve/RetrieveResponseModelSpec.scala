@@ -16,8 +16,7 @@
 
 package v1.models.response.retrieve
 
-import api.fixtures.RetrieveModels.cisDeductions
-import api.fixtures.{RetrieveJson, RetrieveModels}
+import v1.fixtures.RetrieveModels.cisDeductions
 import api.models.domain.TaxYear
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
@@ -25,6 +24,7 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
+import v1.fixtures.{RetrieveJson, RetrieveModels}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
