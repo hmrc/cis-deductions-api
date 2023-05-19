@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package v2.models.request.retrieve
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status._
-import support.WireMockMethods
+import api.models.request.RawData
 
-object AuditStub extends WireMockMethods {
-
-  private val auditUri: String = s"/write/audit.*"
-
-  def audit(): StubMapping = {
-    when(method = POST, uri = auditUri)
-      .thenReturn(status = NO_CONTENT)
-  }
-
-}
+case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData

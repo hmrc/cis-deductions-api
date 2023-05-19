@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.fixtures
+package v1.fixtures
 
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 

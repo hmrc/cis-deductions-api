@@ -17,8 +17,8 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.fixtures.RetrieveJson._
-import api.fixtures.RetrieveModels._
+import v1.fixtures.RetrieveJson._
+import v1.fixtures.RetrieveModels._
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
