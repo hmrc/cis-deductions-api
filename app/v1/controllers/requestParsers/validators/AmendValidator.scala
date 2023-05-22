@@ -49,18 +49,6 @@ class AmendValidator extends Validator[AmendRawData] {
     )
   }
 
-//  private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
-//    val req = data.body.as[AmendBody]
-//
-//    val dateOrderValidations = req.periodData.map { period =>
-//      PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
-//    }.toList
-//
-//    val multiplePeriodsTaxYearValidation = List(PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(data))
-//
-//    dateOrderValidations ++ multiplePeriodsTaxYearValidation
-//  }
-
   override def validate(data: AmendRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }

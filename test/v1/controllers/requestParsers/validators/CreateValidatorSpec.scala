@@ -18,23 +18,14 @@ package v1.controllers.requestParsers.validators
 
 import api.models.errors._
 import mocks.MockAppConfig
-import org.joda.time.DateTime
 import support.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.request.create.CreateRawData
-
-import java.time.Year
 
 class CreateValidatorSpec extends UnitSpec {
 
   val nino        = "AA123456A"
   val invalidNino = "GHFG197854"
-
-  val now                 = DateTime.now()
-  val currentYear         = Year.now.getValue
-  val taxYearEndsThisYear = now.dayOfMonth().get() < 6 && now.monthOfYear().get() == 4 || now.monthOfYear().get() < 4
-
-  val (taxYearStart, taxYearEnd) = if (taxYearEndsThisYear) (currentYear - 1, currentYear) else (currentYear, currentYear + 1)
 
   class SetUp extends MockAppConfig {
     val validator = new CreateValidator(mockAppConfig)
