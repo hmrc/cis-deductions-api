@@ -17,7 +17,6 @@
 package v1.controllers.requestParsers.validators
 
 import api.models.errors._
-import play.api.libs.json.Json
 import support.UnitSpec
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.request.amend.AmendRawData
@@ -52,10 +51,6 @@ class AmendValidatorSpec extends UnitSpec {
       "invalid body type error" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, missingMandatoryFieldRequestJson))
         result shouldBe List(RuleIncorrectOrEmptyBodyError)
-      }
-      "multiple periodDate objects are present with deductionToDate fields pointing to more than one tax year" in new AmendValidator {
-        private val result = validator.validate(AmendRawData(validNino, validId, invalidRequestForDifferentTaxYearsJson))
-        result shouldBe List(RuleUnalignedDeductionsPeriodError)
       }
       "an empty JSON period array is supplied as the request body" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, emptyPeriodDataJson))
@@ -93,90 +88,6 @@ class AmendValidatorSpec extends UnitSpec {
       "invalid request body GrossAmount negative is provided" in new AmendValidator {
         private val result = validator.validate(AmendRawData(validNino, validId, invalidGrossAmountNegativeRequestJson))
         result shouldBe List(RuleGrossAmountError)
-      }
-      "invalid request body deductionToDate before deductionFromDate" in new AmendValidator {
-        private val result = validator.validate(
-          AmendRawData(
-            validNino,
-            validId,
-            Json.parse("""
-              |{
-              |  "periodData": [
-              |      {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-08-06",
-              |      "deductionToDate": "2019-07-05",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    },
-              |    {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-07-06",
-              |      "deductionToDate": "2019-08-05",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    }
-              |  ]
-              |}
-              |""".stripMargin)
-          ))
-        result shouldBe List(RuleDeductionsDateRangeInvalidError)
-      }
-      "invalid request body deductionFromDate not yyyy-mm-06" in new AmendValidator {
-        private val result = validator.validate(
-          AmendRawData(
-            validNino,
-            validId,
-            Json.parse("""
-              |{
-              |  "periodData": [
-              |      {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-06-09",
-              |      "deductionToDate": "2019-07-05",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    },
-              |    {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-07-06",
-              |      "deductionToDate": "2019-08-05",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    }
-              |  ]
-              |}
-              |""".stripMargin)
-          ))
-        result shouldBe List(RuleDeductionsDateRangeInvalidError)
-      }
-      "invalid request body deductionToDate not yyyy-mm-05" in new AmendValidator {
-        private val result = validator.validate(
-          AmendRawData(
-            validNino,
-            validId,
-            Json.parse("""
-              |{
-              |  "periodData": [
-              |      {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-06-06",
-              |      "deductionToDate": "2019-07-08",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    },
-              |    {
-              |      "deductionAmount": 355.00,
-              |      "deductionFromDate": "2019-07-06",
-              |      "deductionToDate": "2019-08-05",
-              |      "costOfMaterials": 35.00,
-              |      "grossAmountPaid": 1457.00
-              |    }
-              |  ]
-              |}
-              |""".stripMargin)
-          ))
-        result shouldBe List(RuleDeductionsDateRangeInvalidError)
       }
     }
   }

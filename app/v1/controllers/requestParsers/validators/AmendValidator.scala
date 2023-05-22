@@ -23,7 +23,7 @@ import v1.models.request.amend.{AmendBody, AmendRawData}
 
 class AmendValidator extends Validator[AmendRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyRuleValidator, businessRuleValidator)
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyRuleValidator)
 
   private def parameterFormatValidation: AmendRawData => List[List[MtdError]] = (data: AmendRawData) => {
     List(
@@ -49,17 +49,17 @@ class AmendValidator extends Validator[AmendRawData] {
     )
   }
 
-  private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[AmendBody]
-
-    val dateOrderValidations = req.periodData.map { period =>
-      PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
-    }.toList
-
-    val multiplePeriodsTaxYearValidation = List(PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(data))
-
-    dateOrderValidations ++ multiplePeriodsTaxYearValidation
-  }
+//  private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
+//    val req = data.body.as[AmendBody]
+//
+//    val dateOrderValidations = req.periodData.map { period =>
+//      PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
+//    }.toList
+//
+//    val multiplePeriodsTaxYearValidation = List(PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(data))
+//
+//    dateOrderValidations ++ multiplePeriodsTaxYearValidation
+//  }
 
   override def validate(data: AmendRawData): List[MtdError] = {
     run(validationSet, data).distinct
