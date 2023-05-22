@@ -17,41 +17,22 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.controllers.requestParsers.validators.validations.validations.NoValidationErrors
-import api.models.errors.{MtdError, RuleDateRangeInvalidError, RuleTaxYearNotEndedError}
+import api.models.errors.{MtdError, RuleDateRangeInvalidError}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 object TaxYearDatesValidation {
 
-  def validate(fromDate: String, toDate: String, allowedNumberOfYearsBetweenDates: Int, validateTaxYearEndedFlag: Boolean): List[MtdError] = {
-    lazy val taxYearEndedErrors = if (validateTaxYearEndedFlag) {
-      validateTaxYearEnded(fromDate, toDate)
-    } else {
-      NoValidationErrors
-    }
+  def validate(fromDate: String, toDate: String, allowedNumberOfYearsBetweenDates: Int): List[MtdError] = {
+
     // Will return an error if one or both of these is on the incorrect day of the year
     val fromAndToDateErrors = validateFromDate(fromDate) ++ validateToDate(toDate)
 
     fromAndToDateErrors match {
       case Nil =>
-        validateYears(allowedNumberOfYearsBetweenDates, fromDate, toDate) match {
-          case Nil  => taxYearEndedErrors
-          case errs => errs
-        }
+        validateYears(allowedNumberOfYearsBetweenDates, fromDate, toDate)
       case errs => errs
-    }
-  }
-
-  private def validateTaxYearEnded(fromDate: String, toDate: String): List[MtdError] = {
-    val currentDate = LocalDate.now()
-    val formatter   = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val startDate   = LocalDate.parse(fromDate, formatter)
-    val endDate     = LocalDate.parse(toDate, formatter)
-    (startDate.isBefore(currentDate), endDate.isBefore(currentDate)) match {
-      case (false, _)    => List(RuleDateRangeInvalidError)
-      case (true, false) => List(RuleTaxYearNotEndedError)
-      case _             => NoValidationErrors
     }
   }
 

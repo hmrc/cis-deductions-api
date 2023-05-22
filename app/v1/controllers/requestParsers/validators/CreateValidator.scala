@@ -67,28 +67,9 @@ class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateR
     val fromDate = req.fromDate
     val toDate   = req.toDate
     val taxYearValidations: List[List[MtdError]] = List(
-      TaxYearDatesValidation.validate(
-        req.fromDate,
-        req.toDate,
-        allowedNumberOfYearsBetweenDates = 1,
-        validateTaxYearEndedFlag = data.temporalValidationEnabled)
+      TaxYearDatesValidation.validate(fromDate, toDate, allowedNumberOfYearsBetweenDates = 1)
     )
-    val periodDataCheck: List[List[MtdError]] = if (taxYearValidations.flatten.isEmpty) {
-      req.periodData.map { period =>
-        PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
-      }.toList
-    } else {
-      taxYearValidations
-    }
-
-    if (periodDataCheck.flatten.isEmpty) {
-      req.periodData.map { period =>
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(fromDate, toDate, period.deductionFromDate, period.deductionFromDate)
-      }.toList
-    } else {
-      periodDataCheck
-    }
-
+    taxYearValidations
   }
 
   override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data).distinct
