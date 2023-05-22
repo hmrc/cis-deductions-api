@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package api.controllers.requestParsers.validators
 
 package object validations {
 
