@@ -26,7 +26,7 @@ class TaxYearDatesValidationSpec extends UnitSpec with JsonErrorValidators {
     "return no errors" when {
       "a request body with valid toDate & fromDate" in {
         val validationResult = TaxYearDatesValidation.validate("2019-04-06", "2020-04-05", 1)
-        validationResult.isEmpty shouldBe true
+        validationResult shouldBe NoValidationErrors
       }
     }
     "return errors" when {

@@ -26,26 +26,26 @@ import javax.inject.Inject
 
 class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
 
-  private val validationSet = List(
-    parameterFormatValidator,
-    bodyFormatValidator,
-    bodyRuleValidator,
-    businessRuleValidator
+  private val validations = List(
+    parameterFormatValidation,
+    bodyFormatValidation,
+    bodyRuleValidation,
+    businessRuleValidation
   )
 
-  private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: CreateRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino)
     )
   }
 
-  private def bodyFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidation: CreateRawData => List[List[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[CreateBody](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 
-  private def bodyRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def bodyRuleValidation: CreateRawData => List[List[MtdError]] = { data =>
     val req = data.body.as[CreateBody]
 
     List(
@@ -62,15 +62,15 @@ class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateR
     )
   }
 
-  private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def businessRuleValidation: CreateRawData => List[List[MtdError]] = { data =>
     val req      = data.body.as[CreateBody]
     val fromDate = req.fromDate
     val toDate   = req.toDate
-    val taxYearValidations: List[List[MtdError]] = List(
+
+    List(
       TaxYearDatesValidation.validate(fromDate, toDate, allowedNumberOfYearsBetweenDates = 1)
     )
-    taxYearValidations
   }
 
-  override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: CreateRawData): List[MtdError] = run(validations, data).distinct
 }

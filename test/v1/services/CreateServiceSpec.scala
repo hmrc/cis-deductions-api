@@ -77,7 +77,7 @@ class CreateServiceSpec extends UnitSpec {
 
         val errors = List(
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-          ("INVALID_PAYLOAD", RuleIncorrectOrEmptyBodyError),
+          ("INVALID_PAYLOAD", InternalError),
           ("INVALID_EMPREF", EmployerRefFormatError),
           ("INVALID_REQUEST_TAX_YEAR_ALIGN", RuleUnalignedDeductionsPeriodError),
           ("INVALID_REQUEST_DATE_RANGE", RuleDeductionsDateRangeInvalidError),
