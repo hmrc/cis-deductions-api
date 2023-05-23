@@ -99,7 +99,8 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
 
       val extraTysErrors = Seq(
         ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
-        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
+        ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+        ("TAX_YEAR_NOT_ALIGNED", RuleTaxYearNotAligned)
       )
       extraTysErrors.foreach(args => (tysServiceError _).tupled(args))
     }

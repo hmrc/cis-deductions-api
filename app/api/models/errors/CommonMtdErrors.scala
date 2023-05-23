@@ -104,6 +104,9 @@ object RuleTaxYearRangeInvalidError
       "The specified date range is outside the allowable tax years (the current tax year minus four years)",
       BAD_REQUEST)
 
+object RuleTaxYearNotAligned
+    extends MtdError("RULE_TAX_YEAR_NOT_ALIGNED", "The provided From date and To date parameters are not within the same tax year", BAD_REQUEST)
+
 object InvalidTaxYearParameterError
     extends MtdError(
       code = "INVALID_TAX_YEAR_PARAMETER",

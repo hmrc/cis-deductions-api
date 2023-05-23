@@ -207,6 +207,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", BAD_REQUEST, RuleTaxYearNotAligned),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
       extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
