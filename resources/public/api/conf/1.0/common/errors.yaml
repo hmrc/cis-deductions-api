@@ -192,13 +192,6 @@ components:
         code: RULE_TAX_YEAR_RANGE_INVALID
         message: The specified date range is outside the allowable tax years (the current tax year minus four years)
 
-    ruleTaxYearNotAligned:
-      description: |
-        The specified From date and To date are not within the same tax year.
-      value:
-        code: RULE_TAX_YEAR_NOT_ALIGNED
-        message: The provided From date and To date parameters are not within the same tax year
-
     ruleToDate:
       description: |
         The to date is not the end of the tax year.
