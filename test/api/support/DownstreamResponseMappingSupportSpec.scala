@@ -43,6 +43,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
     case "ERR1" => Error1
     case "ERR2" => Error2
     case "DS"   => InternalError
+    case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 
   "mapping Des errors" when {
