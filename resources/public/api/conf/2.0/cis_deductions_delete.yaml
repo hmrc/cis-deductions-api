@@ -57,6 +57,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           INVALID_TAX_YEAR_PARAMETER:
             $ref: './common/errors.yaml#/components/examples/invalidTaxYear'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
   "403":
     description: Forbidden
     content:

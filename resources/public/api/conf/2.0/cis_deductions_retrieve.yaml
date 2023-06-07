@@ -101,6 +101,8 @@ get:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotAligned'
             RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
               $ref: './common/errors.yaml#/components/examples/incorrectOrEmptyBody'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
     "403":
       description: Forbidden

@@ -91,6 +91,9 @@ get:
               $ref: './common/errors.yaml#/components/examples/missingToDate'
             RULE_SOURCE_INVALID:
               $ref: './common/errors.yaml#/components/examples/ruleSourceInvalid'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
     "403":
       description: Forbidden
       content:
