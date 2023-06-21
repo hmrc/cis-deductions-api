@@ -62,7 +62,7 @@
             "example": "5000.99"
           },
           "periodData": {
-            "description": "List of the components that make up the overall deductions.",
+            "description": "List of deductions.",
             "type": "array",
             "items": {
               "title": "item",
