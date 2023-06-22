@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import v2.controllers.requestParsers.validators.RetrieveValidator
 import v2.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
@@ -28,9 +28,8 @@ class RetrieveRequestParser @Inject() (val validator: RetrieveValidator) extends
   override protected def requestFor(data: RetrieveRawData): RetrieveRequestData =
     RetrieveRequestData(
       nino = Nino(data.nino),
-      fromDate = data.fromDate.getOrElse(throw new Exception("Unexpected missing fromDate")),
-      toDate = data.toDate.getOrElse(throw new Exception("Unexpected missing toDate")),
-      source = data.source.getOrElse("all")
+      taxYear = TaxYear.fromMtd(data.taxYear),
+      source = data.source
     )
 
 }

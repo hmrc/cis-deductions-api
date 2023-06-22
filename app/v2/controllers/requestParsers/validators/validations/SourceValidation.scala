@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package v2.models.request.retrieve
+package v2.controllers.requestParsers.validators.validations
 
-import api.models.domain.{Nino, TaxYear}
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.{MtdError, RuleSourceError}
 
-case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: String) {
-  val startDate: String = s"06-04-${taxYear.toString.take(4)}"
-  val endDate: String   = s"05-04-20${taxYear.toString.substring(5)}"
+object SourceValidation {
+
+  private val sources = Seq("all", "customer", "contractor")
+
+  def validate(source: String): List[MtdError] = {
+    source match {
+      case x if sources.contains(x) => NoValidationErrors
+      case _                        => List(RuleSourceError)
+    }
+  }
+
 }

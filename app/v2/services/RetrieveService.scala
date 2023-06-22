@@ -48,8 +48,9 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "INVALID_PERIOD_START"      -> FromDateFormatError,
-      "INVALID_PERIOD_END"        -> ToDateFormatError,
+      "INVALID_PERIOD_START"      -> InternalError,
+      "INVALID_PERIOD_END"        -> InternalError,
+      "FORMAT_TAX_YEAR"           -> TaxYearFormatError,
       "INVALID_SOURCE"            -> RuleSourceError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
@@ -59,8 +60,9 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
     errorMap ++ Map(
       "INVALID_DATE_RANGE"     -> RuleTaxYearRangeInvalidError,
       "INVALID_TAX_YEAR"       -> InternalError,
-      "INVALID_START_DATE"     -> FromDateFormatError,
-      "INVALID_END_DATE"       -> ToDateFormatError,
+      "INVALID_START_DATE"     -> InternalError,
+      "INVALID_END_DATE"       -> InternalError,
+      "FORMAT_TAX_YEAR"        -> TaxYearFormatError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_CORRELATIONID"  -> InternalError,
       "TAX_YEAR_NOT_ALIGNED"   -> RuleTaxYearNotAligned

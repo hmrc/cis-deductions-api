@@ -16,7 +16,7 @@
 
 package v2.models.response.retrieve
 
-import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v2.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import api.models.domain.TaxYear
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
@@ -51,7 +51,7 @@ object RetrieveResponseModel extends HateoasLinks {
 
     override def links(appConfig: AppConfig, data: RetrieveHateoasData): Seq[Link] = {
       Seq(
-        retrieveCisDeduction(appConfig, data.nino, data.fromDate, data.toDate, data.source, isSelf = true),
+        retrieveCisDeduction(appConfig, data.nino, data.taxYear, data.source, isSelf = true),
         createCisDeduction(appConfig, data.nino, isSelf = false))
     }
 
@@ -66,4 +66,4 @@ object RetrieveResponseModel extends HateoasLinks {
 
 }
 
-case class RetrieveHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String], taxYear: TaxYear) extends HateoasData
+case class RetrieveHateoasData(nino: String, taxYear: TaxYear, source: String) extends HateoasData
