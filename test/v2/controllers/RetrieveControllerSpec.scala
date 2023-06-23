@@ -120,9 +120,9 @@ class RetrieveControllerSpec
 
         MockRetrieveService
           .retrieve(retrieveRequestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, FromDateFormatError))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, InternalError))))
 
-        runErrorTestWithAudit(FromDateFormatError)
+        runErrorTestWithAudit(InternalError)
 
       }
     }
@@ -150,7 +150,7 @@ class RetrieveControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw),
+          params = Map("nino" -> nino, "taxYear" -> taxYearRaw, "source" -> sourceRaw),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

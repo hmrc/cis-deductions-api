@@ -23,9 +23,12 @@ import v2.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidatorSpec extends UnitSpec {
 
-  private val nino        = "AA123456A"
-  private val invalidNino = "GHFG197854"
-  private val taxYearRaw  = "2019-20"
+  private val nino              = "AA123456A"
+  private val invalidNino       = "GHFG197854"
+  private val taxYearRaw        = "2019-20"
+  private val invalidTaxYearRaw = "2019-2020"
+  private val sourceRaw         = "all"
+  private val invalidSource     = "All"
 
   class SetUp extends MockAppConfig {
     val validator = new RetrieveValidator(mockAppConfig)
@@ -34,17 +37,31 @@ class RetrieveValidatorSpec extends UnitSpec {
 
   "running validation" should {
     "return no errors" when {
-      "all query parameters are passed in the request" in new SetUp {
+      "the request is valid" in new SetUp {
         validator
-          .validate(RetrieveRawData(nino, taxYearRaw, "all"))
+          .validate(RetrieveRawData(nino, taxYearRaw, sourceRaw))
           .isEmpty shouldBe true
       }
     }
 
     "return errors" when {
-      "invalid nino and source data is passed in the request" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(invalidNino, taxYearRaw, "All"))
-        result shouldBe List(NinoFormatError, RuleSourceError)
+      "invalid taxYear is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, invalidTaxYearRaw, sourceRaw))
+        result shouldBe List(TaxYearFormatError)
+      }
+    }
+
+    "return errors" when {
+      "invalid source data is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, taxYearRaw, invalidSource))
+        result shouldBe List(RuleSourceError)
+      }
+    }
+
+    "return errors" when {
+      "invalid nino, taxYear and source data is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(invalidNino, invalidTaxYearRaw, invalidSource))
+        result shouldBe List(NinoFormatError, TaxYearFormatError, RuleSourceError)
       }
     }
   }

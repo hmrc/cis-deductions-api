@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations.{NinoValidation, DateValidation}
+import api.controllers.requestParsers.validators.validations.{NinoValidation, TaxYearValidation}
 import api.models.errors._
 import config.{AppConfig, FixedConfig}
 import v2.controllers.requestParsers.validators.validations.SourceValidation
@@ -32,7 +32,7 @@ class RetrieveValidator @Inject() (appConfig: AppConfig) extends Validator[Retri
   private def parameterFormatValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
     List(
       NinoValidation.validate(data.nino),
-      DateValidation.validate(TaxYearFormatError)(data.taxYear),
+      TaxYearValidation.validate(data.taxYear),
       SourceValidation.validate(data.source)
     )
 

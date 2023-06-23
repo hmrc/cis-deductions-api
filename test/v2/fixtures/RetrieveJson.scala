@@ -274,7 +274,7 @@ object RetrieveJson {
        |    ],
        |    "links": [
        |                {
-       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c$taxYearParam",
+       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
        |                    "method": "DELETE",
        |                    "rel": "delete-cis-deductions-for-subcontractor"
        |                },
