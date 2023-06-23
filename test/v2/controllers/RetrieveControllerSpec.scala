@@ -96,8 +96,8 @@ class RetrieveControllerSpec
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
-          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate)),
-          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate))
+          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw)),
+          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw))
         )
       }
     }

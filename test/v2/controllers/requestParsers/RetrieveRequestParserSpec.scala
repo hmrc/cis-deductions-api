@@ -30,9 +30,6 @@ class RetrieveRequestParserSpec extends UnitSpec {
   private val taxYearRaw = "2019-20"
   private val taxYear    = TaxYear.fromMtd(taxYearRaw)
 
-  private val fromDate = "2019-04-06"
-  private val toDate   = "2020-04-05"
-
   private val validRawInput = RetrieveRawData(nino, taxYearRaw, "all")
 
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"

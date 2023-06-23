@@ -50,7 +50,6 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_PERIOD_START"      -> InternalError,
       "INVALID_PERIOD_END"        -> InternalError,
-      "FORMAT_TAX_YEAR"           -> TaxYearFormatError,
       "INVALID_SOURCE"            -> RuleSourceError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
@@ -62,7 +61,6 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       "INVALID_TAX_YEAR"       -> InternalError,
       "INVALID_START_DATE"     -> InternalError,
       "INVALID_END_DATE"       -> InternalError,
-      "FORMAT_TAX_YEAR"        -> TaxYearFormatError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_CORRELATIONID"  -> InternalError,
       "TAX_YEAR_NOT_ALIGNED"   -> RuleTaxYearNotAligned

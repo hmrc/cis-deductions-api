@@ -288,7 +288,7 @@ object RetrieveJson {
        |],
        |    "links": [
        |        {
-       |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=$fromDate&toDate=$toDate&source=customer",
+       |            "href": "/individuals/deductions/cis/AA123456A/current-position/$taxYearParam/customer",
        |            "method": "GET",
        |            "rel": "self"
        |        },
@@ -341,7 +341,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position/2019-20/customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -393,7 +393,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position/2019-20/customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -446,7 +446,7 @@ object RetrieveJson {
       |],
       |    "links": [
       |        {
-      |            "href": "/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05&source=customer",
+      |            "href": "/individuals/deductions/cis/AA123456A/current-position/2019-20/customer",
       |            "method": "GET",
       |            "rel": "self"
       |        },
@@ -460,12 +460,12 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionRequestJson =
+  val singleDeductionRequestJson: String =
     """
       |
       |""".stripMargin
 
-  val errorJson =
+  val errorJson: String =
     """
       |{
       | "totalDeductionAmount": "deduction amount: 12345.56",
