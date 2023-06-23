@@ -31,8 +31,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   "Retrieve connector" when {
     "given a valid non-TYS request" must {
       "return a valid response from downstream" in new DesTest with Test {
-        def fromDate = "2019-04-06"
-        def toDate   = "2020-04-05"
+        def startDate = "2019-04-06"
+        def endDate   = "2020-04-05"
 
         val outcome = Right(
           ResponseWrapper(
@@ -42,8 +42,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Seq(CisDeductions(
-                request.fromDate,
-                request.toDate,
+                request.startDate,
+                request.endDate,
                 Some(""),
                 "",
                 Some(0.00),
@@ -56,7 +56,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/${nino}",
-          queryParams = List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source)
+          queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -66,9 +66,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "given a valid request for a TaxYearSpecific tax year" must {
       "return a 200 for success scenario" in new TysIfsTest with Test {
-        def fromDate         = "2023-04-06"
-        def toDate           = "2024-04-06"
-        def taxYear: TaxYear = TaxYear.fromIso(toDate)
+        def startDate = "2023-04-06"
+        def endDate   = "2024-04-06"
 
         val outcome = Right(
           ResponseWrapper(
@@ -78,8 +77,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Seq(CisDeductions(
-                request.fromDate,
-                request.toDate,
+                request.startDate,
+                request.endDate,
                 Some(""),
                 "",
                 Some(0.00),
@@ -92,7 +91,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
-          queryParams = List("startDate" -> request.fromDate, "endDate" -> request.toDate, "source" -> request.source)
+          queryParams = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -102,11 +101,13 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    def fromDate: String
-    def toDate: String
+    def startDate: String
+    def endDate: String
+
+    protected val taxYear = TaxYear.fromIso(endDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, "contractor")
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, "contractor")
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"

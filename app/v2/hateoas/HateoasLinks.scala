@@ -37,7 +37,7 @@ trait HateoasLinks {
     s"/${appConfig.apiGatewayContext}/$nino"
 
   private def retrieveUri(appConfig: AppConfig, nino: String, taxYear: TaxYear, source: String): String = {
-    s"${baseUri(appConfig, nino)}/current-position/$taxYear/$source"
+    s"${baseUri(appConfig, nino)}/current-position/${taxYear.asMtd}/$source"
   }
 
   // API resource links

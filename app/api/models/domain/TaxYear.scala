@@ -53,6 +53,12 @@ final case class TaxYear private (private val value: String) {
     s"$year1-$year2"
   }
 
+  def fromToDates: (String, String) =
+    (
+      s"06-04-${year - 1}",
+      s"05-04-$year"
+    )
+
   /** Use this for downstream API endpoints that are known to be TYS.
     */
   def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =

@@ -17,12 +17,11 @@
 package v2.controllers
 
 import api.controllers._
-import api.models.domain.TaxYear
+import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v2.controllers.requestParsers._
-import v2.hateoas.HateoasFactory
 import v2.models.request.retrieve.RetrieveRawData
 import v2.models.response.retrieve.RetrieveHateoasData
 import v2.services.RetrieveService
@@ -56,8 +55,9 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       val requestHandler = RequestHandler
         .withParser(requestParser)
         .withService(service.retrieveDeductions)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
-          RetrieveHateoasData(nino, TaxYear.fromDownstream(taxYear), source)))
+        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory) { (req, _) =>
+          RetrieveHateoasData(nino, req.taxYear, source)
+        })
         .withAuditing {
           val params =
             Map("nino" -> nino, "taxYear" -> taxYear, "source" -> source)

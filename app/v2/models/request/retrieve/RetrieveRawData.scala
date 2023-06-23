@@ -18,7 +18,4 @@ package v2.models.request.retrieve
 
 import api.models.request.RawData
 
-case class RetrieveRawData(nino: String, taxYear: String, source: String) extends RawData {
-
-  /*add ty string to ty converter*/
-}
+case class RetrieveRawData(nino: String, taxYear: String, source: String) extends RawData

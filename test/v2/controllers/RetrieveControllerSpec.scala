@@ -17,8 +17,6 @@
 package v2.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import v2.fixtures.RetrieveJson._
-import v2.fixtures.RetrieveModels._
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -30,6 +28,8 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import v2.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveModels._
 import v2.mocks.requestParsers.MockRetrieveRequestParser
 import v2.mocks.services.MockRetrieveService
 import v2.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
@@ -48,12 +48,14 @@ class RetrieveControllerSpec
     with MockAppConfig
     with MockAuditService {
 
-  private val fromDate            = "2019-04-06"
-  private val toDate              = "2020-04-05"
-  private val taxYear             = TaxYear.fromMtd("2019-20")
+  private val fromDate = "2019-04-06"
+  private val toDate   = "2020-04-05"
+
+  private val taxYearRaw          = "2019-20"
+  private val taxYear             = TaxYear.fromMtd(taxYearRaw)
   private val sourceRaw           = "customer"
-  private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), Some(sourceRaw))
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
+  private val retrieveRawData     = RetrieveRawData(nino, taxYearRaw, sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -76,9 +78,7 @@ class RetrieveControllerSpec
                 )
               ))
           ),
-          Seq(
-            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw), isSelf = true),
-            createCisDeduction(mockAppConfig, nino, isSelf = false))
+          Seq(retrieveCisDeduction(mockAppConfig, nino, taxYear, sourceRaw, isSelf = true), createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockRetrieveDeductionRequestParser
@@ -90,7 +90,7 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw), taxYear))
+          .wrapList(response, RetrieveHateoasData(nino, taxYear, sourceRaw))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
@@ -141,7 +141,7 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw))(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(nino, taxYearRaw, sourceRaw)(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
