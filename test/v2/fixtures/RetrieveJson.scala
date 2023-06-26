@@ -235,7 +235,7 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  def singleDeductionJsonHateoas(fromDate: String, toDate: String, taxYearParam: String = ""): JsValue = Json.parse {
+  def singleDeductionJsonHateoas(fromDate: String, toDate: String, taxYearParam: String): JsValue = Json.parse {
     s"""
        |{
        |"totalDeductionAmount": 12345.56,

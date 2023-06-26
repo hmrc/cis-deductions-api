@@ -48,7 +48,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, taxYear)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
@@ -87,28 +87,23 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(mtdRequest().get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "?taxYear=2023-24")
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24")
 
       }
 
       "return error according to spec" when {
 
         def validationErrorTest(requestNino: String,
-                                requestFromDate: String,
-                                requestToDate: String,
+                                requestTaxYear: String,
                                 requestSource: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                qParams: Option[Seq[(String, String)]]): Unit = {
+                                expectedBody: MtdError): Unit = {
 
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-            override def fromDate: String = requestFromDate
-            override def toDate: String   = requestToDate
 
-            override def mtdQueryParams: Seq[(String, String)] = qParams.getOrElse(super.mtdQueryParams)
-
-            override val nino: String   = requestNino
-            override val source: String = requestSource
+            override val nino: String    = requestNino
+            override val taxYear: String = requestTaxYear
+            override val source: String  = requestSource
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -124,27 +119,11 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA12345", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
-          ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
-          ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
-          ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
-          ("AA123456B", "2022-04-05", "2021-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingToDateError,
-            Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingFromDateError,
-            Some(Seq("toDate" -> "2021-04-05", "source" -> "all")))
+          ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
+          ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
+          // TaxYearNotSupported
+          ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceError),
+          ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -198,14 +177,16 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
-        (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
+        (BAD_REQUEST, "INVALID_PERIOD_START", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_PERIOD_END", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDate)
       )
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", BAD_REQUEST, RuleTaxYearNotAligned),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
@@ -218,18 +199,17 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     def fromDate: String
     def toDate: String
 
-    val nino   = "AA123456A"
-    val source = "customer"
+    val nino    = "AA123456A"
+    val taxYear = "2021-22"
+    val source  = "customer"
 
-    def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
     def downstreamQueryParams: Seq[(String, String)]
 
     def setupStubs(): StubMapping
 
     def mtdRequest(): WSRequest = {
       setupStubs()
-      buildRequest(s"/$nino/current-position")
-        .withQueryStringParameters(mtdQueryParams: _*)
+      buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
@@ -239,18 +219,18 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    def fromDate              = "2019-04-06"
-    def toDate                = "2020-04-05"
-    def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-    def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+    def fromDate: String                             = "2019-04-06"
+    def toDate: String                               = "2020-04-05"
+    def downstreamQueryParams: Seq[(String, String)] = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    def downstreamUri: String                        = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
-    def fromDate                  = "2023-04-06"
-    def toDate                    = "2024-04-05"
-    def downstreamTaxYear: String = "23-24"
-    def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
-    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
+    def fromDate: String                             = "2023-04-06"
+    def toDate: String                               = "2024-04-05"
+    def downstreamTaxYear: String                    = "23-24"
+    def downstreamQueryParams: Seq[(String, String)] = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
+    def downstreamUri: String                        = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }
