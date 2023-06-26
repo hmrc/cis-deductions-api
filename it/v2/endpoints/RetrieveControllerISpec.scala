@@ -30,7 +30,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
     "return an OK response" when {
       "a valid request is made" in new NonTysTest {
 
-        override def setupStubs(): Unit = {
+        override def setupStubs(): Unit =
           DownstreamStub
             .onSuccess(
               method = DownstreamStub.GET,
@@ -38,9 +38,6 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
               status = OK,
               queryParams = downstreamQueryParams,
               body = singleDeductionJson(fromDate, toDate))
-//            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
-//            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
-        }
 
         val response: WSResponse = await(mtdRequest.get())
 
@@ -51,7 +48,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       "valid request is made without any IDs" in new NonTysTest {
 
-        override def setupStubs(): Unit = {
+        override def setupStubs(): Unit =
           DownstreamStub
             .onSuccess(
               method = DownstreamStub.GET,
@@ -59,7 +56,6 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
               status = OK,
               queryParams = downstreamQueryParams,
               body = singleDeductionWithoutIdsJson)
-        }
 
         val response: WSResponse = await(mtdRequest.get())
 
@@ -70,14 +66,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
 
-        override def fromDate: String = "2023-04-06"
-        override def toDate: String   = "2024-04-05"
-
-        override def setupStubs(): Unit = {
+        override def setupStubs(): Unit =
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams)
-            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
-        }
+            .onSuccess(
+              method = DownstreamStub.GET,
+              uri = downstreamUri,
+              status = OK,
+              queryParams = downstreamQueryParams,
+              body = singleDeductionJson(fromDate, toDate))
 
         val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
@@ -110,7 +106,6 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
           ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
-          // TaxYearNotSupported
           ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
@@ -131,9 +126,8 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"downstream returns $downstreamErrorCode with status $downstreamStatus" in new NonTysTest {
 
-          override def setupStubs(): Unit = {
+          override def setupStubs(): Unit =
             DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
-          }
 
           val response: WSResponse = await(mtdRequest.get())
           response.json shouldBe expectedBody.asJson
@@ -145,10 +139,8 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       def tysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysIfsTest {
 
-          override def setupStubs(): Unit = {
+          override def setupStubs(): Unit =
             DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
-
-          }
 
           val response: WSResponse = await(mtdRequest.get())
           response.json shouldBe expectedBody.asJson
@@ -184,14 +176,14 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    def fromDate: String
-    def toDate: String
+    val taxYear: String
+    val fromDate: String
+    val toDate: String
 
-    val nino    = "AA123456A"
-    val taxYear = "2021-22"
-    val source  = "customer"
+    val nino   = "AA123456A"
+    val source = "customer"
 
-    def downstreamQueryParams: Map[String, String]
+    val downstreamQueryParams: Map[String, String]
 
     def setupStubs(): Unit = ()
 
@@ -210,20 +202,20 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    def fromDate: String                           = "2019-04-06"
-    def toDate: String                             = "2020-04-05"
-    def downstreamQueryParams: Map[String, String] = Map("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-    def downstreamUri: String                      = s"/income-tax/cis/deductions/$nino"
+    val taxYear: String                            = "2019-20"
+    val fromDate: String                           = "06-04-2019"
+    val toDate: String                             = "05-04-2020"
+    val downstreamQueryParams: Map[String, String] = Map("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    val downstreamUri: String                      = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
-    override val taxYear: String = "2023-24"
-
-    def fromDate: String                           = "2023-04-06"
-    def toDate: String                             = "2024-04-05"
-    def downstreamTaxYear: String                  = "23-24"
-    def downstreamQueryParams: Map[String, String] = Map("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
-    def downstreamUri: String                      = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
+    val taxYear: String                            = "2023-24"
+    val fromDate: String                           = "06-04-2023"
+    val toDate: String                             = "05-04-2024"
+    val downstreamTaxYear: String                  = "23-24"
+    val downstreamQueryParams: Map[String, String] = Map("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
+    val downstreamUri: String                      = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }
