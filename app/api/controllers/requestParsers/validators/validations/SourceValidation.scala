@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{MtdError, RuleSourceError}
+import api.models.errors.{MtdError, RuleSourceInvalidError}
 
 object SourceValidation {
 
@@ -26,7 +26,7 @@ object SourceValidation {
     source match {
       case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
       case None                                     => NoValidationErrors
-      case _                                        => List(RuleSourceError)
+      case _                                        => List(RuleSourceInvalidError)
     }
   }
 

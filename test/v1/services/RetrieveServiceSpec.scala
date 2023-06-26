@@ -91,7 +91,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
         ("INVALID_TAX_YEAR", InternalError),
         ("INVALID_PERIOD_START", FromDateFormatError),
         ("INVALID_PERIOD_END", ToDateFormatError),
-        ("INVALID_SOURCE", RuleSourceError),
+        ("INVALID_SOURCE", RuleSourceInvalidError),
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)
       )

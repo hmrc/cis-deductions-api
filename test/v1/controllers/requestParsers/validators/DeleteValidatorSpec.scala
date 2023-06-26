@@ -20,6 +20,8 @@ import api.models.errors.{InvalidTaxYearParameterError, NinoFormatError, Submiss
 import support.UnitSpec
 import v1.models.request.delete.DeleteRawData
 
+// yeah so maybe add a test to the DeleteValidatorSpec to confirm that it gets the RULE_TAX_YEAR_RANGE_EXEEEDED (so we know its using the correct v1 taxYearValidation)
+
 class DeleteValidatorSpec extends UnitSpec {
 
   private val validNino         = "AA123456A"
@@ -60,4 +62,5 @@ class DeleteValidatorSpec extends UnitSpec {
     }
   }
 
+  /// RuleTaxYearRangeExceededError
 }

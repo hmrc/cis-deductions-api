@@ -106,7 +106,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
           ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
-          ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceError),
+          ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -158,7 +158,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_PERIOD_START", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_PERIOD_END", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDate),
-        (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceError)
+        (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 
@@ -167,7 +167,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", BAD_REQUEST, RuleTaxYearNotAligned),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       )
@@ -203,16 +203,16 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
   private trait NonTysTest extends Test {
     val taxYear: String                            = "2019-20"
-    val fromDate: String                           = "06-04-2019"
-    val toDate: String                             = "05-04-2020"
+    val fromDate: String                           = "2019-04-06"
+    val toDate: String                             = "2020-04-05"
     val downstreamQueryParams: Map[String, String] = Map("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
     val downstreamUri: String                      = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
     val taxYear: String                            = "2023-24"
-    val fromDate: String                           = "06-04-2023"
-    val toDate: String                             = "05-04-2024"
+    val fromDate: String                           = "2023-04-06"
+    val toDate: String                             = "2024-04-05"
     val downstreamTaxYear: String                  = "23-24"
     val downstreamQueryParams: Map[String, String] = Map("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
     val downstreamUri: String                      = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"

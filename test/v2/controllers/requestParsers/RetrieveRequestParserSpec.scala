@@ -78,10 +78,10 @@ class RetrieveRequestParserSpec extends UnitSpec {
 
         MockValidator
           .validate(inputData)
-          .returns(List(RuleSourceError))
+          .returns(List(RuleSourceInvalidError))
 
         val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, RuleSourceError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleSourceInvalidError))
       }
 
     }

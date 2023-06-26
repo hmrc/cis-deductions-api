@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers.validators.validations
 
 import api.controllers.requestParsers.validators.validations.NoValidationErrors
-import api.models.errors.{MtdError, RuleSourceError}
+import api.models.errors.{MtdError, RuleSourceInvalidError}
 
 object SourceValidation {
 
@@ -26,7 +26,7 @@ object SourceValidation {
   def validate(source: String): List[MtdError] = {
     source match {
       case x if sources.contains(x) => NoValidationErrors
-      case _                        => List(RuleSourceError)
+      case _                        => List(RuleSourceInvalidError)
     }
   }
 

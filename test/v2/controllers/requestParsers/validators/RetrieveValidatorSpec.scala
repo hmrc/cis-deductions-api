@@ -54,14 +54,14 @@ class RetrieveValidatorSpec extends UnitSpec {
     "return errors" when {
       "invalid source data is passed in the request" in new SetUp {
         private val result = validator.validate(RetrieveRawData(nino, taxYearRaw, invalidSource))
-        result shouldBe List(RuleSourceError)
+        result shouldBe List(RuleSourceInvalidError)
       }
     }
 
     "return errors" when {
       "invalid nino, taxYear and source data is passed in the request" in new SetUp {
         private val result = validator.validate(RetrieveRawData(invalidNino, invalidTaxYearRaw, invalidSource))
-        result shouldBe List(NinoFormatError, TaxYearFormatError, RuleSourceError)
+        result shouldBe List(NinoFormatError, TaxYearFormatError, RuleSourceInvalidError)
       }
     }
   }

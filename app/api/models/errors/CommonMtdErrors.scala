@@ -58,7 +58,7 @@ object RuleToDateBeforeFromDateError
       "The deductions To date must be after the deductions From date",
       BAD_REQUEST)
 
-object RuleSourceError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid", BAD_REQUEST)
+object RuleSourceInvalidError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid", BAD_REQUEST)
 
 object RuleDeductionAmountError
     extends MtdError(
@@ -140,4 +140,3 @@ object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting tex
 
 //Stub errors
 object RuleIncorrectGovTestScenarioError extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The Gov-Test-Scenario was not found", BAD_REQUEST)
-

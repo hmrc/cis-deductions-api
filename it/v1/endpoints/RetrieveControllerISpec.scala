@@ -127,7 +127,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           ("AA12345", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
           ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
-          ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
+          ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceInvalidError, None),
           ("AA123456B", "2022-04-05", "2021-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
           (
             "AA123456B",
