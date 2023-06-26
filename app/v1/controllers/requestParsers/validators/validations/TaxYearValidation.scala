@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators
+package v1.controllers.requestParsers.validators.validations
 
 import api.controllers.requestParsers.validators.validations.NoValidationErrors
 import api.models.errors.{MtdError, RuleTaxYearRangeExceededError, TaxYearFormatError}
