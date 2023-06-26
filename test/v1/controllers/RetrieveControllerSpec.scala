@@ -17,8 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import v1.fixtures.RetrieveJson._
-import v1.fixtures.RetrieveModels._
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -30,6 +28,8 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import v1.fixtures.RetrieveJson._
+import v1.fixtures.RetrieveModels._
 import v1.mocks.requestParsers.MockRetrieveRequestParser
 import v1.mocks.services.MockRetrieveService
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
