@@ -16,7 +16,6 @@
 
 package v1.endpoints
 
-import v1.fixtures.RetrieveJson._
 import api.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -25,6 +24,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
+import v1.fixtures.RetrieveJson._
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 

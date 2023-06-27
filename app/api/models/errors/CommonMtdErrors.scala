@@ -16,7 +16,7 @@
 
 package api.models.errors
 
-import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, NOT_FOUND, UNAUTHORIZED, UNSUPPORTED_MEDIA_TYPE}
+import play.api.http.Status._
 
 // MtdError types that are common across MTD APIs.
 
