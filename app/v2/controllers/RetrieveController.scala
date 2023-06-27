@@ -46,23 +46,21 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       endpointName = "retrieveEndpoint"
     )
 
-  def retrieve(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
+  def retrieve(nino: String, taxYear: String, source: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveRawData(nino, fromDate, toDate, source)
+      val rawData = RetrieveRawData(nino, taxYear, source)
 
       val requestHandler = RequestHandler
         .withParser(requestParser)
         .withService(service.retrieveDeductions)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((request, _) =>
-          RetrieveHateoasData(nino, request.fromDate, request.toDate, source, request.taxYear)))
+        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory) { (req, _) =>
+          RetrieveHateoasData(nino, req.taxYear, source)
+        })
         .withAuditing {
           val params =
-            Map("nino" -> nino) ++
-              fromDate.map(x => "fromDate" -> x) ++
-              toDate.map(x => "toDate" -> x) ++
-              source.map(x => "source" -> x)
+            Map("nino" -> nino, "taxYear" -> taxYear, "source" -> source)
 
           AuditHandler(
             auditService = auditService,

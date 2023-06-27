@@ -50,7 +50,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_PERIOD_START"      -> FromDateFormatError,
       "INVALID_PERIOD_END"        -> ToDateFormatError,
-      "INVALID_SOURCE"            -> RuleSourceError,
+      "INVALID_SOURCE"            -> RuleSourceInvalidError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
     )

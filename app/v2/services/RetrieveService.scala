@@ -45,25 +45,24 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
 
   private val errorMap: Map[String, MtdError] =
     Map(
-      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "INVALID_DATE_RANGE"        -> RuleTaxYearRangeInvalidError,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "INVALID_PERIOD_START"      -> FromDateFormatError,
-      "INVALID_PERIOD_END"        -> ToDateFormatError,
-      "INVALID_SOURCE"            -> RuleSourceError,
+      "INVALID_PERIOD_START"      -> InternalError,
+      "INVALID_PERIOD_END"        -> InternalError,
+      "INVALID_SOURCE"            -> RuleSourceInvalidError,
       "SERVER_ERROR"              -> InternalError,
       "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
   private val errorMapTys: Map[String, MtdError] =
     errorMap ++ Map(
-      "INVALID_DATE_RANGE"     -> RuleTaxYearRangeInvalidError,
       "INVALID_TAX_YEAR"       -> InternalError,
-      "INVALID_START_DATE"     -> FromDateFormatError,
-      "INVALID_END_DATE"       -> ToDateFormatError,
+      "INVALID_START_DATE"     -> InternalError,
+      "INVALID_END_DATE"       -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
-      "INVALID_CORRELATIONID"  -> InternalError,
-      "TAX_YEAR_NOT_ALIGNED"   -> RuleTaxYearNotAligned
+      "TAX_YEAR_NOT_ALIGNED"   -> InternalError
     )
 
 }

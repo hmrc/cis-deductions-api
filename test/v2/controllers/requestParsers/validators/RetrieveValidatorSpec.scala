@@ -23,8 +23,12 @@ import v2.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidatorSpec extends UnitSpec {
 
-  private val nino        = "AA123456A"
-  private val invalidNino = "GHFG197854"
+  private val nino              = "AA123456A"
+  private val invalidNino       = "GHFG197854"
+  private val taxYearRaw        = "2019-20"
+  private val invalidTaxYearRaw = "2019-2020"
+  private val sourceRaw         = "all"
+  private val invalidSource     = "All"
 
   class SetUp extends MockAppConfig {
     val validator = new RetrieveValidator(mockAppConfig)
@@ -33,47 +37,31 @@ class RetrieveValidatorSpec extends UnitSpec {
 
   "running validation" should {
     "return no errors" when {
-      "all query parameters are passed in the request" in new SetUp {
+      "the request is valid" in new SetUp {
         validator
-          .validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")))
-          .isEmpty shouldBe true
-      }
-
-      "an optional field returns None" in new SetUp {
-        validator
-          .validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-05"), None))
+          .validate(RetrieveRawData(nino, taxYearRaw, sourceRaw))
           .isEmpty shouldBe true
       }
     }
 
     "return errors" when {
-      "invalid nino and source data is passed in the request" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All")))
-        result shouldBe List(NinoFormatError, RuleSourceError)
+      "invalid taxYear is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, invalidTaxYearRaw, sourceRaw))
+        result shouldBe List(TaxYearFormatError)
       }
 
-      "invalid dates are provided in the request" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor")))
-        result shouldBe List(RuleDateRangeInvalidError)
+      "invalid source data is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, taxYearRaw, invalidSource))
+        result shouldBe List(RuleSourceInvalidError)
       }
 
-      "the from and to date are not provided" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, None, None, Some("customer")))
-        result shouldBe List(RuleMissingFromDateError, RuleMissingToDateError)
+      "invalid nino, taxYear and source data is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(invalidNino, invalidTaxYearRaw, invalidSource))
+        result shouldBe List(NinoFormatError, TaxYearFormatError, RuleSourceInvalidError)
       }
 
-      "the from & to date are not in the correct format" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("last week"), Some("this week"), Some("customer")))
-        result shouldBe List(FromDateFormatError, ToDateFormatError)
-      }
-
-      "the from date is not the start of the tax year" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")))
-        result shouldBe List(RuleDateRangeInvalidError)
-      }
-
-      "the to date is not the end of the tax year" in new SetUp {
-        private val result = validator.validate(RetrieveRawData(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")))
+      "invalid taxYear range is passed in the request" in new SetUp {
+        private val result = validator.validate(RetrieveRawData(nino, "2021-23", sourceRaw))
         result shouldBe List(RuleDateRangeInvalidError)
       }
     }

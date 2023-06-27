@@ -17,7 +17,7 @@
 package v2.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
@@ -34,18 +34,21 @@ import scala.concurrent.Future
 
 class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
 
-  private val nino        = Nino("AA123456A")
-  private val fromDate    = "2019-04-06"
-  private val toDate      = "2020-04-05"
-  private val tysFromDate = "2023-04-06"
-  private val tysToDate   = "2024-04-05"
-  private val source      = "Contractor"
+  private val nino = Nino("AA123456A")
 
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
+  private val taxYearRaw = "2019-20"
+  private val taxYear    = TaxYear.fromMtd(taxYearRaw)
+
+  private val tysTaxYearRaw = "2023-24"
+  private val tysTaxYear    = TaxYear.fromMtd(tysTaxYearRaw)
+
+  private val source = "Contractor"
+
+  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
+  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
@@ -85,22 +88,24 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
         }
 
       val errors = Seq(
-        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
+        ("INVALID_CORRELATIONID", InternalError),
+        ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
         ("INVALID_TAX_YEAR", InternalError),
-        ("INVALID_PERIOD_START", FromDateFormatError),
-        ("INVALID_PERIOD_END", ToDateFormatError),
-        ("INVALID_SOURCE", RuleSourceError),
+        ("INVALID_PERIOD_START", InternalError),
+        ("INVALID_PERIOD_END", InternalError),
+        ("INVALID_SOURCE", RuleSourceInvalidError),
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)
       )
       errors.foreach(args => (serviceError _).tupled(args))
 
       val extraTysErrors = Seq(
-        ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
-        ("TAX_YEAR_NOT_ALIGNED", RuleTaxYearNotAligned)
+        ("INVALID_START_DATE", InternalError),
+        ("INVALID_END_DATE", InternalError),
+        ("TAX_YEAR_NOT_ALIGNED", InternalError)
       )
       extraTysErrors.foreach(args => (tysServiceError _).tupled(args))
     }

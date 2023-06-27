@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import api.models.errors.{InvalidTaxYearParameterError, NinoFormatError, SubmissionIdFormatError, TaxYearFormatError}
+import api.models.errors._
 import support.UnitSpec
 import v1.models.request.delete.DeleteRawData
 
@@ -49,6 +49,10 @@ class DeleteValidatorSpec extends UnitSpec {
         val input  = DeleteRawData(validNino, validSubmissionId, Some("2021-22"))
         val result = validator.validate(input)
         result shouldBe List(InvalidTaxYearParameterError)
+      }
+
+      "given an invalid tax year" in {
+        validator.validate(DeleteRawData(validNino, validSubmissionId, Some("2023-25"))) shouldBe List(RuleTaxYearRangeExceededError)
       }
     }
 

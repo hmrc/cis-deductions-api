@@ -16,17 +16,18 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{MtdError, RuleSourceError}
+import api.models.errors.{MtdError, RuleSourceInvalidError}
 
 object SourceValidation {
 
   private val sources = Seq("all", "customer", "contractor")
 
-  def validate(source: Option[String]): List[MtdError] = {
+  def validate(source: Option[String]): List[MtdError] = source.map(validate).getOrElse(NoValidationErrors)
+
+  def validate(source: String): List[MtdError] = {
     source match {
-      case Some(x) if sources.contains(Some(x).get) => NoValidationErrors
-      case None                                     => NoValidationErrors
-      case _                                        => List(RuleSourceError)
+      case x if sources.contains(x) => NoValidationErrors
+      case _                        => List(RuleSourceInvalidError)
     }
   }
 

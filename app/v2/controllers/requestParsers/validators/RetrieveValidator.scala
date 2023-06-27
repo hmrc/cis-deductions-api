@@ -17,7 +17,7 @@
 package v2.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations._
+import api.controllers.requestParsers.validators.validations.{NinoValidation, SourceValidation, TaxYearValidation}
 import api.models.errors._
 import config.{AppConfig, FixedConfig}
 import v2.models.request.retrieve.RetrieveRawData
@@ -26,27 +26,14 @@ import javax.inject.Inject
 
 class RetrieveValidator @Inject() (appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig {
 
-  private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
+  private val validationSet = List(parameterFormatValidation)
 
   private def parameterFormatValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
     List(
       NinoValidation.validate(data.nino),
-      SourceValidation.validate(data.source),
-      DateValidation.validate(FromDateFormatError)(data.fromDate.get),
-      DateValidation.validate(ToDateFormatError)(data.toDate.get)
+      TaxYearValidation.validate(data.taxYear),
+      SourceValidation.validate(data.source)
     )
-
-  private def mandatoryFieldValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
-    List(
-      MandatoryValidation.validate(RuleMissingFromDateError)(data.fromDate),
-      MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
-    )
-
-  private def businessRuleValidator: RetrieveRawData => List[List[MtdError]] = { data =>
-    List(
-      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, allowedNumberOfYearsBetweenDates = 1)
-    )
-  }
 
   override def validate(data: RetrieveRawData): List[MtdError] = run(validationSet, data).distinct
 }

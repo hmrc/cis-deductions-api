@@ -48,12 +48,14 @@ class RetrieveControllerSpec
     with MockAppConfig
     with MockAuditService {
 
-  private val fromDate            = "2019-04-06"
-  private val toDate              = "2020-04-05"
-  private val taxYear             = TaxYear.fromMtd("2019-20")
+  private val fromDate = "2019-04-06"
+  private val toDate   = "2020-04-05"
+
+  private val taxYearRaw          = "2019-20"
+  private val taxYear             = TaxYear.fromMtd(taxYearRaw)
   private val sourceRaw           = "customer"
-  private val retrieveRawData     = RetrieveRawData(nino, Some(fromDate), Some(toDate), Some(sourceRaw))
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
+  private val retrieveRawData     = RetrieveRawData(nino, taxYearRaw, sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -76,9 +78,7 @@ class RetrieveControllerSpec
                 )
               ))
           ),
-          Seq(
-            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw), isSelf = true),
-            createCisDeduction(mockAppConfig, nino, isSelf = false))
+          Seq(retrieveCisDeduction(mockAppConfig, nino, taxYear, sourceRaw, isSelf = true), createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
         MockRetrieveDeductionRequestParser
@@ -90,14 +90,14 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw), taxYear))
+          .wrapList(response, RetrieveHateoasData(nino, taxYear, sourceRaw))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
-          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate)),
-          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate))
+          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw)),
+          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw))
         )
       }
     }
@@ -120,9 +120,9 @@ class RetrieveControllerSpec
 
         MockRetrieveService
           .retrieve(retrieveRequestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, FromDateFormatError))))
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, InternalError))))
 
-        runErrorTestWithAudit(FromDateFormatError)
+        runErrorTestWithAudit(InternalError)
 
       }
     }
@@ -141,7 +141,7 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw))(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(nino, taxYearRaw, sourceRaw)(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -150,7 +150,7 @@ class RetrieveControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw),
+          params = Map("nino" -> nino, "taxYear" -> taxYearRaw, "source" -> sourceRaw),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

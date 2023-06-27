@@ -18,10 +18,8 @@ package v2.endpoints
 
 import api.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames._
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v2.fixtures.RetrieveJson._
@@ -29,41 +27,37 @@ import v2.fixtures.RetrieveJson._
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 
   "Calling the retrieve endpoint" should {
-
     "return an OK response" when {
-
       "a valid request is made" in new NonTysTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-
+        override def setupStubs(): Unit =
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
-            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
-        }
+            .onSuccess(
+              method = DownstreamStub.GET,
+              uri = downstreamUri,
+              status = OK,
+              queryParams = downstreamQueryParams,
+              body = singleDeductionJson(fromDate, toDate))
 
-        val response: WSResponse = await(mtdRequest().get())
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, taxYear)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-
+        override def setupStubs(): Unit =
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
-            .thenReturn(status = OK, singleDeductionWithoutIdsJson)
-        }
+            .onSuccess(
+              method = DownstreamStub.GET,
+              uri = downstreamUri,
+              status = OK,
+              queryParams = downstreamQueryParams,
+              body = singleDeductionWithoutIdsJson)
 
-        val response: WSResponse = await(mtdRequest().get())
+        val response: WSResponse = await(mtdRequest.get())
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
@@ -72,51 +66,37 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
 
-        override def fromDate: String = "2023-04-06"
-        override def toDate: String   = "2024-04-05"
-
-        override def setupStubs(): StubMapping = {
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-
+        override def setupStubs(): Unit =
           DownstreamStub
-            .when(method = DownstreamStub.GET, uri = downstreamUri, queryParams = downstreamQueryParams.toMap)
-            .thenReturn(status = OK, singleDeductionJson(fromDate, toDate))
-        }
+            .onSuccess(
+              method = DownstreamStub.GET,
+              uri = downstreamUri,
+              status = OK,
+              queryParams = downstreamQueryParams,
+              body = singleDeductionJson(fromDate, toDate))
 
-        val response: WSResponse = await(mtdRequest().get())
+        val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "?taxYear=2023-24")
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24", isTys = true)
 
       }
 
       "return error according to spec" when {
 
         def validationErrorTest(requestNino: String,
-                                requestFromDate: String,
-                                requestToDate: String,
+                                requestTaxYear: String,
                                 requestSource: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                qParams: Option[Seq[(String, String)]]): Unit = {
+                                expectedBody: MtdError): Unit = {
 
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-            override def fromDate: String = requestFromDate
-            override def toDate: String   = requestToDate
 
-            override def mtdQueryParams: Seq[(String, String)] = qParams.getOrElse(super.mtdQueryParams)
+            override val nino: String    = requestNino
+            override val taxYear: String = requestTaxYear
+            override val source: String  = requestSource
 
-            override val nino: String   = requestNino
-            override val source: String = requestSource
-
-            override def setupStubs(): StubMapping = {
-              AuditStub.audit()
-              AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(nino)
-            }
-
-            val response: WSResponse = await(mtdRequest().get())
+            val response: WSResponse = await(mtdRequest.get())
             response.status shouldBe expectedStatus
             response.json shouldBe expectedBody.asJson
             response.header("Content-Type") shouldBe Some("application/json")
@@ -124,27 +104,10 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA12345", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
-          ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
-          ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
-          ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceError, None),
-          ("AA123456B", "2022-04-05", "2021-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingToDateError,
-            Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingFromDateError,
-            Some(Seq("toDate" -> "2021-04-05", "source" -> "all")))
+          ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
+          ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
+          ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -152,23 +115,21 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
     "downstream service error" when {
 
-      def errorBody(code: String): JsValue =
-        Json.parse(s"""{
-             |  "code": "$code",
-             |  "reason": "downstream error message"
-             |}""".stripMargin)
+      def errorBody(code: String): String =
+        s"""
+           |{
+           |   "code": "$code",
+           |   "reason": "message"
+           |}
+            """.stripMargin
 
       def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"downstream returns $downstreamErrorCode with status $downstreamStatus" in new NonTysTest {
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
-          }
+          override def setupStubs(): Unit =
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
 
-          val response: WSResponse = await(mtdRequest().get())
+          val response: WSResponse = await(mtdRequest.get())
           response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
@@ -178,14 +139,10 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       def tysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysIfsTest {
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
-          }
+          override def setupStubs(): Unit =
+            DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
 
-          val response: WSResponse = await(mtdRequest().get())
+          val response: WSResponse = await(mtdRequest.get())
           response.json shouldBe expectedBody.asJson
           response.status shouldBe expectedStatus
           response.header("Content-Type") shouldBe Some("application/json")
@@ -198,38 +155,43 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
-        (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDate)
+        (BAD_REQUEST, "INVALID_PERIOD_START", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_PERIOD_END", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", BAD_REQUEST, RuleTaxYearNotAligned),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+        (BAD_REQUEST, "INVALID_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", INTERNAL_SERVER_ERROR, InternalError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       )
       extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
     }
   }
 
   private trait Test {
-    def fromDate: String
-    def toDate: String
+    val taxYear: String
+    val fromDate: String
+    val toDate: String
 
     val nino   = "AA123456A"
     val source = "customer"
 
-    def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
-    def downstreamQueryParams: Seq[(String, String)]
+    val downstreamQueryParams: Map[String, String]
 
-    def setupStubs(): StubMapping
+    def setupStubs(): Unit = ()
 
-    def mtdRequest(): WSRequest = {
+    def mtdRequest: WSRequest = {
+      AuditStub.audit()
+      AuthStub.authorised()
+      MtdIdLookupStub.ninoFound(nino)
       setupStubs()
-      buildRequest(s"/$nino/current-position")
-        .withQueryStringParameters(mtdQueryParams: _*)
+      buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
@@ -239,18 +201,20 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    def fromDate              = "2019-04-06"
-    def toDate                = "2020-04-05"
-    def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-    def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+    val taxYear: String                            = "2019-20"
+    val fromDate: String                           = "2019-04-06"
+    val toDate: String                             = "2020-04-05"
+    val downstreamQueryParams: Map[String, String] = Map("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    val downstreamUri: String                      = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
-    def fromDate                  = "2023-04-06"
-    def toDate                    = "2024-04-05"
-    def downstreamTaxYear: String = "23-24"
-    def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
-    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
+    val taxYear: String                            = "2023-24"
+    val fromDate: String                           = "2023-04-06"
+    val toDate: String                             = "2024-04-05"
+    val downstreamTaxYear: String                  = "23-24"
+    val downstreamQueryParams: Map[String, String] = Map("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
+    val downstreamUri: String                      = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }

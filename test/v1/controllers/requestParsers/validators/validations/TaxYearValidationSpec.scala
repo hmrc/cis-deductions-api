@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package v1.controllers.requestParsers.validators.validations
 
-import api.models.errors.{RuleDateRangeInvalidError, TaxYearFormatError}
+import api.models.errors.{RuleTaxYearRangeExceededError, TaxYearFormatError}
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
 
@@ -51,7 +51,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleDateRangeInvalidError
+      validationResult.head shouldBe RuleTaxYearRangeExceededError
 
     }
 
@@ -61,7 +61,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleDateRangeInvalidError
+      validationResult.head shouldBe RuleTaxYearRangeExceededError
 
     }
 
@@ -71,7 +71,7 @@ class TaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       val validationResult = TaxYearValidation.validate(invalidTaxYear)
       validationResult.isEmpty shouldBe false
       validationResult.length shouldBe 1
-      validationResult.head shouldBe RuleDateRangeInvalidError
+      validationResult.head shouldBe RuleTaxYearRangeExceededError
 
     }
 

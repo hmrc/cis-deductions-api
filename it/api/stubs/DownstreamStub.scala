@@ -22,16 +22,26 @@ import support.WireMockMethods
 
 object DownstreamStub extends WireMockMethods {
 
-  def mockDownstream(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
-    method match {
-      case GET if (queryParams.isDefined) => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
-      case _                              => when(method, uri).thenReturn(status, body)
-    }
-  }
-
   def onSuccess(method: HTTPMethod, uri: String, status: Int, body: JsValue): StubMapping = {
     when(method = method, uri = uri)
       .thenReturn(status = status, body)
+  }
+
+  def onSuccess(method: HTTPMethod, uri: String, queryParams: Map[String, String], status: Int, body: JsValue): StubMapping = {
+    when(method = method, uri = uri, queryParams = queryParams)
+      .thenReturn(status = status, body)
+  }
+
+  def onError(method: HTTPMethod, uri: String, queryParams: Map[String, String], errorStatus: Int, errorBody: String): StubMapping = {
+    when(method = method, uri = uri, queryParams)
+      .thenReturn(status = errorStatus, errorBody)
+  }
+
+  def mockDownstream(method: HTTPMethod, uri: String, status: Int, body: JsValue, queryParams: Option[Seq[(String, String)]]): StubMapping = {
+    method match {
+      case GET if queryParams.isDefined => when(method, uri, queryParams.get.toMap).thenReturn(status, body)
+      case _                            => when(method, uri).thenReturn(status, body)
+    }
   }
 
 }

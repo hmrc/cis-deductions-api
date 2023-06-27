@@ -17,8 +17,9 @@
 package v1.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations.{NinoValidation, SubmissionIdValidation, TaxYearTysParameterValidation, TaxYearValidation}
+import api.controllers.requestParsers.validators.validations.{NinoValidation, SubmissionIdValidation, TaxYearTysParameterValidation}
 import api.models.errors.MtdError
+import v1.controllers.requestParsers.validators.validations.TaxYearValidation
 import v1.models.request.delete.DeleteRawData
 
 class DeleteValidator extends Validator[DeleteRawData] {

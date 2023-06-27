@@ -18,6 +18,6 @@ package v2.models.request.retrieve
 
 import api.models.domain.{Nino, TaxYear}
 
-case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: String) {
-  val taxYear: TaxYear = TaxYear.fromIso(toDate)
+case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: String) {
+  val (startDate, endDate) = taxYear.fromToDates
 }

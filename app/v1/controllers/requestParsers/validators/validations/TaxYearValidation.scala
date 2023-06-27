@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package v1.controllers.requestParsers.validators.validations
 
-import api.models.errors.{MtdError, RuleDateRangeInvalidError, TaxYearFormatError}
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.{MtdError, RuleTaxYearRangeExceededError, TaxYearFormatError}
 
 object TaxYearValidation {
 
@@ -39,7 +40,7 @@ object TaxYearValidation {
       if (end - start == 1) {
         NoValidationErrors
       } else {
-        List(RuleDateRangeInvalidError)
+        List(RuleTaxYearRangeExceededError)
       }
     } else {
       List(TaxYearFormatError)
