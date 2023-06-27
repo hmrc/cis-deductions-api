@@ -17,10 +17,9 @@
 package v2.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations.{NinoValidation, TaxYearValidation}
+import api.controllers.requestParsers.validators.validations.{NinoValidation, SourceValidation, TaxYearValidation}
 import api.models.errors._
 import config.{AppConfig, FixedConfig}
-import v2.controllers.requestParsers.validators.validations.SourceValidation
 import v2.models.request.retrieve.RetrieveRawData
 
 import javax.inject.Inject
