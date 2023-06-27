@@ -101,7 +101,7 @@ object RuleDateRangeOutOfDate
 object RuleTaxYearRangeInvalidError
     extends MtdError(
       "RULE_TAX_YEAR_RANGE_INVALID",
-      "The specified date range is outside the allowable tax years (the current tax year minus four years)",
+      "The specified tax year is outside the allowable tax years (the current tax year minus four years)",
       BAD_REQUEST)
 
 object RuleTaxYearNotAligned
