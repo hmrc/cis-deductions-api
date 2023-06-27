@@ -28,7 +28,7 @@ components:
         example: 2021-22
       required: true
     source:
-      in: query
+      in: path
       name: source
       description: |
         The source of amended data. Defaults to `all`.
