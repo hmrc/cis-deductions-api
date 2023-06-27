@@ -49,7 +49,7 @@ components:
             read:self-assessment: Grant read access
 
 paths:
-  /individuals/deductions/cis/{nino}/current-position:
+  /individuals/deductions/cis/{nino}/current-position/{taxYear}/{source}:
     $ref: "./cis_deductions_retrieve.yaml"
   /individuals/deductions/cis/{nino}/amendments:
     $ref: "./cis_deductions_create.yaml"

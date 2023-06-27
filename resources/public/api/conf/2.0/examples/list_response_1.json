@@ -77,7 +77,7 @@
   ],
   "links":[
     {
-      "href": "individuals/deductions/cis/TC663795B/current-position?fromDate=2020-04-06&toDate=2021-04-05&source=all",
+      "href": "individuals/deductions/cis/TC663795B/current-position/2020-21/all",
       "rel": "self",
       "method": "GET"
     },
