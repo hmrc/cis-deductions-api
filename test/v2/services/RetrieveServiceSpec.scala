@@ -89,7 +89,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
 
       val errors = Seq(
         ("INVALID_CORRELATIONID", InternalError),
-        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
+        ("INVALID_DATE_RANGE", InternalError),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
         ("INVALID_TAX_YEAR", InternalError),
@@ -102,7 +102,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
       errors.foreach(args => (serviceError _).tupled(args))
 
       val extraTysErrors = Seq(
-        ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
+        ("INVALID_DATE_RANGE", InternalError),
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
         ("INVALID_START_DATE", InternalError),
         ("INVALID_END_DATE", InternalError),
