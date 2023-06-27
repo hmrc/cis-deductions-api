@@ -86,6 +86,12 @@ class TaxYearSpec extends UnitSpec {
         taxYear should not be TaxYear.fromDownstream("2021")
       }
     }
+
+    "deconstructed into from and to dates" should {
+      "return the tax year start date and end date" in {
+        taxYear.fromToDates shouldBe ("2023-04-06", "2024-04-05")
+      }
+    }
   }
 
 }
