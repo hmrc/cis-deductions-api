@@ -28,6 +28,7 @@ import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.Future
 
 class ControllerBaseSpec

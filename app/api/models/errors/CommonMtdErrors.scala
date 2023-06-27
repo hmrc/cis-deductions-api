@@ -16,7 +16,7 @@
 
 package api.models.errors
 
-import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, NOT_FOUND, UNAUTHORIZED, UNSUPPORTED_MEDIA_TYPE}
+import play.api.http.Status._
 
 // MtdError types that are common across MTD APIs.
 
@@ -140,4 +140,3 @@ object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting tex
 
 //Stub errors
 object RuleIncorrectGovTestScenarioError extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The Gov-Test-Scenario was not found", BAD_REQUEST)
-

@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
@@ -24,6 +24,7 @@ import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendRequestParser
 import v1.models.request.amend.AmendRawData
 import v1.services.AmendService
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 

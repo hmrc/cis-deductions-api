@@ -16,13 +16,14 @@
 
 package v1.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.DeleteRequestParser
 import v1.models.request.delete.DeleteRawData
 import v1.services.DeleteService
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 

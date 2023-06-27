@@ -16,7 +16,7 @@
 
 package v2.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
+import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -25,6 +25,7 @@ import v2.controllers.requestParsers._
 import v2.models.request.retrieve.RetrieveRawData
 import v2.models.response.retrieve.RetrieveHateoasData
 import v2.services.RetrieveService
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
