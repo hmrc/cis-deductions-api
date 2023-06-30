@@ -16,10 +16,10 @@
 
 package v1.mocks.requestParsers
 
+import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.CreateRequestParser
-import v1.models.errors.ErrorWrapper
 import v1.models.request.create.{CreateRawData, CreateRequestData}
 
 trait MockCreateRequestParser extends MockFactory {
@@ -29,7 +29,9 @@ trait MockCreateRequestParser extends MockFactory {
   object MockCreateRequestDataParser {
 
     def parse(data: CreateRawData): CallHandler[Either[ErrorWrapper, CreateRequestData]] = {
-      (mockRequestDataParser.parseRequest(_: CreateRawData)(_: String)).expects(data, *)
+      (mockRequestDataParser
+        .parseRequest(_: CreateRawData)(_: String))
+        .expects(data, *)
     }
 
   }

@@ -16,12 +16,12 @@
 
 package v1.models.response.retrieve
 
+import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import api.models.domain.TaxYear
+import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v1.models.domain.TaxYear
-import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
                                     totalCostOfMaterials: Option[BigDecimal],
@@ -66,10 +66,4 @@ object RetrieveResponseModel extends HateoasLinks {
 
 }
 
-case class RetrieveHateoasData(nino: String,
-                               fromDate: String,
-                               toDate: String,
-                               source: Option[String],
-                               taxYear: TaxYear,
-                               retrieveResponse: RetrieveResponseModel[CisDeductions])
-    extends HateoasData
+case class RetrieveHateoasData(nino: String, fromDate: String, toDate: String, source: Option[String], taxYear: TaxYear) extends HateoasData

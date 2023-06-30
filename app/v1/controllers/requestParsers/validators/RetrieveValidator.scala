@@ -16,16 +16,17 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors._
 import config.{AppConfig, FixedConfig}
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
 
 import javax.inject.Inject
 
 class RetrieveValidator @Inject() (appConfig: AppConfig) extends Validator[RetrieveRawData] with FixedConfig {
 
-  private val validationSet = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidator)
+  private val validations = List(mandatoryFieldValidation, parameterFormatValidation, businessRuleValidation)
 
   private def parameterFormatValidation: RetrieveRawData => List[List[MtdError]] = (data: RetrieveRawData) =>
     List(
@@ -41,11 +42,11 @@ class RetrieveValidator @Inject() (appConfig: AppConfig) extends Validator[Retri
       MandatoryValidation.validate(RuleMissingToDateError)(data.toDate)
     )
 
-  private def businessRuleValidator: RetrieveRawData => List[List[MtdError]] = { data =>
+  private def businessRuleValidation: RetrieveRawData => List[List[MtdError]] = { data =>
     List(
-      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, allowedNumberOfYearsBetweenDates = 1, validateTaxYearEndedFlag = false)
+      TaxYearDatesValidation.validate(data.fromDate.get, data.toDate.get, allowedNumberOfYearsBetweenDates = 1)
     )
   }
 
-  override def validate(data: RetrieveRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: RetrieveRawData): List[MtdError] = run(validations, data).distinct
 }

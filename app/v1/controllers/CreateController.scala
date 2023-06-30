@@ -16,25 +16,20 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
+import api.controllers._
+import api.hateoas.HateoasFactory
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.{AppConfig, FeatureSwitches}
-import play.api.http.MimeTypes
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreateRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.audit._
-import v1.models.errors._
 import v1.models.request.create.CreateRawData
 import v1.models.response.create.CreateHateoasData
-import v1.services.{AuditService, CreateService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.CreateService
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   val lookupService: MtdIdLookupService,
@@ -46,7 +41,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   cc: ControllerComponents,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -55,95 +49,32 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
       endpointName = "createEndpoint"
     )
 
-  def createRequest(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-    implicit val correlationId: String = idGenerator.getCorrelationId
-    logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-      s"with correlationId : $correlationId")
+  def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
+    implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+
     val rawData = CreateRawData(
       nino = nino,
       body = request.body,
       temporalValidationEnabled = FeatureSwitches()(appConfig).isTemporalValidationEnabled
     )
 
-    val result = for {
-      parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-      serviceResponse <- EitherT(service.createDeductions(parsedRequest))
-    } yield {
-      val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, CreateHateoasData(nino, parsedRequest))
+    val requestHandler = RequestHandler
+      .withParser(requestParser)
+      .withService(service.createDeductions)
+      .withAuditing(AuditHandler(
+        auditService = auditService,
+        auditType = "CreateCisDeductionsForSubcontractor",
+        transactionName = "create-cis-deductions-for-subcontractor",
+        params = Map("nino" -> nino),
+        requestBody = Some(request.body),
+        includeResponse = true
+      ))
+      .withHateoasResultFrom(hateoasFactory) { (request, _) =>
+        CreateHateoasData(nino, request)
+      }
 
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-          s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-      auditSubmission(
-        createAuditDetails(
-          rawData,
-          OK,
-          serviceResponse.correlationId,
-          request.userDetails,
-          None,
-          None,
-          requestBody = Some(request.body),
-          responseBody = Some(Json.toJson(vendorResponse))))
+    requestHandler.handleRequest(rawData)
 
-      Ok(Json.toJson(vendorResponse))
-        .withApiHeaders(serviceResponse.correlationId)
-        .as(MimeTypes.JSON)
-    }
-
-    result.leftMap { errorWrapper =>
-      val resCorrelationId = errorWrapper.correlationId
-      val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-      logger.warn(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-          s"Error response received with CorrelationId: $resCorrelationId")
-
-      auditSubmission(
-        createAuditDetails(
-          rawData,
-          result.header.status,
-          correlationId,
-          request.userDetails,
-          None,
-          Some(errorWrapper),
-          requestBody = Some(request.body)))
-      result
-    }.merge
-  }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            FromDateFormatError,
-            ToDateFormatError,
-            RuleIncorrectOrEmptyBodyError,
-            DeductionFromDateFormatError,
-            DeductionToDateFormatError,
-            RuleDeductionAmountError,
-            RuleCostOfMaterialsError,
-            RuleGrossAmountError,
-            EmployerRefFormatError,
-            RuleTaxYearNotSupportedError,
-            RuleDateRangeInvalidError,
-            RuleUnalignedDeductionsPeriodError,
-            RuleDeductionsDateRangeInvalidError,
-            RuleTaxYearNotEndedError,
-            RuleDuplicatePeriodError,
-            RuleDuplicateSubmissionError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case _             => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
-
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("CreateCisDeductionsForSubcontractor", "create-cis-deductions-for-subcontractor", details)
-    auditService.auditEvent(event)
   }
 
 }

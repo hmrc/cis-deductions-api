@@ -16,9 +16,9 @@
 
 package v1.fixtures
 
+import api.models.audit.{AuditError, AuditResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
-import v1.models.audit.{AuditError, AuditResponse}
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.CreateBody
 import v1.models.response.create.CreateResponseModel
@@ -1033,33 +1033,6 @@ object CreateRequestFixtures {
       |  ]
       |}
       """.stripMargin
-  )
-
-  val requestBodyJsonFromDate13MonthsBeforeToDate = Json.parse(
-    """
-      |{
-      |  "fromDate": "2019-04-06",
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "123/AB56797",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2020-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-        """.stripMargin
   )
 
 }

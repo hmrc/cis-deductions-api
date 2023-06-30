@@ -16,55 +16,83 @@
 
 package config
 
+import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
+import play.api.http.Status.OK
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
 
+import scala.util.Try
+
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
+  val config: AppConfig = app.injector.instanceOf[AppConfig]
+  val confidenceLevel   = config.confidenceLevelConfig.confidenceLevel
+
   val apiDefinitionJson: JsValue = Json.parse(
-    """
-    {
-      "scopes": [{
-        "key": "read:self-assessment",
-        "name": "View your Self Assessment information",
-        "description": "Allow read access to self assessment data",
-        "confidenceLevel": 200
-      }, {
-        "key": "write:self-assessment",
-        "name": "Change your Self Assessment information",
-        "description": "Allow write access to self assessment data",
-        "confidenceLevel": 200
-      }],
-      "api": {
-        "name": "CIS Deductions (MTD)",
-        "description": "An API for providing Construction industry scheme data",
-        "context": "individuals/deductions/cis",
-        "categories": ["INCOME_TAX_MTD"],
-        "versions": [{
-          "version": "1.0",
-          "status": "ALPHA",
-          "endpointsEnabled": false
-        }]
-      }
-    }
+    s"""
+      |{
+      |   "scopes":[
+      |      {
+      |         "key":"read:self-assessment",
+      |         "name":"View your Self Assessment information",
+      |         "description":"Allow read access to self assessment data",
+      |         "confidenceLevel": $confidenceLevel
+      |      },
+      |      {
+      |         "key":"write:self-assessment",
+      |         "name":"Change your Self Assessment information",
+      |         "description":"Allow write access to self assessment data",
+      |         "confidenceLevel": $confidenceLevel
+      |      }
+      |   ],
+      |   "api":{
+      |      "name":"CIS Deductions (MTD)",
+      |      "description":"An API for providing Construction industry scheme data",
+      |      "context":"individuals/deductions/cis",
+      |      "categories":[
+      |         "INCOME_TAX_MTD"
+      |      ],
+      |      "versions":[
+      |         {
+      |            "version":"1.0",
+      |            "status":"BETA",
+      |            "endpointsEnabled":true
+      |         },
+      |         {
+      |            "version":"2.0",
+      |            "status":"BETA",
+      |            "endpointsEnabled":true
+      |         }
+      |      ]
+      |   }
+      |}
     """.stripMargin
   )
 
   "GET /api/definition" should {
     "return a 200 with the correct response body" in {
       val response: WSResponse = await(buildRequest("/api/definition").get())
-      response.status shouldBe Status.OK
+      response.status shouldBe OK
       Json.parse(response.body) shouldBe apiDefinitionJson
     }
   }
 
-  "a documentation request" must {
-    "return the documentation" in {
-      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
+  "an OAS documentation request" must {
+    "return the documentation that passes OAS V3 parser" in {
+      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
       response.status shouldBe Status.OK
-      response.body[String] should startWith("#%RAML 1.0")
+
+      val contents     = response.body[String]
+      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+      parserResult.isSuccess shouldBe true
+
+      val openAPI = Option(parserResult.get.getOpenAPI)
+      openAPI.isEmpty shouldBe false
+      openAPI.get.getOpenapi shouldBe "3.0.3"
+      openAPI.get.getInfo.getTitle shouldBe "CIS Deductions (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "1.0"
     }
   }
 

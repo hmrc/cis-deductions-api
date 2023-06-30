@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.Nino
 import v1.controllers.requestParsers.validators.CreateValidator
-import v1.models.domain.Nino
 import v1.models.request.create.{CreateBody, CreateRawData, CreateRequestData}
 
 import javax.inject.Inject

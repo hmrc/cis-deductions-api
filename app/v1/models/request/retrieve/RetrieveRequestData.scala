@@ -16,7 +16,7 @@
 
 package v1.models.request.retrieve
 
-import v1.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 
 /** @param fromDate
   *   period start in extended ISO-8601 format (e.g. 2020-04-01)

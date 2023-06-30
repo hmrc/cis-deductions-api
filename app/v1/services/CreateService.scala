@@ -16,51 +16,44 @@
 
 package v1.services
 
-import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.toBifunctorOps
 import v1.connectors.CreateConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
-import v1.support.DownstreamResponseMappingSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject() (connector: CreateConnector) extends DownstreamResponseMappingSupport with Logging {
+class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
-  def createDeductions(request: CreateRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]] = {
+  def createDeductions(
+      request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
 
-    connector.create(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+    connector.create(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val downstreamErrorMap = {
-
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
-      "INVALID_PAYLOAD"                 -> RuleIncorrectOrEmptyBodyError,
+      "INVALID_PAYLOAD"                 -> InternalError,
       "INVALID_EMPREF"                  -> EmployerRefFormatError,
       "INVALID_REQUEST_TAX_YEAR_ALIGN"  -> RuleUnalignedDeductionsPeriodError,
       "INVALID_REQUEST_DATE_RANGE"      -> RuleDeductionsDateRangeInvalidError,
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
       "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR"                    -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"             -> StandardDownstreamError,
-      "INVALID_CORRELATIONID"           -> StandardDownstreamError
+      "SERVER_ERROR"                    -> InternalError,
+      "SERVICE_UNAVAILABLE"             -> InternalError,
+      "INVALID_CORRELATIONID"           -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID" -> StandardDownstreamError,
-      "INVALID_TAX_YEAR"       -> StandardDownstreamError,
+      "INVALID_CORRELATION_ID" -> InternalError,
+      "INVALID_TAX_YEAR"       -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError,

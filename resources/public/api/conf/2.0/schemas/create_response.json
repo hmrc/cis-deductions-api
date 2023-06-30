@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create CIS Deduction",
+  "description": "Create CIS Deduction",
+  "type": "object",
+  "properties": {
+    "submissionId": { "$ref": "definitions.json#/definitions/uid" },
+    "links": {
+      "description": "A list of endpoint links that indicate possible actions related to the current resource",
+      "type": "array",
+      "items": {
+        "title": "item",
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint",
+            "type": "string",
+            "example": "individuals/deductions/cis/{nino}/current-position/{taxYear}/{source}"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource",
+            "type": "string",
+            "example": "retrieve-cis-deductions-for-subcontractor"
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint",
+            "type": "string",
+            "example": "GET"
+          }
+        },
+        "required": [
+          "href", "rel", "method"
+        ]
+      }
+    }
+  },
+  "required": [
+    "submissionId"
+  ]
+}

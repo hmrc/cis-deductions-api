@@ -16,6 +16,6 @@
 
 package v1.models.request.retrieve
 
-import v1.models.request.RawData
+import api.models.request.RawData
 
 case class RetrieveRawData(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String] = Some("all")) extends RawData

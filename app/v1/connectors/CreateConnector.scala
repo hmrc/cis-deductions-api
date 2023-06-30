@@ -16,11 +16,12 @@
 
 package v1.connectors
 
+import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
-import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
 

@@ -1,0 +1,243 @@
+components:
+  examples:
+
+    # 400
+    formatCisSubmissionID:
+      description: |
+        The format of the CIS deductions submission ID is not valid.
+      value:
+        code: FORMAT_CIS_SUBMISSION_ID
+        message: The format of the CIS deductions submission ID is not valid.
+
+    formatDeductionsFromDate:
+      description: |
+        The deductions From date is not a valid date format.
+      value:
+        code: FORMAT_DEDUCTIONS_FROM_DATE
+        message: The provided deductions From date is invalid
+
+    formatDeductionsToDate:
+      description: |
+        The deductions To date is not a valid date format.
+      value:
+        code: FORMAT_DEDUCTIONS_TO_DATE
+        message: The provided deductions To date is invalid
+
+    formatEmployerReference:
+      description: |
+        The format of the Employer Reference number is invalid.
+      value:
+        code: FORMAT_EMPLOYER_REFERENCE
+        message: The format of the Employer Reference number is invalid
+
+    formatFromDate:
+      description: |
+        The From date is not a valid format.
+      value:
+        code: FORMAT_FROM_DATE
+        message: The provided From date is invalid
+
+    formatNino:
+      description: |
+        The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+        message: The provided NINO is invalid
+
+    formatSubmissionId:
+      description: |
+        The format of the submission ID is not valid.
+      value:
+        code: FORMAT_SUBMISSION_ID
+        message: The provided submission ID is invalid
+
+    formatTaxYear:
+      description: |
+        The format of the supplied tax year field is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: The provided tax year is invalid
+
+    formatToDate:
+      description: |
+        The To date is not a valid format.
+      value:
+        code: FORMAT_TO_DATE
+        message: The provided To date is invalid
+
+    incorrectOrEmptyBody:
+      description: |
+        An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+        message: An empty or non-matching body was submitted
+
+    invalidTaxYear:
+      description: |
+        A tax year before 2023-24 was supplied. A request with a tax year parameter is only valid for tax years 2023-24 or later.
+      value:
+        code: INVALID_TAX_YEAR_PARAMETER
+        message: A tax year before 2023-24 was supplied
+
+    missingFromDate:
+      description: |
+        The From date parameter is missing.
+      value:
+        code: MISSING_FROM_DATE
+        message: The From date parameter is missing
+
+    missingToDate:
+      description: |
+        The To date parameter is missing.
+      value:
+        code: MISSING_TO_DATE
+        message: The To date parameter is missing
+
+    rangeDeductionsToDateBeforeDeductionsFromDate:
+      description: |
+        The deductions To date must be after the Deductions From date.
+      value:
+        code: RANGE_DEDUCTIONS_TO_DATE_BEFORE_DEDUCTIONS_FROM_DATE
+        message: The deductions To date must be after the deductions From date
+
+    ruleCostOfMaterials:
+      description: |
+        The cost of materials should be a positive number less than 99999999999.99  up to 2 decimal places.
+      value:
+        code: RULE_COST_OF_MATERIALS
+        message: The cost of materials should be a positive number less than 99999999999.99 up to 2 decimal places
+
+    ruleDateRangeInvalid:
+      description: |
+        The specified date range is invalid
+      value:
+        code: RULE_DATE_RANGE_INVALID
+        message: The date range should be a valid tax year
+
+    ruleDateRangeOutOfDate:
+      description: |
+        The specified date range is outside the allowable tax years (the current tax year minus four years).
+      value:
+        code: RULE_DATE_RANGE_OUT_OF_DATE
+        message: The specified date range is outside the allowable tax years (the current tax year minus four years)
+
+    ruleDeductionsAmount:
+      description: |
+        The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places.
+      value:
+        code: RULE_DEDUCTIONS_AMOUNT
+        message: The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places
+
+    ruleDeductionsDateRangeInvalid:
+      description: |
+        The deductions period does not align from the 6th of one month to the 5th of the following month.
+      value:
+        code: RULE_DEDUCTIONS_DATE_RANGE_INVALID
+        message: The deductions period must align from the 6th of one month to the 5th of the following month
+
+    ruleDuplicatePeriod:
+      description: |
+        More than one deduction period has been supplied for the same month or period.
+      value:
+        code: RULE_DUPLICATE_PERIOD
+        message: More than one deduction period has been supplied for the same month or period
+
+    ruleDuplicateSubmission:
+      description: |
+        CIS deductions already exists for this tax year.
+      value:
+        code: RULE_DUPLICATE_SUBMISSION
+        message: CIS deduction already exists for this tax year
+
+    ruleFromDate:
+      description: |
+        The from date is not the start of the tax year.
+      value:
+        code: RULE_FROM_DATE
+        message: The from date is not the start of the tax year.
+
+    ruleGrossAmountPaid:
+      description: |
+        The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places.
+      value:
+        code: RULE_GROSS_AMOUNT_PAID
+        message: The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places
+
+    ruleSourceInvalid:
+      description: |
+        The source of data should be one of these All (Blended view), Customer or Contractor.
+      value:
+        code: RULE_SOURCE_INVALID
+        message: The source is invalid
+
+    ruleTaxYearNotEnded:
+      description: |
+        The submission has been made before the tax year has ended.
+      value:
+        code: RULE_TAX_YEAR_NOT_ENDED
+        message: The submission has been made before the tax year has ended
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported. Either the tax year specified is before the minimum tax year value,
+        or it is after the maximum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The tax year specified does not lie within the supported range
+
+    ruleTaxYearRangeInvalid:
+      description: |
+        The specified date range is outside the allowable tax years (the current tax year minus four years).
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+        message: The specified date range is outside the allowable tax years (the current tax year minus four years)
+
+    ruleToDate:
+      description: |
+        The to date is not the end of the tax year.
+      value:
+        code: RULE_TO_DATE
+        message: The to date is not the end of the tax year.
+
+    ruleUnalignedDeductionsPeriod:
+      description: |
+        The deductions periods do not align with the tax year supplied.
+      value:
+        code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
+        message: The deductions periods do not align with the tax year supplied
+
+    ruleTaxYearRangeExceeded:
+      description: |
+        The tax year range is exceeded.  A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_EXCEEDED
+        message: Tax year range exceeded. A tax year range of one year is required
+    ruleIncorrectGovTestScenario:
+      description: |
+        The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+      value:
+        code: RULE_INCORRECT_GOV_TEST_SCENARIO
+        message: The Gov-Test-Scenario was not found
+
+    # 403
+    clientOrAgentNotAuthorised:
+      description: |
+        The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+        message: The client and/or agent is not authorised
+
+    # 404
+    notFound:
+      description: |
+        The remote endpoint has indicated that no data can be found for the given period.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: Matching resource not found
+
+    notFoundNino:
+      description: |
+        The remote endpoint has indicated that no data can be found for the given NINO.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: Matching resource not found

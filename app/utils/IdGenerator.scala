@@ -22,5 +22,5 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class IdGenerator @Inject() () {
 
-  def getCorrelationId: String = UUID.randomUUID().toString
+  def generateCorrelationId: String = UUID.randomUUID().toString
 }

@@ -16,35 +16,36 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors._
 import config.{AppConfig, FixedConfig}
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors._
 import v1.models.request.create.{CreateBody, CreateRawData}
 
 import javax.inject.Inject
 
 class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateRawData] with FixedConfig {
 
-  private val validationSet = List(
-    parameterFormatValidator,
-    bodyFormatValidator,
-    bodyRuleValidator,
-    businessRuleValidator
+  private val validations = List(
+    parameterFormatValidation,
+    bodyFormatValidation,
+    bodyRuleValidation,
+    businessRuleValidation
   )
 
-  private def parameterFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def parameterFormatValidation: CreateRawData => List[List[MtdError]] = { data =>
     List(
       NinoValidation.validate(data.nino)
     )
   }
 
-  private def bodyFormatValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidation: CreateRawData => List[List[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[CreateBody](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 
-  private def bodyRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def bodyRuleValidation: CreateRawData => List[List[MtdError]] = { data =>
     val req = data.body.as[CreateBody]
 
     List(
@@ -61,34 +62,15 @@ class CreateValidator @Inject() (appConfig: AppConfig) extends Validator[CreateR
     )
   }
 
-  private def businessRuleValidator: CreateRawData => List[List[MtdError]] = { data =>
+  private def businessRuleValidation: CreateRawData => List[List[MtdError]] = { data =>
     val req      = data.body.as[CreateBody]
     val fromDate = req.fromDate
     val toDate   = req.toDate
-    val taxYearValidations: List[List[MtdError]] = List(
-      TaxYearDatesValidation.validate(
-        req.fromDate,
-        req.toDate,
-        allowedNumberOfYearsBetweenDates = 1,
-        validateTaxYearEndedFlag = data.temporalValidationEnabled)
+
+    List(
+      TaxYearDatesValidation.validate(fromDate, toDate, allowedNumberOfYearsBetweenDates = 1)
     )
-    val periodDataCheck: List[List[MtdError]] = if (taxYearValidations.flatten.isEmpty) {
-      req.periodData.map { period =>
-        PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
-      }.toList
-    } else {
-      taxYearValidations
-    }
-
-    if (periodDataCheck.flatten.isEmpty) {
-      req.periodData.map { period =>
-        PeriodDataDeductionDateValidation.validatePeriodInsideTaxYear(fromDate, toDate, period.deductionFromDate, period.deductionFromDate)
-      }.toList
-    } else {
-      periodDataCheck
-    }
-
   }
 
-  override def validate(data: CreateRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: CreateRawData): List[MtdError] = run(validations, data).distinct
 }

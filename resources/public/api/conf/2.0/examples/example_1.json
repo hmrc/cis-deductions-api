@@ -1,0 +1,10 @@
+{
+  "submissionId": "db854aaa-65dc-488c-9120-e63fea14b9f1",
+  "links": [
+    {
+      "href": "/individuals/deductions/cis/TC663795B/current-position/2021-22/all",
+      "rel": "retrieve-cis-deductions-for-subcontractor",
+      "method": "GET"
+    }
+  ]
+}

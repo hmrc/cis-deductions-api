@@ -16,9 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.models.errors._
 import mocks.MockAppConfig
 import support.UnitSpec
-import v1.models.errors._
 import v1.models.request.retrieve.RetrieveRawData
 
 class RetrieveValidatorSpec extends UnitSpec {
@@ -49,7 +49,7 @@ class RetrieveValidatorSpec extends UnitSpec {
     "return errors" when {
       "invalid nino and source data is passed in the request" in new SetUp {
         private val result = validator.validate(RetrieveRawData(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All")))
-        result shouldBe List(NinoFormatError, RuleSourceError)
+        result shouldBe List(NinoFormatError, RuleSourceInvalidError)
       }
 
       "invalid dates are provided in the request" in new SetUp {

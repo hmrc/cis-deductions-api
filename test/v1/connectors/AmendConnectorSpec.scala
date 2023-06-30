@@ -16,9 +16,10 @@
 
 package v1.connectors
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import v1.fixtures.AmendRequestFixtures._
-import v1.models.domain.{Nino, TaxYear}
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.Future

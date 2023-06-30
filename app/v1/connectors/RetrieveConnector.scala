@@ -16,9 +16,11 @@
 
 package v1.connectors
 
+import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
@@ -47,8 +49,6 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
           List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
         )
       }
-
-    import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 
     get(downstreamUri, queryParams)
   }

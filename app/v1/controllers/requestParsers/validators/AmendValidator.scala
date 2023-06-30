@@ -16,28 +16,29 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors._
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors._
 import v1.models.request.amend.{AmendBody, AmendRawData}
 
 class AmendValidator extends Validator[AmendRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyRuleValidator, businessRuleValidator)
+  private val validations = List(parameterFormatValidation, bodyFormatValidation, bodyRuleValidation)
 
   private def parameterFormatValidation: AmendRawData => List[List[MtdError]] = (data: AmendRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      SubmissionIdValidation.validate(data.id)
+      SubmissionIdValidation.validate(data.submissionId)
     )
   }
 
-  private def bodyFormatValidator: AmendRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidation: AmendRawData => List[List[MtdError]] = { data =>
     List(
       JsonFormatValidation.validate[AmendBody](data.body, RuleIncorrectOrEmptyBodyError)
     )
   }
 
-  private def bodyRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
+  private def bodyRuleValidation: AmendRawData => List[List[MtdError]] = { data =>
     List(
       PeriodDataPositiveAmountValidation.validate(data.body, "deductionAmount", RuleDeductionAmountError),
       PeriodDataPositiveAmountValidation.validate(data.body, "costOfMaterials", RuleCostOfMaterialsError),
@@ -48,20 +49,8 @@ class AmendValidator extends Validator[AmendRawData] {
     )
   }
 
-  private def businessRuleValidator: AmendRawData => List[List[MtdError]] = { data =>
-    val req = data.body.as[AmendBody]
-
-    val dateOrderValidations = req.periodData.map { period =>
-      PeriodDataDeductionDateValidation.validateDateOrder(period.deductionFromDate, period.deductionToDate)
-    }.toList
-
-    val multiplePeriodsTaxYearValidation = List(PeriodDataDeductionDateValidation.validateTaxYearForMultiplePeriods(data))
-
-    dateOrderValidations ++ multiplePeriodsTaxYearValidation
-  }
-
   override def validate(data: AmendRawData): List[MtdError] = {
-    run(validationSet, data).distinct
+    run(validations, data).distinct
   }
 
 }

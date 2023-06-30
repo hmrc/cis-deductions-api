@@ -16,13 +16,15 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{NinoValidation, SubmissionIdValidation, TaxYearTysParameterValidation, TaxYearValidation}
-import v1.models.errors.MtdError
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations.{NinoValidation, SubmissionIdValidation, TaxYearTysParameterValidation}
+import api.models.errors.MtdError
+import v1.controllers.requestParsers.validators.validations.TaxYearValidation
 import v1.models.request.delete.DeleteRawData
 
 class DeleteValidator extends Validator[DeleteRawData] {
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validations = List(parameterFormatValidation)
 
   private def parameterFormatValidation: DeleteRawData => List[List[MtdError]] = (data: DeleteRawData) => {
     List(
@@ -34,7 +36,7 @@ class DeleteValidator extends Validator[DeleteRawData] {
   }
 
   override def validate(data: DeleteRawData): List[MtdError] = {
-    run(validationSet, data).distinct
+    run(validations, data).distinct
   }
 
 }

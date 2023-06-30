@@ -16,10 +16,10 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.Nino
+import api.models.errors._
 import support.UnitSpec
 import v1.mocks.validators.MockRetrieveValidator
-import v1.models.domain.Nino
-import v1.models.errors._
 import v1.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
 
 class RetrieveRequestParserSpec extends UnitSpec {
@@ -89,10 +89,10 @@ class RetrieveRequestParserSpec extends UnitSpec {
 
         MockValidator
           .validate(inputData)
-          .returns(List(RuleSourceError))
+          .returns(List(RuleSourceInvalidError))
 
         val result: Either[ErrorWrapper, RetrieveRequestData] = parser.parseRequest(inputData)
-        result shouldBe Left(ErrorWrapper(correlationId, RuleSourceError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleSourceInvalidError))
       }
 
       "toDate is earlier than fromDate" in new Test {

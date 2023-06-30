@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.{Nino, TaxYear}
 import v1.controllers.requestParsers.validators.AmendValidator
-import v1.models.domain.{Nino, TaxYear}
 import v1.models.request.amend.{AmendBody, AmendRawData, AmendRequestData}
 
 import javax.inject.Inject
@@ -35,7 +36,7 @@ class AmendRequestParser @Inject() (val validator: AmendValidator) extends Reque
       case None                => throw new Exception("Unable to locate `deductionToDate` in request body")
 
     }
-    AmendRequestData(Nino(data.nino), data.id, taxYear, requestBody)
+    AmendRequestData(Nino(data.nino), data.submissionId, taxYear, requestBody)
   }
 
 }

@@ -16,43 +16,33 @@
 
 package v1.services
 
-import cats.data._
-import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.toBifunctorOps
 import v1.connectors.DeleteConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.delete.DeleteRequestData
-import v1.support.DownstreamResponseMappingSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteService @Inject() (connector: DeleteConnector) extends DownstreamResponseMappingSupport with Logging {
+class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
 
-  def deleteDeductions(request: DeleteRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def deleteDeductions(request: DeleteRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.delete(request)).leftMap(mapDownstreamErrors(errorMap))
-    } yield desResponseWrapper
-    result.value
+    connector.delete(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
+
   }
 
-  private def errorMap: Map[String, MtdError] = {
+  private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"     -> StandardDownstreamError,
+      "INVALID_CORRELATIONID"     -> InternalError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "SERVER_ERROR"              -> StandardDownstreamError,
-      "SERVICE_UNAVAILABLE"       -> StandardDownstreamError
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
     val extraTysErrors = Map(
