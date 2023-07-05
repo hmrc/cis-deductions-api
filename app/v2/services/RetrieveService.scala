@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 import v2.connectors.RetrieveConnector
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -30,8 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends BaseService {
-
-  implicit private lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
       ctx: RequestContext,

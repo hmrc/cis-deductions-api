@@ -20,12 +20,11 @@ import api.models.domain.TaxYear
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import api.models.hateoas.RelType._
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 
 trait HateoasLinks {
 
   private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
-    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
     maybeTaxYear match {
       case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"

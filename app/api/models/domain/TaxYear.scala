@@ -17,7 +17,6 @@
 package api.models.domain
 
 import api.models.domain.TaxYear.minimumTysTaxYear
-import config.FeatureSwitches
 
 import java.time.LocalDate
 
@@ -61,10 +60,9 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean =
-    featureSwitches.isTaxYearSpecificApiEnabled && year >= minimumTysTaxYear
+  def useTaxYearSpecificApi: Boolean = year >= minimumTysTaxYear
 
-  def isTys(implicit featureSwitches: FeatureSwitches): Boolean = useTaxYearSpecificApi
+  def isTys: Boolean = useTaxYearSpecificApi
 
   override def toString: String = s"TaxYear($value)"
 }

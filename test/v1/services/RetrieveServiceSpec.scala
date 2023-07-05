@@ -21,7 +21,6 @@ import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
-import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
@@ -50,8 +49,6 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
-
-    MockedAppConfig.featureSwitches returns Configuration.empty
 
     val service = new RetrieveService(mockRetrieveConnector, mockAppConfig)
   }
