@@ -4,16 +4,16 @@ post:
     This endpoint allows a developer to create a customer’s CIS deductions that have been previously populated. A National Insurance number must be provided.
     
     ### Test data
-    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
-    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                      |
-    |----------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulate success response.                                                                                                    |
-    | DEDUCTIONS_DATE_RANGE_INVALID    | Simulate the scenario where the deductions period does not align from the 6th of one month to the 5th of the following month. |
-    | UNALIGNED_DEDUCTIONS_PERIOD      | Simulate the scenario where the deductions periods do not align with the tax year supplied.                                   |
-    | TAX_YEAR_NOT_ENDED               | Simulate the scenario where the submission is for tax year that has not ended.                                                |
-    | DUPLICATE_SUBMISSION             | Simulate the scenario where CIS deductions already exists for this tax year.                                                  |
-    | DUPLICATE_PERIOD                 | Simulate the scenario where CIS deductions already exists for this period.                                                    |     
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                       |
+    |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response.                                                                                                    |
+    | DEDUCTIONS_DATE_RANGE_INVALID    | Simulates the scenario where the deductions period does not align from the 6th of one month to the 5th of the following month. |
+    | UNALIGNED_DEDUCTIONS_PERIOD      | Simulates the scenario where the deductions periods do not align with the tax year supplied.                                   |
+    | TAX_YEAR_NOT_ENDED               | Simulates the scenario where the submission is for a tax year that has not ended.                                              |
+    | DUPLICATE_SUBMISSION             | Simulates the scenario where CIS deductions already exists for this tax year.                                                  |
+    | DUPLICATE_PERIOD                 | Simulates the scenario where CIS deductions already exists for this period.                                                    |     
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'

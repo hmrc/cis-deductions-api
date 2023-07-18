@@ -4,16 +4,16 @@ get:
     This endpoint allows a developer to retrieve a customer's latest CIS deductions data and whether it was submitted by a contractor or user. A National Insurance number and submission ID must be provided.
     
     ### Test data
-    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
-    | Header Value (Gov-Test-Scenario)                | Scenario                                                                                       |
-    |-------------------------------------------------|------------------------------------------------------------------------------------------------|
-    | N/A - DEFAULT                                   | Simulate success response with customer and contractor deductions.                             |
-    | N/A - DEFAULT <br> using source **all**         | Simulate success response with customer and contractor deductions                              |
-    | N/A - DEFAULT <br> using source **contractor**  | Simulate success response with contractor deductions.                                          |
-    | N/A - DEFAULT <br> using source **customer**    | Simulate success response with customer deductions.                                            |
-    | DATE_RANGE_OUT_OF_DATE                          | Simulate error when retrieving data which is outside the allowable tax years.                  |
-    | NOT_FOUND                                       | Simulate the scenario where no data is found.                                                  |    
+    | Header Value (Gov-Test-Scenario)                | Scenario                                                                       |
+    |-------------------------------------------------|--------------------------------------------------------------------------------|
+    | N/A - DEFAULT                                   | Simulates success response with customer and contractor deductions.            |
+    | N/A - DEFAULT <br> using source **all**         | Simulates success response with customer and contractor deductions.            |
+    | N/A - DEFAULT <br> using source **contractor**  | Simulates success response with contractor deductions.                         |
+    | N/A - DEFAULT <br> using source **customer**    | Simulates success response with customer deductions.                           |
+    | DATE_RANGE_OUT_OF_DATE                          | Simulates error when retrieving data which is outside the allowable tax years. |
+    | NOT_FOUND                                       | Simulates the scenario where no data is found.                                 |   
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'

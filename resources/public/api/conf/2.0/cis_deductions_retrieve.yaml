@@ -4,17 +4,17 @@ get:
     This endpoint allows a developer to retrieve a customer's latest CIS deductions data and whether it was submitted by a contractor or user. A National Insurance number and submission ID must be provided.
     
     ### Test data
-    <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
     | Header Value (Gov-Test-Scenario)                | Scenario                                                                                                                    |
     |-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-    | N/A - DEFAULT                                   | Simulate success response with customer and contractor deductions.                                                          |
-    | N/A - DEFAULT <br> using source **all**         | Simulate success response with customer and contractor deductions                                                           |
-    | N/A - DEFAULT <br> using source **contractor**  | Simulate success response with contractor deductions.                                                                       |
-    | N/A - DEFAULT <br> using source **customer**    | Simulate success response with customer deductions.                                                                         |
+    | N/A - DEFAULT                                   | Simulates success response with customer and contractor deductions.                                                         |
+    | N/A - DEFAULT <br> using source **all**         | Simulates success response with customer and contractor deductions                                                          |
+    | N/A - DEFAULT <br> using source **contractor**  | Simulates success response with contractor deductions.                                                                      |
+    | N/A - DEFAULT <br> using source **customer**    | Simulates success response with customer deductions.                                                                        |
     | TAX_YEAR_RANGE_INVALID                          | Simulates the scenario where specified tax year is outside the allowable tax years (the current tax year minus four years). |
     | TAX_YEAR_NOT_SUPPORTED                          | Simulates the scenario where the tax year is not supported.                                                                 |    
-    | NOT_FOUND                                       | Simulate the scenario where no data is found.                                                                               |      
+    | NOT_FOUND                                       | Simulates the scenario where no data is found.                                                                              |      
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
