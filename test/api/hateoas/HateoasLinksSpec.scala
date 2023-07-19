@@ -20,7 +20,6 @@ import api.models.domain.TaxYear
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
-import play.api.Configuration
 import support.UnitSpec
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
@@ -36,14 +35,6 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
   class Test {
     MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis")
-  }
-
-  class TysDisabledTest extends Test {
-    MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
-  }
-
-  class TysEnabledTest extends Test {
-    MockedAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
 
   "createCisDeduction" when {
@@ -63,43 +54,32 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
   }
 
   "deleteCisDeduction" when {
-    "generate the correct link with isSelf set to true" in new TysDisabledTest {
+    "generate the correct link with isSelf set to true" in new Test {
       val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, None, isSelf = true)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, DELETE, "self")
     }
 
-    "generate the correct link with isSelf set to false" in new TysDisabledTest {
+    "generate the correct link with isSelf set to false" in new Test {
       val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, None, isSelf = false)
       val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
       link shouldBe Link(expectedHref, DELETE, "delete-cis-deductions-for-subcontractor")
     }
 
-    "TYS feature switch is disabled" should {
-      "not include tax year query parameter given a TYS tax year" in new TysDisabledTest {
-        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
-        val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+    "not include tax year query parameter given a non-TYS tax year" in new Test {
+      val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2023), isSelf = true)
+      val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-        link shouldBe Link(expectedHref, DELETE, "self")
-      }
+      link shouldBe Link(expectedHref, DELETE, "self")
     }
 
-    "TYS feature switch is enabled" should {
-      "not include tax year query parameter given a non-TYS tax year" in new TysEnabledTest {
-        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2023), isSelf = true)
-        val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+    "include tax year query parameter given a TYS tax year" in new Test {
+      val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
+      val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
-        link shouldBe Link(expectedHref, DELETE, "self")
-      }
-
-      "include tax year query parameter given a TYS tax year" in new TysEnabledTest {
-        val link         = deleteCisDeduction(mockAppConfig, nino, submissionId, Some(taxYear2024), isSelf = true)
-        val expectedHref = "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
-
-        link shouldBe Link(expectedHref, DELETE, "self")
-      }
+      link shouldBe Link(expectedHref, DELETE, "self")
     }
   }
 

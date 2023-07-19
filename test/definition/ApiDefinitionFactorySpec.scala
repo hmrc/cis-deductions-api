@@ -37,10 +37,10 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     "called" should {
       "return a valid Definition case class" in new Test {
         MockedAppConfig.featureSwitches returns Configuration.empty
-        MockedAppConfig.apiStatus("1.0") returns "1.0"
-        MockedAppConfig.apiStatus("2.0") returns "2.0"
-        MockedAppConfig.endpointsEnabled("1.0") returns true
-        MockedAppConfig.endpointsEnabled("2.0") returns true
+        MockedAppConfig.apiStatus(Version1) returns "1.0"
+        MockedAppConfig.apiStatus(Version2) returns "2.0"
+        MockedAppConfig.endpointsEnabled(Version1) returns true
+        MockedAppConfig.endpointsEnabled(Version2) returns true
         MockedAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
@@ -71,12 +71,12 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
                 APIVersion(
-                  version = "1.0",
+                  version = Version1,
                   status = APIStatus.ALPHA,
                   endpointsEnabled = true
                 ),
                 APIVersion(
-                  version = "2.0",
+                  version = Version2,
                   status = APIStatus.ALPHA,
                   endpointsEnabled = true
                 )
@@ -108,16 +108,23 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
-      "return the correct status" in new Test {
-        MockedAppConfig.apiStatus("1.0") returns "BETA"
-        apiDefinitionFactory.buildAPIStatus("1.0") shouldBe BETA
+      Seq(
+        (Version1, ALPHA),
+        (Version2, BETA)
+      ).foreach { case (version, status) =>
+        s"return the correct $status for $version " in new Test {
+          MockedAppConfig.apiStatus(version) returns status.toString
+          apiDefinitionFactory.buildAPIStatus(version) shouldBe status
+        }
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
-      "default to alpha" in new Test {
-        MockedAppConfig.apiStatus("1.0") returns "ALPHO"
-        apiDefinitionFactory.buildAPIStatus("1.0") shouldBe ALPHA
+      Seq(Version1, Version2).foreach { version =>
+        s"default to alpha for $version " in new Test {
+          MockedAppConfig.apiStatus(version) returns "ALPHO"
+          apiDefinitionFactory.buildAPIStatus(version) shouldBe ALPHA
+        }
       }
     }
   }

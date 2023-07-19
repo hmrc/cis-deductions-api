@@ -20,7 +20,6 @@ import api.models.domain.TaxYear
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v2.fixtures.RetrieveModels.cisDeductions
@@ -74,34 +73,17 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
         )
     }
 
-    "return the correct item links with TYS disabled" in {
+    "return the correct item links" in {
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-      MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
-
-      val hateoasData              = RetrieveHateoasData(nino, taxYear, "contractor")
-      val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+      val hateoasData              = RetrieveHateoasData(nino, taxYear, "customer")
+      val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
       RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
         Seq(
           Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
           Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")
         )
-    }
-
-    "return the correct item links with TYS enabled and the tax year is TYS" in { () =>
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-      () =>
-        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
-
-        val hateoasData              = RetrieveHateoasData(nino, taxYear, "customer")
-        val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
-
-        RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
-          Seq(
-            Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
-            Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")
-          )
     }
 
   }
