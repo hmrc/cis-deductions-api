@@ -15,6 +15,8 @@ get:
     | TAX_YEAR_RANGE_INVALID                          | Simulates the scenario where specified tax year is outside the allowable tax years (the current tax year minus four years). |
     | TAX_YEAR_NOT_SUPPORTED                          | Simulates the scenario where the tax year is not supported.                                                                 |    
     | NOT_FOUND                                       | Simulates the scenario where no data is found.                                                                              |      
+    | DYNAMIC                                         | The following response values will change to correspond to the values submitted in the request: <br/> &bull; fromDate <br/> &bull; toDate <br/> &bull; deductionFromDate <br/> &bull; deductionToDate <br/> &bull; submissionDate <br/> &bull; source |
+
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
