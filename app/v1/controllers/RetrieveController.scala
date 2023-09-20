@@ -19,10 +19,10 @@ package v1.controllers
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers._
-import v1.models.request.retrieve.RetrieveRawData
+import v1.controllers.validators.RetrieveValidatorFactory
 import v1.models.response.retrieve.RetrieveHateoasData
 import v1.services.RetrieveService
 
@@ -31,13 +31,14 @@ import scala.concurrent.ExecutionContext
 
 class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     val lookupService: MtdIdLookupService,
-                                    requestParser: RetrieveRequestParser,
+                                    validatorFactory: RetrieveValidatorFactory,
                                     service: RetrieveService,
                                     auditService: AuditService,
                                     hateoasFactory: HateoasFactory,
                                     cc: ControllerComponents,
-                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc)
+    with V1Controller
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -50,10 +51,9 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveRawData(nino, fromDate, toDate, source)
-
+      val validator = validatorFactory.validator(nino, fromDate, toDate, source)
       val requestHandler = RequestHandler
-        .withParser(requestParser)
+        .withValidator(validator)
         .withService(service.retrieveDeductions)
         .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((request, _) =>
           RetrieveHateoasData(nino, request.fromDate, request.toDate, source, request.taxYear)))
@@ -74,7 +74,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
           )
         }
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

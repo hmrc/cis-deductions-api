@@ -16,7 +16,8 @@
 
 package api.models.hateoas
 
-import api.models.hateoas.Method.GET
+import api.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method.GET
 import play.api.libs.json.{Json, OWrites}
 import support.UnitSpec
 

@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v1.models.request.delete.DeleteRequestData
 
@@ -62,7 +62,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     def taxYear: TaxYear
 
     protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), submissionId, Some(taxYear))
+    protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
   }
 
 }

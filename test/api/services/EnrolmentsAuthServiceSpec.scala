@@ -16,10 +16,10 @@
 
 package api.services
 
+import api.mocks.MockAppConfig
 import api.models.auth.UserDetails
 import api.models.errors.{ClientNotAuthorisedError, InternalError}
 import config.ConfidenceLevelConfig
-import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{AlternatePredicate, CompositePredicate, EmptyPredicate, Predicate}

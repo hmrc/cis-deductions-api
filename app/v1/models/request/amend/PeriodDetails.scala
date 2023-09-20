@@ -16,8 +16,7 @@
 
 package v1.models.request.amend
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class PeriodDetails(deductionAmount: BigDecimal,
                          deductionFromDate: String,
@@ -27,13 +26,7 @@ case class PeriodDetails(deductionAmount: BigDecimal,
 
 object PeriodDetails {
 
-  implicit val reads: Reads[PeriodDetails] = (
-    (JsPath \ "deductionAmount").read[BigDecimal] and
-      (JsPath \ "deductionFromDate").read[String] and
-      (JsPath \ "deductionToDate").read[String] and
-      (JsPath \ "costOfMaterials").readNullable[BigDecimal] and
-      (JsPath \ "grossAmountPaid").readNullable[BigDecimal]
-  )(PeriodDetails.apply _)
+  implicit val reads: Reads[PeriodDetails] = Json.reads[PeriodDetails]
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 

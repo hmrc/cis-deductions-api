@@ -17,17 +17,19 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.services.MockAuditService
+import api.mocks.MockAppConfig
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
+import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import v1.controllers.validators.MockedAmendValidatorFactory
 import v1.fixtures.AmendRequestFixtures._
-import v1.mocks.requestParsers.MockAmendRequestParser
 import v1.mocks.services.MockAmendService
-import v1.models.request.amend.{AmendRawData, AmendRequestData}
+import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,22 +37,21 @@ import scala.concurrent.Future
 class AmendControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAmendRequestParser
+    with MockAppConfig
+    with MockedAmendValidatorFactory
     with MockAmendService
     with MockAuditService {
 
-  private val submissionId = "S4636A77V5KB8625U"
-  private val taxYear      = TaxYear.fromIso("2019-07-05")
-  private val rawData      = AmendRawData(nino, submissionId, requestJson)
-  private val requestData  = AmendRequestData(Nino(nino), submissionId, taxYear, amendRequestObj)
+  private val submissionId                  = "S4636A77V5KB8625U"
+  private val taxYear                       = TaxYear.fromIso("2019-07-05")
+  private val requestData                   = AmendRequestData(Nino(nino), SubmissionId(submissionId), taxYear, amendRequestObj)
+  private implicit val appConfig: AppConfig = mockAppConfig
 
   "amend" should {
     "return a successful response with status 204 (NO CONTENT)" when {
       "a valid request is supplied for a cis PUT request" in new Test {
-        MockAmendRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
 
+        willUseValidator(returningSuccess(requestData))
         MockAmendService
           .amend(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, None))))
@@ -66,18 +67,12 @@ class AmendControllerSpec
 
     "return errors as per the spec" when {
       "the parser validation fails" in new Test {
-        MockAmendRequestDataParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
-        runErrorTestWithAudit(expectedError = NinoFormatError, maybeAuditRequestBody = Some(requestJson))
+        willUseValidator(returning(NinoFormatError))
+        runErrorTest(expectedError = NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockAmendRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
+        willUseValidator(returningSuccess(requestData))
         MockAmendService
           .amend(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
@@ -93,7 +88,7 @@ class AmendControllerSpec
     val controller = new AmendController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      requestParser = mockAmendRequestParser,
+      validatorFactory = mockedAmendValidatorFactory,
       service = mockAmendService,
       auditService = mockAuditService,
       cc = cc,

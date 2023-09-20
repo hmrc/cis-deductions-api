@@ -17,10 +17,10 @@
 package v2.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, TaxYear}
+import api.mocks.MockAppConfig
+import api.models.domain.{Source, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.fixtures.RetrieveModels._
@@ -43,8 +43,8 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
 
   private val source = "Contractor"
 
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
+  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, Source(source))
+  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, Source(source))
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   implicit val correlationId: String = "X-123"

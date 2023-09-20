@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import support.UnitSpec
@@ -36,7 +36,7 @@ class DeleteServiceSpec extends UnitSpec {
 
   implicit val correlationId = "X-123"
 
-  val requestData = DeleteRequestData(nino, submissionId, Some(taxYear))
+  val requestData = DeleteRequestData(nino, SubmissionId(submissionId), Some(taxYear))
 
   trait Test extends MockDeleteConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()

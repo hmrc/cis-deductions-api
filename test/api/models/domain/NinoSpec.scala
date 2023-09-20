@@ -66,7 +66,7 @@ class NinoSpec extends UnitSpec {
 
   "Creating a Nino" should {
     "fail if the nino is not valid" in {
-      an[IllegalArgumentException] should be thrownBy Nino("INVALID_NINO")
+      validateNino("INVALID_NINO") should equal(false)
     }
   }
 

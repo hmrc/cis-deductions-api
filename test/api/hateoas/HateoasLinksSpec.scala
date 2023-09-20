@@ -17,9 +17,8 @@
 package api.hateoas
 
 import api.models.domain.TaxYear
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
-import mocks.MockAppConfig
+import Method.{DELETE, GET, POST, PUT}
+import api.mocks.MockAppConfig
 import support.UnitSpec
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {

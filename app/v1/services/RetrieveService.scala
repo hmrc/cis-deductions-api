@@ -43,7 +43,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
 
   private val errorMap: Map[String, MtdError] =
     Map(
-      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDate,
+      "INVALID_DATE_RANGE"        -> RuleDateRangeOutOfDateError,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_PERIOD_START"      -> FromDateFormatError,

@@ -17,7 +17,7 @@
 package v2.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Source, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
@@ -49,14 +49,14 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source.toString))
               ))
             )
           ))
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/${nino}",
-          queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source)
+          queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -84,14 +84,14 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source.toString))
               ))
             )
           ))
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
-          queryParams = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source)
+          queryParams = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -107,7 +107,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     protected val taxYear = TaxYear.fromIso(endDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, "contractor")
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source("contractor"))
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"

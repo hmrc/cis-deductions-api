@@ -19,12 +19,12 @@ package v1.controllers
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.{AppConfig}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.CreateRequestParser
-import v1.models.request.create.CreateRawData
+
+import v1.controllers.validators.CreateValidatorFactory
 import v1.models.response.create.CreateHateoasData
 import v1.services.CreateService
 
@@ -33,14 +33,14 @@ import scala.concurrent.ExecutionContext
 
 class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   val lookupService: MtdIdLookupService,
-                                  requestParser: CreateRequestParser,
+                                  validatorFactory: CreateValidatorFactory,
                                   service: CreateService,
                                   hateoasFactory: HateoasFactory,
                                   auditService: AuditService,
-                                  appConfig: AppConfig,
                                   cc: ControllerComponents,
-                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc)
+    with V1Controller
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -52,14 +52,9 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
     implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-    val rawData = CreateRawData(
-      nino = nino,
-      body = request.body,
-      temporalValidationEnabled = FeatureSwitches()(appConfig).isTemporalValidationEnabled
-    )
-
+    val validator = validatorFactory.validator(nino, request.body)
     val requestHandler = RequestHandler
-      .withParser(requestParser)
+      .withValidator(validator)
       .withService(service.createDeductions)
       .withAuditing(AuditHandler(
         auditService = auditService,
@@ -73,7 +68,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         CreateHateoasData(nino, request)
       }
 
-    requestHandler.handleRequest(rawData)
+    requestHandler.handleRequest()
 
   }
 

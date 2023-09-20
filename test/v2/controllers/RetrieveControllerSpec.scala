@@ -17,22 +17,22 @@
 package v2.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.MockAuditService
+import api.hateoas.{HateoasWrapper, MockHateoasFactory}
+import api.mocks.MockAppConfig
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Source, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
+import api.services.MockAuditService
+import config.AppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import v2.controllers.validators.MockedRetrieveValidatorFactory
 import v2.fixtures.RetrieveJson._
 import v2.fixtures.RetrieveModels._
-import v2.mocks.requestParsers.MockRetrieveRequestParser
 import v2.mocks.services.MockRetrieveService
-import v2.models.request.retrieve.{RetrieveRawData, RetrieveRequestData}
+import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.RetrieveResponseModel._
 import v2.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
@@ -42,20 +42,21 @@ import scala.concurrent.Future
 class RetrieveControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockRetrieveRequestParser
+    with MockedRetrieveValidatorFactory
     with MockRetrieveService
     with MockHateoasFactory
     with MockAppConfig
     with MockAuditService {
 
+  private implicit val  appConfig: AppConfig = mockAppConfig
   private val fromDate = "2019-04-06"
   private val toDate   = "2020-04-05"
 
   private val taxYearRaw          = "2019-20"
   private val taxYear             = TaxYear.fromMtd(taxYearRaw)
   private val sourceRaw           = "customer"
-  private val retrieveRawData     = RetrieveRawData(nino, taxYearRaw, sourceRaw)
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source(sourceRaw))
+
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -81,9 +82,7 @@ class RetrieveControllerSpec
           Seq(retrieveCisDeduction(mockAppConfig, nino, taxYear, sourceRaw, isSelf = true), createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
-        MockRetrieveDeductionRequestParser
-          .parse(retrieveRawData)
-          .returns(Right(retrieveRequestData))
+        willUseValidator(returningSuccess(retrieveRequestData))
 
         MockRetrieveService
           .retrieve(retrieveRequestData)
@@ -105,18 +104,14 @@ class RetrieveControllerSpec
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
 
-        MockRetrieveDeductionRequestParser
-          .parse(retrieveRawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTestWithAudit(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
 
-        MockRetrieveDeductionRequestParser
-          .parse(retrieveRawData)
-          .returns(Right(retrieveRequestData))
+        willUseValidator(returningSuccess(retrieveRequestData))
 
         MockRetrieveService
           .retrieve(retrieveRequestData)
@@ -133,7 +128,7 @@ class RetrieveControllerSpec
     val controller = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      requestParser = mockRequestParser,
+      validatorFactory = mockedRetrieveValidatorFactory,
       service = mockRetrieveService,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,

@@ -16,11 +16,11 @@
 
 package definition
 
-import api.mocks.MockHttpClient
+import api.mocks.{MockAppConfig, MockHttpClient}
 import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
-import mocks.MockAppConfig
 import play.api.Configuration
+import routing.{Version1, Version2}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 

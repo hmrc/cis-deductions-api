@@ -16,10 +16,8 @@
 
 package api.connectors
 
-import api.mocks.MockHttpClient
+import api.mocks.{MockAppConfig, MockHttpClient}
 import api.models.errors.InternalError
-import mocks.MockAppConfig
-
 import scala.concurrent.Future
 
 class MtdIdLookupConnectorSpec extends ConnectorSpec {

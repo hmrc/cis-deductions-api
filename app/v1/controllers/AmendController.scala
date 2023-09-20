@@ -18,11 +18,11 @@ package v1.controllers
 
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.AmendRequestParser
-import v1.models.request.amend.AmendRawData
+import v1.controllers.validators.AmendValidatorFactory
 import v1.services.AmendService
 
 import javax.inject.Inject
@@ -30,12 +30,13 @@ import scala.concurrent.ExecutionContext
 
 class AmendController @Inject() (val authService: EnrolmentsAuthService,
                                  val lookupService: MtdIdLookupService,
-                                 requestParser: AmendRequestParser,
+                                 validatorFactory: AmendValidatorFactory,
                                  service: AmendService,
                                  auditService: AuditService,
                                  cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc)
+    with V1Controller
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,10 +48,9 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
   def amend(nino: String, submissionId: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
     implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-    val rawData = AmendRawData(nino, submissionId, request.body)
-
+    val validator = validatorFactory.validator(nino, submissionId, request.body)
     val requestHandler = RequestHandler
-      .withParser(requestParser)
+      .withValidator(validator)
       .withService(service.amendDeductions)
       .withAuditing(AuditHandler(
         auditService = auditService,
@@ -60,7 +60,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
         requestBody = Some(request.body)
       ))
 
-    requestHandler.handleRequest(rawData)
+    requestHandler.handleRequest()
   }
 
 }

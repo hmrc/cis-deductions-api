@@ -17,16 +17,17 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.services.MockAuditService
+import api.mocks.MockAppConfig
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockDeleteRequestDataParser
+import v1.controllers.validators.MockedDeleteValidatorFactory
 import v1.mocks.services._
-import v1.models.request.delete.{DeleteRawData, DeleteRequestData}
+import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,23 +35,22 @@ import scala.concurrent.Future
 class DeleteControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockDeleteRequestDataParser
+    with MockedDeleteValidatorFactory
+    with MockAppConfig
     with MockDeleteService
     with MockAuditService {
 
-  private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-  private val rawTaxYear        = "2022-23"
-  private val taxYear           = TaxYear.fromMtd(rawTaxYear)
-  private val deleteRawData     = DeleteRawData(nino, submissionId, Some(rawTaxYear))
-  private val deleteRequestData = DeleteRequestData(Nino(nino), submissionId, Some(taxYear))
+  private val submissionId       = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val rawTaxYear         = "2022-23"
+  private val taxYear            = TaxYear.fromMtd(rawTaxYear)
+  private val deleteRequestData  = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
+  private implicit val appConfig = mockAppConfig
 
   "delete" should {
     "return a successful response with status 204 (No Content)" when {
       "a valid request is supplied" in new Test {
 
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Right(deleteRequestData))
+        willUseValidator(returningSuccess(deleteRequestData))
 
         MockDeleteService
           .delete(deleteRequestData)
@@ -64,18 +64,14 @@ class DeleteControllerSpec
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
 
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTestWithAudit(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
 
-        MockDeleteRequestDataParser
-          .parse(deleteRawData)
-          .returns(Right(deleteRequestData))
+        willUseValidator(returningSuccess(deleteRequestData))
 
         MockDeleteService
           .delete(deleteRequestData)
@@ -92,7 +88,7 @@ class DeleteControllerSpec
     val controller = new DeleteController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      requestParser = mockRequestParser,
+      validatorFactory = mockedDeleteValidatorFactory,
       service = mockDeleteService,
       auditService = mockAuditService,
       cc = cc,

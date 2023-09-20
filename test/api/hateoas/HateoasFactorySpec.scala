@@ -16,11 +16,10 @@
 
 package api.hateoas
 
-import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
+import Method.GET
+import api.mocks.MockAppConfig
 import cats.Functor
 import config.AppConfig
-import mocks.MockAppConfig
 import play.api.libs.json.{Json, OWrites}
 import support.UnitSpec
 
