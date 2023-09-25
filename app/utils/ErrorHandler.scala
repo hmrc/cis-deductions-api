@@ -17,11 +17,11 @@
 package utils
 
 import api.models.errors._
-import definition.Versions
 import play.api._
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc._
+import _root_.routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

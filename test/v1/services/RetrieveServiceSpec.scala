@@ -17,10 +17,10 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.Nino
+import api.mocks.MockAppConfig
+import api.models.domain.{Source, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
@@ -38,7 +38,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val toDate      = "2020-04-05"
   private val tysFromDate = "2023-04-06"
   private val tysToDate   = "2024-04-05"
-  private val source      = "Contractor"
+  private val source      = Source("Contractor")
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
@@ -82,7 +82,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
         }
 
       val errors = Seq(
-        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDate),
+        ("INVALID_DATE_RANGE", RuleDateRangeOutOfDateError),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
         ("INVALID_TAX_YEAR", InternalError),

@@ -17,9 +17,8 @@
 package api.routing
 
 import akka.actor.ActorSystem
+import api.mocks.MockAppConfig
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import definition.{Version, Version1, Version2}
-import mocks.MockAppConfig
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.Inside
 import org.scalatest.matchers.should.Matchers
@@ -31,7 +30,7 @@ import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import routing.{VersionRoutingMap, VersionRoutingRequestHandler}
+import routing.{Version, Version1, Version2, VersionRoutingMap, VersionRoutingRequestHandler}
 import support.UnitSpec
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Matchers with MockFactory with Inside with MockAppConfig with GuiceOneAppPerSuite {

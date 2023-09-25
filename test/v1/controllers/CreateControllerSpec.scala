@@ -17,23 +17,21 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.MockAuditService
+import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.hateoas.Method._
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method._
+import api.mocks.MockAppConfig
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
-import play.api.Configuration
+import api.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import v1.controllers.validators.MockedCreateValidatorFactory
 import v1.fixtures.AmendRequestFixtures.requestJson
 import v1.fixtures.CreateRequestFixtures._
-import v1.mocks.requestParsers.MockCreateRequestParser
 import v1.mocks.services._
-import v1.models.request.create.{CreateRawData, CreateRequestData}
+import v1.models.request.create.CreateRequestData
 import v1.models.response.create.{CreateHateoasData, CreateResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,15 +40,15 @@ import scala.concurrent.Future
 class CreateControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockCreateRequestParser
+    with MockAppConfig
+    with MockedCreateValidatorFactory
     with MockCreateService
     with MockHateoasFactory
-    with MockAppConfig
     with MockAuditService {
 
-  private val responseId  = "S4636A77V5KB8625U"
-  private val rawData     = CreateRawData(nino, requestJson)
-  private val requestData = CreateRequestData(Nino(nino), requestObj)
+  private val responseId         = "S4636A77V5KB8625U"
+  private val requestData        = CreateRequestData(Nino(nino), requestObj)
+  private implicit val appConfig = mockAppConfig
 
   val response: CreateResponseModel = CreateResponseModel(responseId)
 
@@ -68,9 +66,7 @@ class CreateControllerSpec
     "return a successful response with status 200 (OK)" when {
       "a valid request is supplied for a cis POST request" in new Test {
 
-        MockCreateRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateService
           .create(requestData)
@@ -92,18 +88,13 @@ class CreateControllerSpec
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
 
-        MockCreateRequestDataParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTestWithAudit(NinoFormatError, Some(requestJson))
       }
 
       "the service returns an error" in new Test {
 
-        MockCreateRequestDataParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateService
           .create(requestData)
@@ -116,16 +107,13 @@ class CreateControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking {
 
-    MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
-
     val controller = new CreateController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      requestParser = mockRequestDataParser,
+      validatorFactory = mockedCreateValidatorFactory,
       service = mockCreateService,
       hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
-      appConfig = mockAppConfig,
       cc = cc,
       idGenerator = mockIdGenerator
     )

@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import support.UnitSpec
@@ -81,7 +81,7 @@ class AmendServiceSpec extends UnitSpec {
   trait Test extends MockAmendConnector {
 
     private val nino         = Nino("AA123456A")
-    private val submissionId = "S4636A77V5KB8625U"
+    private val submissionId = SubmissionId("S4636A77V5KB8625U")
     private val taxYear      = TaxYear.fromIso("2019-07-05")
 
     implicit val correlationId: String = "X-123"

@@ -200,7 +200,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", BAD_REQUEST, FromDateFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_END", BAD_REQUEST, ToDateFormatError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDate)
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDateRangeOutOfDateError)
       )
       errors.foreach(args => (serviceErrorTest _).tupled(args))
 

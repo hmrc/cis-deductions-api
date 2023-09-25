@@ -16,10 +16,10 @@
 
 package v1.models.response.retrieve
 
+import api.hateoas.Link
 import api.models.domain.TaxYear
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
-import mocks.MockAppConfig
+import api.hateoas.Method.{DELETE, GET, POST, PUT}
+import api.mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import support.UnitSpec
 import v1.fixtures.RetrieveModels.cisDeductions

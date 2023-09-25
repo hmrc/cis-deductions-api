@@ -18,10 +18,12 @@ package v1.controllers
 
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.DeleteRequestParser
-import v1.models.request.delete.DeleteRawData
+
+import v1.controllers.validators.DeleteValidatorFactory
+
 import v1.services.DeleteService
 
 import javax.inject.Inject
@@ -29,12 +31,13 @@ import scala.concurrent.ExecutionContext
 
 class DeleteController @Inject() (val authService: EnrolmentsAuthService,
                                   val lookupService: MtdIdLookupService,
-                                  requestParser: DeleteRequestParser,
+                                  validatorFactory: DeleteValidatorFactory,
                                   service: DeleteService,
                                   auditService: AuditService,
                                   cc: ControllerComponents,
-                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc)
+    with V1Controller
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,10 +50,9 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = DeleteRawData(nino, submissionId, taxYear)
-
+      val validator = validatorFactory.validator(nino, submissionId, taxYear)
       val requestHandler = RequestHandler
-        .withParser(requestParser)
+        .withValidator(validator)
         .withService(service.deleteDeductions)
         .withAuditing {
           val params = Map("nino" -> nino, "submissionId" -> submissionId) ++ taxYear.map(x => "taxYear" -> x)
@@ -64,7 +66,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
           )
         }
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

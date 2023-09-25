@@ -17,6 +17,7 @@
 package definition
 
 import config.AppConfig
+import routing.{Version, Version1, Version2}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 

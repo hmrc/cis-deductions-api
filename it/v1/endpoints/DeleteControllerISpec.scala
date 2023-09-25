@@ -25,8 +25,8 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import v1.endpoints.models.DeleteRawData
 import v1.fixtures.CreateRequestFixtures._
-import v1.models.request.delete.DeleteRawData
 
 class DeleteControllerISpec extends IntegrationBaseSpec {
 

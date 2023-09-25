@@ -17,7 +17,6 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import definition.{Version, Version1, Version2}
 import play.api.routing.Router
 
 import javax.inject.Inject

@@ -89,7 +89,7 @@ class TaxYearSpec extends UnitSpec {
 
     "deconstructed into from and to dates" should {
       "return the tax year start date and end date" in {
-        taxYear.fromToDates shouldBe ("2023-04-06", "2024-04-05")
+        (taxYear.taxYearStart, taxYear.taxYearEnd)  shouldBe ("2023-04-06", "2024-04-05")
       }
     }
   }

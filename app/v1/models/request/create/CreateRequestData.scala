@@ -19,5 +19,5 @@ package v1.models.request.create
 import api.models.domain.{Nino, TaxYear}
 
 case class CreateRequestData(nino: Nino, body: CreateBody) {
-  val taxYear: TaxYear = TaxYear.fromIso(body.toDate)
+  lazy val taxYear: TaxYear = TaxYear.fromIso(body.toDate)
 }

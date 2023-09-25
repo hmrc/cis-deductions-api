@@ -17,8 +17,8 @@
 package config
 
 import com.typesafe.config.Config
-import definition.Version
 import play.api.{ConfigLoader, Configuration}
+import routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 

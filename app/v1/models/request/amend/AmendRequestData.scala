@@ -16,6 +16,6 @@
 
 package v1.models.request.amend
 
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 
-case class AmendRequestData(nino: Nino, submissionId: String, taxYear: TaxYear, body: AmendBody)
+case class AmendRequestData(nino: Nino, submissionId: SubmissionId, taxYear: TaxYear, body: AmendBody) {}

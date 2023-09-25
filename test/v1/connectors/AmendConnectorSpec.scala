@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.request.amend.AmendRequestData
@@ -77,7 +77,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
     val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
-    lazy val request: AmendRequestData = AmendRequestData(Nino(nino), submissionId, TaxYear.fromIso(taxYearIso), amendRequestObj)
+    lazy val request: AmendRequestData = AmendRequestData(Nino(nino), SubmissionId(submissionId), TaxYear.fromIso(taxYearIso), amendRequestObj)
   }
 
 }
