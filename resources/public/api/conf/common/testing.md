@@ -12,7 +12,7 @@ Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based
 
 ### Stateful
 
-Some endpoints support STATEFUL gov test scenarios. Stateful scenarios work with groups of endpoints that represent
+All the endpoints in version 2.0 support STATEFUL gov test scenarios. Stateful scenarios work with groups of endpoints that represent
 particular types of submissions. For each type you can POST (or PUT) to submit or amend data, GET to retrieve or list
 data and DELETE to delete data. For example, with a STATEFUL gov test scenario a retrieval will return data based on
 what you submitted.
