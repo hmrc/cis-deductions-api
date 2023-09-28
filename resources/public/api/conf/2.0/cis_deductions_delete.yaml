@@ -9,6 +9,7 @@ description: |
   |----------------------------------|---------------------------------------------------------------|
   | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.               |
   | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found. |
+  | STATEFUL                         | Performs a stateful delete.                                   |
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -17,9 +18,11 @@ parameters:
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/acceptJson'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
 security:
   - User-Restricted:
       - write:self-assessment
+
 responses:
   "204":
     description: No Content
