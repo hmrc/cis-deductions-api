@@ -27,11 +27,15 @@ import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import v1.controllers.resolvers.ResolveTaxYear
 import v1.models.request.amend.{AmendBody, AmendRequestData, PeriodDetails}
 
+import java.time.LocalDate
 import javax.inject.Singleton
 import scala.annotation.nowarn
 
 @Singleton
 class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
+
+  private val minYear = 1900
+  private val maxYear = 2100
 
   @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendBody]()
@@ -72,13 +76,17 @@ class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
   def resolveNumeric(error: MtdError, value: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
     ResolveAmount().apply(value, Some(error), None).map(_ => ())
 
+  private def isDateWithinRange(date: LocalDate, error: MtdError): Validated[Seq[MtdError], Unit] = {
+    if (date.getYear >= minYear && date.getYear < maxYear) Valid(()) else Invalid(List(error))
+  }
+
   def validatePeriodDetails(details: PeriodDetails): Validated[Seq[MtdError], Unit] =
     (
       ResolveAmount().apply(details.deductionAmount, Some(RuleDeductionAmountError), None),
       resolveNumeric(RuleCostOfMaterialsError, details.costOfMaterials),
       resolveNumeric(RuleGrossAmountError, details.grossAmountPaid),
-      ResolveIsoDate.apply(details.deductionToDate, DeductionToDateFormatError),
-      ResolveIsoDate.apply(details.deductionFromDate, DeductionFromDateFormatError)
+      ResolveIsoDate(details.deductionToDate, DeductionToDateFormatError).andThen(isDateWithinRange(_, DeductionToDateFormatError)),
+      ResolveIsoDate(details.deductionFromDate, DeductionFromDateFormatError).andThen(isDateWithinRange(_, DeductionFromDateFormatError))
     ).mapN((_, _, _, _, _) => ())
 
   def validateBusinessRules(parsed: AmendRequestData): Validated[Seq[MtdError], AmendRequestData] = {

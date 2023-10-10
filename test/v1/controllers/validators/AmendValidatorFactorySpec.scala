@@ -74,6 +74,10 @@ class AmendValidatorFactorySpec extends UnitSpec {
         private val result = validator(validNino, validId, invalidDeductionFromDateFormatRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, DeductionFromDateFormatError))
       }
+      "invalid request body Deduction toDate and fromDate are not within range" in new AmendValidatorFactory {
+        private val result = validator(validNino, validId, invalidRangeDeductionToDateFromDateFormatRequestJson).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(DeductionFromDateFormatError, DeductionToDateFormatError))))
+      }
       "invalid request body Deduction toDate format is provided" in new AmendValidatorFactory {
         private val result = validator(validNino, validId, invalidDeductionToDateFormatRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, DeductionToDateFormatError))
