@@ -249,6 +249,33 @@ object CreateRequestFixtures {
       |""".stripMargin
   }
 
+  val invalidDeductionFromAndToDateFormatRequestJson: JsValue = Json.parse {
+    """
+      |{
+      |  "fromDate": "2197-04-06" ,
+      |  "toDate": "2198-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "123/AB56797",
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "1899-12-31",
+      |      "deductionToDate": "1993-09-17",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2200-09-02",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
   val invalidDeductionAmountTooHighRequestJson: JsValue = Json.parse {
     """
       |{

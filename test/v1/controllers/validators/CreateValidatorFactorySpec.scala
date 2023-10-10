@@ -91,6 +91,15 @@ class CreateValidatorFactorySpec extends UnitSpec {
 
         result shouldBe Left(ErrorWrapper(correlationId, DeductionToDateFormatError))
       }
+      "invalid Deduction fromDate and toDate format is provided" in new SetUp {
+        private val result = validator(nino, invalidDeductionFromAndToDateFormatRequestJson).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            BadRequestError,
+            Some(List(ToDateFormatError, DeductionFromDateFormatError, FromDateFormatError, DeductionToDateFormatError))))
+      }
       "invalid deductionAmount too high is provided" in new SetUp {
         private val result = validator(nino, invalidDeductionAmountTooHighRequestJson).validateAndWrapResult()
 
