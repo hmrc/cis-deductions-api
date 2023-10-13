@@ -16,13 +16,14 @@
 
 package v1.models.request.retrieve
 
-import api.models.domain.{Nino, Source, TaxYear}
+import api.models.domain.Source.source
+import api.models.domain.{Nino, TaxYear}
 
 /** @param fromDate
   *   period start in extended ISO-8601 format (e.g. 2020-04-01)
   * @param toDate
   *   period end e.g. 2021-09-01
   */
-case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: Source) {
+case class RetrieveRequestData(nino: Nino, fromDate: String, toDate: String, source: source) {
   lazy val taxYear: TaxYear = TaxYear.fromIso(toDate)
 }

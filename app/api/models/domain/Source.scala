@@ -16,6 +16,18 @@
 
 package api.models.domain
 
-case class Source(source: String) {
-  override def toString: String = source
+import play.api.libs.json.{Reads, Writes}
+
+object Source extends Enumeration {
+  type source = Value
+
+  val All: Source.Value = Value("all")
+  val Customer: Source.Value = Value("customer")
+  val Contractor: Source.Value = Value("contractor")
+
+  def contains(s: String): Boolean = this.values.exists(_.toString == s)
+
+  implicit val myEnumReads: Reads[Source.Value] = Reads.enumNameReads(Source)
+  implicit val myEnumWrites = Writes.enumNameWrites
+
 }

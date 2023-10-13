@@ -21,23 +21,24 @@ import api.models.errors.RuleSourceInvalidError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 
-class ResolveSourceSpec  extends UnitSpec {
+class ResolveSourceSpec extends UnitSpec {
 
   "ResolveSource" should {
     "return no errors" when {
       "passed a valid Source" in {
         val validSource = "all"
-        val result          = ResolveSource(validSource)
-        result shouldBe Valid(Source(validSource))
+        val result      = ResolveSource(validSource)
+        result shouldBe Valid(Source.All)
       }
     }
 
     "return an error" when {
       "passed an invalid source" in {
         val invalidSource = "none"
-        val result            = ResolveSource(invalidSource)
+        val result        = ResolveSource(invalidSource)
         result shouldBe Invalid(List(RuleSourceInvalidError))
       }
     }
   }
+
 }

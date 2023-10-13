@@ -18,7 +18,7 @@ package v1.controllers.validators
 
 import api.controllers.validators.Validator
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino}
+import api.models.domain.{Nino, Source}
 import api.models.errors._
 import support.UnitSpec
 import v1.models.request.retrieve.RetrieveRequestData
@@ -42,13 +42,13 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
       "all query parameters are passed in the request" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source("all")))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.All))
       }
 
       "an optional field returns None" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source("all")))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.All))
       }
     }
 

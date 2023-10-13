@@ -18,7 +18,7 @@ package v1.controllers.validators
 
 import api.controllers.resolvers._
 import api.controllers.validators.Validator
-import api.models.domain.Source
+import api.models.domain.Source.source
 import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated._
@@ -67,7 +67,7 @@ class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
         }
       }
 
-      private def resolveSource(source: Option[String]): Validated[Seq[MtdError], Source] =
+      private def resolveSource(source: Option[String]): Validated[Seq[MtdError], source] =
         source match {
           case Some(value) => ResolveSource(value)
           case _           => Valid(ResolveSource.defaultValue)
