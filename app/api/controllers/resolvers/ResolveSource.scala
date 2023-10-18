@@ -23,11 +23,9 @@ import cats.data.Validated.{Invalid, Valid}
 
 object ResolveSource extends Resolver[String, Source] {
 
-  private val sources = Seq("all", "customer", "contractor")
-  val defaultValue: Source = Source("all")
-
   def apply(source: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Source] = {
-    if (sources.contains(source)) Valid(Source(source)) else Invalid(List(RuleSourceInvalidError.maybeWithExtraPath(path)))
+    val sourceObject = Source.fromString(source)
+    if (sourceObject.nonEmpty) Valid(sourceObject.get) else Invalid(List(RuleSourceInvalidError.maybeWithExtraPath(path)))
   }
 
 }

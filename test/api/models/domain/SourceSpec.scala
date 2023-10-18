@@ -23,8 +23,8 @@ class SourceSpec extends UnitSpec {
 
   "toString" should {
     "return the source value" in {
-      val source = Source("some id")
-      source.toString shouldBe "some id"
+      val source = Source.`all`
+      source.toString shouldBe "all"
     }
   }
 

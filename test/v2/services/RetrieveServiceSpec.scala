@@ -18,7 +18,7 @@ package v2.services
 
 import api.controllers.EndpointLogContext
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino, TaxYear}
+import api.models.domain.{Nino, Source, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import support.UnitSpec
@@ -41,10 +41,10 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val tysTaxYearRaw = "2023-24"
   private val tysTaxYear    = TaxYear.fromMtd(tysTaxYearRaw)
 
-  private val source = "Contractor"
+  private val source = Source.`contractor`
 
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, Source(source))
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, Source(source))
+  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
+  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   implicit val correlationId: String = "X-123"

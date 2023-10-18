@@ -18,7 +18,7 @@ package v1.services
 
 import api.controllers.EndpointLogContext
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino}
+import api.models.domain.{Nino, Source}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import support.UnitSpec
@@ -38,7 +38,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val toDate      = "2020-04-05"
   private val tysFromDate = "2023-04-06"
   private val tysToDate   = "2024-04-05"
-  private val source      = Source("Contractor")
+  private val source      = Source.`contractor`
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)

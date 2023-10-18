@@ -16,6 +16,17 @@
 
 package api.models.domain
 
-case class Source(source: String) {
-  override def toString: String = source
+import play.api.libs.json.Format
+import utils.enums.Enums
+
+sealed trait Source
+
+object Source {
+  case object `all`        extends Source
+  case object `customer`   extends Source
+  case object `contractor` extends Source
+
+  implicit val format: Format[Source] = Enums.format[Source]
+  def fromString(source:String): Option[Source] = Enums.parser[Source].lift(source)
+
 }

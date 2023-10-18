@@ -18,7 +18,7 @@ package v2.controllers.validators
 
 import api.controllers.validators.Validator
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino, TaxYear}
+import api.models.domain.{Nino, Source, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v2.models.request.retrieve.RetrieveRequestData
@@ -30,7 +30,7 @@ class RetrieveValidatorSpec extends UnitSpec {
   private val invalidNino       = "GHFG197854"
   private val taxYearRaw        = "2019-20"
   private val invalidTaxYearRaw = "2019-2020"
-  private val sourceRaw         = "all"
+  private val sourceRaw         = Source.`all`
   private val invalidSource     = "All"
 
   class SetUp extends MockAppConfig {
@@ -46,15 +46,15 @@ class RetrieveValidatorSpec extends UnitSpec {
     "return no errors" when {
       "the request is valid" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
-          validator(nino, taxYearRaw, sourceRaw)
+          validator(nino, taxYearRaw, sourceRaw.toString)
             .validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), TaxYear.fromMtd(taxYearRaw), Source(sourceRaw)))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), TaxYear.fromMtd(taxYearRaw), sourceRaw))
       }
     }
 
     "return errors" when {
       "invalid taxYear is passed in the request" in new SetUp {
-        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, invalidTaxYearRaw, sourceRaw).validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, invalidTaxYearRaw, sourceRaw.toString).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
       }
 
@@ -69,7 +69,7 @@ class RetrieveValidatorSpec extends UnitSpec {
       }
 
       "invalid taxYear range is passed in the request" in new SetUp {
-        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, "2021-23", sourceRaw).validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, "2021-23", sourceRaw.toString).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleDateRangeInvalidError))
       }
     }

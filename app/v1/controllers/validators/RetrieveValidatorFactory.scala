@@ -70,7 +70,7 @@ class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
       private def resolveSource(source: Option[String]): Validated[Seq[MtdError], Source] =
         source match {
           case Some(value) => ResolveSource(value)
-          case _           => Valid(ResolveSource.defaultValue)
+          case _           => Valid(Source.`all`)
         }
 
       def validate: Validated[Seq[MtdError], RetrieveRequestData] = {

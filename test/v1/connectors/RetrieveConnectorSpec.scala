@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Source, Nino, TaxYear}
+import api.models.domain.{Nino, Source, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
@@ -106,7 +106,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     def toDate: String
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, Source("contractor"))
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, Source.`contractor`)
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
