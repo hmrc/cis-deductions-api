@@ -42,13 +42,13 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
       "all query parameters are passed in the request" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.All))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
       }
 
       "an optional field returns None" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.All))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
       }
     }
 

@@ -41,7 +41,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val tysTaxYearRaw = "2023-24"
   private val tysTaxYear    = TaxYear.fromMtd(tysTaxYearRaw)
 
-  private val source = Source.Contractor
+  private val source = Source.`contractor`
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)

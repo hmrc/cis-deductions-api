@@ -16,18 +16,16 @@
 
 package api.controllers.resolvers
 
-import api.models.domain.Source.source
 import api.models.domain.Source
 import api.models.errors.{MtdError, RuleSourceInvalidError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 
-object ResolveSource extends Resolver[String, source] {
+object ResolveSource extends Resolver[String, Source] {
 
-  val defaultValue: Source.Value = Source.All
-
-  def apply(source: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], source] = {
-    if (Source.contains(source)) Valid(Source.withName(source)) else Invalid(List(RuleSourceInvalidError.maybeWithExtraPath(path)))
+  def apply(source: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Source] = {
+    val sourceObject = Source.fromString(source)
+    if (sourceObject.nonEmpty) Valid(sourceObject.get) else Invalid(List(RuleSourceInvalidError.maybeWithExtraPath(path)))
   }
 
 }

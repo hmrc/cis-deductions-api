@@ -16,18 +16,17 @@
 
 package api.models.domain
 
-import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json.Format
+import utils.enums.Enums
 
-object Source extends Enumeration {
-  type source = Value
+sealed trait Source
 
-  val All: Source.Value = Value("all")
-  val Customer: Source.Value = Value("customer")
-  val Contractor: Source.Value = Value("contractor")
+object Source {
+  case object `all`        extends Source
+  case object `customer`   extends Source
+  case object `contractor` extends Source
 
-  def contains(s: String): Boolean = this.values.exists(_.toString == s)
-
-  implicit val myEnumReads: Reads[Source.Value] = Reads.enumNameReads(Source)
-  implicit val myEnumWrites = Writes.enumNameWrites
+  implicit val format: Format[Source] = Enums.format[Source]
+  def fromString(source:String): Option[Source] = Enums.parser[Source].lift(source)
 
 }

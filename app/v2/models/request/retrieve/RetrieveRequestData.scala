@@ -16,9 +16,8 @@
 
 package v2.models.request.retrieve
 
-import api.models.domain.Source.source
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, Source, TaxYear}
 
-case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: source) {
+case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: Source) {
   val (startDate, endDate) = (taxYear.taxYearStart, taxYear.taxYearEnd)
 }

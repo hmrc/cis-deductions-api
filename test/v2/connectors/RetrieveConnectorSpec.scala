@@ -107,7 +107,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     protected val taxYear = TaxYear.fromIso(endDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source.Contractor)
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source.`contractor`)
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"

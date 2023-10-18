@@ -54,7 +54,7 @@ class RetrieveControllerSpec
 
   private val taxYearRaw          = "2019-20"
   private val taxYear             = TaxYear.fromMtd(taxYearRaw)
-  private val sourceRaw           = Source.Customer
+  private val sourceRaw           = Source.`customer`
   private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, sourceRaw)
 
   "retrieve" should {

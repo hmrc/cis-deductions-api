@@ -28,7 +28,7 @@ class ResolveSourceSpec extends UnitSpec {
       "passed a valid Source" in {
         val validSource = "all"
         val result      = ResolveSource(validSource)
-        result shouldBe Valid(Source.All)
+        result shouldBe Valid(Source.`all`)
       }
     }
 

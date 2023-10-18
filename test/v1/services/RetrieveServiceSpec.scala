@@ -38,7 +38,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val toDate      = "2020-04-05"
   private val tysFromDate = "2023-04-06"
   private val tysToDate   = "2024-04-05"
-  private val source      = Source.Contractor
+  private val source      = Source.`contractor`
 
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)

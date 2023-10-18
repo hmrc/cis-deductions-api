@@ -30,7 +30,7 @@ class RetrieveValidatorSpec extends UnitSpec {
   private val invalidNino       = "GHFG197854"
   private val taxYearRaw        = "2019-20"
   private val invalidTaxYearRaw = "2019-2020"
-  private val sourceRaw         = Source.All
+  private val sourceRaw         = Source.`all`
   private val invalidSource     = "All"
 
   class SetUp extends MockAppConfig {

@@ -52,7 +52,7 @@ class RetrieveControllerSpec
   private val fromDate                      = "2019-04-06"
   private val toDate                        = "2020-04-05"
   private val taxYear                       = TaxYear.fromMtd("2019-20")
-  private val sourceRaw                     = Source.Customer
+  private val sourceRaw                     = Source.`customer`
 
   private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
 

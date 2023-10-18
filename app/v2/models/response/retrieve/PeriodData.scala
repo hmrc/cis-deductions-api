@@ -16,7 +16,7 @@
 
 package v2.models.response.retrieve
 
-import api.models.domain.Source.source
+import api.models.domain.Source
 import play.api.libs.json._
 
 case class PeriodData(deductionFromDate: String,
@@ -26,7 +26,7 @@ case class PeriodData(deductionFromDate: String,
                       grossAmountPaid: Option[BigDecimal],
                       submissionDate: String,
                       submissionId: Option[String],
-                      source: source)
+                      source: Source)
 
 object PeriodData {
   implicit val reads: Reads[PeriodData]   = Json.reads[PeriodData]
