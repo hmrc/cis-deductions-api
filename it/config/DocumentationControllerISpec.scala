@@ -22,13 +22,14 @@ import play.api.http.Status.OK
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  val config: AppConfig = app.injector.instanceOf[AppConfig]
-  val confidenceLevel   = config.confidenceLevelConfig.confidenceLevel
+  val config: AppConfig                = app.injector.instanceOf[AppConfig]
+  val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
   val apiDefinitionJson: JsValue = Json.parse(
     s"""
@@ -84,7 +85,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
       response.status shouldBe Status.OK
 
-      val contents     = response.body[String]
+      val contents     = response.body
       val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
       parserResult.isSuccess shouldBe true
 
@@ -93,6 +94,20 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       openAPI.get.getOpenapi shouldBe "3.0.3"
       openAPI.get.getInfo.getTitle shouldBe "CIS Deductions (MTD)"
       openAPI.get.getInfo.getVersion shouldBe "1.0"
+    }
+
+    "return the documentation with the correct accept header for version 1.0" in {
+      val response: WSResponse = await(buildRequest("/api/conf/1.0/common/headers.yaml").get())
+      response.status shouldBe Status.OK
+      val contents = response.body
+
+      val headerRegex = """(?s).*?application/vnd\.hmrc\.(\d+\.\d+)\+json.*?""".r
+      val header      = headerRegex.findFirstMatchIn(contents)
+      header.isDefined shouldBe true
+
+      val versionFromHeader = header.get.group(1)
+      versionFromHeader shouldBe "1.0"
+
     }
   }
 
