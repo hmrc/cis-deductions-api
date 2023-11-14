@@ -21,18 +21,7 @@ import api.models.outcomes.ResponseWrapper
 import shared.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, Source, TaxYear}
-import shared.models.errors.{
-  DownstreamErrorCode,
-  DownstreamErrors,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  RuleSourceInvalidError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError
-}
+import shared.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.fixtures.RetrieveModels._
 import v2.mocks.connectors.MockRetrieveConnector

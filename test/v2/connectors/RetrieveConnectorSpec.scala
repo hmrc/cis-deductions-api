@@ -41,7 +41,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Some(0.00),
-              Seq(CisDeductions(
+              List(CisDeductions(
                 request.startDate,
                 request.endDate,
                 Some(""),
@@ -49,7 +49,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source.toString))
+                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
               ))
             )
           ))
@@ -76,7 +76,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Some(0.00),
-              Seq(CisDeductions(
+              List(CisDeductions(
                 request.startDate,
                 request.endDate,
                 Some(""),
@@ -84,7 +84,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source.toString))
+                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
               ))
             )
           ))
