@@ -18,9 +18,10 @@ package api.services
 
 import api.mocks.MockAppConfig
 import api.models.auth.UserDetails
-import api.models.errors.{ClientNotAuthorisedError, InternalError}
 import config.ConfidenceLevelConfig
 import org.scalamock.handlers.CallHandler
+import shared.models.errors
+import shared.models.errors.ClientNotAuthorisedError
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{AlternatePredicate, CompositePredicate, EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -176,7 +177,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
         mockConfidenceLevelCheckConfig(authValidationEnabled = false)
 
-        val expected = Left(InternalError)
+        val expected = Left(errors.InternalError)
 
         MockedAuthConnector
           .authorised(EmptyPredicate, authRetrievals)

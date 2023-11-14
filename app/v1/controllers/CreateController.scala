@@ -16,14 +16,13 @@
 
 package v1.controllers
 
-import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig}
+import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import shared.controllers._
 import utils.{IdGenerator, Logging}
-
 import v1.controllers.validators.CreateValidatorFactory
 import v1.models.response.create.CreateHateoasData
 import v1.services.CreateService

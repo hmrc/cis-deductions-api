@@ -16,15 +16,15 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockAppConfig
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, SubmissionId, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.errors.{ErrorWrapper, NinoFormatError, SubmissionIdFormatError}
 import v1.controllers.validators.MockedDeleteValidatorFactory
 import v1.mocks.services._
 import v1.models.request.delete.DeleteRequestData
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockedDeleteValidatorFactory
     with MockAppConfig

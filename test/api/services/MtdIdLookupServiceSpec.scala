@@ -17,7 +17,7 @@
 package api.services
 
 import api.connectors.MockMtdIdLookupConnector
-import api.models.errors.{ClientNotAuthorisedError, InternalError, NinoFormatError}
+import shared.models.errors.{ClientNotAuthorisedError, InternalError, NinoFormatError}
 
 import scala.concurrent.Future
 
@@ -27,7 +27,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
 
-  val nino        = "AA123456A"
+  val nino = "AA123456A"
   val invalidNino = "INVALID_NINO"
 
   "calling .getMtdId" when {

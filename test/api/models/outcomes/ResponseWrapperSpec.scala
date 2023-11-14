@@ -16,7 +16,7 @@
 
 package api.models.outcomes
 
-import support.UnitSpec
+import shared.UnitSpec
 
 class ResponseWrapperSpec extends UnitSpec {
 

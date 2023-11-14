@@ -17,8 +17,8 @@
 package definition
 
 import definition.APIStatus.{ALPHA, BETA, DEPRECATED, RETIRED, STABLE}
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
+import shared.UnitSpec
+import shared.utils.enums.EnumJsonSpecSupport
 
 class APIStatusSpec extends UnitSpec with EnumJsonSpecSupport {
 

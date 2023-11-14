@@ -16,11 +16,11 @@
 
 package v1.controllers.validators
 
-import api.controllers.validators.Validator
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino}
-import api.models.errors._
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.validators.Validator
+import shared.models.domain.{Nino, Source}
+import shared.models.errors._
 import v1.models.request.retrieve.RetrieveRequestData
 
 class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
@@ -29,7 +29,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private val invalidNino                    = "GHFG197854"
 
   class SetUp extends MockAppConfig {
-    val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory(mockAppConfig)
+    val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
     MockedAppConfig.minTaxYearCisDeductions.returns("2020")
 
     def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =
@@ -42,13 +42,13 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
       "all query parameters are passed in the request" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source("all")))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
       }
 
       "an optional field returns None" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some("2019-04-06"), Some("2020-04-05"), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source("all")))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
       }
     }
 

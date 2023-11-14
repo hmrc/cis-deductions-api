@@ -21,7 +21,7 @@ import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import play.api.Configuration
 import routing.{Version1, Version2}
-import support.UnitSpec
+import shared.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class ApiDefinitionFactorySpec extends UnitSpec {

@@ -19,7 +19,7 @@ package definition
 import play.api.http.HeaderNames.ACCEPT
 import play.api.test.FakeRequest
 import routing.{InvalidHeader, Version2, VersionNotFound, Versions}
-import support.UnitSpec
+import shared.UnitSpec
 
 class VersionsSpec extends UnitSpec {
 

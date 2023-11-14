@@ -16,10 +16,9 @@
 
 package api.support
 
-import api.controllers.EndpointLogContext
-import api.models.errors
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import shared.controllers.EndpointLogContext
+import shared.models.errors._
 import utils.Logging
 
 trait DownstreamResponseMappingSupport {
@@ -41,7 +40,7 @@ trait DownstreamResponseMappingSupport {
 
     downstreamResponseWrapper match {
       case ResponseWrapper(correlationId, DownstreamErrors(error :: Nil)) =>
-        errors.ErrorWrapper(correlationId, errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping), None)
+        ErrorWrapper(correlationId, errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping), None)
 
       case ResponseWrapper(correlationId, DownstreamErrors(errorCodes)) =>
         val mtdErrors = errorCodes.map(error => errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping))
@@ -52,7 +51,7 @@ trait DownstreamResponseMappingSupport {
               s" - downstream returned ${errorCodes.map(_.code).mkString(",")}. Revert to ISE")
           ErrorWrapper(correlationId, InternalError, None)
         } else {
-          errors.ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors))
+          ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors))
         }
 
       case ResponseWrapper(correlationId, OutboundError(error, errors)) =>

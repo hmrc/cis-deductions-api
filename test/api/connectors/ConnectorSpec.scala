@@ -19,7 +19,7 @@ package api.connectors
 import api.mocks.{MockAppConfig, MockHttpClient}
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import support.UnitSpec
+import shared.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

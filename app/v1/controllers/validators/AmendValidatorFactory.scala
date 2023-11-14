@@ -16,15 +16,14 @@
 
 package v1.controllers.validators
 
-import api.controllers.resolvers._
-import api.controllers.validators.{RulesValidator, Validator}
-import api.models.domain.TaxYear
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import v1.controllers.resolvers.ResolveTaxYear
+import shared.controllers.validators.resolvers._
+import shared.controllers.validators.{RulesValidator, Validator, resolvers}
+import shared.models.domain.TaxYear
+import shared.models.errors._
 import v1.models.request.amend.{AmendBody, AmendRequestData, PeriodDetails}
 
 import java.time.LocalDate
@@ -86,7 +85,7 @@ class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
       resolveNumeric(RuleCostOfMaterialsError, details.costOfMaterials),
       resolveNumeric(RuleGrossAmountError, details.grossAmountPaid),
       ResolveIsoDate(details.deductionToDate, DeductionToDateFormatError).andThen(isDateWithinRange(_, DeductionToDateFormatError)),
-      ResolveIsoDate(details.deductionFromDate, DeductionFromDateFormatError).andThen(isDateWithinRange(_, DeductionFromDateFormatError))
+      resolvers.ResolveIsoDate(details.deductionFromDate, DeductionFromDateFormatError).andThen(isDateWithinRange(_, DeductionFromDateFormatError))
     ).mapN((_, _, _, _, _) => ())
 
   def validateBusinessRules(parsed: AmendRequestData): Validated[Seq[MtdError], AmendRequestData] = {

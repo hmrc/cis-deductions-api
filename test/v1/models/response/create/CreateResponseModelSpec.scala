@@ -17,11 +17,11 @@
 package v1.models.response.create
 
 import api.hateoas.Link
-import api.models.domain.Nino
 import api.hateoas.Method.GET
 import api.mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.models.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.{CreateBody, CreateRequestData}

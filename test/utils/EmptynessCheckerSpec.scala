@@ -16,7 +16,7 @@
 
 package utils
 
-import support.UnitSpec
+import shared.UnitSpec
 import utils.EmptinessChecker._
 import utils.EmptyPathsResult._
 

@@ -16,18 +16,18 @@
 
 package v1.controllers.validators
 
-import api.models.domain.{Nino, SubmissionId, TaxYear}
-import api.models.errors._
 import play.api.libs.json.JsValue
-import support.UnitSpec
+import shared.UnitSpec
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.errors._
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.request.amend.AmendRequestData
 
 class AmendValidatorFactorySpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
-  private val validNino                      = "AA123456A"
-  private val validId                        = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val validNino = "AA123456A"
+  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validatorFactory = new AmendValidatorFactory()
 

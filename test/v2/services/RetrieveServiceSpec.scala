@@ -16,12 +16,23 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
 import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.errors.{
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleSourceInvalidError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.fixtures.RetrieveModels._
 import v2.mocks.connectors.MockRetrieveConnector
@@ -41,10 +52,9 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val tysTaxYearRaw = "2023-24"
   private val tysTaxYear    = TaxYear.fromMtd(tysTaxYearRaw)
 
-  private val source = "Contractor"
-
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, Source(source))
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, Source(source))
+  private val source                                 = Source.`contractor`
+  val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
+  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
   implicit val correlationId: String = "X-123"
@@ -84,7 +94,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
           await(service.retrieveDeductions(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors = Seq(
+      val errors = List(
         ("INVALID_CORRELATIONID", InternalError),
         ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
@@ -98,7 +108,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
       )
       errors.foreach(args => (serviceError _).tupled(args))
 
-      val extraTysErrors = Seq(
+      val extraTysErrors = List(
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
         ("INVALID_START_DATE", InternalError),
         ("INVALID_END_DATE", InternalError),

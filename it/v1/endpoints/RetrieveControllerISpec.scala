@@ -16,13 +16,13 @@
 
 package v1.endpoints
 
-import api.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
+import shared.models.errors._
 import support.IntegrationBaseSpec
 import v1.fixtures.RetrieveJson._
 
@@ -214,18 +214,18 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    def fromDate: String
-    def toDate: String
+    protected def fromDate: String
+    protected def toDate: String
 
-    val nino   = "AA123456A"
-    val source = "customer"
+    protected val nino   = "AA123456A"
+    protected val source = "customer"
 
-    def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
-    def downstreamQueryParams: Seq[(String, String)]
+    protected def mtdQueryParams: Seq[(String, String)] = List("fromDate" -> fromDate, "toDate" -> toDate, "source" -> source)
+    protected def downstreamQueryParams: Seq[(String, String)]
 
-    def setupStubs(): StubMapping
+    protected def setupStubs(): StubMapping
 
-    def mtdRequest(): WSRequest = {
+    protected def mtdRequest(): WSRequest = {
       setupStubs()
       buildRequest(s"/$nino/current-position")
         .withQueryStringParameters(mtdQueryParams: _*)
@@ -238,18 +238,18 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    def fromDate              = "2019-04-06"
-    def toDate                = "2020-04-05"
-    def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
-    def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+    protected def fromDate              = "2019-04-06"
+    protected def toDate                = "2020-04-05"
+    protected def downstreamQueryParams = List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source)
+    protected def downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
   private trait TysIfsTest extends Test {
-    def fromDate                  = "2023-04-06"
-    def toDate                    = "2024-04-05"
-    def downstreamTaxYear: String = "23-24"
-    def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
-    def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
+    protected def fromDate                  = "2023-04-06"
+    protected def toDate                    = "2024-04-05"
+    protected def downstreamTaxYear: String = "23-24"
+    protected def downstreamQueryParams     = List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
+    protected def downstreamUri: String     = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
   }
 
 }

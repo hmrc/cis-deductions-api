@@ -17,8 +17,8 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
+import shared.models.domain.Nino
 import v1.fixtures.CreateRequestFixtures.requestObj
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel

@@ -16,12 +16,25 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.mocks.MockAppConfig
-import api.models.domain.{Source, Nino}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, Source}
+import shared.models.errors.{
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  FromDateFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleDateRangeOutOfDateError,
+  RuleSourceInvalidError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  ToDateFormatError
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
@@ -31,26 +44,27 @@ import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
+class RetrieveServiceSpec extends UnitSpec {
 
   private val nino        = Nino("AA123456A")
   private val fromDate    = "2019-04-06"
   private val toDate      = "2020-04-05"
   private val tysFromDate = "2023-04-06"
   private val tysToDate   = "2024-04-05"
-  private val source      = Source("Contractor")
+  private val source      = Source.`contractor`
 
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
-  val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
+  private val request    = RetrieveRequestData(nino, fromDate, toDate, source)
+  private val tysRequest = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
 
-  implicit val correlationId = "X-123"
+  private val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
+
+  private implicit val correlationId: String = "X-123"
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockRetrieveConnector, mockAppConfig)
+    val service = new RetrieveService(mockRetrieveConnector)
   }
 
   "RetrieveDeductions" should {

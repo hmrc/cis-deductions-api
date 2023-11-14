@@ -16,6 +16,6 @@
 
 package v1.models.request.delete
 
-import api.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
 
 case class DeleteRequestData(nino: Nino, submissionId: SubmissionId, taxYear: Option[TaxYear])

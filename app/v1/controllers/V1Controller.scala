@@ -16,8 +16,8 @@
 
 package v1.controllers
 
-import api.controllers.AuthorisedController
 import routing.{Version, Version1}
+import shared.controllers.AuthorisedController
 
 trait V1Controller {
   _: AuthorisedController =>

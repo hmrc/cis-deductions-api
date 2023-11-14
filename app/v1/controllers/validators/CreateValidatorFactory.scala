@@ -16,14 +16,15 @@
 
 package v1.controllers.validators
 
-import api.controllers.resolvers._
-import api.controllers.validators.{RulesValidator, Validator}
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
 import config.AppConfig
 import play.api.libs.json.JsValue
+import shared.controllers.validators.resolvers._
+import shared.controllers.validators.{RulesValidator, Validator}
+import shared.models.errors._
+import v1.controllers.validators.resolvers.ResolveEmployeeRef
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.{CreateBody, CreateRequestData}
 
@@ -33,9 +34,18 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CreateValidatorFactory @Inject() (appConfig: AppConfig) extends RulesValidator[CreateRequestData] {
 
-  private val resolveJson = new ResolveJsonObject[CreateBody]()
-  private val minYear     = 1900
-  private val maxYear     = 2100
+  private val minYear = 1900
+  private val maxYear = 2100
+
+  private val resolveAmount       = ResolveParsedNumber()
+  private val resolveJson         = new ResolveJsonObject[CreateBody]()
+  private val resolveTaxYearDates = ResolveTaxYearDates()
+
+  private val resolveDateRange = ResolveDateRange(
+//    RuleDateRangeInvalidError,
+//    RuleDateRangeInvalidError,
+//    RuleDateRangeInvalidError
+  ).withYearsLimitedTo(minYear, maxYear)
 
   def validator(nino: String, body: JsValue): Validator[CreateRequestData] =
     new Validator[CreateRequestData] {
@@ -48,18 +58,20 @@ class CreateValidatorFactory @Inject() (appConfig: AppConfig) extends RulesValid
 
     }
 
-  private val amountResolver = ResolveAmount()
+  private def validateAmount(error: MtdError, maybeValue: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
+    maybeValue.map(validateAmount(error, _)).getOrElse(Valid(()))
 
-  private def resolveAmount(error: MtdError, value: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
-    amountResolver(value, Some(error), None).map(_ => ())
+  private def validateAmount(error: MtdError, value: BigDecimal): Validated[Seq[MtdError], Unit] =
+    resolveAmount.resolver(error)(value).map(_ => ())
 
   private def resolveRange(startDate: LocalDate, endDate: LocalDate): Validated[Seq[MtdError], String] = {
-    val dateRange    = ResolveDateRange((startDate.toString, endDate.toString), Some(RuleDateRangeInvalidError), None).isValid
-    val taxYearRange = ResolveTaxYearDates().apply((startDate.toString, endDate.toString)).isValid
-    (dateRange, taxYearRange) match {
-      case (true, true) => Valid(endDate.toString)
-      case _            => Invalid(List(RuleDateRangeInvalidError))
-    }
+    val dateRangeValid    = resolveDateRange(startDate.toString -> endDate.toString).isValid
+    val taxYearRangeValid = resolveTaxYearDates(startDate.toString -> endDate.toString).isValid
+
+    if (dateRangeValid && taxYearRangeValid)
+      Valid(endDate.toString)
+    else
+      Invalid(List(RuleDateRangeInvalidError))
   }
 
   private def resolveEndDate(startDate: String, endDate: String, formatError: MtdError): Validated[Seq[MtdError], Unit] = {
@@ -99,26 +111,25 @@ class CreateValidatorFactory @Inject() (appConfig: AppConfig) extends RulesValid
     if (date.getYear >= minYear && date.getYear < maxYear) Valid(()) else Invalid(List(error))
   }
 
-  private def validatePeriodDetails(details: PeriodDetails, idx: Int): Validated[Seq[MtdError], Unit] =
+  private def validatePeriodDetails(details: PeriodDetails): Validated[Seq[MtdError], Unit] =
     (
-      ResolveAmount().apply(details.deductionAmount, Some(RuleDeductionAmountError), None),
-      resolveAmount(RuleCostOfMaterialsError, details.costOfMaterials),
-      resolveAmount(RuleGrossAmountError, details.grossAmountPaid),
+      validateAmount(RuleDeductionAmountError, details.deductionAmount),
+      validateAmount(RuleCostOfMaterialsError, details.costOfMaterials),
+      validateAmount(RuleGrossAmountError, details.grossAmountPaid),
       ResolveIsoDate(details.deductionFromDate, Some(DeductionFromDateFormatError), None).andThen(isDateWithinRange(_, DeductionFromDateFormatError)),
       resolveToDate(details.deductionFromDate, details.deductionToDate, DeductionToDateFormatError)
     ).mapN((_, _, _, _, _) => ())
 
   def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] = {
-    val body: Seq[PeriodDetails] = parsed.body.periodData
+    import parsed.body.periodData
 
-    if (body.isEmpty) {
+    if (periodData.isEmpty) {
       Invalid(List(RuleIncorrectOrEmptyBodyError))
     } else {
-      val result: Validated[Seq[MtdError], CreateRequestData] = body.zipWithIndex
-        .traverse { case (periodDetail: PeriodDetails, idx) =>
-          validatePeriodDetails(periodDetail, idx)
-        }
-        .map(_ => parsed)
+      val result: Validated[Seq[MtdError], CreateRequestData] =
+        periodData
+          .traverse(periodDetail => validatePeriodDetails(periodDetail))
+          .map(_ => parsed)
 
       val bodyValidation: Validated[Seq[MtdError], CreateRequestData] = combine(
         ResolveIsoDate(parsed.body.fromDate, Some(FromDateFormatError), None).andThen(isDateWithinRange(_, FromDateFormatError)),

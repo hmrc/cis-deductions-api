@@ -16,25 +16,25 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockAppConfig
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Source, Nino, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import config.AppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.errors._
+import v1.controllers.validators.MockedRetrieveValidatorFactory
 import v1.fixtures.RetrieveJson._
 import v1.fixtures.RetrieveModels._
 import v1.mocks.services.MockRetrieveService
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.RetrieveResponseModel._
 import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
-import v1.controllers.validators.MockedRetrieveValidatorFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -48,13 +48,13 @@ class RetrieveControllerSpec
     with MockAppConfig
     with MockAuditService {
 
-  private implicit val  appConfig: AppConfig = mockAppConfig
-  private val fromDate            = "2019-04-06"
-  private val toDate              = "2020-04-05"
-  private val taxYear             = TaxYear.fromMtd("2019-20")
-  private val sourceRaw           = "customer"
+  private implicit val appConfig: AppConfig = mockAppConfig
+  private val fromDate                      = "2019-04-06"
+  private val toDate                        = "2020-04-05"
+  private val taxYear                       = TaxYear.fromMtd("2019-20")
+  private val sourceRaw                     = Source.`customer`
 
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, Source(sourceRaw))
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -78,7 +78,7 @@ class RetrieveControllerSpec
               ))
           ),
           Seq(
-            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw), isSelf = true),
+            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw.toString), isSelf = true),
             createCisDeduction(mockAppConfig, nino, isSelf = false))
         )
 
@@ -89,7 +89,7 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw), taxYear))
+          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw.toString), taxYear))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
@@ -135,7 +135,7 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw))(fakeRequest)
+    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw.toString))(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -144,7 +144,7 @@ class RetrieveControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw),
+          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw.toString),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

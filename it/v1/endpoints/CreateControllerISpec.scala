@@ -16,13 +16,33 @@
 
 package v1.endpoints
 
-import api.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.errors.{
+  DeductionFromDateFormatError,
+  DeductionToDateFormatError,
+  EmployerRefFormatError,
+  FromDateFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  RuleCostOfMaterialsError,
+  RuleDateRangeInvalidError,
+  RuleDeductionAmountError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleDuplicateSubmissionError,
+  RuleGrossAmountError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError,
+  ToDateFormatError
+}
 import support.IntegrationBaseSpec
 import v1.fixtures.CreateRequestFixtures._
 

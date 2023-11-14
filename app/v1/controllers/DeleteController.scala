@@ -16,14 +16,12 @@
 
 package v1.controllers
 
-import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import shared.controllers._
 import utils.{IdGenerator, Logging}
-
 import v1.controllers.validators.DeleteValidatorFactory
-
 import v1.services.DeleteService
 
 import javax.inject.Inject

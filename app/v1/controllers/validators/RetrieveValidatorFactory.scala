@@ -16,21 +16,22 @@
 
 package v1.controllers.validators
 
-import api.controllers.resolvers._
-import api.controllers.validators.Validator
-import api.models.domain.Source
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
-import config.AppConfig
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
+import shared.models.domain.Source
+import shared.models.errors._
 import v1.models.request.retrieve.RetrieveRequestData
 
 import java.time.LocalDate
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
+class RetrieveValidatorFactory {
+
+  private val resolveDateRange = ResolveDateRange()
 
   def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] = {
 
@@ -39,15 +40,18 @@ class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
       private def resolveDate(dateSupplied: Option[String], missingDate: MtdError, formatError: MtdError): Validated[Seq[MtdError], String] = {
         dateSupplied match {
           case Some(date) => ResolveDate(date, Some(formatError), None)
-          case _          => Invalid(Seq(missingDate))
+          case _          => Invalid(List(missingDate))
         }
       }
 
-      private def resolveDateRange(startDate: LocalDate, endDate: LocalDate): Validated[Seq[MtdError], String] = {
+      private def checkDateRange(startDate: LocalDate, endDate: LocalDate): Validated[Seq[MtdError], String] = {
         val taxYearRangeValidation = ResolveTaxYearDates().apply((startDate.toString, endDate.toString)).isValid
-        val dateRangeValidation    = ResolveDateRange((startDate.toString, endDate.toString), None, None).isValid
-        if (dateRangeValidation && taxYearRangeValidation) { Valid(endDate.toString) }
-        else { Invalid(List(RuleDateRangeInvalidError)) }
+        val dateRangeValidation    = resolveDateRange((startDate.toString, endDate.toString)).isValid
+        if (dateRangeValidation && taxYearRangeValidation) {
+          Valid(endDate.toString)
+        } else {
+          Invalid(List(RuleDateRangeInvalidError))
+        }
       }
 
       private def resolveEndDate(from: Option[String], to: Option[String]): Validated[Seq[MtdError], String] = {
@@ -58,7 +62,7 @@ class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
               case Valid(date) =>
                 val end = date
                 ResolveIsoDate(startDate) match {
-                  case Valid(date) => resolveDateRange(date, end)
+                  case Valid(date) => checkDateRange(date, end)
                   case Invalid(_)  => Invalid(List())
                 }
               case Invalid(_) => toDateValidation
@@ -70,7 +74,7 @@ class RetrieveValidatorFactory @Inject() (appConfig: AppConfig) {
       private def resolveSource(source: Option[String]): Validated[Seq[MtdError], Source] =
         source match {
           case Some(value) => ResolveSource(value)
-          case _           => Valid(ResolveSource.defaultValue)
+          case _           => Valid(Source.`all`)
         }
 
       def validate: Validated[Seq[MtdError], RetrieveRequestData] = {

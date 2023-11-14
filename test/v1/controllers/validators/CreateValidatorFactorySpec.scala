@@ -16,20 +16,20 @@
 
 package v1.controllers.validators
 
-import api.controllers.validators.Validator
 import api.mocks.MockAppConfig
-import api.models.domain.Nino
-import api.models.errors._
 import play.api.libs.json.JsValue
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.validators.Validator
+import shared.models.domain.Nino
+import shared.models.errors._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.request.create.CreateRequestData
 
 class CreateValidatorFactorySpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
-  val nino                                   = "AA123456A"
-  val invalidNino                            = "GHFG197854"
+  val nino = "AA123456A"
+  val invalidNino = "GHFG197854"
 
   class SetUp extends MockAppConfig {
     val validatorFactory = new CreateValidatorFactory(mockAppConfig)
@@ -98,7 +98,7 @@ class CreateValidatorFactorySpec extends UnitSpec {
           ErrorWrapper(
             correlationId,
             BadRequestError,
-            Some(List(ToDateFormatError, DeductionFromDateFormatError, FromDateFormatError, DeductionToDateFormatError))))
+            Some(List(DeductionFromDateFormatError, FromDateFormatError, DeductionToDateFormatError,ToDateFormatError))))
       }
       "invalid deductionAmount too high is provided" in new SetUp {
         private val result = validator(nino, invalidDeductionAmountTooHighRequestJson).validateAndWrapResult()

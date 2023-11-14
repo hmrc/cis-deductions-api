@@ -16,14 +16,14 @@
 
 package utils
 
-import api.models.errors._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
 import play.api.mvc.{AnyContentAsEmpty, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.UnitSpec
+import shared.UnitSpec
+import shared.models.errors.{BadRequestError, ClientNotAuthenticatedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

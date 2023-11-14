@@ -16,11 +16,11 @@
 
 package v1.controllers
 
-import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import shared.controllers._
 import utils.{IdGenerator, Logging}
 import v1.controllers.validators.AmendValidatorFactory
 import v1.services.AmendService

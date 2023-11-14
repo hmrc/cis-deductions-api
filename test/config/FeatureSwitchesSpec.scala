@@ -19,7 +19,7 @@ package config
 import play.api.Configuration
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
-import support.UnitSpec
+import shared.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
 

@@ -17,17 +17,17 @@
 package v2.hateoas
 
 import api.hateoas.Link
-import api.models.domain.TaxYear
 import api.hateoas.Method.{DELETE, GET, POST, PUT}
 import api.hateoas.RelType._
 import config.AppConfig
+import shared.models.domain.TaxYear
 
 trait HateoasLinks {
 
   private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
 
     maybeTaxYear match {
-      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
       case _                              => uri
     }
   }
