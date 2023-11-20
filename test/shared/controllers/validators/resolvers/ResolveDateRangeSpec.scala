@@ -29,8 +29,8 @@ class ResolveDateRangeSpec extends UnitSpec {
   private val validEnd   = "2024-06-21"
 
   // To be sure it's using the construction params...
-  private val startDateFormatError    = StartDateFormatError.withPath("somePath")
-  private val endDateFormatError      = EndDateFormatError.withPath("somePath")
+  private val startDateFormatError    = StartDateFormatError.withPath("pathToStartDate")
+  private val endDateFormatError      = EndDateFormatError.withPath("pathToEndDate")
   private val endBeforeStartDateError = RuleEndBeforeStartDateError.withPath("somePath")
 
   private val resolveDateRange = ResolveDateRange(
@@ -64,32 +64,59 @@ class ResolveDateRangeSpec extends UnitSpec {
     }
   }
 
-  "ResolveDateRange datesLimitedTo validator" must {
+  "ResolveDateRange datesLimitedTo validator" should {
     val minDate   = LocalDate.parse("2000-02-01")
     val maxDate   = LocalDate.parse("2000-02-10")
     val validator = ResolveDateRange.datesLimitedTo(minDate, startDateFormatError, maxDate, endDateFormatError)
 
+    val tooEarly = minDate.minusDays(1)
+    val tooLate  = maxDate.plusDays(1)
+
     "allow min and max dates" in {
-      validator(DateRange(minDate, maxDate)) shouldBe None
+      val result = validator(DateRange(minDate, maxDate))
+      result shouldBe None
     }
 
     "disallow dates earlier than min or later than max" in {
-      validator(DateRange(minDate.minusDays(1), maxDate.plusDays(1))) shouldBe Some(List(startDateFormatError, endDateFormatError))
+      val result = validator(DateRange(tooEarly -> tooLate))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
+    }
+
+    "disallow start and dates later than max" in {
+      val result = validator(DateRange(tooLate -> tooLate))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
+    }
+
+    "disallow start and dates earlier than min" in {
+      val result = validator(DateRange(tooEarly -> tooEarly))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
     }
   }
 
-  "ResolveDateRange yearsLimitedTo validator" must {
+  "ResolveDateRange yearsLimitedTo validator" should {
     val minYear = 2000
     val maxYear = 2010
 
     val validator = ResolveDateRange.yearsLimitedTo(minYear, startDateFormatError, maxYear, endDateFormatError)
 
     "allow dates in min and max years" in {
-      validator(DateRange(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-12-31"))) shouldBe None
+      val result = validator(DateRange(LocalDate.parse("2000-01-01") -> LocalDate.parse("2010-12-31")))
+      result shouldBe None
     }
 
-    "disallow dates earlier than min year or later than max year" in {
-      validator(DateRange(LocalDate.parse("1999-12-31"), LocalDate.parse("2011-01-01"))) shouldBe Some(List(startDateFormatError, endDateFormatError))
+    "disallow start date earlier than min year and end date later than max year" in {
+      val result = validator(DateRange(LocalDate.parse("1999-12-31") -> LocalDate.parse("2011-01-01")))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
+    }
+
+    "disallow start and end dates later than max year" in {
+      val result = validator(DateRange(LocalDate.parse("2011-01-01") -> LocalDate.parse("2012-12-31")))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
+    }
+
+    "disallow start and end dates earlier than min year" in {
+      val result = validator(DateRange(LocalDate.parse("1998-01-01") -> LocalDate.parse("1999-12-31")))
+      result shouldBe Some(List(startDateFormatError, endDateFormatError))
     }
   }
 

@@ -18,7 +18,6 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import shared.UnitSpec
-import shared.controllers.validators
 import shared.models.errors.BadRequestError
 
 class ResolveBooleanSpec extends UnitSpec {
@@ -27,7 +26,7 @@ class ResolveBooleanSpec extends UnitSpec {
 
     "return no errors" when {
       "given the string 'true'" in {
-        val result = validators.resolvers.ResolveBoolean("true", BadRequestError)
+        val result = ResolveBoolean("true", BadRequestError)
         result shouldBe Valid(true)
       }
 
@@ -37,34 +36,14 @@ class ResolveBooleanSpec extends UnitSpec {
       }
 
       "given the string 'false'" in {
-        val result = validators.resolvers.ResolveBoolean("false", BadRequestError)
+        val result = ResolveBoolean("false", BadRequestError)
         result shouldBe Valid(false)
-      }
-
-      "given the optional string 'true'" in {
-        val result = validators.resolvers.ResolveBoolean(Some("true"), BadRequestError)
-        result shouldBe Valid(Some(true))
-      }
-
-      "given None with a default value" in {
-        val result = validators.resolvers.ResolveBoolean(None, defaultValue = true, BadRequestError)
-        result shouldBe Valid(true)
       }
     }
 
     "return an error" when {
       "given an invalid string" in {
-        val result = validators.resolvers.ResolveBoolean("invalid", BadRequestError)
-        result shouldBe Invalid(List(BadRequestError))
-      }
-
-      "given an invalid optional string" in {
-        val result = validators.resolvers.ResolveBoolean(Some("invalid"), BadRequestError)
-        result shouldBe Invalid(List(BadRequestError))
-      }
-
-      "given an invalid optional string with a default value" in {
-        val result = validators.resolvers.ResolveBoolean(Some("invalid"), defaultValue = true, BadRequestError)
+        val result = ResolveBoolean("invalid", BadRequestError)
         result shouldBe Invalid(List(BadRequestError))
       }
     }

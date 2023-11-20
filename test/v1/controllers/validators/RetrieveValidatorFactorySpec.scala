@@ -19,70 +19,85 @@ package v1.controllers.validators
 import api.mocks.MockAppConfig
 import shared.UnitSpec
 import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, Source}
+import shared.models.domain.{DateRange, Nino, Source}
 import shared.models.errors._
 import v1.models.request.retrieve.RetrieveRequestData
+
+import java.time.LocalDate
 
 class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private implicit val correlationId: String = "1234"
   private val nino                           = "AA123456A"
   private val invalidNino                    = "GHFG197854"
 
-  class SetUp extends MockAppConfig {
-    val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
-    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
+  private val fromDateStr = "2019-04-06"
+  private val toDateStr   = "2020-04-05"
 
-    def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =
-      validatorFactory.validator(nino, fromDate, toDate, source)
+  private val fromDate: LocalDate = LocalDate.parse(fromDateStr)
+  private val toDate: LocalDate   = LocalDate.parse(toDateStr)
 
-  }
+  private val dateRange: DateRange = DateRange(fromDate, toDate)
 
   "running validation" should {
     "return no errors" when {
-      "all query parameters are passed in the request" in new SetUp {
+      "all query parameters are passed in the request" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
-          validator(nino, Some("2019-04-06"), Some("2020-04-05"), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
+          validator(nino, Some(fromDateStr), Some(toDateStr), Some("all")).validateAndWrapResult()
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
       }
 
-      "an optional field returns None" in new SetUp {
+      "an optional field returns None" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
-          validator(nino, Some("2019-04-06"), Some("2020-04-05"), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), "2019-04-06", "2020-04-05", Source.`all`))
+          validator(nino, Some(fromDateStr), Some(toDateStr), None).validateAndWrapResult()
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
       }
     }
 
     "return errors" when {
-      "invalid nino and source data is passed in the request" in new SetUp {
-        private val result = validator(invalidNino, Some("2019-04-06"), Some("2020-04-05"), Some("All")).validateAndWrapResult()
+      "invalid nino and source data is passed in the request" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(invalidNino, Some(fromDateStr), Some(toDateStr), Some("All")).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(NinoFormatError, RuleSourceInvalidError))))
       }
 
-      "invalid dates are provided in the request" in new SetUp {
-        private val result = validator(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor")).validateAndWrapResult()
+      "invalid dates are provided in the request" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(nino, Some("2018-04-06"), Some("2020-04-05"), Some("contractor")).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper("1234", RuleDateRangeInvalidError))
       }
 
-      "the from and to date are not provided" in new SetUp {
-        private val result = validator(nino, None, None, Some("customer")).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(RuleMissingToDateError, RuleMissingFromDateError))))
+      "the from and to date are not provided" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, None, None, Some("customer")).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(RuleMissingFromDateError, RuleMissingToDateError))))
       }
 
-      "the from & to date are not in the correct format" in new SetUp {
-        private val result = validator(nino, Some("last week"), Some("this week"), Some("customer")).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(ToDateFormatError, FromDateFormatError))))
+      "the from & to date are not in the correct format" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(nino, Some("last week"), Some("this week"), Some("customer")).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(FromDateFormatError, ToDateFormatError))))
       }
 
-      "the from date is not the start of the tax year" in new SetUp {
-        private val result = validator(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")).validateAndWrapResult()
+      "the from date is not the start of the tax year" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper("1234", RuleDateRangeInvalidError))
       }
 
-      "the to date is not the end of the tax year" in new SetUp {
-        private val result = validator(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")).validateAndWrapResult()
+      "the to date is not the end of the tax year" in new Test {
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper("1234", RuleDateRangeInvalidError))
       }
     }
+  }
+
+  private class Test extends MockAppConfig {
+    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
+    private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
+
+    protected def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =
+      validatorFactory.validator(nino, fromDate, toDate, source)
+
   }
 
 }

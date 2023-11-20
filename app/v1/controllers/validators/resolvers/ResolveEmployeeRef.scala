@@ -17,21 +17,17 @@
 package v1.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
-import shared.controllers.validators.resolvers.Resolver
+import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
 import shared.models.errors.{EmployerRefFormatError, MtdError}
 import v1.models.request.create.EmployeeRef
 
-object ResolveEmployeeRef extends Resolver[String, EmployeeRef] {
+object ResolveEmployeeRef extends ResolverSupport {
 
   private val empRefFormat = "[0-9]{3}\\/[^ ]{0,9}".r
 
-  def apply(value: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], EmployeeRef] = {
-    if (empRefFormat.matches(value)) {
-      Valid(EmployeeRef(value))
-    } else {
-      Invalid(List(EmployerRefFormatError.maybeWithExtraPath(path)))
-    }
-  }
+  val resolver: Resolver[String, EmployeeRef] =
+    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef)
+
+  def apply(value: String): Validated[Seq[MtdError], EmployeeRef] = resolver(value)
 
 }

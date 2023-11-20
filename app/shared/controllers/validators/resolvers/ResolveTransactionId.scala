@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package shared.controllers.validators.resolvers
 
-import routing.{Version, Version2}
-import shared.controllers.AuthorisedController
+import cats.data.Validated
+import shared.models.domain.TransactionId
+import shared.models.errors.{MtdError, TransactionIdFormatError}
 
-trait V2Controller {
-  _: AuthorisedController =>
+object ResolveTransactionId extends ResolverSupport {
 
-  implicit val apiVersion: Version = Version2
+  private val transactionIdRegex = "^[0-9A-Za-z]{1,12}$".r
 
+  val resolver: Resolver[String, TransactionId] =
+    ResolveStringPattern(transactionIdRegex, TransactionIdFormatError).resolver.map(TransactionId)
+
+  def apply(value: String): Validated[Seq[MtdError], TransactionId] = resolver(value)
 }

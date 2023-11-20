@@ -66,12 +66,6 @@ object RuleDuplicateIdError extends MtdError(code = "RULE_DUPLICATE_ID_NOT_ALLOW
 object RuleFromDateNotSupportedError
     extends MtdError(code = "RULE_FROM_DATE_NOT_SUPPORTED", message = "The specified from date is too early", BAD_REQUEST)
 
-//object RuleMissingToDateError
-//    extends MtdError(code = "MISSING_TO_DATE", message = "The fromDate has been provided, but toDate is missing", BAD_REQUEST)
-
-//object MissingFromDateError
-//    extends MtdError(code = "MISSING_FROM_DATE", message = "The toDate has been provided, but fromDate is missing", BAD_REQUEST)
-
 object RangeToDateBeforeFromDateError
     extends MtdError(code = "RANGE_TO_DATE_BEFORE_FROM_DATE", message = "The toDate cannot be earlier than the fromDate", BAD_REQUEST)
 
@@ -152,9 +146,6 @@ object RuleTaxYearRangeExceededError
 object RuleMissingFromDateError extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing", BAD_REQUEST)
 
 object RuleMissingToDateError extends MtdError("MISSING_TO_DATE", "The To date parameter is missing", BAD_REQUEST)
-
-object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid", BAD_REQUEST)
-object DeductionToDateFormatError   extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid", BAD_REQUEST)
 
 object RuleGrossAmountError
     extends MtdError(

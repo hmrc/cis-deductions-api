@@ -35,11 +35,11 @@ class ValidatorSpec extends UnitSpec with MockFactory {
   private val validTaxYear = TaxYear.fromMtd("2023-24")
 
   private val validBody = Json.parse("""
-                                       | {
-                                       |   "value1": "value 1",
-                                       |   "value2": true
-                                       | }
-                                       |""".stripMargin)
+    | {
+    |   "value1": "value 1",
+    |   "value2": true
+    | }
+    |""".stripMargin)
 
   private val parsedRequestBody = TestParsedRequestBody("value 1", value2 = true)
   private val parsedRequest     = TestParsedRequest(validNino, validTaxYear, parsedRequestBody)
@@ -59,7 +59,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
       (
         ResolveNino(nino),
         ResolveTaxYear(taxYear),
-        jsonResolver(jsonBody, RuleIncorrectOrEmptyBodyError)
+        jsonResolver(jsonBody)
       ).mapN(TestParsedRequest) andThen TestRulesValidator.validateBusinessRules
 
   }
@@ -111,15 +111,15 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "return an error from the Json body" when {
       "given a request with valid params and an invalid body" in {
         val jsonRequestBody = Json.parse("""
-                                           | {
-                                           |   "value1": "value 1",
-                                           |   "value2": "not-a-boolean"
-                                           | }
-                                           |""".stripMargin)
+          | {
+          |   "value1": "value 1",
+          |   "value2": "not-a-boolean"
+          | }
+          |""".stripMargin)
 
         val validator = new TestValidator(jsonBody = jsonRequestBody)
         val result    = validator.validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/value2")))
       }
     }
   }

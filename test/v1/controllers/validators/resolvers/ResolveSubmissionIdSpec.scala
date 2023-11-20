@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v1.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import shared.UnitSpec
 import shared.models.domain.SubmissionId
 import shared.models.errors.SubmissionIdFormatError
+import v1.controllers.validators.resolvers
 
 class ResolveSubmissionIdSpec extends UnitSpec {
 
   "ResolveSubmissionId" should {
     "return no errors" when {
       "passed a valid submission ID" in {
-        val validSubmissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-        val result = ResolveSubmissionId(validSubmissionId)
-        result shouldBe Valid(SubmissionId(validSubmissionId))
+        val id     = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+        val result = ResolveSubmissionId(id)
+        result shouldBe Valid(SubmissionId(id))
       }
     }
 
     "return an error" when {
       "passed an invalid submission ID" in {
-        val invalidSubmissionId = "12345678-1234-123-123-123456789012"
-        val result              = ResolveSubmissionId(invalidSubmissionId)
+        val id     = "12345678-1234-123-123-123456789012"
+        val result = resolvers.ResolveSubmissionId(id)
         result shouldBe Invalid(List(SubmissionIdFormatError))
       }
     }

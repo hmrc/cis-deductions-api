@@ -16,16 +16,28 @@
 
 package shared.controllers.validators.resolvers
 
-import shared.models.domain.Source
-import shared.models.errors.{MtdError, RuleSourceInvalidError}
-import cats.data.Validated
+import shared.models.domain.TransactionId
+import shared.models.errors.TransactionIdFormatError
 import cats.data.Validated.{Invalid, Valid}
+import shared.UnitSpec
 
-object ResolveSource extends Resolver[String, Source] {
+class ResolveTransactionIdSpec extends UnitSpec {
 
-  def apply(source: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Source] = {
-    val sourceObject = Source.fromString(source)
-    if (sourceObject.nonEmpty) Valid(sourceObject.get) else Invalid(List(RuleSourceInvalidError.maybeWithExtraPath(path)))
+  "ResolveTransactionId" should {
+    "return no errors" when {
+      "given a valid Transaction ID" in {
+        val value  = "1234567890AB"
+        val result = ResolveTransactionId(value)
+        result shouldBe Valid(TransactionId(value))
+      }
+    }
+
+    "return an error" when {
+      "given an invalid TransactionId" in {
+        val result = ResolveTransactionId("not-a-transaction-id")
+        result shouldBe Invalid(List(TransactionIdFormatError))
+      }
+    }
   }
 
 }

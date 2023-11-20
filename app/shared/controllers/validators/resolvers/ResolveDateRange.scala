@@ -28,16 +28,14 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 case class ResolveDateRange(startDateFormatError: MtdError = StartDateFormatError,
                             endDateFormatError: MtdError = EndDateFormatError,
                             endBeforeStartDateError: MtdError = RuleEndBeforeStartDateError)
-  extends ResolverSupport {
-
+    extends ResolverSupport {
   import ResolveDateRange._
 
-  val resolver: Resolver[(String, String), DateRange] = {
-    case (startDate, endDate) =>
-      (
-        ResolveIsoDate(startDate, startDateFormatError),
-        ResolveIsoDate(endDate, endDateFormatError)
-        ).mapN(resolveDateRange).andThen(identity)
+  val resolver: Resolver[(String, String), DateRange] = { case (startDate, endDate) =>
+    (
+      ResolveIsoDate(startDate, startDateFormatError),
+      ResolveIsoDate(endDate, endDateFormatError)
+    ).mapN(resolveDateRange).andThen(identity)
   }
 
   def apply(value: (String, String)): Validated[Seq[MtdError], DateRange] = resolver(value)
@@ -61,13 +59,14 @@ object ResolveDateRange extends ResolverSupport {
   def datesLimitedTo(minDate: LocalDate, minError: => MtdError, maxDate: LocalDate, maxError: => MtdError): Validator[DateRange] =
     combinedValidator[DateRange](
       satisfies(minError)(_.startDate >= minDate),
-      satisfies(maxError)(_.endDate <= maxDate)
+      satisfies(minError)(_.startDate <= maxDate),
+      satisfies(maxError)(_.endDate <= maxDate),
+      satisfies(maxError)(_.endDate >= minDate)
     )
 
   def yearsLimitedTo(minYear: Int, minError: => MtdError, maxYear: Int, maxError: => MtdError): Validator[DateRange] = {
     def yearStartDate(year: Int) = LocalDate.ofYearDay(year, 1)
-
-    def yearEndDate(year: Int) = yearStartDate(year + 1).minusDays(1)
+    def yearEndDate(year: Int)   = yearStartDate(year + 1).minusDays(1)
 
     datesLimitedTo(yearStartDate(minYear), minError, yearEndDate(maxYear), maxError)
   }

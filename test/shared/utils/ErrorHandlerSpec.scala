@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package shared.utils
 
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration

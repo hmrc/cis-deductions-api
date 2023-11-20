@@ -21,8 +21,9 @@ import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version1}
 import shared.controllers._
-import utils.{IdGenerator, Logging}
+import shared.utils.{IdGenerator, Logging}
 import v1.controllers.validators.CreateValidatorFactory
 import v1.models.response.create.CreateHateoasData
 import v1.services.CreateService
@@ -39,7 +40,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   cc: ControllerComponents,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc)
-    with V1Controller
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -49,6 +49,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
     )
 
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
+    implicit val apiVersion: Version = Version.from(request, orElse = Version1)
     implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
     val validator = validatorFactory.validator(nino, request.body)

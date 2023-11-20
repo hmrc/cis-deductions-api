@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package shared.utils
 
 import shapeless.labelled.FieldType
 import shapeless.{::, HList, HNil, LabelledGeneric, Lazy, Witness}

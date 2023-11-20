@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package shared.utils
 
 import play.api.Logger
 

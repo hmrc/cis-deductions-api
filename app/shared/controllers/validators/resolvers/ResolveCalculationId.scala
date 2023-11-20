@@ -17,17 +17,16 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import shared.models.domain.CalculationId
 import shared.models.errors.{CalculationIdFormatError, MtdError}
 
-object ResolveCalculationId extends Resolver[String, CalculationId] {
+object ResolveCalculationId extends ResolverSupport {
 
   private val calculationIdRegex = """^[0-9]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$""".r
 
-  def apply(value: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], CalculationId] = {
-    if (calculationIdRegex.matches(value)) { Valid(CalculationId(value)) }
-    else { Invalid(List(CalculationIdFormatError.maybeWithExtraPath(path))) }
-  }
+  val resolver: Resolver[String, CalculationId] =
+    ResolveStringPattern(calculationIdRegex, CalculationIdFormatError).resolver.map(CalculationId)
+
+  def apply(value: String): Validated[Seq[MtdError], CalculationId] = resolver(value)
 
 }

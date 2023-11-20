@@ -16,11 +16,11 @@
 
 package shared.controllers.validators
 
+import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors
-import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
-import utils.Logging
+import shared.utils.Logging
+import cats.implicits._
 
 trait Validator[PARSED] extends Logging {
 
@@ -36,14 +36,19 @@ trait Validator[PARSED] extends Logging {
         combineErrors(errs) match {
           case err :: Nil =>
             logger.warn(s"Validation failed with ${err.code} error for the request with CorrelationId: $correlationId")
-            Left(errors.ErrorWrapper(correlationId, err, None))
+            Left(ErrorWrapper(correlationId, err, None))
 
           case errs =>
             logger.warn(s"Validation failed with ${errs.map(_.code).mkString(",")} error for the request with CorrelationId: $correlationId")
-            Left(errors.ErrorWrapper(correlationId, BadRequestError, Some(errs)))
+            Left(ErrorWrapper(correlationId, BadRequestError, Some(errs)))
         }
     }
   }
+
+  protected def invalid(error: MtdError): Invalid[Seq[MtdError]] = Invalid(List(error))
+
+  protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
+    results.traverse_(identity)
 
   private def combineErrors(errors: Seq[MtdError]): Seq[MtdError] = {
     errors
@@ -62,6 +67,7 @@ trait Validator[PARSED] extends Logging {
         })
       }
       .toList
+      .sortBy(_.code)
   }
 
 }

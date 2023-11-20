@@ -123,28 +123,17 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val paramsWithMissingToDate   = List("fromDate" -> "2020-04-06", "source" -> "all")
+        val paramsWithMissingFromDate = List("toDate" -> "2021-04-05", "source" -> "all")
+
+        val input = List(
           ("AA12345", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, NinoFormatError, None),
           ("AA123456B", "2020-04", "2021-04-05", "customer", BAD_REQUEST, FromDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04", "customer", BAD_REQUEST, ToDateFormatError, None),
           ("AA123456B", "2020-04-06", "2021-04-05", "asdf", BAD_REQUEST, RuleSourceInvalidError, None),
           ("AA123456B", "2022-04-05", "2021-04-06", "customer", BAD_REQUEST, RuleDateRangeInvalidError, None),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingToDateError,
-            Some(Seq("fromDate" -> "2020-04-06", "source" -> "all"))),
-          (
-            "AA123456B",
-            "2020-04-06",
-            "2021-04-05",
-            "customer",
-            BAD_REQUEST,
-            RuleMissingFromDateError,
-            Some(Seq("toDate" -> "2021-04-05", "source" -> "all")))
+          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingToDateError, Some(paramsWithMissingToDate)),
+          ("AA123456B", "2020-04-06", "2021-04-05", "customer", BAD_REQUEST, RuleMissingFromDateError, Some(paramsWithMissingFromDate))
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

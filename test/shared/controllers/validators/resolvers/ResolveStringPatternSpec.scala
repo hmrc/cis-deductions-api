@@ -16,15 +16,29 @@
 
 package shared.controllers.validators.resolvers
 
-import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors.MtdError
+import shared.UnitSpec
+import shared.models.errors.TaxYearFormatError
 
-case class ResolveAmount(min: BigDecimal = 0, max: BigDecimal = 99999999999.99) extends Resolver[BigDecimal, BigDecimal] {
+class ResolveStringPatternSpec extends UnitSpec {
 
-  def apply(value: BigDecimal, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], BigDecimal] = {
-    if (value >= min && value <= max && value.scale <= 2) { Valid(value) }
-    else { Invalid(List(requireError(error, path))) }
+  private val resolveTaxYearPattern = ResolveStringPattern("20[1-9][0-9]-[1-9][0-9]".r, TaxYearFormatError)
+
+  "ResolveStringPattern" should {
+    "return the input value" when {
+      "given a matching string" in {
+        val result = resolveTaxYearPattern("2024-25")
+        result shouldBe Valid("2024-25")
+      }
+    }
+
+    "return the correct error" when {
+      "given a non-matching string and no override error" in {
+        val result = resolveTaxYearPattern("does-not-match-regex")
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+    }
+
   }
 
 }

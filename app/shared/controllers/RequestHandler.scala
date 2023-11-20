@@ -29,7 +29,7 @@ import play.api.mvc.Results.InternalServerError
 import routing.Version
 import shared.controllers.validators.Validator
 import shared.models.errors.{ErrorWrapper, InternalError}
-import utils.Logging
+import shared.utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 

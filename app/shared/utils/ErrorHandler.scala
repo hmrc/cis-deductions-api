@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package shared.utils
 
 import _root_.routing.Versions
 import play.api._

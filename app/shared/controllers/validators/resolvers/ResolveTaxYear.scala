@@ -61,6 +61,13 @@ case class ResolveTaxYearMinimum(minimumTaxYear: TaxYear) extends ResolverSuppor
     ResolveTaxYear.resolver thenValidate satisfiesMin(minimumTaxYear, RuleTaxYearNotSupportedError)
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+
 }
 
 case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError)(implicit clock: Clock) extends ResolverSupport {
@@ -69,13 +76,6 @@ case class ResolveIncompleteTaxYear(incompleteTaxYearError: MtdError = RuleTaxYe
     ResolveTaxYear.resolver thenValidate satisfies(incompleteTaxYearError)(_ < TaxYear.currentTaxYear)
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
-
-  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
-    value match {
-      case Some(value) => resolver(value).map(Some(_))
-      case None        => Valid(None)
-    }
-
 }
 
 object ResolveTysTaxYear extends ResolverSupport {

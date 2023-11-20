@@ -25,15 +25,15 @@ class ResolveBusinessIdSpec extends UnitSpec {
 
   "ResolveBusinessId" should {
     "return no errors" when {
-      "passed a valid business ID" in {
+      "given a valid business ID" in {
         val validBusinessId = "XAIS12345678901"
-        val result = ResolveBusinessId(validBusinessId)
+        val result          = ResolveBusinessId(validBusinessId)
         result shouldBe Valid(BusinessId(validBusinessId))
       }
     }
 
     "return an error" when {
-      "passed an invalid business ID" in {
+      "given an invalid business ID" in {
         val invalidBusinessId = "XAXAIS65271982AD"
         val result            = ResolveBusinessId(invalidBusinessId)
         result shouldBe Invalid(List(BusinessIdFormatError))

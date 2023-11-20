@@ -19,7 +19,7 @@ package api.support
 import api.models.outcomes.ResponseWrapper
 import shared.controllers.EndpointLogContext
 import shared.models.errors._
-import utils.Logging
+import shared.utils.Logging
 
 trait DownstreamResponseMappingSupport {
   self: Logging =>

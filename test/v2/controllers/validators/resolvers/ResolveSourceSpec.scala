@@ -14,37 +14,31 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v2.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import shared.UnitSpec
-import shared.models.errors.{InternalError, StartDateFormatError}
+import shared.models.domain.Source
+import shared.models.errors.RuleSourceInvalidError
+import v2.controllers.validators.resolvers
 
-class ResolveDateSpec extends UnitSpec {
+class ResolveSourceSpec extends UnitSpec {
 
-  private val validDate = "2020-01-01"
-  private val invalidDate = "not-a-date"
-  private val invalidError = StartDateFormatError
-
-  "ResolveDateRange" should {
+  "ResolveSource" should {
     "return no errors" when {
-      "passed a valid date" in {
-        val result = ResolveDate(validDate)
-        result shouldBe Valid(validDate)
+      "passed a valid Source" in {
+        val validSource = "all"
+        val result      = ResolveSource(validSource)
+        result shouldBe Valid(Source.`all`)
       }
     }
 
     "return an error" when {
-      "passed an invalid date and error" in {
-        val result = ResolveDate(invalidDate, invalidError)
-        result shouldBe Invalid(List(StartDateFormatError))
+      "passed an invalid source" in {
+        val invalidSource = "none"
+        val result        = resolvers.ResolveSource(invalidSource)
+        result shouldBe Invalid(List(RuleSourceInvalidError))
       }
-
-      "passed an invalid date" in {
-        val result = ResolveDate(invalidDate)
-        result shouldBe Invalid(List(InternalError))
-      }
-
     }
   }
 

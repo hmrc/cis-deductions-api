@@ -47,7 +47,7 @@ class CreateControllerSpec
     with MockAuditService {
 
   private val responseId         = "S4636A77V5KB8625U"
-  private val requestData        = CreateRequestData(Nino(nino), requestObj)
+  private val requestData        = CreateRequestData(Nino(nino), parsedRequestData)
   private implicit val appConfig = mockAppConfig
 
   val response: CreateResponseModel = CreateResponseModel(responseId)

@@ -28,9 +28,11 @@ case class ResolveParsedNumber(min: BigDecimal = 0, max: BigDecimal = 9999999999
       Option.when(!valid)(List(error))
     }
 
-  def apply(value: Option[BigDecimal], path: String): Validated[Seq[MtdError], Option[BigDecimal]] = resolver(errorFor(path)).resolveOptionally(value)
+  def apply(value: Option[BigDecimal], path: String): Validated[Seq[MtdError], Option[BigDecimal]] =
+    resolver(errorFor(path)).resolveOptionally(value)
 
-  def apply(value: BigDecimal, path: String): Validated[Seq[MtdError], BigDecimal] = resolver(errorFor(path))(value)
+  def apply(value: BigDecimal, path: String): Validated[Seq[MtdError], BigDecimal] =
+    resolver(errorFor(path))(value)
 
   private def errorFor(path: String) = ValueFormatError.forPathAndRange(path, min.toString, max.toString)
 

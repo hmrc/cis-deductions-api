@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v1.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
+import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
 import shared.models.domain.SubmissionId
 import shared.models.errors.{MtdError, SubmissionIdFormatError}
 
-object ResolveSubmissionId extends Resolver[String, SubmissionId] {
+object ResolveSubmissionId extends ResolverSupport {
 
-  private val submissionIdRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  private val submissionIdRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$".r
 
-  def apply(value: String, unusedError: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], SubmissionId] = {
-    if (value.matches(submissionIdRegex)) { Valid(SubmissionId(value)) }
-    else { Invalid(List(SubmissionIdFormatError.maybeWithExtraPath(path))) }
-  }
+  val resolver: Resolver[String, SubmissionId] =
+    ResolveStringPattern(submissionIdRegex, SubmissionIdFormatError).resolver.map(SubmissionId)
+
+  def apply(value: String): Validated[Seq[MtdError], SubmissionId] = resolver(value)
 
 }

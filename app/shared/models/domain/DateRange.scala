@@ -18,4 +18,24 @@ package shared.models.domain
 
 import java.time.LocalDate
 
-case class DateRange(startDate: LocalDate, endDate: LocalDate)
+case class DateRange(startDate: LocalDate, endDate: LocalDate) {
+
+  /**
+    * The startDate and endDate must form a valid tax year; validating/resolving should be done separately.
+    * @return e.g. for 2020-05-03 -> 2021-06-02, "2020-21"
+    */
+  def asTaxYearMtdString: String = {
+    val start = startDate.toString.take(4)
+    val end = endDate.toString.take(4).takeRight(2)
+    s"$start-$end"
+  }
+}
+
+object DateRange {
+
+  def apply(range: (LocalDate, LocalDate)): DateRange = {
+    val (startDate, endDate) = range
+    new DateRange(startDate, endDate)
+  }
+
+}

@@ -25,18 +25,18 @@ import java.time.LocalDate
 class ResolveIsoDateSpec extends UnitSpec {
 
   "ResolveIsoDate" should {
-    "return no errors" when {
-      "passed a valid date" in {
+    "return the parsed date" when {
+      "given a valid ISO date string" in {
         val validDate = "2024-06-21"
-        val result = ResolveIsoDate(validDate, Some(StartDateFormatError), None)
+        val result    = ResolveIsoDate(validDate, StartDateFormatError)
         result shouldBe Valid(LocalDate.parse("2024-06-21"))
       }
     }
 
     "return an error" when {
-      "passed an invalid date" in {
+      "given an invalid/non-ISO date string" in {
         val invalidDate = "not-a-date"
-        val result      = ResolveIsoDate(invalidDate, Some(StartDateFormatError), None)
+        val result      = ResolveIsoDate(invalidDate, StartDateFormatError)
         result shouldBe Invalid(List(StartDateFormatError))
       }
     }

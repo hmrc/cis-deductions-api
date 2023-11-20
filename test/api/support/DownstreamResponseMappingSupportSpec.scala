@@ -20,8 +20,8 @@ import api.models.outcomes.ResponseWrapper
 import play.api.http.Status.BAD_REQUEST
 import shared.controllers.EndpointLogContext
 import shared.models.errors._
+import shared.utils.Logging
 import shared.{UnitSpec, models}
-import utils.Logging
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 

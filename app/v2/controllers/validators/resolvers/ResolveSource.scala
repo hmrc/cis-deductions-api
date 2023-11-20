@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v2.controllers.validators.resolvers
 
+import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
+import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.domain.Source
-import shared.models.errors.RuleSourceInvalidError
+import shared.models.errors.{MtdError, RuleSourceInvalidError}
 
-class ResolveSourceSpec extends UnitSpec {
+object ResolveSource extends ResolverSupport {
 
-  "ResolveSource" should {
-    "return no errors" when {
-      "passed a valid Source" in {
-        val validSource = "all"
-        val result      = ResolveSource(validSource)
-        result shouldBe Valid(Source.`all`)
-      }
-    }
-
-    "return an error" when {
-      "passed an invalid source" in {
-        val invalidSource = "none"
-        val result        = ResolveSource(invalidSource)
-        result shouldBe Invalid(List(RuleSourceInvalidError))
-      }
-    }
+  val resolver: Resolver[String, Source] = { value =>
+    val sourceObject = Source.fromString(value)
+    if (sourceObject.nonEmpty)
+      Valid(sourceObject.get)
+    else
+      Invalid(List(RuleSourceInvalidError))
   }
+
+  def apply(value: String): Validated[Seq[MtdError], Source] = resolver(value)
 
 }

@@ -21,13 +21,14 @@ import shared.UnitSpec
 import shared.models.domain.{Nino, SubmissionId, TaxYear}
 import shared.models.errors._
 import v1.fixtures.AmendRequestFixtures._
+import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v1.models.request.amend.AmendRequestData
 
 class AmendValidatorFactorySpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
-  private val validNino = "AA123456A"
-  private val validId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val validNino                      = "AA123456A"
+  private val validId                        = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   val validatorFactory = new AmendValidatorFactory()
 
@@ -38,7 +39,7 @@ class AmendValidatorFactorySpec extends UnitSpec {
     "return no errors" when {
       "a valid request is supplied" in {
 
-        val amendBodyTaxYear = "2019-20"
+        val amendBodyTaxYear    = "2019-20"
         val amendRequestDataObj = AmendRequestData(Nino(validNino), SubmissionId(validId), TaxYear.fromMtd(amendBodyTaxYear), amendRequestObj)
         val result              = validator(validNino, validId, requestJson).validateAndWrapResult()
         result shouldBe Right(amendRequestDataObj)
@@ -63,7 +64,7 @@ class AmendValidatorFactorySpec extends UnitSpec {
     "return a single error" when {
       "invalid body type error" in new AmendValidatorFactory {
         private val result = validatorFactory.validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodData/0/deductionAmount")))
       }
       "an empty JSON period array is supplied as the request body" in new AmendValidatorFactory {
         private val result = validatorFactory.validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()

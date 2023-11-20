@@ -20,8 +20,9 @@ import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveSource, ResolveTaxYear}
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import shared.models.errors.MtdError
+import v2.controllers.validators.resolvers.ResolveSource
 import v2.models.request.retrieve.RetrieveRequestData
 
 import javax.inject.Singleton

@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package shared.utils
 
 import shared.UnitSpec
-import utils.EmptinessChecker._
-import utils.EmptyPathsResult._
+import shared.utils.EmptinessChecker._
+import shared.utils.EmptyPathsResult._
 
-import scala.annotation.nowarn
-
-@nowarn("cat=lint-byname-implicit")
 class EmptinessCheckerSpec extends UnitSpec {
 
   sealed trait SomeEnum

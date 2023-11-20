@@ -18,10 +18,11 @@ package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.outcomes.ResponseWrapper
-import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.domain.{DateRange, Nino, Source, TaxYear}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class RetrieveConnectorSpec extends ConnectorSpec {
@@ -31,8 +32,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   "Retrieve connector" when {
     "given a valid non-TYS request" must {
       "return a valid response from downstream" in new DesTest with Test {
-        protected def fromDate = "2019-04-06"
-        protected def toDate   = "2020-04-05"
+        protected def fromDateStr = "2019-04-06"
+        protected def toDateStr   = "2020-04-05"
 
         val outcome = Right(
           ResponseWrapper(
@@ -66,10 +67,10 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "given a valid request for a TaxYearSpecific tax year" must {
       "return a 200 for success scenario" in new TysIfsTest with Test {
-        protected def fromDate = "2023-04-06"
-        protected def toDate   = "2024-04-06"
+        protected def fromDateStr = "2023-04-06"
+        protected def toDateStr   = "2024-04-06"
 
-        private def taxYear: TaxYear = TaxYear.fromIso(toDate)
+        private def taxYear: TaxYear = TaxYear.fromIso(toDateStr)
 
         val outcome = Right(
           ResponseWrapper(
@@ -103,11 +104,16 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    protected def fromDate: String
-    protected def toDate: String
+    protected def fromDateStr: String
+    protected def toDateStr: String
+
+    protected val fromDate: LocalDate = LocalDate.parse(fromDateStr)
+    protected val toDate: LocalDate   = LocalDate.parse(toDateStr)
+
+    protected val dateRange: DateRange = DateRange(fromDate, toDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, Source.`contractor`)
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), dateRange, Source.`contractor`)
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"

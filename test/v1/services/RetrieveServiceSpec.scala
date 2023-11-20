@@ -19,7 +19,7 @@ package v1.services
 import api.models.outcomes.ResponseWrapper
 import shared.UnitSpec
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, Source}
+import shared.models.domain.{DateRange, Nino, Source}
 import shared.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
@@ -27,20 +27,34 @@ import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveServiceSpec extends UnitSpec {
 
-  private val nino        = Nino("AA123456A")
-  private val fromDate    = "2019-04-06"
-  private val toDate      = "2020-04-05"
-  private val tysFromDate = "2023-04-06"
-  private val tysToDate   = "2024-04-05"
-  private val source      = Source.`contractor`
+  private val nino = Nino("AA123456A")
 
-  private val request    = RetrieveRequestData(nino, fromDate, toDate, source)
-  private val tysRequest = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
+  private val fromDateStr = "2019-04-06"
+  private val toDateStr   = "2020-04-05"
+
+  private val fromDate: LocalDate = LocalDate.parse(fromDateStr)
+  private val toDate: LocalDate   = LocalDate.parse(toDateStr)
+
+  private val dateRange: DateRange = DateRange(fromDate, toDate)
+
+  private val tysFromDateStr = "2023-04-06"
+  private val tysToDateStr   = "2024-04-05"
+
+  private val tysFromDate: LocalDate = LocalDate.parse(tysFromDateStr)
+  private val tysToDate: LocalDate   = LocalDate.parse(tysToDateStr)
+
+  private val tysDateRange: DateRange = DateRange(tysFromDate, tysToDate)
+
+  private val source = Source.`contractor`
+
+  private val request    = RetrieveRequestData(nino, dateRange, source)
+  private val tysRequest = RetrieveRequestData(nino, tysDateRange, source)
 
   private val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 

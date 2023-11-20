@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package v1.controllers
+package v1.models.errors
 
-import routing.{Version, Version1}
-import shared.controllers.AuthorisedController
+import play.api.http.Status.BAD_REQUEST
+import shared.models.errors.MtdError
 
-trait V1Controller {
-  _: AuthorisedController =>
+object CisDeductionsApiCommonErrors {
 
-  implicit val apiVersion: Version = Version1
+  // MtdError types that are common to CIS DEDUCTIONS API.
+
+  object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid", BAD_REQUEST)
+  object DeductionToDateFormatError   extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid", BAD_REQUEST)
 
 }

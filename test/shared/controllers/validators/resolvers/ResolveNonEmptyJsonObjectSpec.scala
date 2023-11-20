@@ -16,34 +16,29 @@
 
 package shared.controllers.validators.resolvers
 
-import api.models.utils.JsonErrorValidators
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.{Json, OFormat}
 import shapeless.HNil
 import shared.UnitSpec
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
-import utils.EmptinessChecker
-
-import scala.annotation.nowarn
+import shared.models.utils.JsonErrorValidators
+import shared.utils.EmptinessChecker
 
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
   case class TestDataObject(field1: String, field2: String, oneOf1: Option[String] = None, oneOf2: Option[String] = None)
-
   case class TestDataWrapper(arrayField: Seq[TestDataObject])
 
-  implicit val testDataObjectFormat: OFormat[TestDataObject] = Json.format[TestDataObject]
+  implicit val testDataObjectFormat: OFormat[TestDataObject]   = Json.format[TestDataObject]
   implicit val testDataWrapperFormat: OFormat[TestDataWrapper] = Json.format[TestDataWrapper]
 
   // at least one of oneOf1 and oneOf2 must be included:
-  @nowarn("cat=lint-byname-implicit")
   implicit val emptinessChecker: EmptinessChecker[TestDataObject] = EmptinessChecker.use { o =>
     "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
   }
 
   private val resolveTestDataObject = new ResolveNonEmptyJsonObject[TestDataObject]()
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveTestDataWrapper = new ResolveNonEmptyJsonObject[TestDataWrapper]()
 
   "ResolveNonEmptyJsonObject" should {
@@ -57,8 +52,8 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
       }
     }
 
-    "return an error " when {
-      "a required field is missing" in {
+    "return an error" when {
+      "given a JSON object with a missing required field" in {
         val json = Json.parse("""{ "field1" : "Something" }""")
 
         val result = resolveTestDataObject(json)
@@ -68,7 +63,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
           ))
       }
 
-      "a required field is missing in an array object" in {
+      "given a JSON object with a missing required field in an array object" in {
         val json = Json.parse("""{ "arrayField" : [{ "field1" : "Something" }]}""")
 
         val result = resolveTestDataWrapper(json)
@@ -78,15 +73,15 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
           ))
       }
 
-      "a required field is missing in multiple array objects" in {
+      "given a JSON object with a missing required field in multiple array objects" in {
         val json = Json.parse("""
-            |{
-            |  "arrayField" : [
-            |    { "field1" : "Something" },
-            |    { "field1" : "Something" }
-            |  ]
-            |}
-            |""".stripMargin)
+          |{
+          |  "arrayField" : [
+          |    { "field1" : "Something" },
+          |    { "field1" : "Something" }
+          |  ]
+          |}
+          |""".stripMargin)
 
         val result = resolveTestDataWrapper(json)
         result shouldBe Invalid(
@@ -99,14 +94,14 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
           ))
       }
 
-      "an empty body is submitted" in {
+      "given an empty JSON object" in {
         val json = Json.parse("""{}""")
 
         val result = resolveTestDataObject(json)
         result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
       }
 
-      "a non-empty body is supplied without any expected fields" in {
+      "given a non-empty JSON object without any expected fields" in {
         val json = Json.parse("""{"field": "value"}""")
 
         val result = resolveTestDataObject(json)
@@ -116,7 +111,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
           ))
       }
 
-      "a field is supplied with the wrong data type" in {
+      "given a field with the wrong data type" in {
         val json = Json.parse("""{"field1": true, "field2": "value"}""")
 
         val result = resolveTestDataObject(json)

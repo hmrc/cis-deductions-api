@@ -19,8 +19,9 @@ package v1.controllers.validators
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveSubmissionId, ResolveTysTaxYear}
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTysTaxYear}
 import shared.models.errors.MtdError
+import v1.controllers.validators.resolvers.ResolveSubmissionId
 import v1.models.request.delete.DeleteRequestData
 
 class DeleteValidatorFactory {

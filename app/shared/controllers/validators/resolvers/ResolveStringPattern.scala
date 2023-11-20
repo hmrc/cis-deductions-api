@@ -17,16 +17,28 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+import cats.data.Validated.{Invalid, Valid}
+import shared.models.errors.MtdError
 
-object ResolveBusinessId extends ResolverSupport {
+import scala.util.matching.Regex
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
+case class ResolveStringPattern(regexFormat: Regex, error: MtdError) extends ResolverSupport {
 
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
+  val resolver: Resolver[String, String] = value =>
+    if (regexFormat.matches(value))
+      Valid(value)
+    else
+      Invalid(List(error))
 
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
+  def apply(value: String): Validated[Seq[MtdError], String] = resolver(value)
+}
+
+object ResolveStringPattern {
+
+  def apply(value: String, regexFormat: Regex, error: MtdError): Validated[Seq[MtdError], String] = {
+    val resolver = ResolveStringPattern(regexFormat, error)
+
+    resolver(value)
+  }
 
 }

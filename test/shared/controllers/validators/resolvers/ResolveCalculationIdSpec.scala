@@ -25,15 +25,15 @@ class ResolveCalculationIdSpec extends UnitSpec {
 
   "ResolveCalculationId" should {
     "return no errors" when {
-      "passed a valid Calculation ID" in {
-        val value = "a54ba782-5ef4-47f4-ab72-495406665ca9"
-        val result = ResolveCalculationId("a54ba782-5ef4-47f4-ab72-495406665ca9")
+      "given a valid Calculation ID" in {
+        val value  = "a54ba782-5ef4-47f4-ab72-495406665ca9"
+        val result = ResolveCalculationId(value)
         result shouldBe Valid(CalculationId(value))
       }
     }
 
     "return an error" when {
-      "a invalid CalculationId is supplied" in {
+      "given an invalid CalculationId" in {
         val result = ResolveCalculationId("not-a-calculation-id")
         result shouldBe Invalid(List(CalculationIdFormatError))
       }

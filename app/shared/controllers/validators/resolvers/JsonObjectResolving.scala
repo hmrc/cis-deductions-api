@@ -20,7 +20,7 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json._
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import utils.Logging
+import shared.utils.Logging
 
 trait JsonObjectResolving[T] extends Logging {
   implicit val reads: Reads[T]
@@ -66,7 +66,7 @@ trait JsonObjectResolving[T] extends Logging {
       .drop(5)
 
     logger.warn(s"Request body failed validation with errors - $logString")
-    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath).sorted)))
+    List(RuleIncorrectOrEmptyBodyError.withPaths(failures.map(_.fromJsPath).sorted))
   }
 
   protected class JsonFormatValidationFailure(path: JsPath, failure: String) {

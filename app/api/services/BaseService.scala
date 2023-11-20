@@ -18,6 +18,6 @@ package api.services
 
 import api.support.DownstreamResponseMappingSupport
 import shared.controllers.RequestContextImplicits
-import utils.Logging
+import shared.utils.Logging
 
 trait BaseService extends RequestContextImplicits with DownstreamResponseMappingSupport with Logging

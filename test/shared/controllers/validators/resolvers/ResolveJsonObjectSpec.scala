@@ -16,12 +16,11 @@
 
 package shared.controllers.validators.resolvers
 
-import api.models.utils.JsonErrorValidators
 import cats.data.Validated.{Invalid, Valid}
-import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Json, Reads}
 import shared.UnitSpec
-import shared.models.errors.MtdError
+import shared.models.errors.RuleIncorrectOrEmptyBodyError
+import shared.models.utils.JsonErrorValidators
 
 class ResolveJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
@@ -29,16 +28,14 @@ class ResolveJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
   implicit val testDataObjectReads: Reads[TestDataObject] = Json.reads[TestDataObject]
 
-  private val someError = MtdError("SOME_CODE", "some message", BAD_REQUEST)
-
   private val resolve = new ResolveJsonObject[TestDataObject]
 
   "ResolveJsonObject" should {
-    "return no errors" when {
+    "return the parsed object" when {
       "given a valid JSON object" in {
         val json = Json.parse("""{ "fieldOne" : "field one", "fieldTwo" : "field two" }""")
 
-        val result = resolve(json, someError)
+        val result = resolve(json)
         result shouldBe Valid(TestDataObject("field one", "field two"))
       }
     }
@@ -47,8 +44,8 @@ class ResolveJsonObjectSpec extends UnitSpec with JsonErrorValidators {
       "a required field is missing" in {
         val json = Json.parse("""{ "fieldOne" : "field one" }""")
 
-        val result = resolve(json, someError)
-        result shouldBe Invalid(List(someError))
+        val result = resolve(json)
+        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError.withPath("/fieldTwo")))
       }
 
     }
