@@ -46,7 +46,6 @@ class CreateValidatorFactory @Inject() (appConfig: AppConfig) {
 
   private val resolveAmount = ResolveParsedNumber()
   private val resolveJson   = new ResolveJsonObject[CreateBody]()
-  // private val resolveTaxYearDates = ResolveTaxYearDates()
 
   private val resolveDateRange = ResolveDateRange(
     startDateFormatError = FromDateFormatError,
