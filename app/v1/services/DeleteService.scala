@@ -19,8 +19,15 @@ package v1.services
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
-import shared.models
-import shared.models.errors._
+import shared.models.errors.{
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleTaxYearNotSupportedError,
+  SubmissionIdFormatError,
+  TaxYearFormatError
+}
 import v1.connectors.DeleteConnector
 import v1.models.request.delete.DeleteRequestData
 
@@ -40,10 +47,10 @@ class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"     -> models.errors.InternalError,
+      "INVALID_CORRELATIONID"     -> InternalError,
       "NO_DATA_FOUND"             -> NotFoundError,
-      "SERVER_ERROR"              -> models.errors.InternalError,
-      "SERVICE_UNAVAILABLE"       -> models.errors.InternalError
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
 
     val extraTysErrors = Map(

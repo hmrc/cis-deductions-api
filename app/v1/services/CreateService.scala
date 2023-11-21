@@ -19,8 +19,18 @@ package v1.services
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
-import shared.models
-import shared.models.errors._
+import shared.models.errors.{
+  EmployerRefFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleDuplicateSubmissionError,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError
+}
 import v1.connectors.CreateConnector
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
@@ -40,21 +50,21 @@ class CreateService @Inject() (connector: CreateConnector) extends BaseService {
   private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
-      "INVALID_PAYLOAD"                 -> models.errors.InternalError,
+      "INVALID_PAYLOAD"                 -> InternalError,
       "INVALID_EMPREF"                  -> EmployerRefFormatError,
       "INVALID_REQUEST_TAX_YEAR_ALIGN"  -> RuleUnalignedDeductionsPeriodError,
       "INVALID_REQUEST_DATE_RANGE"      -> RuleDeductionsDateRangeInvalidError,
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
       "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR"                    -> models.errors.InternalError,
-      "SERVICE_UNAVAILABLE"             -> models.errors.InternalError,
-      "INVALID_CORRELATIONID"           -> models.errors.InternalError
+      "SERVER_ERROR"                    -> InternalError,
+      "SERVICE_UNAVAILABLE"             -> InternalError,
+      "INVALID_CORRELATIONID"           -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID" -> models.errors.InternalError,
-      "INVALID_TAX_YEAR"       -> models.errors.InternalError,
+      "INVALID_CORRELATION_ID" -> InternalError,
+      "INVALID_TAX_YEAR"       -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError,

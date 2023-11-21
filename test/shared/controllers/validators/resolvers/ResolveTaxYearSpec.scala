@@ -16,6 +16,7 @@
 
 package shared.controllers.validators.resolvers
 
+import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.UnitSpec
 import shared.models.domain.TaxYear
@@ -27,18 +28,25 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
 
   "ResolveTaxYear" should {
     "return no errors" when {
-      "passed a valid tax year" in {
-        val validTaxYear = "2018-19"
-        ResolveTaxYear(validTaxYear) shouldBe Valid(TaxYear.fromMtd(validTaxYear))
+      val validTaxYear = "2018-19"
+
+      "given a valid tax year" in {
+        val result: Validated[Seq[MtdError], TaxYear] = ResolveTaxYear(validTaxYear)
+        result shouldBe Valid(TaxYear.fromMtd(validTaxYear))
+      }
+
+      "given a valid tax year in an Option" in {
+        val result: Validated[Seq[MtdError], Option[TaxYear]] = ResolveTaxYear(Option(validTaxYear))
+        result shouldBe Valid(Some(TaxYear.fromMtd(validTaxYear)))
       }
     }
 
     "return an error" when {
-      "passed an invalid tax year format" in {
+      "given an invalid tax year format" in {
         ResolveTaxYear("2019") shouldBe Invalid(List(TaxYearFormatError))
       }
 
-      "passed a tax year string in which the range is greater than 1 year" in {
+      "given a tax year string in which the range is greater than 1 year" in {
         ResolveTaxYear("2017-19") shouldBe Invalid(List(RuleTaxYearRangeInvalidError))
       }
 
@@ -61,56 +69,80 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
     val resolver       = ResolveTaxYearMinimum(minimumTaxYear)
 
     "return no errors" when {
-      "the tax year supplied is the minimum allowed" in {
-        resolver("2021-22") shouldBe Valid(minimumTaxYear)
+      "given the minimum allowed tax year" in {
+        val result: Validated[Seq[MtdError], TaxYear] = resolver("2021-22")
+        result shouldBe Valid(minimumTaxYear)
+      }
+
+      "given the minimum allowed tax year via the adaptor for existing callers" in {
+        val result: Validated[Seq[MtdError], TaxYear] = ResolveTaxYear(minimumTaxYear, "2021-22")
+        result shouldBe Valid(minimumTaxYear)
+      }
+
+      "given the minimum allowed tax year in an Option" in {
+        val result: Validated[Seq[MtdError], Option[TaxYear]] = resolver(Option("2021-22"))
+        result shouldBe Valid(Some(minimumTaxYear))
       }
     }
 
     "return RuleTaxYearNotSupportedError" when {
       "when the tax year is before the minimum tax year" in {
-        resolver("2020-21") shouldBe Invalid(List(RuleTaxYearNotSupportedError))
+        val result: Validated[Seq[MtdError], TaxYear] = resolver("2020-21")
+        result shouldBe Invalid(List(RuleTaxYearNotSupportedError))
       }
     }
   }
 
   "ResolveTysTaxYear" should {
     "return no errors" when {
-      "passed a valid tax year that's above or equal to TaxYear.tysTaxYear" in {
+      "given a valid tax year that's above or equal to TaxYear.tysTaxYear" in {
         val validTaxYear = "2023-24"
         ResolveTysTaxYear(validTaxYear) shouldBe Valid(TaxYear.fromMtd(validTaxYear))
       }
     }
 
     "return an error" when {
-      "passed a valid tax year but below TaxYear.tysTaxYear" in {
+      "given a valid tax year but below TaxYear.tysTaxYear" in {
         ResolveTysTaxYear("2021-22") shouldBe Invalid(List(InvalidTaxYearParameterError))
       }
     }
   }
 
-  "validateIncompleteTaxYear" should {
+  "ResolveIncompleteTaxYear" should {
     val error = MtdError("SOME_ERROR", "Message", 400)
+
     def resolver(localDate: LocalDate): Resolver[String, TaxYear] = {
       implicit val clock: Clock = Clock.fixed(localDate.atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
       ResolveIncompleteTaxYear(error).resolver
     }
 
-    val taxYearString = "2020-21"
-    val taxYear       = TaxYear.fromMtd(taxYearString)
+    val taxYear       = "2020-21"
+    val parsedTaxYear = TaxYear.fromMtd(taxYear)
 
     "accept when now is after the tax year ends" in {
-      val date = taxYear.endDate.plusDays(1)
-      resolver(date)(taxYearString) shouldBe Valid(taxYear)
+      val date = parsedTaxYear.endDate.plusDays(1)
+      resolver(date)(taxYear) shouldBe Valid(parsedTaxYear)
+    }
+
+    "accept when now is after the tax year ends, called via apply(value) in the case class" in {
+      val date = parsedTaxYear.endDate
+        .plusDays(1)
+        .atStartOfDay(ZoneOffset.UTC)
+        .toInstant
+      val clock: Clock = Clock.fixed(date, ZoneOffset.UTC)
+
+      val result = ResolveIncompleteTaxYear()(clock)(taxYear)
+      result shouldBe Valid(parsedTaxYear)
     }
 
     "reject when now is on the day the tax year ends" in {
-      val date = taxYear.endDate
-      resolver(date)(taxYearString) shouldBe Invalid(List(error))
+      val date = parsedTaxYear.endDate
+      resolver(date)(taxYear) shouldBe Invalid(List(error))
     }
 
     "reject when now is before the tax year starts" in {
-      val date = taxYear.startDate.minusDays(1)
-      resolver(date)(taxYearString) shouldBe Invalid(List(error))
+      val date = parsedTaxYear.startDate.minusDays(1)
+      resolver(date)(taxYear) shouldBe Invalid(List(error))
     }
 
   }

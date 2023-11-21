@@ -19,8 +19,18 @@ package v1.services
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
-import shared.models
-import shared.models.errors._
+import shared.models.errors.{
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError,
+  SubmissionIdFormatError
+}
 import v1.connectors.AmendConnector
 import v1.models.request.amend.AmendRequestData
 
@@ -40,18 +50,18 @@ class AmendService @Inject() (connector: AmendConnector) extends BaseService {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID"     -> models.errors.InternalError,
+      "INVALID_CORRELATIONID"     -> InternalError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_TAX_YEAR_ALIGN"    -> RuleUnalignedDeductionsPeriodError,
       "INVALID_DATE_RANGE"        -> RuleDeductionsDateRangeInvalidError,
       "INVALID_PAYLOAD"           -> RuleIncorrectOrEmptyBodyError,
       "DUPLICATE_MONTH"           -> RuleDuplicatePeriodError,
-      "SERVICE_UNAVAILABLE"       -> models.errors.InternalError,
-      "SERVICE_ERROR"             -> models.errors.InternalError
+      "SERVICE_UNAVAILABLE"       -> InternalError,
+      "SERVICE_ERROR"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"       -> models.errors.InternalError,
-      "INVALID_CORRELATION_ID" -> models.errors.InternalError,
+      "INVALID_TAX_YEAR"       -> InternalError,
+      "INVALID_CORRELATION_ID" -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 

@@ -24,6 +24,9 @@ import shared.models.errors.MtdError
 import v1.controllers.validators.resolvers.ResolveSubmissionId
 import v1.models.request.delete.DeleteRequestData
 
+import javax.inject.Singleton
+
+@Singleton
 class DeleteValidatorFactory {
 
   def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =

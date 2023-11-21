@@ -19,7 +19,16 @@ package api.support
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status.BAD_REQUEST
 import shared.controllers.EndpointLogContext
-import shared.models.errors._
+import shared.models.errors.{
+  BadRequestError,
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  OutboundError,
+  RuleIncorrectGovTestScenarioError
+}
 import shared.utils.Logging
 import shared.{UnitSpec, models}
 
@@ -41,7 +50,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
   val errorCodeMap: PartialFunction[String, MtdError] = {
     case "ERR1"                 => Error1
     case "ERR2"                 => Error2
-    case "DS"                   => models.errors.InternalError
+    case "DS"                   => InternalError
     case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 
@@ -57,7 +66,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
       "the error code is not in the map provided" must {
         "default to DownstreamError and wrap" in {
           mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNKNOWN")))) shouldBe
-            ErrorWrapper(correlationId, models.errors.InternalError)
+            ErrorWrapper(correlationId, InternalError)
         }
       }
 
@@ -83,7 +92,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
         "default main error to DownstreamError ignore other errors" in {
           mapping.mapDownstreamErrors(errorCodeMap)(
             ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("ERR1"), DownstreamErrorCode("UNKNOWN"))))) shouldBe
-            ErrorWrapper(correlationId, models.errors.InternalError)
+            ErrorWrapper(correlationId, InternalError)
         }
       }
 
@@ -91,7 +100,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
         "wrap the errors with main error type of DownstreamError" in {
           mapping.mapDownstreamErrors(errorCodeMap)(
             ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("ERR1"), DownstreamErrorCode("DS"))))) shouldBe
-            ErrorWrapper(correlationId, models.errors.InternalError)
+            ErrorWrapper(correlationId, InternalError)
         }
       }
     }
@@ -99,15 +108,15 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
     "the error code is an OutboundError" must {
       "return the error as is (in an ErrorWrapper)" in {
         mapping.mapDownstreamErrors(errorCodeMap)(
-          ResponseWrapper(correlationId, models.errors.OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
+          ResponseWrapper(correlationId, models.errors.OutboundError(ErrorBvrMain, Some(List(ErrorBvr))))) shouldBe
           models.errors.ErrorWrapper(correlationId, ErrorBvrMain, Some(Seq(ErrorBvr)))
       }
     }
 
     "the error code is an OutboundError with multiple errors" must {
       "return the error as is (in an ErrorWrapper)" in {
-        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
-          models.errors.ErrorWrapper(correlationId, ErrorBvrMain, Some(Seq(ErrorBvr)))
+        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(List(ErrorBvr))))) shouldBe
+          models.errors.ErrorWrapper(correlationId, ErrorBvrMain, Some(List(ErrorBvr)))
       }
     }
   }

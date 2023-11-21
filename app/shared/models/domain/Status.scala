@@ -24,11 +24,11 @@ sealed trait Status {}
 //noinspection ScalaStyle
 object Status {
 
-  case object `valid` extends Status
+  case object valid extends Status
 
-  case object `invalid` extends Status
+  case object invalid extends Status
 
-  case object `superseded` extends Status
+  case object superseded extends Status
 
   implicit val format: Format[Status] = Enums.format[Status]
 }

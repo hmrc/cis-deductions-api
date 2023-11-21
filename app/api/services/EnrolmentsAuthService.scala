@@ -19,8 +19,7 @@ package api.services
 import api.models.auth.UserDetails
 import api.models.outcomes.outcomes.AuthOutcome
 import config.AppConfig
-import shared.models.errors
-import shared.models.errors.ClientNotAuthorisedError
+import shared.models.errors.{ClientNotAuthorisedError, InternalError}
 import shared.utils.Logging
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
@@ -69,7 +68,7 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
             user
           case None =>
             logger.warn(s"[EnrolmentsAuthService][authorised] No AgentReferenceNumber defined on agent enrolment.")
-            Left(errors.InternalError)
+            Left(InternalError)
         }
       case unexpected =>
         logger.error(s"[EnrolmentsAuthService][authorised] Unexpected AuthorisedFunction: $unexpected")
@@ -79,7 +78,7 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
       case _: AuthorisationException => Future.successful(Left(ClientNotAuthorisedError))
       case error =>
         logger.warn(s"[EnrolmentsAuthService][authorised] An unexpected error occurred: $error")
-        Future.successful(Left(errors.InternalError))
+        Future.successful(Left(InternalError))
     }
   }
 

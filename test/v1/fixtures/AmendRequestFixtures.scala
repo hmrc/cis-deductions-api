@@ -22,14 +22,14 @@ import v1.models.request.amend.{AmendBody, PeriodDetails}
 object AmendRequestFixtures {
 
   val amendRequestObj: AmendBody = AmendBody(
-    Seq(
+    List(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", Some(35.00), Some(1457.00)),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", Some(35.00), Some(1457.00))
     )
   )
 
   val amendMissingOptionalRequestObj: AmendBody = AmendBody(
-    Seq(
+    List(
       PeriodDetails(355.00, "2019-06-06", "2019-07-05", None, None),
       PeriodDetails(355.00, "2019-07-06", "2019-08-05", None, None)
     )
@@ -52,6 +52,25 @@ object AmendRequestFixtures {
       |      "deductionToDate": "2019-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  }
+
+  val requestJsonWithoutOptionalValues: JsValue = Json.parse {
+    """
+      |{
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05"
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-08-05"
       |    }
       |  ]
       |}
