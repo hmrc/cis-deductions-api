@@ -17,7 +17,7 @@
 package api.models.des
 
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class DesSampleResponseSpec extends UnitSpec {
 

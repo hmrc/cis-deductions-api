@@ -16,10 +16,21 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
+import shared.controllers.RequestContext
+import shared.models.errors.{
+  EmployerRefFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleDuplicateSubmissionError,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError
+}
 import v1.connectors.CreateConnector
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel

@@ -16,11 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, SubmissionId, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector

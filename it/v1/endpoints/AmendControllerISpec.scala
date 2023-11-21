@@ -16,7 +16,6 @@
 
 package v1.endpoints
 
-import api.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import data.AmendDataExamples._
 import play.api.http.HeaderNames.ACCEPT
@@ -24,7 +23,23 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.errors.{
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleCostOfMaterialsError,
+  RuleDeductionAmountError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleGrossAmountError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError,
+  SubmissionIdFormatError
+}
 import support.IntegrationBaseSpec
+import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
 class AmendControllerISpec extends IntegrationBaseSpec {
 

@@ -17,8 +17,8 @@
 package v2.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, Source, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import shared.models.domain.{Nino, Source, TaxYear}
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
@@ -31,8 +31,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   "Retrieve connector" when {
     "given a valid non-TYS request" must {
       "return a valid response from downstream" in new DesTest with Test {
-        def startDate = "2019-04-06"
-        def endDate   = "2020-04-05"
+        protected def startDate = "2019-04-06"
+        protected def endDate   = "2020-04-05"
 
         val outcome = Right(
           ResponseWrapper(
@@ -41,7 +41,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Some(0.00),
-              Seq(CisDeductions(
+              List(CisDeductions(
                 request.startDate,
                 request.endDate,
                 Some(""),
@@ -49,13 +49,13 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
               ))
             )
           ))
 
         willGet(
-          url = s"$baseUrl/income-tax/cis/deductions/${nino}",
+          url = s"$baseUrl/income-tax/cis/deductions/$nino",
           queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
@@ -66,8 +66,8 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     "given a valid request for a TaxYearSpecific tax year" must {
       "return a 200 for success scenario" in new TysIfsTest with Test {
-        def startDate = "2023-04-06"
-        def endDate   = "2024-04-06"
+        protected def startDate = "2023-04-06"
+        protected def endDate   = "2024-04-06"
 
         val outcome = Right(
           ResponseWrapper(
@@ -76,7 +76,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
               Some(0.00),
               Some(0.00),
               Some(0.00),
-              Seq(CisDeductions(
+              List(CisDeductions(
                 request.startDate,
                 request.endDate,
                 Some(""),
@@ -84,7 +84,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
                 Some(0.00),
                 Some(0.00),
                 Some(0.00),
-                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
               ))
             )
           ))
@@ -101,10 +101,10 @@ class RetrieveConnectorSpec extends ConnectorSpec {
   }
 
   trait Test { _: ConnectorTest =>
-    def startDate: String
-    def endDate: String
+    protected def startDate: String
+    protected def endDate: String
 
-    protected val taxYear = TaxYear.fromIso(endDate)
+    protected val taxYear: TaxYear = TaxYear.fromIso(endDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
     protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source.`contractor`)

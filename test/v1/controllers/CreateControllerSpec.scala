@@ -16,17 +16,17 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
-import api.models.errors._
 import api.hateoas.Method._
+import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.mocks.MockAppConfig
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.Nino
+import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleUnalignedDeductionsPeriodError}
 import v1.controllers.validators.MockedCreateValidatorFactory
 import v1.fixtures.AmendRequestFixtures.requestJson
 import v1.fixtures.CreateRequestFixtures._
@@ -47,7 +47,7 @@ class CreateControllerSpec
     with MockAuditService {
 
   private val responseId         = "S4636A77V5KB8625U"
-  private val requestData        = CreateRequestData(Nino(nino), requestObj)
+  private val requestData        = CreateRequestData(Nino(nino), parsedRequestData)
   private implicit val appConfig = mockAppConfig
 
   val response: CreateResponseModel = CreateResponseModel(responseId)

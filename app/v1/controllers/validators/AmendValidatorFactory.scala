@@ -16,20 +16,20 @@
 
 package v1.controllers.validators
 
-import api.controllers.resolvers._
-import api.controllers.validators.{RulesValidator, Validator}
-import api.models.domain.TaxYear
-import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
-import v1.controllers.resolvers.ResolveTaxYear
+import shared.controllers.validators.resolvers._
+import shared.controllers.validators.{RulesValidator, Validator, resolvers}
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import v1.controllers.validators.resolvers.ResolveSubmissionId
+import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v1.models.request.amend.{AmendBody, AmendRequestData, PeriodDetails}
 
 import java.time.LocalDate
 import javax.inject.Singleton
-import scala.annotation.nowarn
 
 @Singleton
 class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
@@ -37,7 +37,6 @@ class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
   private val minYear = 1900
   private val maxYear = 2100
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendBody]()
 
   def validator(nino: String, submissionId: String, body: JsValue): Validator[AmendRequestData] =
@@ -48,18 +47,18 @@ class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
           case JsSuccess(Some(periodData), _) if periodData.nonEmpty =>
             (periodData.head \ "deductionToDate").validate[String] match {
               case JsSuccess(date, _) =>
-                ResolveIsoDate(date) match {
+                ResolveIsoDate(DeductionToDateFormatError)(date) match {
                   case Valid(isoDate) =>
                     val taxYearStr = TaxYear.fromIso(isoDate.toString).asMtd
                     ResolveTaxYear(taxYearStr) match {
                       case Valid(taxYear) => Valid(taxYear)
-                      case Invalid(_)     => Invalid(Seq(DeductionToDateFormatError))
+                      case Invalid(_)     => Invalid(List(DeductionToDateFormatError))
                     }
-                  case Invalid(_) => Invalid(Seq(DeductionToDateFormatError))
+                  case Invalid(_) => Invalid(List(DeductionToDateFormatError))
                 }
-              case JsError(_) => Invalid(Seq(RuleIncorrectOrEmptyBodyError))
+              case JsError(_) => Invalid(List(RuleIncorrectOrEmptyBodyError))
             }
-          case JsSuccess(_, _) | JsError(_) => Invalid(Seq(RuleIncorrectOrEmptyBodyError))
+          case JsSuccess(_, _) | JsError(_) => Invalid(List(RuleIncorrectOrEmptyBodyError))
         }
       }
 
@@ -68,34 +67,41 @@ class AmendValidatorFactory extends RulesValidator[AmendRequestData] {
           ResolveNino(nino),
           ResolveSubmissionId(submissionId),
           resolveTaxYearFromPeriodDetails(body),
-          resolveJson(body, Some(RuleIncorrectOrEmptyBodyError), None)
+          resolveJson(body)
         ).mapN(AmendRequestData.apply) andThen validateBusinessRules
 
     }
 
-  def resolveNumeric(error: MtdError, value: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
-    ResolveAmount().apply(value, Some(error), None).map(_ => ())
+  def resolveNumeric(error: MtdError, maybeValue: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
+    maybeValue match {
+      case Some(value) => ResolveParsedNumber().resolver(error)(value).map(_ => ())
+      case None        => Valid(())
+    }
 
-  private def isDateWithinRange(date: LocalDate, error: MtdError): Validated[Seq[MtdError], Unit] = {
-    if (date.getYear >= minYear && date.getYear < maxYear) Valid(()) else Invalid(List(error))
-  }
+  private def isDateWithinRange(date: LocalDate, error: MtdError): Validated[Seq[MtdError], Unit] =
+    if (date.getYear >= minYear && date.getYear < maxYear)
+      Valid(())
+    else
+      Invalid(List(error))
 
-  def validatePeriodDetails(details: PeriodDetails): Validated[Seq[MtdError], Unit] =
-    (
-      ResolveAmount().apply(details.deductionAmount, Some(RuleDeductionAmountError), None),
+  private val validateDeductionAmount = ResolveParsedNumber().resolver(RuleDeductionAmountError)
+
+  def validatePeriodDetails(details: PeriodDetails): Validated[Seq[MtdError], Unit] = {
+    combine(
+      validateDeductionAmount(details.deductionAmount),
       resolveNumeric(RuleCostOfMaterialsError, details.costOfMaterials),
       resolveNumeric(RuleGrossAmountError, details.grossAmountPaid),
       ResolveIsoDate(details.deductionToDate, DeductionToDateFormatError).andThen(isDateWithinRange(_, DeductionToDateFormatError)),
-      ResolveIsoDate(details.deductionFromDate, DeductionFromDateFormatError).andThen(isDateWithinRange(_, DeductionFromDateFormatError))
-    ).mapN((_, _, _, _, _) => ())
+      resolvers.ResolveIsoDate(details.deductionFromDate, DeductionFromDateFormatError).andThen(isDateWithinRange(_, DeductionFromDateFormatError))
+    )
+  }
 
   def validateBusinessRules(parsed: AmendRequestData): Validated[Seq[MtdError], AmendRequestData] = {
-    val body: Seq[PeriodDetails] = parsed.body.periodData
-    if (body.isEmpty) {
+    import parsed.body.periodData
+    if (periodData.isEmpty)
       Invalid(List(RuleIncorrectOrEmptyBodyError))
-    } else {
-      body.traverse(validatePeriodDetails).map(_ => parsed)
-    }
+    else
+      periodData.traverse(validatePeriodDetails).map(_ => parsed)
   }
 
 }

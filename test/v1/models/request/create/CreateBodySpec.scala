@@ -17,17 +17,17 @@
 package v1.models.request.create
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import support.UnitSpec
+import shared.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
 
 class CreateBodySpec extends UnitSpec {
 
   "read from valid JSON" should {
     "return the expected CisDeductionsRequestBody" in {
-      requestJson.validate[CreateBody] shouldBe JsSuccess(requestObj)
+      requestJson.validate[CreateBody] shouldBe JsSuccess(parsedRequestData)
     }
     "return the expected CisDeductionRequestBody when optional field is omitted" in {
-      missingOptionalRequestJson.validate[CreateBody] shouldBe JsSuccess(missingOptionalRequestObj)
+      missingOptionalRequestJson.validate[CreateBody] shouldBe JsSuccess(parsedRequestDataMissingOptional)
     }
   }
 
@@ -43,7 +43,7 @@ class CreateBodySpec extends UnitSpec {
 
   " written to JSON " should {
     "return the expected CisDeductionsRequestBody" in {
-      Json.toJson(requestObj) shouldBe requestJson
+      Json.toJson(parsedRequestData) shouldBe requestJson
     }
   }
 

@@ -16,11 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.Nino
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.Nino
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, EmployerRefFormatError, ErrorWrapper, InternalError, MtdError, NinoFormatError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleDuplicateSubmissionError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockCreateConnector
 import v1.models.request.amend.PeriodDetails

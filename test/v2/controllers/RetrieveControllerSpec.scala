@@ -16,18 +16,18 @@
 
 package v2.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockAppConfig
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, Source, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import config.AppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.errors._
 import v2.controllers.validators.MockedRetrieveValidatorFactory
 import v2.fixtures.RetrieveJson._
 import v2.fixtures.RetrieveModels._

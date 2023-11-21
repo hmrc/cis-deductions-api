@@ -16,7 +16,7 @@
 
 package v2.fixtures
 
-import api.models.domain.Source
+import shared.models.domain.Source
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 object RetrieveModels {
@@ -29,7 +29,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(3543.55),
     totalCostOfMaterials = Some(6644.67),
     totalGrossAmountPaid = Some(3424.12),
-    Seq(
+    List(
       PeriodData(
         deductionFromDate = "2019-06-06",
         deductionToDate = "2019-07-05",
@@ -61,7 +61,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(3543.55),
     totalCostOfMaterials = Some(6644.67),
     totalGrossAmountPaid = Some(3424.12),
-    Seq(
+    List(
       PeriodData(
         deductionFromDate = "2019-06-06",
         deductionToDate = "2019-07-05",
@@ -93,7 +93,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(3543.55),
     totalCostOfMaterials = Some(6644.67),
     totalGrossAmountPaid = Some(3424.12),
-    Seq(
+    List(
       PeriodData(
         deductionFromDate = "2019-06-06",
         deductionToDate = "2019-07-05",
@@ -121,7 +121,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(12345.56),
     totalCostOfMaterials = Some(234234.33),
     totalGrossAmountPaid = Some(2342424.56),
-    Seq(
+    List(
       CisDeductions(
         "2020-04-06",
         "2021-04-05",
@@ -130,7 +130,7 @@ object RetrieveModels {
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
-        Seq(
+        List(
           PeriodData("2020-04-06", "2020-05-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z", None, Source.`contractor`),
           PeriodData("2020-05-06", "2020-06-05", Some(355.11), Some(35.11), Some(1457.11), "2020-06-11T16:38:57.489Z", None, Source.`contractor`),
           PeriodData(
@@ -163,7 +163,7 @@ object RetrieveModels {
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
-        Seq(
+        List(
           PeriodData("2020-07-06", "2020-08-05", Some(60.11), Some(35.11), Some(1457.11), "2020-08-11T16:38:57.489Z", None, Source.`contractor`),
           PeriodData("2020-09-06", "2020-10-05", Some(60.11), Some(35.11), Some(1457.11), "2020-10-11T16:38:57.489Z", None, Source.`contractor`)
         )
@@ -175,7 +175,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(12345.56),
     totalCostOfMaterials = Some(234234.33),
     totalGrossAmountPaid = Some(2342424.56),
-    Seq(
+    List(
       CisDeductions(
         "2019-04-06",
         "2020-04-05",
@@ -184,7 +184,7 @@ object RetrieveModels {
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
-        Seq(
+        List(
           PeriodData(
             "2019-06-06",
             "2019-07-05",
@@ -214,7 +214,7 @@ object RetrieveModels {
     totalDeductionAmount = Some(12345.56),
     totalCostOfMaterials = Some(234234.33),
     totalGrossAmountPaid = Some(2342424.56),
-    Seq(
+    List(
       CisDeductions(
         "2019-04-06",
         "2020-04-05",
@@ -223,7 +223,7 @@ object RetrieveModels {
         Some(3543.55),
         Some(6644.67),
         Some(3424.12),
-        Seq(
+        List(
           PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z", None, Source.`contractor`),
           PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z", None, Source.`contractor`)
         )
@@ -236,7 +236,7 @@ object RetrieveModels {
       totalDeductionAmount = Some(12345.56),
       totalCostOfMaterials = Some(234234.33),
       totalGrossAmountPaid = Some(2342424.56),
-      Seq(
+      List(
         CisDeductions(
           "2020-04-06",
           "2021-04-05",
@@ -245,7 +245,7 @@ object RetrieveModels {
           Some(3543.55),
           Some(6644.67),
           Some(3424.12),
-          Seq(
+          List(
             PeriodData(
               deductionFromDate = "2020-06-06",
               deductionToDate = "2020-07-05",
@@ -266,7 +266,7 @@ object RetrieveModels {
       totalDeductionAmount = Some(12345.56),
       totalCostOfMaterials = Some(234234.33),
       totalGrossAmountPaid = Some(2342424.56),
-      Seq(cisDeductions)
+      List(cisDeductions)
     )
 
   val responseNoId: RetrieveResponseModel[CisDeductions] =
@@ -274,7 +274,7 @@ object RetrieveModels {
       totalDeductionAmount = Some(12345.56),
       totalCostOfMaterials = Some(234234.33),
       totalGrossAmountPaid = Some(2342424.56),
-      Seq(cisDeductionsNoId)
+      List(cisDeductionsNoId)
     )
 
 }

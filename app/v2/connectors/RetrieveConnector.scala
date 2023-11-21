@@ -46,7 +46,7 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
       } else {
         (
           DesUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/$nino"),
-          Seq("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
+          List("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
         )
       }
 

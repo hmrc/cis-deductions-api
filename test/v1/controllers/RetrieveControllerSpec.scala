@@ -16,26 +16,27 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockAppConfig
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, Source, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import config.AppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{DateRange, Nino, Source, TaxYear}
+import shared.models.errors._
+import v1.controllers.validators.MockedRetrieveValidatorFactory
 import v1.fixtures.RetrieveJson._
 import v1.fixtures.RetrieveModels._
 import v1.mocks.services.MockRetrieveService
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.RetrieveResponseModel._
 import v1.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
-import v1.controllers.validators.MockedRetrieveValidatorFactory
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -49,12 +50,19 @@ class RetrieveControllerSpec
     with MockAuditService {
 
   private implicit val appConfig: AppConfig = mockAppConfig
-  private val fromDate                      = "2019-04-06"
-  private val toDate                        = "2020-04-05"
-  private val taxYear                       = TaxYear.fromMtd("2019-20")
-  private val sourceRaw                     = Source.`customer`
 
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), fromDate, toDate, sourceRaw)
+  private val fromDateStr = "2019-04-06"
+  private val toDateStr   = "2020-04-05"
+
+  private val fromDate: LocalDate = LocalDate.parse(fromDateStr)
+  private val toDate: LocalDate   = LocalDate.parse(toDateStr)
+
+  private val dateRange: DateRange = DateRange(fromDate, toDate)
+
+  private val taxYear   = TaxYear.fromMtd("2019-20")
+  private val sourceRaw = Source.`customer`
+
+  private val retrieveRequestData = RetrieveRequestData(Nino(nino), dateRange, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
@@ -78,8 +86,9 @@ class RetrieveControllerSpec
               ))
           ),
           Seq(
-            retrieveCisDeduction(mockAppConfig, nino, fromDate, toDate, Some(sourceRaw.toString), isSelf = true),
-            createCisDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, nino, fromDateStr, toDateStr, Some(sourceRaw.toString), isSelf = true),
+            createCisDeduction(mockAppConfig, nino, isSelf = false)
+          )
         )
 
         willUseValidator(returningSuccess(retrieveRequestData))
@@ -89,14 +98,14 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, fromDate, toDate, Some(sourceRaw.toString), taxYear))
+          .wrapList(response, RetrieveHateoasData(nino, fromDateStr, toDateStr, Some(sourceRaw.toString), taxYear))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
-          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate)),
-          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate))
+          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDateStr, toDateStr)),
+          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDateStr, toDateStr))
         )
       }
     }
@@ -135,7 +144,8 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, Some(fromDate), Some(toDate), Some(sourceRaw.toString))(fakeRequest)
+    protected def callController(): Future[Result] =
+      controller.retrieve(nino, Some(fromDateStr), Some(toDateStr), Some(sourceRaw.toString))(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -144,7 +154,7 @@ class RetrieveControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "fromDate" -> fromDate, "toDate" -> toDate, "source" -> sourceRaw.toString),
+          params = Map("nino" -> nino, "fromDate" -> fromDateStr, "toDate" -> toDateStr, "source" -> sourceRaw.toString),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

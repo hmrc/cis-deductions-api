@@ -16,39 +16,27 @@
 
 package v1.controllers.validators
 
-import api.controllers.resolvers.{ResolveNino, ResolveSubmissionId}
-import api.controllers.validators.Validator
-import api.models.domain.TaxYear
-import api.models.errors.MtdError
 import cats.data.Validated
-import cats.data.Validated.Valid
 import cats.implicits.catsSyntaxTuple3Semigroupal
-import config.AppConfig
-import v1.controllers.resolvers.ResolveTysTaxYear
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTysTaxYear}
+import shared.models.errors.MtdError
+import v1.controllers.validators.resolvers.ResolveSubmissionId
 import v1.models.request.delete.DeleteRequestData
 
-import javax.inject.Inject
+import javax.inject.Singleton
 
-class DeleteValidatorFactory @Inject() (appConfig: AppConfig) {
+@Singleton
+class DeleteValidatorFactory {
 
   def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =
     new Validator[DeleteRequestData] {
-
-      def resolveTaxYear(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] = {
-        value match {
-          case Some(taxYear) =>
-            ResolveTysTaxYear.apply(Some(taxYear), None, None)
-
-          case _ => Valid(None)
-        }
-
-      }
 
       def validate: Validated[Seq[MtdError], DeleteRequestData] =
         (
           ResolveNino(nino),
           ResolveSubmissionId(submissionId),
-          resolveTaxYear(taxYear)
+          ResolveTysTaxYear(taxYear)
         ).mapN(DeleteRequestData)
 
     }

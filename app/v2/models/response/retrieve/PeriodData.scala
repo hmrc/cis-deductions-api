@@ -16,8 +16,8 @@
 
 package v2.models.response.retrieve
 
-import api.models.domain.Source
 import play.api.libs.json._
+import shared.models.domain.Source
 
 case class PeriodData(deductionFromDate: String,
                       deductionToDate: String,

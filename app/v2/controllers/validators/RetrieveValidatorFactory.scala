@@ -16,13 +16,13 @@
 
 package v2.controllers.validators
 
-import api.controllers.resolvers.{ResolveNino, ResolveSource}
-import api.controllers.validators.Validator
-import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
-import v2.controllers.resolvers.ResolveTaxYear
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
+import shared.models.errors.MtdError
+import v2.controllers.validators.resolvers.ResolveSource
 import v2.models.request.retrieve.RetrieveRequestData
 
 import javax.inject.Singleton

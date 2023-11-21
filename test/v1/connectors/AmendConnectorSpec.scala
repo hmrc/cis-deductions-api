@@ -17,8 +17,8 @@
 package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, SubmissionId, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
 import v1.fixtures.AmendRequestFixtures._
 import v1.models.request.amend.AmendRequestData
 

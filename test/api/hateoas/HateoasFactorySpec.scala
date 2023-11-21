@@ -16,12 +16,12 @@
 
 package api.hateoas
 
-import Method.GET
+import api.hateoas.Method.GET
 import api.mocks.MockAppConfig
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
-import support.UnitSpec
+import shared.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 

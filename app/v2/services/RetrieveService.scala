@@ -16,11 +16,11 @@
 
 package v2.services
 
-import api.controllers.RequestContext
-import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import config.AppConfig
+import shared.controllers.RequestContext
+import shared.models.errors._
 import v2.connectors.RetrieveConnector
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -35,7 +35,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppCon
       ctx: RequestContext,
       ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
-    val errorMapping = if (request.taxYear.isTys) errorMapTys else errorMap
+    val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 
     connector.retrieve(request).map(_.leftMap(mapDownstreamErrors(errorMapping)))
 

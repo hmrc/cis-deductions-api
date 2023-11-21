@@ -16,41 +16,55 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.mocks.MockAppConfig
-import api.models.domain.{Nino, Source}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{DateRange, Nino, Source}
+import shared.models.errors._
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
+class RetrieveServiceSpec extends UnitSpec {
 
-  private val nino        = Nino("AA123456A")
-  private val fromDate    = "2019-04-06"
-  private val toDate      = "2020-04-05"
-  private val tysFromDate = "2023-04-06"
-  private val tysToDate   = "2024-04-05"
-  private val source      = Source.`contractor`
+  private val nino = Nino("AA123456A")
 
-  val request: RetrieveRequestData                   = RetrieveRequestData(nino, fromDate, toDate, source)
-  val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysFromDate, tysToDate, source)
-  val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
+  private val fromDateStr = "2019-04-06"
+  private val toDateStr   = "2020-04-05"
 
-  implicit val correlationId = "X-123"
+  private val fromDate: LocalDate = LocalDate.parse(fromDateStr)
+  private val toDate: LocalDate   = LocalDate.parse(toDateStr)
+
+  private val dateRange: DateRange = DateRange(fromDate, toDate)
+
+  private val tysFromDateStr = "2023-04-06"
+  private val tysToDateStr   = "2024-04-05"
+
+  private val tysFromDate: LocalDate = LocalDate.parse(tysFromDateStr)
+  private val tysToDate: LocalDate   = LocalDate.parse(tysToDateStr)
+
+  private val tysDateRange: DateRange = DateRange(tysFromDate, tysToDate)
+
+  private val source = Source.`contractor`
+
+  private val request    = RetrieveRequestData(nino, dateRange, source)
+  private val tysRequest = RetrieveRequestData(nino, tysDateRange, source)
+
+  private val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
+
+  private implicit val correlationId: String = "X-123"
 
   trait Test extends MockRetrieveConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockRetrieveConnector, mockAppConfig)
+    val service = new RetrieveService(mockRetrieveConnector)
   }
 
   "RetrieveDeductions" should {

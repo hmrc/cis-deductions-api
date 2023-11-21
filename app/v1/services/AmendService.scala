@@ -16,10 +16,21 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
+import shared.controllers.RequestContext
+import shared.models.errors.{
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotSupportedError,
+  RuleUnalignedDeductionsPeriodError,
+  SubmissionIdFormatError
+}
 import v1.connectors.AmendConnector
 import v1.models.request.amend.AmendRequestData
 

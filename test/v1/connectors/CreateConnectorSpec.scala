@@ -17,9 +17,9 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
-import v1.fixtures.CreateRequestFixtures.requestObj
+import shared.models.domain.Nino
+import v1.fixtures.CreateRequestFixtures.parsedRequestData
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
 
@@ -34,7 +34,7 @@ class CreateConnectorSpec extends ConnectorSpec {
 
     val outcome = Right(ResponseWrapper(correlationId, CreateResponseModel("123456789")))
 
-    lazy val request = CreateRequestData(Nino("AA123456A"), requestObj.copy(toDate = toDate))
+    lazy val request = CreateRequestData(Nino("AA123456A"), parsedRequestData.copy(toDate = toDate))
   }
 
   "create" should {

@@ -17,7 +17,7 @@
 package api.services
 
 import api.connectors.MockMtdIdLookupConnector
-import api.models.errors.{ClientNotAuthorisedError, InternalError, NinoFormatError}
+import shared.models.errors.{ClientNotAuthorisedError, InternalError, NinoFormatError}
 
 import scala.concurrent.Future
 

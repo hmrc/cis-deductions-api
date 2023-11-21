@@ -17,10 +17,10 @@
 package v1.models.response.retrieve
 
 import api.hateoas.{HateoasData, HateoasLinks, HateoasListLinksFactory, Link}
-import api.models.domain.TaxYear
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json._
+import shared.models.domain.TaxYear
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
                                     totalCostOfMaterials: Option[BigDecimal],

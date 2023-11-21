@@ -16,11 +16,11 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, SubmissionId, TaxYear}
-import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import support.UnitSpec
+import shared.UnitSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, SubmissionIdFormatError, TaxYearFormatError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockDeleteConnector
 import v1.models.request.delete.DeleteRequestData
@@ -34,9 +34,9 @@ class DeleteServiceSpec extends UnitSpec {
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   private val taxYear      = TaxYear.fromMtd("2023-24")
 
-  implicit val correlationId = "X-123"
+  private implicit val correlationId: String = "X-123"
 
-  val requestData = DeleteRequestData(nino, SubmissionId(submissionId), Some(taxYear))
+  private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), Some(taxYear))
 
   trait Test extends MockDeleteConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
@@ -61,7 +61,7 @@ class DeleteServiceSpec extends UnitSpec {
 
     def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
       s"return ${error.code} error" when {
-        s" ${downstreamErrorCode} error code is returned from the connector " in new Test {
+        s" $downstreamErrorCode error code is returned from the connector " in new Test {
           MockDeleteConnector
             .deleteDeduction(requestData)
             .returns(Future.successful(Left(ResponseWrapper("resultId", DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
@@ -70,19 +70,19 @@ class DeleteServiceSpec extends UnitSpec {
         }
       }
 
-    val errors = Seq(
-      ("NO_DATA_FOUND", NotFoundError),
-      ("SERVER_ERROR", InternalError),
-      ("SERVICE_UNAVAILABLE", InternalError),
+    val errors = List(
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
       "INVALID_CORRELATIONID"     -> InternalError
     )
 
-    val extraTysErrors = Seq(
-      ("INVALID_TAX_YEAR", TaxYearFormatError),
-      ("INVALID_SUBMISSIONID", SubmissionIdFormatError),
-      ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
+    val extraTysErrors = List(
+      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
+      "INVALID_SUBMISSIONID"   -> SubmissionIdFormatError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 
     (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

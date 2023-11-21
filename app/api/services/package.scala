@@ -16,8 +16,8 @@
 
 package api
 
-import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
+import shared.models.errors.ErrorWrapper
 
 package object services {
 

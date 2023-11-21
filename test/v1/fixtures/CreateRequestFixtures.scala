@@ -16,9 +16,9 @@
 
 package v1.fixtures
 
-import api.models.audit.{AuditError, AuditResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
+import shared.models.audit.{AuditError, AuditResponse}
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.CreateBody
 import v1.models.response.create.CreateResponseModel
@@ -492,7 +492,7 @@ object CreateRequestFixtures {
       |""".stripMargin
   }
 
-  val requestBodyJsonErrorInvalidDateRangeMin = Json.parse(
+  val requestBodyJsonErrorInvalidDateRangeMin: JsValue = Json.parse(
     """
       |{
       |  "fromDate" : "2021-04-06",
@@ -519,7 +519,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorNotSupportedTaxYear = Json.parse(
+  val requestBodyJsonErrorNotSupportedTaxYear: JsValue = Json.parse(
     """
       |{
       |  "fromDate" : "2018-04-06",
@@ -546,7 +546,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorInvalidDateRangeMax = Json.parse(
+  val requestBodyJsonErrorInvalidDateRangeMax: JsValue = Json.parse(
     """
       |{
       |  "fromDate" : "2019-04-06",
@@ -573,7 +573,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorInvalidEmpRef = Json.parse(
+  val requestBodyJsonErrorInvalidEmpRef: JsValue = Json.parse(
     """
       |{
       |  "fromDate" : "2020-04-06",
@@ -600,7 +600,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestObj: CreateBody = CreateBody(
+  val parsedRequestData: CreateBody = CreateBody(
     fromDate = "2019-04-06",
     toDate = "2020-04-05",
     contractorName = "Bovis",
@@ -611,7 +611,7 @@ object CreateRequestFixtures {
     )
   )
 
-  val missingOptionalRequestObj: CreateBody = CreateBody(
+  val parsedRequestDataMissingOptional: CreateBody = CreateBody(
     "2019-04-06",
     "2020-04-05",
     "Bovis",
@@ -647,8 +647,9 @@ object CreateRequestFixtures {
 
   val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
 
-  val body: JsValue                = Json.parse("""{ "aField" : "aValue" }""")
-  val auditErrors: Seq[AuditError] = Seq(AuditError(errorCode = "FORMAT_NINO"))
+  val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
+
+  val auditErrors: Seq[AuditError] = List(AuditError(errorCode = "FORMAT_NINO"))
 
   val auditResponseModelWithBody: AuditResponse =
     AuditResponse(
@@ -697,14 +698,9 @@ object CreateRequestFixtures {
        |}
     """.stripMargin
 
-  val emptyRequest = Json.parse(
-    s"""
-       |{
-       |}
-       |""".stripMargin
-  )
+  val emptyRequest: JsObject = JsObject.empty
 
-  val deductionsResponseBody = Json.parse("""
+  val deductionsResponseBody: JsValue = Json.parse("""
       |{
       |   "submissionId":"someResponse",
       |   "links":[
@@ -717,7 +713,7 @@ object CreateRequestFixtures {
       |}
     """.stripMargin)
 
-  val deductionsResponseBodyTys = Json.parse("""
+  val deductionsResponseBodyTys: JsValue = Json.parse("""
       |{
       |   "submissionId":"someResponse",
       |   "links":[
@@ -738,7 +734,7 @@ object CreateRequestFixtures {
        |      }
     """.stripMargin
 
-  val requestBodyJson = Json.parse(
+  val requestBodyJson: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -765,7 +761,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonTys = Json.parse(
+  val requestBodyJsonTys: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2023-04-06" ,
@@ -792,7 +788,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorFromDate = Json.parse(
+  val requestBodyJsonErrorFromDate: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "04-06-2020" ,
@@ -819,7 +815,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorToDate = Json.parse(
+  val requestBodyJsonErrorToDate: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -846,7 +842,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorDeductionFromDate = Json.parse(
+  val requestBodyJsonErrorDeductionFromDate: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -873,7 +869,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorDeductionToDate = Json.parse(
+  val requestBodyJsonErrorDeductionToDate: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -900,7 +896,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestBodyJsonErrorTaxYearNotSupported = Json.parse(
+  val requestBodyJsonErrorTaxYearNotSupported: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2018-04-06" ,
@@ -927,7 +923,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestInvalidEmpRef = Json.parse(
+  val requestInvalidEmpRef: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -954,7 +950,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestRuleDeductionAmountJson = Json.parse(
+  val requestRuleDeductionAmountJson: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -981,7 +977,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestInvalidRuleCostOfMaterialsJson = Json.parse(
+  val requestInvalidRuleCostOfMaterialsJson: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -1008,7 +1004,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestInvalidGrossAmountJson = Json.parse(
+  val requestInvalidGrossAmountJson: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,
@@ -1035,7 +1031,7 @@ object CreateRequestFixtures {
         """.stripMargin
   )
 
-  val requestInvalidDateRangeJson = Json.parse(
+  val requestInvalidDateRangeJson: JsValue = Json.parse(
     """
       |{
       |  "fromDate": "2019-04-06" ,

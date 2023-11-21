@@ -16,11 +16,10 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
-import config.AppConfig
+import shared.controllers.RequestContext
+import shared.models.errors._
 import v1.connectors.RetrieveConnector
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -29,13 +28,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends BaseService {
+class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseService {
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
       ctx: RequestContext,
       ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
-    val errorMapping = if (request.taxYear.isTys) errorMapTys else errorMap
+    val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 
     connector.retrieve(request).map(_.leftMap(mapDownstreamErrors(errorMapping)))
 
