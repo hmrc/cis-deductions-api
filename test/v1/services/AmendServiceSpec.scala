@@ -20,21 +20,7 @@ import api.models.outcomes.ResponseWrapper
 import shared.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, SubmissionId, TaxYear}
-import shared.models.errors.{
-  DownstreamErrorCode,
-  DownstreamErrors,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  RuleDeductionsDateRangeInvalidError,
-  RuleDuplicatePeriodError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearNotSupportedError,
-  RuleUnalignedDeductionsPeriodError,
-  SubmissionIdFormatError
-}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector

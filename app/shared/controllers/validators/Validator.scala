@@ -16,11 +16,11 @@
 
 package shared.controllers.validators
 
-import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.utils.Logging
 import cats.implicits._
+import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
+import shared.utils.Logging
 
 trait Validator[PARSED] extends Logging {
 

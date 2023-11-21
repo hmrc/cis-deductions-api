@@ -35,10 +35,10 @@ class TaxYearRangeSpec extends UnitSpec {
 
     "return the correct tax year range when todayMinus 5 is called" in {
 
-      val fiveYears = 5
-      val result  = TaxYearRange.todayMinus(fiveYears)
-      val currentTaxYear = TaxYear.currentTaxYear()
-      val taxYearMinusFive  = TaxYear.fromIso(LocalDate.now().minusYears(fiveYears).toString())
+      val fiveYears        = 5
+      val result           = TaxYearRange.todayMinus(fiveYears)
+      val currentTaxYear   = TaxYear.currentTaxYear()
+      val taxYearMinusFive = TaxYear.fromIso(LocalDate.now().minusYears(fiveYears).toString())
 
       result shouldBe TaxYearRange(taxYearMinusFive, currentTaxYear)
     }

@@ -87,10 +87,10 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
     )
 
     val (errorCode, eventType) = ex match {
-      case _: NotFoundException => (NotFoundError, "ResourceNotFound")
+      case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
       case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
-      case _: JsValidationException => (BadRequestError, "ServerValidationError")
-      case e: HttpException => (BadRequestError, "ServerValidationError")
+      case _: JsValidationException  => (BadRequestError, "ServerValidationError")
+      case e: HttpException          => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
         (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>

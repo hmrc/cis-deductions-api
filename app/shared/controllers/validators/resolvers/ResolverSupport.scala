@@ -23,8 +23,7 @@ import shared.models.errors.MtdError
 
 import scala.math.Ordered.orderingToOrdered
 
-/**
-  * Provides utilities and extension methods for resolvers and validators.
+/** Provides utilities and extension methods for resolvers and validators.
   */
 trait ResolverSupport {
   type Resolver[In, Out] = In => Validated[Seq[MtdError], Out]
@@ -44,8 +43,7 @@ trait ResolverSupport {
     def thenValidate(other: Validator[A]): Validator[A] = a => validator(a).orElse(other(a))
   }
 
-  /**
-    * Use to lift a a Validator to a Resolver that validates. E.g.
+  /** Use to lift a a Validator to a Resolver that validates. E.g.
     * {{{
     * resolveValid[Int] thenValidate satisfiesMax(1000, someError)
     * }}}

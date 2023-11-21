@@ -32,11 +32,11 @@ object MtdIdLookupHttpParser extends HttpParser {
       case OK =>
         response.validateJson[String](mtdIdJsonReads) match {
           case Some(mtdId) => Right(mtdId)
-          case None => Left(errors.InternalError)
+          case None        => Left(errors.InternalError)
         }
       case FORBIDDEN    => Left(NinoFormatError)
       case UNAUTHORIZED => Left(InvalidBearerTokenError)
-      case _ => Left(errors.InternalError)
+      case _            => Left(errors.InternalError)
     }
   }
 

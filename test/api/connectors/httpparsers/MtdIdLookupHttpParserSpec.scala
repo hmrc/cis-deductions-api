@@ -29,10 +29,10 @@ import uk.gov.hmrc.http.HttpResponse
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
   val method = "GET"
-  val url = "test-url"
-  val mtdId = "test-mtd-id"
+  val url    = "test-url"
+  val mtdId  = "test-mtd-id"
 
-  val mtdIdJson: JsObject = Json.obj("mtdbsa" -> mtdId)
+  val mtdIdJson: JsObject   = Json.obj("mtdbsa" -> mtdId)
   val invalidJson: JsObject = Json.obj("hello" -> "world")
 
   val emptyHeaders: Map[String, Seq[String]] = Map[String, Seq[String]]()

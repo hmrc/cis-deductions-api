@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateService @Inject()(connector: CreateConnector) extends BaseService {
+class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
   def createDeductions(
       request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
@@ -39,27 +39,27 @@ class CreateService @Inject()(connector: CreateConnector) extends BaseService {
 
   private val errorMap: Map[String, MtdError] = {
     val errors = Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_PAYLOAD" -> models.errors.InternalError,
-      "INVALID_EMPREF" -> EmployerRefFormatError,
-      "INVALID_REQUEST_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
-      "INVALID_REQUEST_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
+      "INVALID_TAXABLE_ENTITY_ID"       -> NinoFormatError,
+      "INVALID_PAYLOAD"                 -> models.errors.InternalError,
+      "INVALID_EMPREF"                  -> EmployerRefFormatError,
+      "INVALID_REQUEST_TAX_YEAR_ALIGN"  -> RuleUnalignedDeductionsPeriodError,
+      "INVALID_REQUEST_DATE_RANGE"      -> RuleDeductionsDateRangeInvalidError,
       "INVALID_REQUEST_BEFORE_TAX_YEAR" -> RuleTaxYearNotEndedError,
-      "CONFLICT" -> RuleDuplicateSubmissionError,
+      "CONFLICT"                        -> RuleDuplicateSubmissionError,
       "INVALID_REQUEST_DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "SERVER_ERROR" -> models.errors.InternalError,
-      "SERVICE_UNAVAILABLE" -> models.errors.InternalError,
-      "INVALID_CORRELATIONID" -> models.errors.InternalError
+      "SERVER_ERROR"                    -> models.errors.InternalError,
+      "SERVICE_UNAVAILABLE"             -> models.errors.InternalError,
+      "INVALID_CORRELATIONID"           -> models.errors.InternalError
     )
 
     val extraTysErrors = Map(
       "INVALID_CORRELATION_ID" -> models.errors.InternalError,
-      "INVALID_TAX_YEAR" -> models.errors.InternalError,
+      "INVALID_TAX_YEAR"       -> models.errors.InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
-      "INVALID_DATE_RANGE" -> RuleDeductionsDateRangeInvalidError,
-      "DUPLICATE_MONTH" -> RuleDuplicatePeriodError,
-      "EARLY_SUBMISSION" -> RuleTaxYearNotEndedError
+      "INVALID_DATE_RANGE"     -> RuleDeductionsDateRangeInvalidError,
+      "DUPLICATE_MONTH"        -> RuleDuplicatePeriodError,
+      "EARLY_SUBMISSION"       -> RuleTaxYearNotEndedError
     )
 
     errors ++ extraTysErrors

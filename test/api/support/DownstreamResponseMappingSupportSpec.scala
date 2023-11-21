@@ -25,7 +25,7 @@ import shared.{UnitSpec, models}
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
-  implicit val logContext: EndpointLogContext = EndpointLogContext("ctrl", "ep")
+  implicit val logContext: EndpointLogContext                = EndpointLogContext("ctrl", "ep")
   val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
 
   val correlationId = "someCorrelationId"
@@ -40,8 +40,8 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
   val errorCodeMap: PartialFunction[String, MtdError] = {
     case "ERR1"                 => Error1
-    case "ERR2" => Error2
-    case "DS" => models.errors.InternalError
+    case "ERR2"                 => Error2
+    case "DS"                   => models.errors.InternalError
     case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 
@@ -98,7 +98,8 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
     "the error code is an OutboundError" must {
       "return the error as is (in an ErrorWrapper)" in {
-        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, models.errors.OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
+        mapping.mapDownstreamErrors(errorCodeMap)(
+          ResponseWrapper(correlationId, models.errors.OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
           models.errors.ErrorWrapper(correlationId, ErrorBvrMain, Some(Seq(ErrorBvr)))
       }
     }

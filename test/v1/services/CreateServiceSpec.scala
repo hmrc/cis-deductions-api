@@ -20,21 +20,7 @@ import api.models.outcomes.ResponseWrapper
 import shared.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
-import shared.models.errors.{
-  DownstreamErrorCode,
-  DownstreamErrors,
-  EmployerRefFormatError,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  RuleDeductionsDateRangeInvalidError,
-  RuleDuplicatePeriodError,
-  RuleDuplicateSubmissionError,
-  RuleTaxYearNotEndedError,
-  RuleTaxYearNotSupportedError,
-  RuleUnalignedDeductionsPeriodError
-}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, EmployerRefFormatError, ErrorWrapper, InternalError, MtdError, NinoFormatError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleDuplicateSubmissionError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockCreateConnector
 import v1.models.request.amend.PeriodDetails

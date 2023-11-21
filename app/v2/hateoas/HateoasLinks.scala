@@ -28,7 +28,7 @@ trait HateoasLinks {
 
     maybeTaxYear match {
       case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
-      case _                              => uri
+      case _                                              => uri
     }
   }
 

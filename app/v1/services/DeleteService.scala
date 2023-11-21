@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteService @Inject()(connector: DeleteConnector) extends BaseService {
+class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
 
   def deleteDeductions(request: DeleteRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
@@ -39,11 +39,11 @@ class DeleteService @Inject()(connector: DeleteConnector) extends BaseService {
   private val errorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_SUBMISSION_ID" -> SubmissionIdFormatError,
-      "INVALID_CORRELATIONID" -> models.errors.InternalError,
-      "NO_DATA_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> models.errors.InternalError,
-      "SERVICE_UNAVAILABLE" -> models.errors.InternalError
+      "INVALID_SUBMISSION_ID"     -> SubmissionIdFormatError,
+      "INVALID_CORRELATIONID"     -> models.errors.InternalError,
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "SERVER_ERROR"              -> models.errors.InternalError,
+      "SERVICE_UNAVAILABLE"       -> models.errors.InternalError
     )
 
     val extraTysErrors = Map(

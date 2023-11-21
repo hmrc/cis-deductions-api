@@ -16,7 +16,6 @@
 
 package shared.models.domain
 
-
 import shared.UnitSpec
 
 class SourceSpec extends UnitSpec {

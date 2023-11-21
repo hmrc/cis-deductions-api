@@ -20,18 +20,7 @@ import api.models.outcomes.ResponseWrapper
 import shared.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, SubmissionId, TaxYear}
-import shared.models.errors.{
-  DownstreamErrorCode,
-  DownstreamErrors,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  RuleTaxYearNotSupportedError,
-  SubmissionIdFormatError,
-  TaxYearFormatError
-}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, SubmissionIdFormatError, TaxYearFormatError}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockDeleteConnector
 import v1.models.request.delete.DeleteRequestData

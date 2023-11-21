@@ -27,7 +27,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
 
-  val nino = "AA123456A"
+  val nino        = "AA123456A"
   val invalidNino = "INVALID_NINO"
 
   "calling .getMtdId" when {

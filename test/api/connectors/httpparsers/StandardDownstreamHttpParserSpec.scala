@@ -61,8 +61,8 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
       "return an outbound error if a model object cannot be read from the response json" in {
         val badFieldTypeJson: JsValue = Json.obj("incomeSourceId" -> 1234, "incomeSourceName" -> 1234)
-        val httpResponse = HttpResponse(OK, badFieldTypeJson, Map("CorrelationId" -> Seq(correlationId)))
-        val expected = ResponseWrapper(correlationId, OutboundError(errors.InternalError))
+        val httpResponse              = HttpResponse(OK, badFieldTypeJson, Map("CorrelationId" -> Seq(correlationId)))
+        val expected                  = ResponseWrapper(correlationId, OutboundError(errors.InternalError))
 
         httpReads.read(method, url, httpResponse) shouldBe Left(expected)
       }

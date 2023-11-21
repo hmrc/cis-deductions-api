@@ -85,7 +85,7 @@ object TaxYear {
   def fromMtd(taxYear: String): TaxYear =
     TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def now(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.containing(LocalDate.now(clock))
+  def now(implicit clock: Clock = Clock.systemUTC): TaxYear            = TaxYear.containing(LocalDate.now(clock))
   def currentTaxYear(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.now
 
   /** @param date
@@ -115,9 +115,7 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-
   implicit val ordering: Ordering[TaxYear] = Ordering.by(_.year)
 
   implicit val writes: Writes[TaxYear] = implicitly[Writes[String]].contramap(_.asMtd)
 }
-

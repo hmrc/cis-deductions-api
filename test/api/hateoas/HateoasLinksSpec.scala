@@ -23,11 +23,11 @@ import shared.models.domain.TaxYear
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
-  private val nino = "AA123456A"
+  private val nino         = "AA123456A"
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-  private val fromDate = "2019-04-06"
-  private val toDate = "2020-04-05"
-  private val source = "customer"
+  private val fromDate     = "2019-04-06"
+  private val toDate       = "2020-04-05"
+  private val source       = "customer"
 
   private val taxYear2023 = TaxYear.fromMtd("2022-23")
   private val taxYear2024 = TaxYear.fromMtd("2023-24")

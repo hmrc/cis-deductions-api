@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import cats.data.Validated.{Invalid, Valid}
 import shared.UnitSpec
 import shared.models.domain.TaxYear
-import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import shared.models.errors._
 
 import java.time.{Clock, LocalDate, ZoneOffset}
 

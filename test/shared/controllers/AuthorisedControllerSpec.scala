@@ -30,7 +30,7 @@ import scala.concurrent.Future
 
 class AuthorisedControllerSpec extends ControllerBaseSpec {
 
-  val nino = "AA123456A"
+  val nino  = "AA123456A"
   val mtdId = "X123567890"
 
   val predicate: Predicate = Enrolment("HMRC-MTD-IT")

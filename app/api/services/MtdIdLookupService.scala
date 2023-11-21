@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MtdIdLookupService @Inject()(val connector: MtdIdLookupConnector) {
+class MtdIdLookupService @Inject() (val connector: MtdIdLookupConnector) {
 
   def lookup(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupOutcome] = {
     if (Nino.isValid(nino)) {

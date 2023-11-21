@@ -27,4 +27,5 @@ class EmployeeRefSpec extends UnitSpec {
       employeeRef.toString shouldBe "some id"
     }
   }
+
 }
