@@ -24,7 +24,7 @@ import shared.models.errors.MtdError
 import scala.math.Ordered.orderingToOrdered
 
 /** Provides utilities and extension methods for resolvers and validators.
- */
+  */
 trait ResolverSupport {
   type Resolver[In, Out] = In => Validated[Seq[MtdError], Out]
   type Validator[A]      = A => Option[Seq[MtdError]]
@@ -32,11 +32,19 @@ trait ResolverSupport {
   implicit class ResolverOps[In, Out](resolver: In => Validated[Seq[MtdError], Out]) {
     def map[Out2](f: Out => Out2): Resolver[In, Out2] = i => resolver(i).map(f)
 
+    def thenResolve[Out2](other: Resolver[Out, Out2]): Resolver[In, Out2] = in => resolver(in).andThen(other)
+
     def thenValidate(validator: Validator[Out]): Resolver[In, Out] = i => resolver(i).andThen(o => validator(o).toInvalid(o))
 
     def resolveOptionally: Resolver[Option[In], Option[Out]] = _.map(in => resolver(in).map(Some(_))).getOrElse(Valid(None))
 
     def resolveOptionallyWithDefault(default: => Out): Resolver[Option[In], Out] = _.map(in => resolver(in)).getOrElse(Valid(default))
+
+    def asValidator: Validator[In] = in =>
+      resolver(in) match {
+        case Valid(_)      => None
+        case Invalid(errs) => Some(errs)
+      }
 
   }
 
@@ -49,10 +57,10 @@ trait ResolverSupport {
   }
 
   /** Use to lift a a Validator to a Resolver that validates. E.g.
-   * {{{
-   * resolveValid[Int] thenValidate satisfiesMax(1000, someError)
-   * }}}
-   */
+    * {{{
+    * resolveValid[Int] thenValidate satisfiesMax(1000, someError)
+    * }}}
+    */
   def resolveValid[A]: Resolver[A, A] = a => Valid(a)
 
   def resolvePartialFunction[A, B](error: => MtdError)(pf: PartialFunction[A, B]): Resolver[A, B] =

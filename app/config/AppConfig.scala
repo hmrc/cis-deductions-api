@@ -19,6 +19,7 @@ package config
 import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
 import routing.Version
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -58,7 +59,7 @@ trait AppConfig {
   def featureSwitches: Configuration
   def endpointsEnabled(version: Version): Boolean
   def confidenceLevelConfig: ConfidenceLevelConfig
-  def minTaxYearCisDeductions: String
+  def minTaxYearCisDeductions: TaxYear
 }
 
 @Singleton
@@ -81,9 +82,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
 
-  val mtdIdBaseUrl: String            = config.baseUrl("mtd-id-lookup")
-  val apiGatewayContext: String       = config.getString("api.gateway.context")
-  val minTaxYearCisDeductions: String = config.getString("minTaxYearCisDeductions")
+  val mtdIdBaseUrl: String             = config.baseUrl("mtd-id-lookup")
+  val apiGatewayContext: String        = config.getString("api.gateway.context")
+  val minTaxYearCisDeductions: TaxYear = TaxYear.starting(config.getInt("minTaxYearCisDeductions"))
 
   def apiStatus(version: Version): String         = config.getString(s"api.$version.status")
   def featureSwitches: Configuration              = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)

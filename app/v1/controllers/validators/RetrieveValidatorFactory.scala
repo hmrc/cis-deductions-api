@@ -23,6 +23,7 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.{DateRange, Source}
 import shared.models.errors._
+import v1.controllers.validators.DeductionsValidator._
 import v1.models.request.retrieve.RetrieveRequestData
 import v2.controllers.validators.resolvers.ResolveSource
 
@@ -34,63 +35,35 @@ class RetrieveValidatorFactory {
   def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] = {
     new Validator[RetrieveRequestData] {
 
-      private val resolveTaxYear  = ResolveTaxYear.resolver
-      private val resolveFromDate = ResolveIsoDate(FromDateFormatError)
-      private val resolveToDate   = ResolveIsoDate(ToDateFormatError)
-
       def validate: Validated[Seq[MtdError], RetrieveRequestData] = {
-        val resolvedDateRange =
-          parseDateRange(fromDate, toDate) andThen validateStartAndEndDates andThen validateRangeAsTaxYear
-
         (
           ResolveNino(nino),
-          resolvedDateRange,
+          resolveDateRange((fromDate, toDate)),
           resolveSource(source)
         ).mapN(RetrieveRequestData)
       }
 
-      private def parseDateRange(maybeFrom: Option[String], maybeTo: Option[String]): Validated[Seq[MtdError], DateRange] = {
-        (maybeFrom, maybeTo) match {
-          case (None, Some(_)) =>
-            Invalid(List(RuleMissingFromDateError))
-
-          case (Some(_), None) =>
-            Invalid(List(RuleMissingToDateError))
-
-          case (None, None) =>
-            Invalid(List(RuleMissingFromDateError, RuleMissingToDateError))
-
-          case (Some(fromDateStr), Some(toDateStr)) =>
-            (
-              resolveFromDate(fromDateStr),
-              resolveToDate(toDateStr)
-            ).mapN((parsedFromDate, parsedToDate) => DateRange(parsedFromDate, parsedToDate))
-        }
-      }
-
-      private def validateStartAndEndDates(dateRange: DateRange): Validated[Seq[MtdError], DateRange] = {
-        import dateRange._
-        if (startDate.getMonthValue == 4 &&
-          startDate.getDayOfMonth == 6 &&
-          endDate.getMonthValue == 4 &&
-          endDate.getDayOfMonth == 5) Valid(dateRange)
-        else
-          Invalid(List(RuleDateRangeInvalidError))
-      }
-
-      private def validateRangeAsTaxYear(dateRange: DateRange): Validated[Seq[MtdError], DateRange] =
-        resolveTaxYear(dateRange.asTaxYearMtdString) match {
-          case Invalid(List(RuleTaxYearNotSupportedError)) => Invalid(List(RuleTaxYearNotSupportedError))
-          case Invalid(_)                                  => Invalid(List(RuleDateRangeInvalidError))
-          case Valid(_)                                    => Valid(dateRange)
-        }
-
-      private def resolveSource(source: Option[String]): Validated[Seq[MtdError], Source] =
-        source match {
-          case Some(value) => ResolveSource(value)
-          case _           => Valid(Source.`all`)
-        }
     }
+  }
+
+  private val resolveSource = ResolveSource.resolver.resolveOptionallyWithDefault(Source.`all`)
+
+  private val resolveDateRange = {
+    val resolveFromDate = ResolveIsoDate(FromDateFormatError)
+    val resolveToDate   = ResolveIsoDate(ToDateFormatError)
+
+    val parseDateRange: Resolver[(Option[String], Option[String]), DateRange] = {
+      case (None, Some(_)) => Invalid(List(RuleMissingFromDateError))
+      case (Some(_), None) => Invalid(List(RuleMissingToDateError))
+      case (None, None)    => Invalid(List(RuleMissingFromDateError, RuleMissingToDateError))
+      case (Some(fromDateStr), Some(toDateStr)) =>
+        (
+          resolveFromDate(fromDateStr),
+          resolveToDate(toDateStr)
+        ).mapN(DateRange(_, _))
+    }
+
+    parseDateRange thenValidate checkDateRangeIsAFullTaxYear
   }
 
 }

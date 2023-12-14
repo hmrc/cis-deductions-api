@@ -27,6 +27,7 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
   private val notIntegerError = MtdError("NOT_INT", "Not integer", 400)
   private val outOfRangeError = MtdError("OUT_OF_RANGE", "Out of range", 400)
   private val oddNumberError  = MtdError("ODD", "Odd", 400)
+  private val notPresentError = MtdError("NOT_PRESENT", "Absent", 400)
 
   private val resolveInt: Resolver[String, Int] = _.toIntOption.toValid(List(notIntegerError))
 
@@ -135,6 +136,23 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
       resolver(1) shouldBe Valid(1)
       resolver(11) shouldBe Invalid(List(outOfRangeError))
     }
+
+    "provides the ability to create validators our of a resolver (throwing away any result)" in {
+      val validator = resolveInt.asValidator
+
+      validator("1") shouldBe None
+      validator("XX") shouldBe Some(List(notIntegerError))
+    }
+
+
+    "provides the ability to combine resolvers with thenResolve" in {
+      val resolvePresent: Resolver[Option[Int], Int] = _.toValid(Seq(notPresentError))
+      val resolver = resolveInt.resolveOptionally thenResolve resolvePresent
+
+      resolver(Some("1")) shouldBe Valid(1)
+      resolver(Some("XX")) shouldBe Invalid(List(notIntegerError))
+    }
+
 
     "provides the ability to create a validator for a larger object based on validators of its parts" in {
       val partValidator = satisfiesMax(10, outOfRangeError)

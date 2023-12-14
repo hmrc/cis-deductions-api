@@ -20,7 +20,7 @@ import api.mocks.MockAppConfig
 import play.api.libs.json.JsValue
 import shared.UnitSpec
 import shared.controllers.validators.Validator
-import shared.models.domain.Nino
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
@@ -131,9 +131,23 @@ class CreateValidatorFactorySpec extends UnitSpec {
         result shouldBe Left(ErrorWrapper(correlationId, RuleDateRangeInvalidError))
       }
 
-      "given a date range that's too small (below minimum threshold)" in new Test {
-        private val result = validator(nino, requestBodyJsonErrorInvalidDateRangeMin).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleDateRangeInvalidError))
+      // Added to catch bug introduced recently (ok in commit 57177ca6) whereby a range greater than a tax year
+      // but still spanning just two years we seen as valid
+      "given a date that is not a complete tax year" must {
+        behave like returnDateRangeInvalidError("2019-04-06", "2020-04-06", "to after tax year end")
+        behave like returnDateRangeInvalidError("2019-04-06", "2020-04-04", "to before tax year end")
+        behave like returnDateRangeInvalidError("2019-04-05", "2020-04-05", "from before tax year start")
+        behave like returnDateRangeInvalidError("2019-04-07", "2020-04-05", "from after tax year start")
+        behave like returnDateRangeInvalidError("2019-04-06", "2021-04-05", "different tax year")
+
+        def returnDateRangeInvalidError(fromDate: String, toDate: String, clue: String): Unit =
+          s"return RuleDateRangeInvalidError for $fromDate to $toDate" in new Test {
+            withClue(clue) {
+              validator(nino, requestBodyJsonWith(fromDate, toDate))
+                .validateAndWrapResult() shouldBe
+                Left(ErrorWrapper(correlationId, RuleDateRangeInvalidError))
+            }
+          }
       }
 
       "invalid date range before minimum tax year is provided" in new Test {
@@ -149,7 +163,7 @@ class CreateValidatorFactorySpec extends UnitSpec {
   }
 
   private class Test extends MockAppConfig {
-    MockedAppConfig.minTaxYearCisDeductions.returns("2019").anyNumberOfTimes()
+    MockedAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
     private val validatorFactory = new CreateValidatorFactory(mockAppConfig)
 
     protected val createRequestData: CreateRequestData         = CreateRequestData(Nino(nino), parsedRequestData)
