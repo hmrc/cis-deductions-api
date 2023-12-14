@@ -25,7 +25,6 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import support.IntegrationBaseSpec
-import v1.endpoints.models.DeleteRawData
 import v1.fixtures.CreateRequestFixtures._
 
 class DeleteControllerISpec extends IntegrationBaseSpec {
@@ -64,10 +63,11 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
     }
 
     "return error according to spec" when {
+      case class RequestData(nino: String, submissionId: String, taxYear: Option[String])
 
       "validation error" when {
 
-        def validationErrorTest(requestData: DeleteRawData, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestData: RequestData, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
             override val nino: String                 = requestData.nino
             override val submissionId: String         = requestData.submissionId
@@ -86,13 +86,13 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (DeleteRawData("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None), BAD_REQUEST, NinoFormatError),
-          (DeleteRawData("AA123456A", "4cc-81f5-e6acd1099f3c", None), BAD_REQUEST, SubmissionIdFormatError)
+          (RequestData("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None), BAD_REQUEST, NinoFormatError),
+          (RequestData("AA123456A", "4cc-81f5-e6acd1099f3c", None), BAD_REQUEST, SubmissionIdFormatError)
         )
 
         val extraTysInput = Seq(
-          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2023")), BAD_REQUEST, TaxYearFormatError),
-          (DeleteRawData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021-22")), BAD_REQUEST, InvalidTaxYearParameterError)
+          (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2023")), BAD_REQUEST, TaxYearFormatError),
+          (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", Some("2021-22")), BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
         (input ++ extraTysInput).foreach(args => (validationErrorTest _).tupled(args))
