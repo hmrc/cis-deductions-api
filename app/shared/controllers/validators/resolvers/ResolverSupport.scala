@@ -17,14 +17,14 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.Valid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import shared.models.errors.MtdError
 
 import scala.math.Ordered.orderingToOrdered
 
 /** Provides utilities and extension methods for resolvers and validators.
-  */
+ */
 trait ResolverSupport {
   type Resolver[In, Out] = In => Validated[Seq[MtdError], Out]
   type Validator[A]      = A => Option[Seq[MtdError]]
@@ -37,18 +37,26 @@ trait ResolverSupport {
     def resolveOptionally: Resolver[Option[In], Option[Out]] = _.map(in => resolver(in).map(Some(_))).getOrElse(Valid(None))
 
     def resolveOptionallyWithDefault(default: => Out): Resolver[Option[In], Out] = _.map(in => resolver(in)).getOrElse(Valid(default))
+
   }
 
   implicit class ValidatorOps[A](validator: A => Option[Seq[MtdError]]) {
     def thenValidate(other: Validator[A]): Validator[A] = a => validator(a).orElse(other(a))
+
+    def contramap[B](f: B => A): Validator[B] = b => validator(f(b))
+
+    def validateOptionally: Validator[Option[A]] = _.flatMap(validator)
   }
 
   /** Use to lift a a Validator to a Resolver that validates. E.g.
-    * {{{
-    * resolveValid[Int] thenValidate satisfiesMax(1000, someError)
-    * }}}
-    */
+   * {{{
+   * resolveValid[Int] thenValidate satisfiesMax(1000, someError)
+   * }}}
+   */
   def resolveValid[A]: Resolver[A, A] = a => Valid(a)
+
+  def resolvePartialFunction[A, B](error: => MtdError)(pf: PartialFunction[A, B]): Resolver[A, B] =
+    a => pf.map(Valid(_)).applyOrElse(a, (_: A) => Invalid(List(error)))
 
   def satisfies[A](error: => MtdError)(predicate: A => Boolean): Validator[A] =
     a => Option.when(!predicate(a))(List(error))

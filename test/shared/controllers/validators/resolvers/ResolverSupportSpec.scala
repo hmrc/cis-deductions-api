@@ -120,11 +120,41 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
       resolver(None) shouldBe Valid(2)
     }
 
+    "provides the ability to create resolvers from partial functions" in {
+      val resolver = resolvePartialFunction[Int, String](outOfRangeError) {
+        case i if i <= 10 => i.toString
+      }
+
+      resolver(1) shouldBe Valid("1")
+      resolver(11) shouldBe Invalid(List(outOfRangeError))
+    }
+
     "provides the ability to create resolvers don't actually parse but only validate" in {
       val resolver = resolveValid[Int] thenValidate satisfiesMax(10, outOfRangeError)
 
       resolver(1) shouldBe Valid(1)
       resolver(11) shouldBe Invalid(List(outOfRangeError))
+    }
+
+    "provides the ability to create a validator for a larger object based on validators of its parts" in {
+      val partValidator = satisfiesMax(10, outOfRangeError)
+
+      // Validator for tuples (String, Int) that validates the Int part
+      val resolver = resolveValid[(String, Int)] thenValidate partValidator.contramap(_._2)
+
+      resolver(("A", 1)) shouldBe Valid(("A", 1))
+      resolver(("A", 11)) shouldBe Invalid(List(outOfRangeError))
+    }
+
+    "provides the ability to create a validator for a larger object based on validators of its optional parts" in {
+      val partValidator = satisfiesMax(10, outOfRangeError)
+
+      // Validator for tuples (String, Option[Int]) that validates the Int part
+      val resolver = resolveValid[(String, Option[Int])] thenValidate partValidator.validateOptionally.contramap(_._2)
+
+      resolver(("A", None)) shouldBe Valid(("A", None))
+      resolver(("A", Some(1))) shouldBe Valid(("A", Some(1)))
+      resolver(("A", Some(11))) shouldBe Invalid(List(outOfRangeError))
     }
   }
 

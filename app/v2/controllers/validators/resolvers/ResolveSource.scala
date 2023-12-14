@@ -17,20 +17,13 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.domain.Source
 import shared.models.errors.{MtdError, RuleSourceInvalidError}
 
 object ResolveSource extends ResolverSupport {
 
-  val resolver: Resolver[String, Source] = { value =>
-    val sourceObject = Source.fromString(value)
-    if (sourceObject.nonEmpty)
-      Valid(sourceObject.get)
-    else
-      Invalid(List(RuleSourceInvalidError))
-  }
+  val resolver: Resolver[String, Source] = resolvePartialFunction(RuleSourceInvalidError)(Source.parser)
 
   def apply(value: String): Validated[Seq[MtdError], Source] = resolver(value)
 

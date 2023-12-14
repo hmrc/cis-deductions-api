@@ -23,7 +23,7 @@ import v1.models.request.create.EmployeeRef
 
 object ResolveEmployeeRef extends ResolverSupport {
 
-  private val empRefFormat = "[0-9]{3}\\/[^ ]{0,9}".r
+  private val empRefFormat = "[0-9]{3}/[^ ]{0,9}".r
 
   val resolver: Resolver[String, EmployeeRef] =
     ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef)
