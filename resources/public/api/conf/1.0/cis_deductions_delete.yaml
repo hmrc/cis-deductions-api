@@ -13,7 +13,7 @@ description: |
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/submissionId'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTYS'
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/acceptJson'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
