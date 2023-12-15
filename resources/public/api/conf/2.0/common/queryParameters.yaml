@@ -42,3 +42,14 @@ components:
         type: string
         example: "2023-24"
       required: false
+    taxYearTYS:
+      in: query
+      name: taxYear
+      description: |
+        The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The parameter value must be at least 2023-24. No gaps are allowed, for example, 2023-25 is not valid.
+
+        <p style="font-weight:bold">For periodIds for tax years 2023-24 and onwards, taxYear is mandatory and a 404 is returned if not provided. It must not be provided for a periodId relating to an earlier tax year.</p>
+      schema:
+        type: string
+        example: "2023-24"
+      required: false
