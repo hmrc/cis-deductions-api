@@ -27,6 +27,7 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
   private val notIntegerError = MtdError("NOT_INT", "Not integer", 400)
   private val outOfRangeError = MtdError("OUT_OF_RANGE", "Out of range", 400)
   private val oddNumberError  = MtdError("ODD", "Odd", 400)
+  private val notPresentError = MtdError("NOT_PRESENT", "Absent", 400)
 
   private val resolveInt: Resolver[String, Int] = _.toIntOption.toValid(List(notIntegerError))
 
@@ -120,11 +121,58 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
       resolver(None) shouldBe Valid(2)
     }
 
+    "provides the ability to create resolvers from partial functions" in {
+      val resolver = resolvePartialFunction[Int, String](outOfRangeError) {
+        case i if i <= 10 => i.toString
+      }
+
+      resolver(1) shouldBe Valid("1")
+      resolver(11) shouldBe Invalid(List(outOfRangeError))
+    }
+
     "provides the ability to create resolvers don't actually parse but only validate" in {
       val resolver = resolveValid[Int] thenValidate satisfiesMax(10, outOfRangeError)
 
       resolver(1) shouldBe Valid(1)
       resolver(11) shouldBe Invalid(List(outOfRangeError))
+    }
+
+    "provides the ability to create validators our of a resolver (throwing away any result)" in {
+      val validator = resolveInt.asValidator
+
+      validator("1") shouldBe None
+      validator("XX") shouldBe Some(List(notIntegerError))
+    }
+
+
+    "provides the ability to combine resolvers with thenResolve" in {
+      val resolvePresent: Resolver[Option[Int], Int] = _.toValid(Seq(notPresentError))
+      val resolver = resolveInt.resolveOptionally thenResolve resolvePresent
+
+      resolver(Some("1")) shouldBe Valid(1)
+      resolver(Some("XX")) shouldBe Invalid(List(notIntegerError))
+    }
+
+
+    "provides the ability to create a validator for a larger object based on validators of its parts" in {
+      val partValidator = satisfiesMax(10, outOfRangeError)
+
+      // Validator for tuples (String, Int) that validates the Int part
+      val resolver = resolveValid[(String, Int)] thenValidate partValidator.contramap(_._2)
+
+      resolver(("A", 1)) shouldBe Valid(("A", 1))
+      resolver(("A", 11)) shouldBe Invalid(List(outOfRangeError))
+    }
+
+    "provides the ability to create a validator for a larger object based on validators of its optional parts" in {
+      val partValidator = satisfiesMax(10, outOfRangeError)
+
+      // Validator for tuples (String, Option[Int]) that validates the Int part
+      val resolver = resolveValid[(String, Option[Int])] thenValidate partValidator.validateOptionally.contramap(_._2)
+
+      resolver(("A", None)) shouldBe Valid(("A", None))
+      resolver(("A", Some(1))) shouldBe Valid(("A", Some(1)))
+      resolver(("A", Some(11))) shouldBe Invalid(List(outOfRangeError))
     }
   }
 

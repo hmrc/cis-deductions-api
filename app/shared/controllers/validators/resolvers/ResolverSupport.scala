@@ -17,7 +17,7 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.Valid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import shared.models.errors.MtdError
 
@@ -32,15 +32,28 @@ trait ResolverSupport {
   implicit class ResolverOps[In, Out](resolver: In => Validated[Seq[MtdError], Out]) {
     def map[Out2](f: Out => Out2): Resolver[In, Out2] = i => resolver(i).map(f)
 
+    def thenResolve[Out2](other: Resolver[Out, Out2]): Resolver[In, Out2] = in => resolver(in).andThen(other)
+
     def thenValidate(validator: Validator[Out]): Resolver[In, Out] = i => resolver(i).andThen(o => validator(o).toInvalid(o))
 
     def resolveOptionally: Resolver[Option[In], Option[Out]] = _.map(in => resolver(in).map(Some(_))).getOrElse(Valid(None))
 
     def resolveOptionallyWithDefault(default: => Out): Resolver[Option[In], Out] = _.map(in => resolver(in)).getOrElse(Valid(default))
+
+    def asValidator: Validator[In] = in =>
+      resolver(in) match {
+        case Valid(_)      => None
+        case Invalid(errs) => Some(errs)
+      }
+
   }
 
   implicit class ValidatorOps[A](validator: A => Option[Seq[MtdError]]) {
     def thenValidate(other: Validator[A]): Validator[A] = a => validator(a).orElse(other(a))
+
+    def contramap[B](f: B => A): Validator[B] = b => validator(f(b))
+
+    def validateOptionally: Validator[Option[A]] = _.flatMap(validator)
   }
 
   /** Use to lift a a Validator to a Resolver that validates. E.g.
@@ -49,6 +62,9 @@ trait ResolverSupport {
     * }}}
     */
   def resolveValid[A]: Resolver[A, A] = a => Valid(a)
+
+  def resolvePartialFunction[A, B](error: => MtdError)(pf: PartialFunction[A, B]): Resolver[A, B] =
+    a => pf.map(Valid(_)).applyOrElse(a, (_: A) => Invalid(List(error)))
 
   def satisfies[A](error: => MtdError)(predicate: A => Boolean): Validator[A] =
     a => Option.when(!predicate(a))(List(error))

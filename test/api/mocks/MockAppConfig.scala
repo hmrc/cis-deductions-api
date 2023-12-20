@@ -21,6 +21,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
 import routing.Version
+import shared.models.domain.TaxYear
 
 trait MockAppConfig extends MockFactory {
 
@@ -32,8 +33,8 @@ trait MockAppConfig extends MockFactory {
     def mtdIdBaseUrl: CallHandler[String] =
       (() => mockAppConfig.mtdIdBaseUrl: String).expects()
 
-    def minTaxYearCisDeductions: CallHandler[String] =
-      (() => mockAppConfig.minTaxYearCisDeductions: String).expects()
+    def minTaxYearCisDeductions: CallHandler[TaxYear] =
+      (() => mockAppConfig.minTaxYearCisDeductions).expects()
 
     // DES Config
     def desBaseUrl: CallHandler[String]     = (() => mockAppConfig.desBaseUrl: String).expects()

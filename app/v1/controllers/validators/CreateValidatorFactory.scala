@@ -25,38 +25,24 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.{DateRange, TaxYear}
 import shared.models.errors._
+import v1.controllers.validators.DeductionsValidator._
 import v1.controllers.validators.resolvers.ResolveEmployeeRef
-import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
-import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.{CreateBody, CreateRequestData}
 
 import javax.inject.{Inject, Singleton}
+import scala.math.Ordered.orderingToOrdered
 
 @Singleton
 class CreateValidatorFactory @Inject() (appConfig: AppConfig) {
 
-  private val minYear = 1900
-  private val maxYear = 2100
-
-  // The CIS-Deductions config has an int e.g. 2019 which is specified as "2019-20";
-  // however TaxYear.fromDownstreamInt puts the year last i.e. "2018-19".
-  // So the adjustment here is made:
-  private lazy val minTaxYearCisDeductions = appConfig.minTaxYearCisDeductions.toInt + 1
-  private lazy val resolveTaxYearMinimum   = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minTaxYearCisDeductions))
-
-  private val resolveAmount = ResolveParsedNumber()
-  private val resolveJson   = new ResolveJsonObject[CreateBody]()
+  private val resolveJson = new ResolveJsonObject[CreateBody]()
 
   private val resolveDateRange = ResolveDateRange(
     startDateFormatError = FromDateFormatError,
     endDateFormatError = ToDateFormatError,
     endBeforeStartDateError = RuleDateRangeInvalidError
-  ).withYearsLimitedTo(minYear, maxYear)
-
-  private val resolveDeductionDateRange = ResolveDateRange(
-    startDateFormatError = DeductionFromDateFormatError,
-    endDateFormatError = DeductionToDateFormatError
-  ).withYearsLimitedTo(minYear, maxYear)
+  )
+    .withYearsLimitedTo(minYear, maxYear)
 
   def validator(nino: String, body: JsValue): Validator[CreateRequestData] =
     new Validator[CreateRequestData] {
@@ -70,42 +56,20 @@ class CreateValidatorFactory @Inject() (appConfig: AppConfig) {
       private def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] = {
         import parsed.body.periodData
 
-        if (periodData.isEmpty) {
-          Invalid(List(RuleIncorrectOrEmptyBodyError))
-        } else {
-          val validatedPeriodData =
-            periodData
-              .traverse(periodDetail => validatePeriodDetails(periodDetail))
-
-          combine(
-            resolveDateRange(parsed.body.fromDate -> parsed.body.toDate) andThen validateRangeAsTaxYear,
-            ResolveEmployeeRef(parsed.body.employerRef),
-            validatedPeriodData
-          ).map(_ => parsed)
-
-        }
+        combine(
+          validateDateRange(parsed.body.fromDate -> parsed.body.toDate),
+          ResolveEmployeeRef(parsed.body.employerRef),
+          validatePeriodData(periodData)
+        ).map(_ => parsed)
       }
 
-      private def validateRangeAsTaxYear(dateRange: DateRange): Validated[Seq[MtdError], Unit] =
-        resolveTaxYearMinimum(dateRange.asTaxYearMtdString) match {
-          case Invalid(List(RuleTaxYearNotSupportedError)) => Invalid(List(RuleTaxYearNotSupportedError))
-          case Invalid(_)                                  => Invalid(List(RuleDateRangeInvalidError))
-          case Valid(_)                                    => Valid(())
-        }
+      private val validateDateRange = {
+        val taxYearOfDateRangeIsSupported =
+          satisfiesMin(appConfig.minTaxYearCisDeductions, RuleTaxYearNotSupportedError)
+            .contramap((dateRange: DateRange) => TaxYear.containing(dateRange.endDate))
 
-      private def validateAmount(error: MtdError, maybeValue: Option[BigDecimal]): Validated[Seq[MtdError], Unit] =
-        maybeValue.map(validateAmount(error, _)).getOrElse(Valid(()))
-
-      private def validateAmount(error: MtdError, value: BigDecimal): Validated[Seq[MtdError], Unit] =
-        resolveAmount.resolver(error)(value).map(_ => ())
-
-      private def validatePeriodDetails(details: PeriodDetails): Validated[Seq[MtdError], Unit] =
-        combine(
-          validateAmount(RuleDeductionAmountError, details.deductionAmount),
-          validateAmount(RuleCostOfMaterialsError, details.costOfMaterials),
-          validateAmount(RuleGrossAmountError, details.grossAmountPaid),
-          resolveDeductionDateRange(details.deductionFromDate -> details.deductionToDate)
-        )
+        resolveDateRange thenValidate taxYearOfDateRangeIsSupported thenValidate checkDateRangeIsAFullTaxYear
+      }
 
     }
 

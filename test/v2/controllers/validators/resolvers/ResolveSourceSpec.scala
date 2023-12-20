@@ -27,17 +27,15 @@ class ResolveSourceSpec extends UnitSpec {
   "ResolveSource" should {
     "return no errors" when {
       "passed a valid Source" in {
-        val validSource = "all"
-        val result      = ResolveSource(validSource)
-        result shouldBe Valid(Source.`all`)
+        ResolveSource("all") shouldBe Valid(Source.`all`)
+        ResolveSource("customer") shouldBe Valid(Source.`customer`)
+        ResolveSource("contractor") shouldBe Valid(Source.`contractor`)
       }
     }
 
     "return an error" when {
       "passed an invalid source" in {
-        val invalidSource = "none"
-        val result        = resolvers.ResolveSource(invalidSource)
-        result shouldBe Invalid(List(RuleSourceInvalidError))
+        resolvers.ResolveSource("notASource") shouldBe Invalid(List(RuleSourceInvalidError))
       }
     }
   }

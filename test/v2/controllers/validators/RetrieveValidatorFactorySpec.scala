@@ -35,7 +35,6 @@ class RetrieveValidatorFactorySpec extends UnitSpec {
 
   class SetUp extends MockAppConfig {
     val validatorFactory = new RetrieveValidatorFactory()
-    MockedAppConfig.minTaxYearCisDeductions.returns("2019-20")
 
     def validator(nino: String, taxYear: String, source: String): Validator[RetrieveRequestData] =
       validatorFactory.validator(nino, taxYear, source)

@@ -25,11 +25,11 @@ import v1.models.response.create.CreateResponseModel
 
 object CreateRequestFixtures {
 
-  val requestJson: JsValue = Json.parse {
-    """
+  def requestBodyJsonWith(fromDate: String, toDate: String): JsValue = Json.parse(
+    s"""
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
+      |  "fromDate" : "$fromDate",
+      |  "toDate" : "$toDate",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [
@@ -49,8 +49,10 @@ object CreateRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+        """.stripMargin
+  )
+
+  val requestJson: JsValue = requestBodyJsonWith(fromDate = "2019-04-06", toDate = "2020-04-05")
 
   val invalidRequestJson: JsValue = Json.parse {
     """
@@ -492,38 +494,11 @@ object CreateRequestFixtures {
       |""".stripMargin
   }
 
-  val requestBodyJsonErrorInvalidDateRangeMin: JsValue = Json.parse(
-    """
-      |{
-      |  "fromDate" : "2021-04-06",
-      |  "toDate" : "2021-04-06",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "123/AB56797",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-06-06",
-      |      "deductionToDate": "2020-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2020-07-06",
-      |      "deductionToDate": "2020-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-        """.stripMargin
-  )
-
   val requestBodyJsonErrorNotSupportedTaxYear: JsValue = Json.parse(
     """
       |{
       |  "fromDate" : "2018-04-06",
-      |  "toDate" : "2019-04-06",
+      |  "toDate" : "2019-04-05",
       |  "contractorName": "Bovis",
       |  "employerRef": "123/AB56797",
       |  "periodData": [

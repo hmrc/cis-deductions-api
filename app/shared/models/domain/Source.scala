@@ -26,7 +26,8 @@ object Source {
   case object `customer`   extends Source
   case object `contractor` extends Source
 
-  implicit val format: Format[Source]            = Enums.format[Source]
-  def fromString(source: String): Option[Source] = Enums.parser[Source].lift(source)
+  implicit val format: Format[Source] = Enums.format[Source]
+
+  val parser: PartialFunction[String, Source] = Enums.parser[Source]
 
 }

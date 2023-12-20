@@ -19,7 +19,7 @@ package v1.controllers.validators
 import api.mocks.MockAppConfig
 import shared.UnitSpec
 import shared.controllers.validators.Validator
-import shared.models.domain.{DateRange, Nino, Source}
+import shared.models.domain.{DateRange, Nino, Source, TaxYear}
 import shared.models.errors._
 import v1.models.request.retrieve.RetrieveRequestData
 
@@ -77,22 +77,26 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
         result shouldBe Left(ErrorWrapper("1234", BadRequestError, Some(List(FromDateFormatError, ToDateFormatError))))
       }
 
-      "the from date is not the start of the tax year" in new Test {
-        val result: Either[ErrorWrapper, RetrieveRequestData] =
-          validator(nino, Some("2019-04-05"), Some("2020-04-05"), Some("customer")).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper("1234", RuleDateRangeInvalidError))
-      }
+      "given a date that is not a complete tax year" must {
+        behave like returnDateRangeInvalidError("2019-04-06", "2020-04-06", "to after tax year end")
+        behave like returnDateRangeInvalidError("2019-04-06", "2020-04-04", "to before tax year end")
+        behave like returnDateRangeInvalidError("2019-04-05", "2020-04-05", "from before tax year start")
+        behave like returnDateRangeInvalidError("2019-04-07", "2020-04-05", "from after tax year start")
+        behave like returnDateRangeInvalidError("2019-04-06", "2021-04-05", "different tax year")
 
-      "the to date is not the end of the tax year" in new Test {
-        val result: Either[ErrorWrapper, RetrieveRequestData] =
-          validator(nino, Some("2019-04-06"), Some("2020-04-04"), Some("customer")).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper("1234", RuleDateRangeInvalidError))
+        def returnDateRangeInvalidError(fromDate: String, toDate: String, clue: String): Unit =
+          s"return RuleDateRangeInvalidError for $fromDate to $toDate" in new Test {
+            withClue(clue) {
+              validator(nino, Some(fromDate), Some(toDate), Some("customer")).validateAndWrapResult() shouldBe
+                Left(ErrorWrapper(correlationId, RuleDateRangeInvalidError))
+            }
+          }
       }
     }
   }
 
   private class Test extends MockAppConfig {
-    MockedAppConfig.minTaxYearCisDeductions.returns("2020")
+    MockedAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 
     protected def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =
