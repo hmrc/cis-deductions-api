@@ -46,7 +46,6 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
     )
 
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-//    implicit val apiVersion: Version = Version.from(request, orElse = Version1)
     implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
     val validator = validatorFactory.validator(nino, request.body)

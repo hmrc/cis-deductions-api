@@ -43,7 +43,6 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
 
   def delete(nino: String, submissionId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-//      implicit val apiVersion: Version = Version.from(request, orElse = Version1)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, submissionId, taxYear)

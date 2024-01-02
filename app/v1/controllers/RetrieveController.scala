@@ -46,7 +46,6 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-//      implicit val apiVersion: Version = Version.from(request, orElse = Version1)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, fromDate, toDate, source)
