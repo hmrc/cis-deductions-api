@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import sbt._
+import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
-import uk.gov.hmrc.SbtAutoBuildPlugin
+import uk.gov.hmrc.{DefaultBuildSettings, SbtAutoBuildPlugin}
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "cis-deductions-api"
@@ -30,14 +30,15 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
     retrieveManaged                 := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
-    scalaVersion                    := "2.13.8",
+    scalaVersion                    := "2.13.12",
     scalacOptions ++= List(
       "-language:higherKinds",
       "-Xlint:-byname-implicit",
       "-Xfatal-warnings",
       "-Wconf:src=routes/.*:silent",
       "-feature",
-      "-Wconf:cat=other-match-analysis:error")
+      "-Wconf:cat=other-match-analysis:error",
+      "-Wconf:cat=unused-imports&src=routes/.*:s")
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
@@ -61,3 +62,12 @@ lazy val microservice = Project(appName, file("."))
     resolvers += Resolver.jcenterRepo
   )
   .settings(PlayKeys.playDefaultPort := 7781)
+
+//lazy val it = project
+//  .enablePlugins(PlayScala)
+//  .dependsOn(microservice % "test->test")
+//  .settings(DefaultBuildSettings.itSettings())
+//  .settings(libraryDependencies ++=AppDependencies.itDependencies)
+
+dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
+dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
