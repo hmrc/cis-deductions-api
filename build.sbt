@@ -64,11 +64,5 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 7781)
 
-//lazy val it = project
-//  .enablePlugins(PlayScala)
-//  .dependsOn(microservice % "test->test")
-//  .settings(DefaultBuildSettings.itSettings())
-//  .settings(libraryDependencies ++=AppDependencies.itDependencies)
-
 dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
 dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
