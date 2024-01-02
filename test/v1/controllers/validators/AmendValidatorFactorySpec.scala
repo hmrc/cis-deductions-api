@@ -73,12 +73,12 @@ class AmendValidatorFactorySpec extends UnitSpec {
 
     "return a single error" when {
       "invalid body type error" in new AmendValidatorFactory {
-        private val result = validatorFactory.validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
+        private val result = validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodData/0/deductionAmount")))
       }
 
       "given an empty JSON period array in the request body" in new AmendValidatorFactory {
-        private val result = validatorFactory.validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()
+        private val result = validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 

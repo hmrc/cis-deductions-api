@@ -20,7 +20,6 @@ import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockAppConfig
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
-import config.AppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
@@ -48,7 +47,6 @@ class RetrieveControllerSpec
     with MockAppConfig
     with MockAuditService {
 
-  private implicit val appConfig: AppConfig = mockAppConfig
   private val fromDate                      = "2019-04-06"
   private val toDate                        = "2020-04-05"
 

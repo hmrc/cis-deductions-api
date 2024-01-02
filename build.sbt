@@ -16,7 +16,7 @@
 
 import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
-import uk.gov.hmrc.{DefaultBuildSettings, SbtAutoBuildPlugin}
+import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "cis-deductions-api"
@@ -38,7 +38,8 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=routes/.*:silent",
       "-feature",
       "-Wconf:cat=other-match-analysis:error",
-      "-Wconf:cat=unused-imports&src=routes/.*:s")
+      "-Wconf:cat=unused-imports&src=routes/.*:s",
+      "-Wconf:msg=legacy-binding:s")
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"

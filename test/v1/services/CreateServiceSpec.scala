@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class CreateServiceSpec extends UnitSpec {
 
   private val nino           = "AA123456A"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
   private val submissionId   = "123456789"
 
   private val requestBody =

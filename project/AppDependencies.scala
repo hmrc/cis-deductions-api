@@ -44,7 +44,7 @@ object AppDependencies {
     "io.swagger.parser.v3"    % "swagger-parser-v3"      % "2.1.12"             % scope
   )
 
-  val itDependencies: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapPlayVersion % Test
-  )
+//  val itDependencies: Seq[ModuleID] = Seq(
+//    "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapPlayVersion % Test
+//  )
 }

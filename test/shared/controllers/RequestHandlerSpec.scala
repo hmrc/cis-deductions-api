@@ -29,7 +29,6 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
 import play.api.test.{FakeRequest, ResultExtractors}
-import routing.{Version, Version1}
 import shared.UnitSpec
 import shared.controllers.validators.Validator
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
@@ -50,9 +49,6 @@ class RequestHandlerSpec
     with ResultExtractors
     with ControllerSpecHateoasSupport
     with MockAppConfig {
-
-  private implicit val version: Version     = Version1
-  private implicit val appConfig: AppConfig = mockAppConfig
 
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
   private val successCode         = ACCEPTED
