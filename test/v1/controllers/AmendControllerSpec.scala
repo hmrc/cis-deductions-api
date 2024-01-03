@@ -19,7 +19,6 @@ package v1.controllers
 import api.mocks.MockAppConfig
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -45,7 +44,6 @@ class AmendControllerSpec
   private val submissionId                  = "S4636A77V5KB8625U"
   private val taxYear                       = TaxYear.fromIso("2019-07-05")
   private val requestData                   = AmendRequestData(Nino(nino), SubmissionId(submissionId), taxYear, amendRequestObj)
-  private implicit val appConfig: AppConfig = mockAppConfig
 
   "amend" should {
     "return a successful response with status 204 (NO CONTENT)" when {

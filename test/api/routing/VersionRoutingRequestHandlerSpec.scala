@@ -16,7 +16,7 @@
 
 package api.routing
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import api.mocks.MockAppConfig
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.Inside

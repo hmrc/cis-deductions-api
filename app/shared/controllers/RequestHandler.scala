@@ -21,12 +21,10 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceOutcome
 import cats.data.EitherT
 import cats.implicits._
-import config.AppConfig
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import routing.Version
 import shared.controllers.validators.Validator
 import shared.models.errors.{ErrorWrapper, InternalError}
 import shared.utils.Logging
@@ -38,9 +36,7 @@ trait RequestHandler {
   def handleRequest()(implicit
       ctx: RequestContext,
       request: UserRequest[_],
-      ec: ExecutionContext,
-      appConfig: AppConfig,
-      apiVersion: Version): Future[Result]
+      ec: ExecutionContext): Future[Result]
 
 }
 
@@ -67,9 +63,7 @@ object RequestHandler {
     def handleRequest()(implicit
         ctx: RequestContext,
         request: UserRequest[_],
-        ec: ExecutionContext,
-        appConfig: AppConfig,
-        apiVersion: Version): Future[Result] =
+        ec: ExecutionContext): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -140,9 +134,7 @@ object RequestHandler {
       def handleRequest()(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext,
-          appConfig: AppConfig,
-          apiVersion: Version): Future[Result] = {
+          ec: ExecutionContext): Future[Result] = {
 
         logger.info(
           message = s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] " +

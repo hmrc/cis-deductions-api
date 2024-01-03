@@ -18,11 +18,9 @@ package v1.controllers
 
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import routing.{Version, Version1}
 import shared.controllers._
-import shared.utils.{IdGenerator, Logging}
+import shared.utils.IdGenerator
 import v1.controllers.validators.RetrieveValidatorFactory
 import v1.models.response.retrieve.RetrieveHateoasData
 import v1.services.RetrieveService
@@ -37,9 +35,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     auditService: AuditService,
                                     hateoasFactory: HateoasFactory,
                                     cc: ControllerComponents,
-                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends AuthorisedController(cc)
-    with Logging {
+                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -49,7 +46,6 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
 
   def retrieve(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val apiVersion: Version = Version.from(request, orElse = Version1)
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val validator = validatorFactory.validator(nino, fromDate, toDate, source)

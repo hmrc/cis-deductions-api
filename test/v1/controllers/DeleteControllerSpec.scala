@@ -44,7 +44,6 @@ class DeleteControllerSpec
   private val rawTaxYear         = "2022-23"
   private val taxYear            = TaxYear.fromMtd(rawTaxYear)
   private val deleteRequestData  = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
-  private implicit val appConfig = mockAppConfig
 
   "delete" should {
     "return a successful response with status 204 (No Content)" when {
