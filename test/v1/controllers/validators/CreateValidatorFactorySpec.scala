@@ -163,7 +163,7 @@ class CreateValidatorFactorySpec extends UnitSpec {
   }
 
   private class Test extends MockAppConfig {
-    MockedAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
+    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
     private val validatorFactory = new CreateValidatorFactory(mockAppConfig)
 
     protected val createRequestData: CreateRequestData         = CreateRequestData(Nino(nino), parsedRequestData)

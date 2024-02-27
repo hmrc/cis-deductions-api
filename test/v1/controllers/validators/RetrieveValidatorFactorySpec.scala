@@ -96,7 +96,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
   }
 
   private class Test extends MockAppConfig {
-    MockedAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
+    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 
     protected def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =

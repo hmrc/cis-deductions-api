@@ -43,10 +43,10 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val appConfig: AppConfig = mockAppConfig
     }
 
-    MockedAppConfig.desBaseUrl.returns(baseUrl)
-    MockedAppConfig.desToken.returns("des-token")
-    MockedAppConfig.desEnvironment.returns("des-environment")
-    MockedAppConfig.desEnvironmentHeaders.returns(Some(allowedDesHeaders))
+    MockAppConfig.desBaseUrl.returns(baseUrl)
+    MockAppConfig.desToken.returns("des-token")
+    MockAppConfig.desEnvironment.returns("des-environment")
+    MockAppConfig.desEnvironmentHeaders.returns(Some(allowedDesHeaders))
 
     val qps = Seq("param1" -> "value1")
   }
@@ -58,10 +58,10 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val appConfig: AppConfig = mockAppConfig
     }
 
-    MockedAppConfig.ifsBaseUrl.returns(baseUrl)
-    MockedAppConfig.ifsToken.returns("ifs-token")
-    MockedAppConfig.ifsEnvironment.returns("ifs-environment")
-    MockedAppConfig.ifsEnvironmentHeaders.returns(Some(allowedIfsHeaders))
+    MockAppConfig.ifsBaseUrl.returns(baseUrl)
+    MockAppConfig.ifsToken.returns("ifs-token")
+    MockAppConfig.ifsEnvironment.returns("ifs-environment")
+    MockAppConfig.ifsEnvironmentHeaders.returns(Some(allowedIfsHeaders))
 
     val qps = Seq("param1" -> "value1")
   }

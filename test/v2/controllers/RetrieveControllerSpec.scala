@@ -59,8 +59,8 @@ class RetrieveControllerSpec
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
 
-        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
-        MockedAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+        MockAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(

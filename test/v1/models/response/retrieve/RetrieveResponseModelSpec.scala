@@ -62,7 +62,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     val taxYear  = TaxYear.fromMtd("2023-24")
 
     "return the correct links" in { () =>
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
 
@@ -74,7 +74,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     }
 
     "return the correct item links" in {
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
       val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"

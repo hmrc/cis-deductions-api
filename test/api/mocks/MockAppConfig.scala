@@ -16,7 +16,8 @@
 
 package api.mocks
 
-import config.{AppConfig, ConfidenceLevelConfig}
+import cats.data.Validated
+import config.{AppConfig, ConfidenceLevelConfig, Deprecation}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
@@ -27,7 +28,7 @@ trait MockAppConfig extends MockFactory {
 
   implicit val mockAppConfig: AppConfig = mock[AppConfig]
 
-  object MockedAppConfig {
+  object MockAppConfig {
 
     // MTD ID Lookup Config
     def mtdIdBaseUrl: CallHandler[String] =
@@ -72,6 +73,8 @@ trait MockAppConfig extends MockFactory {
 
     def apiStatus(status: Version): CallHandler[String]          = (mockAppConfig.apiStatus: Version => String).expects(status)
     def endpointsEnabled(version: Version): CallHandler[Boolean] = (mockAppConfig.endpointsEnabled: Version => Boolean).expects(version)
+    def deprecationFor(version: Version): CallHandler[Validated[String, Deprecation]] = (mockAppConfig.deprecationFor(_: Version)).expects(version)
+    def apiDocumentationUrl(): CallHandler[String]                                    = (() => mockAppConfig.apiDocumentationUrl: String).expects()
 
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()

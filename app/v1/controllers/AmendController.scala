@@ -17,6 +17,7 @@
 package v1.controllers
 
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.controllers._
@@ -33,7 +34,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
                                  service: AmendService,
                                  auditService: AuditService,
                                  cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

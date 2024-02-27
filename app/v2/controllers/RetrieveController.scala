@@ -18,6 +18,7 @@ package v2.controllers
 
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.controllers._
 import shared.utils.IdGenerator
@@ -35,7 +36,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     auditService: AuditService,
                                     hateoasFactory: HateoasFactory,
                                     cc: ControllerComponents,
-                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

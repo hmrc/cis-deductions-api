@@ -16,13 +16,16 @@
 
 package shared.controllers
 
-import api.mocks.MockIdGenerator
+import api.mocks.{MockAppConfig, MockIdGenerator}
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import cats.implicits.catsSyntaxValidatedId
+import config.Deprecation.NotDeprecated
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
+import routing.{Version, Version2}
 import shared.UnitSpec
 import shared.controllers.ControllerTestRunner.validNino
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
@@ -38,9 +41,13 @@ class ControllerBaseSpec
     with HeaderNames
     with ResultExtractors
     with MockAuditService
+    with MockAppConfig
     with ControllerSpecHateoasSupport {
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+  implicit val apiVersion: Version = Version2
+
+  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest().withHeaders(HeaderNames.ACCEPT -> s"application/vnd.hmrc.${apiVersion.name}+json")
 
   lazy val cc: ControllerComponents = stubControllerComponents()
 
@@ -61,6 +68,7 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.generateCorrelationId.returns(correlationId)
+    MockAppConfig.deprecationFor(apiVersion).returns(NotDeprecated.valid).anyNumberOfTimes()
 
     def runOkTest(expectedStatus: Int, maybeExpectedResponseBody: Option[JsValue] = None): Unit = {
       val result: Future[Result] = callController()
