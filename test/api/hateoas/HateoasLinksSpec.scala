@@ -33,7 +33,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
   private val taxYear2024 = TaxYear.fromMtd("2023-24")
 
   class Test {
-    MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis")
+    MockAppConfig.apiGatewayContext.returns("individuals/deductions/cis")
   }
 
   "createCisDeduction" when {

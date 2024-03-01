@@ -72,7 +72,7 @@ class DeleteValidatorFactorySpec extends UnitSpec {
   }
 
   private class Test extends MockAppConfig {
-    MockedAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
+    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
     private val validatorFactory = new DeleteValidatorFactory
 
     protected def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =
