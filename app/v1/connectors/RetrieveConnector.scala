@@ -16,19 +16,21 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
+import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: FeatureSwitches)
+    extends BaseDownstreamConnector {
 
   def retrieve(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
@@ -37,15 +39,19 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: AppConfi
 
     import request._
 
+    val path = s"income-tax/cis/deductions/$nino"
+
     val (downstreamUri, queryParams) =
       if (taxYear.useTaxYearSpecificApi) {
         (
           TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
           List("startDate" -> fromDate, "endDate" -> toDate, "source" -> source.toString)
         )
+      } else if (featureSwitches.isDesIf_MigrationEnabled) {
+        IfsUri[RetrieveResponseModel[CisDeductions]](path)
       } else {
         (
-          DesUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/$nino"),
+          DesUri[RetrieveResponseModel[CisDeductions]](path),
           List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source.toString)
         )
       }

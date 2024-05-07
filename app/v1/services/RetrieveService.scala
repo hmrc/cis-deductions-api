@@ -58,8 +58,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseServi
       "INVALID_TAX_YEAR"       -> InternalError,
       "INVALID_START_DATE"     -> FromDateFormatError,
       "INVALID_END_DATE"       -> ToDateFormatError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
-      "INVALID_CORRELATIONID"  -> InternalError
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 
 }

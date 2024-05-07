@@ -16,11 +16,17 @@
 
 package config
 
+import com.google.inject.ImplementedBy
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
 
-case class FeatureSwitches(featureSwitchConfig: Configuration) {
+@ImplementedBy(classOf[FeatureSwitchesImpl])
+trait FeatureSwitches {
+  def isDesIf_MigrationEnabled: Boolean
+}
+
+case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension.enabled")) {
@@ -30,8 +36,8 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
     }
   }
 
+  val isDesIf_MigrationEnabled: Boolean       = isEnabled("desIf_Migration.enabled")
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
-
 }
 
 object FeatureSwitches {
