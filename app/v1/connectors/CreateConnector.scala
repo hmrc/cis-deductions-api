@@ -19,7 +19,7 @@ package v1.connectors
 import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.create.CreateRequestData
@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: FeatureSwitches)
+class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
     extends BaseDownstreamConnector {
 
   def create(request: CreateRequestData)(implicit
@@ -44,8 +44,6 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     val (downstreamUri, statusCode) = if (taxYear.useTaxYearSpecificApi) {
       (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
-    } else if (featureSwitches.isDesIf_MigrationEnabled) {
-      IfsUri[RetrieveResponseModel[CisDeductions]](path)
     } else {
       (DesUri[CreateResponseModel](s"income-tax/cis/deductions/$nino"), OK)
     }
