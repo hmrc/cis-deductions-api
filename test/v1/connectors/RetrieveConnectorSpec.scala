@@ -39,7 +39,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
@@ -76,7 +76,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
@@ -113,7 +113,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         private def taxYear: TaxYear = TaxYear.fromIso(toDateStr)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(

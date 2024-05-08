@@ -36,7 +36,7 @@ class DeleteConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
 
@@ -49,7 +49,7 @@ class DeleteConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
 
@@ -63,7 +63,7 @@ class DeleteConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
       "return a successful result" in new TysIfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/${request.submissionId}") returns Future
           .successful(outcome)

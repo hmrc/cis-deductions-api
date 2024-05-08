@@ -25,7 +25,7 @@ import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseM
 
 import scala.concurrent.Future
 
-class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
+class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
   private val nino = "AA123456A"
 
@@ -38,7 +38,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
@@ -74,7 +74,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
         MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
@@ -109,7 +109,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
         protected def startDate = "2023-04-06"
         protected def endDate   = "2024-04-06"
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
