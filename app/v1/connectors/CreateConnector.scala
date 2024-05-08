@@ -16,7 +16,7 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
@@ -24,7 +24,6 @@ import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
-import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,8 +39,6 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
 
     import request._
 
-    val path = s"income-tax/cis/deductions/$nino"
-
     val (downstreamUri, statusCode) = if (taxYear.useTaxYearSpecificApi) {
       (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
     } else {
@@ -54,3 +51,8 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
   }
 
 }
+} else if (featureSwitches.isDesIf_MigrationEnabled) {
+  (
+    IfsUri[RetrieveResponseModel[CisDeductions]](path),
+    List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source.toString)
+  )

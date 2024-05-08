@@ -22,8 +22,6 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.{AppConfig, FeatureSwitches}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.amend.AmendRequestData
-import v1.models.response.retrieve.CisDeductions
-import v2.models.response.retrieve.RetrieveResponseModel
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

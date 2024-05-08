@@ -31,8 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseService {
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
+                                                       ctx: RequestContext,
+                                                       ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 
@@ -58,7 +58,8 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseServi
       "INVALID_TAX_YEAR"       -> InternalError,
       "INVALID_START_DATE"     -> FromDateFormatError,
       "INVALID_END_DATE"       -> ToDateFormatError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATIONID"  -> InternalError
     )
 
 }

@@ -17,7 +17,7 @@
 package api.connectors
 
 import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
-import config.{AppConfig, FeatureSwitches}
+import config.{AppConfig, FeatureSwitches, FeatureSwitchesImpl}
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
@@ -31,7 +31,7 @@ trait BaseDownstreamConnector {
 
   protected val logger: Logger = Logger(this.getClass)
 
-  implicit protected lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  implicit protected lazy val featureSwitches: FeatureSwitches = FeatureSwitchesImpl(appConfig.featureSwitches)
 
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 

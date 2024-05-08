@@ -41,5 +41,5 @@ case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends Featu
 }
 
 object FeatureSwitches {
-  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitchesImpl(appConfig.featureSwitches)
 }
