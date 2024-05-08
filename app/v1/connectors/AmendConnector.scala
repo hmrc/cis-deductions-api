@@ -41,7 +41,7 @@ class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
       TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
     } else if (featureSwitches.isDesIf_MigrationEnabled) {
-      IfsUri[RetrieveResponseModel[CisDeductions]](path)
+      IfsUri[Unit](path)
     } else {
       DesUri[Unit](path)
     }
