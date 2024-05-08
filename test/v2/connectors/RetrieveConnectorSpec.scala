@@ -18,7 +18,7 @@ package v2.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.outcomes.ResponseWrapper
-import mocks.MockFeatureSwitches
+import v2.mocks.MockFeatureSwitches
 import shared.models.domain.{Nino, Source, TaxYear}
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}

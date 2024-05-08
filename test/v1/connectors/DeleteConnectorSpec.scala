@@ -18,7 +18,7 @@ package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.outcomes.ResponseWrapper
-import mocks.MockFeatureSwitches
+import v1.mocks.MockFeatureSwitches
 import shared.models.domain.{Nino, SubmissionId, TaxYear}
 import v1.models.request.delete.DeleteRequestData
 
