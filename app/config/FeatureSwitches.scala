@@ -21,12 +21,17 @@ import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
 
+import javax.inject.Inject
+
 @ImplementedBy(classOf[FeatureSwitchesImpl])
 trait FeatureSwitches {
   def isDesIf_MigrationEnabled: Boolean
 }
 
 case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
+
+  @Inject
+  def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension.enabled")) {

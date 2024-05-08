@@ -51,8 +51,3 @@ class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
   }
 
 }
-} else if (featureSwitches.isDesIf_MigrationEnabled) {
-  (
-    IfsUri[RetrieveResponseModel[CisDeductions]](path),
-    List("periodStart" -> fromDate, "periodEnd" -> toDate, "source" -> source.toString)
-  )
