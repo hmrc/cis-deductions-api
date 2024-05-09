@@ -21,10 +21,11 @@ import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 @ImplementedBy(classOf[FeatureSwitchesImpl])
 trait FeatureSwitches {
+  @Singleton
   def isDesIf_MigrationEnabled: Boolean
 }
 
