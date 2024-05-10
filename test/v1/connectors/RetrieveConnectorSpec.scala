@@ -18,6 +18,7 @@ package v1.connectors
 
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.outcomes.ResponseWrapper
+import v1.mocks.MockFeatureSwitches
 import shared.models.domain.{DateRange, Nino, Source, TaxYear}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
@@ -25,17 +26,57 @@ import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseM
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class RetrieveConnectorSpec extends ConnectorSpec {
+class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
 
   private val nino = "AA123456A"
 
   "Retrieve connector" when {
     "given a valid non-TYS request" must {
-      "return a valid response from downstream" in new DesTest with Test {
+      "return a valid response from downstream when 'isDesIf_MigrationEnabled' is turned off" in new DesTest with Test {
         protected def fromDateStr = "2019-04-06"
-        protected def toDateStr   = "2020-04-05"
 
-        val outcome = Right(
+        protected def toDateStr = "2020-04-05"
+
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
+
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
+          ResponseWrapper(
+            correlationId,
+            RetrieveResponseModel(
+              Some(0.00),
+              Some(0.00),
+              Some(0.00),
+              Seq(CisDeductions(
+                request.fromDate,
+                request.toDate,
+                Some(""),
+                "",
+                Some(0.00),
+                Some(0.00),
+                Some(0.00),
+                Seq(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source.toString))
+              ))
+            )
+          ))
+
+        willGet(
+          url = s"$baseUrl/income-tax/cis/deductions/$nino",
+          queryParams = List("periodStart" -> request.fromDate, "periodEnd" -> request.toDate, "source" -> request.source.toString)
+        ) returns Future.successful(outcome)
+
+        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
+        result shouldBe outcome
+      }
+
+
+      "return a valid response from downstream when 'isDesIf_MigrationEnabled' is turned on" in new IfsTest with Test {
+        protected def fromDateStr = "2019-04-06"
+
+        protected def toDateStr = "2020-04-05"
+
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
+
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(
@@ -72,7 +113,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         private def taxYear: TaxYear = TaxYear.fromIso(toDateStr)
 
-        val outcome = Right(
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(
             correlationId,
             RetrieveResponseModel(

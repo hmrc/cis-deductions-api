@@ -34,7 +34,7 @@ class FeatureSwitchesSpec extends UnitSpec {
     def headers(suspend: String) = Headers("suspend-temporal-validations" -> suspend)
 
     "the suspension enabling feature switch is false" should {
-      val featureSwitches = FeatureSwitches(configuration(false))
+      val featureSwitches = FeatureSwitchesImpl(configuration(false))
 
       "return true even if the suspend header is present and true" in {
         featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "true"))) shouldBe true
@@ -46,7 +46,7 @@ class FeatureSwitchesSpec extends UnitSpec {
     }
 
     "the suspension enabling feature switch is true" should {
-      val featureSwitches = FeatureSwitches(configuration(true))
+      val featureSwitches = FeatureSwitchesImpl(configuration(true))
 
       "return false if the suspend header is present and true" in {
         featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "true"))) shouldBe false

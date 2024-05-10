@@ -29,7 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreateConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
+    extends BaseDownstreamConnector {
 
   def create(request: CreateRequestData)(implicit
       hc: HeaderCarrier,

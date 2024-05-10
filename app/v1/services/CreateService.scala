@@ -63,7 +63,6 @@ class CreateService @Inject() (connector: CreateConnector) extends BaseService {
     )
 
     val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID" -> InternalError,
       "INVALID_TAX_YEAR"       -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
       "INVALID_TAX_YEAR_ALIGN" -> RuleUnalignedDeductionsPeriodError,
