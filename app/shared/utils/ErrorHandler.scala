@@ -21,7 +21,7 @@ import play.api._
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc._
-import shared.models.errors.{BadRequestError, ClientNotAuthenticatedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
+import shared.models.errors.{BadRequestError, ClientOrAgentNotAuthorisedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -57,7 +57,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
         Future.successful(NotFound(NotFoundError.asJson))
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED           => ClientNotAuthenticatedError
+          case UNAUTHORIZED           => ClientOrAgentNotAuthorisedError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
           case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
@@ -87,7 +87,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
 
     val (errorCode, eventType) = ex match {
       case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
+      case _: AuthorisationException => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
       case _: JsValidationException  => (BadRequestError, "ServerValidationError")
       case _: HttpException          => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
