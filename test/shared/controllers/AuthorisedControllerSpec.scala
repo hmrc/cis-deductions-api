@@ -127,10 +127,10 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError)))
+        .returns(Future.successful(Left(ClientOrAgentNotAuthorisedError.withStatus401)))
 
       val result: Future[Result] = target.action(nino)(fakeGetRequest)
-      status(result) shouldBe FORBIDDEN
+      status(result) shouldBe UNAUTHORIZED
     }
   }
 

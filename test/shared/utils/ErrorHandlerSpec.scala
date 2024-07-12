@@ -105,7 +105,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.withStatus401.asJson
       }
     }
 
@@ -144,7 +144,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.withStatus401.asJson
       }
     }
 
