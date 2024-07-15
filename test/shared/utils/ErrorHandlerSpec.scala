@@ -23,7 +23,7 @@ import play.api.mvc.{AnyContentAsEmpty, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import shared.UnitSpec
-import shared.models.errors.{BadRequestError, ClientNotAuthenticatedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
+import shared.models.errors.{BadRequestError, ClientOrAgentNotAuthorisedError, InternalError, InvalidBodyTypeError, MtdError, NotFoundError}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -105,7 +105,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.withStatus401.asJson
       }
     }
 
@@ -144,7 +144,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result: Future[Result] = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthenticatedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.withStatus401.asJson
       }
     }
 
