@@ -16,83 +16,42 @@
 
 package api.connectors.httpparsers
 
-import api.connectors.MtdIdLookupOutcome
+import api.connectors.MtdIdLookupConnector
 import api.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
+import play.api.http.Status.IM_A_TEAPOT
 import play.api.libs.json.Writes.StringWrites
-import play.api.libs.json.{JsObject, Json}
-import play.api.test.Helpers.{FORBIDDEN, INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED}
+import play.api.libs.json.{JsResultException, Json}
+import play.api.test.Helpers.OK
 import shared.UnitSpec
-import shared.models.errors.{InternalError, InvalidBearerTokenError, NinoFormatError}
 import uk.gov.hmrc.http.HttpResponse
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
-  val method = "GET"
-  val url    = "test-url"
-  val mtdId  = "test-mtd-id"
+  private val method = "GET"
+  private val url = "test-url"
 
-  val mtdIdJson: JsObject   = Json.obj("mtdbsa" -> mtdId)
-  val invalidJson: JsObject = Json.obj("hello" -> "world")
-
-  val emptyHeaders: Map[String, Seq[String]] = Map[String, Seq[String]]()
-
-  "read" should {
-    "return an MtdId" when {
-      "the HttpResponse contains a 200 status and a correct response body" in {
-        val response                   = HttpResponse(OK, mtdIdJson, emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Right(mtdId)
+  "read" when {
+    "the response contains a 200 status" when {
+      "the response body contains an MtdId" must {
+        "return the MtdId" in {
+          val mtdId = "test-mtd-id"
+          val response = HttpResponse(OK, Json.obj("mtdbsa" -> mtdId), Map.empty[String, Seq[String]])
+          mtdIdLookupHttpReads.read(method, url, response) shouldBe Right(mtdId)
+        }
+      }
+      "the response body is not valid" must {
+        "throw an JsResultException" in {
+          val response = HttpResponse(OK, Json.obj("hello" -> "world"), Map.empty[String, Seq[String]])
+          intercept[JsResultException](mtdIdLookupHttpReads.read(method, url, response))
+        }
       }
     }
 
-    "returns an downstream error" when {
-      "backend doesn't have a valid data" in {
-        val response                   = HttpResponse(OK, invalidJson, emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(InternalError)
-      }
-
-      "backend doesn't return any data" in {
-        val response                   = HttpResponse(OK, "", emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(InternalError)
-      }
-
-      "the json cannot be read" in {
-        val response                   = HttpResponse(OK, "{", emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(InternalError)
-      }
-    }
-
-    "return an InvalidNino error" when {
-      "the HttpResponse contains a 403 status" in {
-        val response                   = HttpResponse(FORBIDDEN, "", emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(NinoFormatError)
-      }
-    }
-
-    "return an Unauthorised error" when {
-      "the HttpResponse contains a 403 status" in {
-        val response                   = HttpResponse(UNAUTHORIZED, "", emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(InvalidBearerTokenError)
-      }
-    }
-
-    "return a DownstreamError" when {
-      "the HttpResponse contains any other status" in {
-        val response                   = HttpResponse(INTERNAL_SERVER_ERROR, "", emptyHeaders)
-        val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
-
-        result shouldBe Left(InternalError)
+    "the response contains a non-200 status" must {
+      "return the status code as an error" in {
+        val status = IM_A_TEAPOT
+        val response = HttpResponse(status, "ignored")
+        mtdIdLookupHttpReads.read(method, url, response) shouldBe Left(MtdIdLookupConnector.Error(status))
       }
     }
   }

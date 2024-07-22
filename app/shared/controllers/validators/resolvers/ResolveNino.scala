@@ -23,15 +23,21 @@ import shared.models.errors.{MtdError, NinoFormatError}
 
 object ResolveNino {
 
+  def apply(value: String): Validated[Seq[MtdError], Nino] =
+    if (isValid(value))
+      Valid(Nino(value))
+    else
+      Invalid(List(NinoFormatError))
+
+  def isValid(nino: String): Boolean = nino != null && hasValidPrefix(nino) && ninoRegex.matches(nino)
+
+  private def hasValidPrefix(nino: String) = !invalidPrefixes.exists(nino.startsWith)
+
   private val ninoRegex =
     ("^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
       "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$").r
 
-  def apply(value: String): Validated[Seq[MtdError], Nino] = {
-    if (Nino.isValid(value) && ninoRegex.matches(value))
-      Valid(Nino(value))
-    else
-      Invalid(List(NinoFormatError))
-  }
+  private val invalidPrefixes =
+    List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
 
 }
