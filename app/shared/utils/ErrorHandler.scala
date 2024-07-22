@@ -57,7 +57,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
         Future.successful(NotFound(NotFoundError.asJson))
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED           => ClientOrAgentNotAuthorisedError
+          case UNAUTHORIZED           => ClientOrAgentNotAuthorisedError.withStatus401
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
           case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
