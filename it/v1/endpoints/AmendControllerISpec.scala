@@ -16,29 +16,24 @@
 
 package v1.endpoints
 
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import data.AmendDataExamples._
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.{
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
+import models.errors.{
   RuleCostOfMaterialsError,
   RuleDeductionAmountError,
   RuleDeductionsDateRangeInvalidError,
   RuleDuplicatePeriodError,
   RuleGrossAmountError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearNotSupportedError,
   RuleUnalignedDeductionsPeriodError,
   SubmissionIdFormatError
 }
-import support.IntegrationBaseSpec
+import play.api.http.HeaderNames.ACCEPT
+import play.api.http.Status._
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
+import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
 class AmendControllerISpec extends IntegrationBaseSpec {
@@ -105,8 +100,9 @@ class AmendControllerISpec extends IntegrationBaseSpec {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
-            override def setupStubs(): Unit =
-              DownstreamStub.mockDownstream(DownstreamStub.PUT, downstreamUri, downstreamStatus, Json.parse(errorBody(downstreamCode)), None)
+            override def setupStubs(): Unit = {
+              DownstreamStub.when(DownstreamStub.PUT, downstreamUri).thenReturn(downstreamStatus, Json.parse(errorBody(downstreamCode)))
+            }
 
             val response: WSResponse = await(request().put(requestBodyJson))
             response.status shouldBe expectedStatus

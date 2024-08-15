@@ -16,17 +16,17 @@
 
 package v2.controllers
 
-import api.hateoas.{HateoasWrapper, MockHateoasFactory}
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas._
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, Source, TaxYear}
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.MockAuditService
 import v2.controllers.validators.MockedRetrieveValidatorFactory
 import v2.fixtures.RetrieveJson._
 import v2.fixtures.RetrieveModels._
@@ -47,20 +47,20 @@ class RetrieveControllerSpec
     with MockAppConfig
     with MockAuditService {
 
-  private val fromDate                      = "2019-04-06"
-  private val toDate                        = "2020-04-05"
+  private val fromDate = "2019-04-06"
+  private val toDate   = "2020-04-05"
 
   private val taxYearRaw          = "2019-20"
   private val taxYear             = TaxYear.fromMtd(taxYearRaw)
   private val sourceRaw           = Source.`customer`
-  private val retrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, sourceRaw)
+  private val retrieveRequestData = RetrieveRequestData(Nino(validNino), taxYear, sourceRaw)
 
   "retrieve" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
 
-        MockAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        MockedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
@@ -71,14 +71,14 @@ class RetrieveControllerSpec
               HateoasWrapper(
                 cisDeductions,
                 Seq(
-                  deleteCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
-                  amendCisDeduction(mockAppConfig, nino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                  deleteCisDeduction(mockAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
+                  amendCisDeduction(mockAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
                 )
               ))
           ),
           Seq(
-            retrieveCisDeduction(mockAppConfig, nino, taxYear, sourceRaw.toString, isSelf = true),
-            createCisDeduction(mockAppConfig, nino, isSelf = false))
+            retrieveCisDeduction(mockAppConfig, validNino, taxYear, sourceRaw.toString, isSelf = true),
+            createCisDeduction(mockAppConfig, validNino, isSelf = false))
         )
 
         willUseValidator(returningSuccess(retrieveRequestData))
@@ -88,7 +88,7 @@ class RetrieveControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(nino, taxYear, sourceRaw.toString))
+          .wrapList(response, RetrieveHateoasData(validNino, taxYear, sourceRaw.toString))
           .returns(responseWithHateoas)
 
         runOkTestWithAudit(
@@ -122,7 +122,7 @@ class RetrieveControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new RetrieveController(
       authService = mockEnrolmentsAuthService,
@@ -135,16 +135,23 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.retrieve(nino, taxYearRaw, sourceRaw.toString)(fakeRequest)
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.retrieve(validNino, taxYearRaw, sourceRaw.toString)(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "RetrieveCisDeductionsForSubcontractor",
         transactionName = "retrieve-cis-deductions-for-subcontractor",
         detail = GenericAuditDetail(
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "taxYear" -> taxYearRaw, "source" -> sourceRaw.toString),
+          params = Map("nino" -> validNino, "taxYear" -> taxYearRaw, "source" -> sourceRaw.toString),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

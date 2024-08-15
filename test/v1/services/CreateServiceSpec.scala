@@ -16,11 +16,27 @@
 
 package v1.services
 
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.errors.{
+  EmployerRefFormatError,
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleDuplicateSubmissionError,
+  RuleUnalignedDeductionsPeriodError
+}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
-import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, EmployerRefFormatError, ErrorWrapper, InternalError, MtdError, NinoFormatError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleDuplicateSubmissionError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError}
+import shared.models.errors.{
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedError
+}
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockCreateConnector
 import v1.models.request.amend.PeriodDetails
@@ -32,9 +48,9 @@ import scala.concurrent.Future
 
 class CreateServiceSpec extends UnitSpec {
 
-  private val nino           = "AA123456A"
+  private val nino                   = "AA123456A"
   implicit val correlationId: String = "X-123"
-  private val submissionId   = "123456789"
+  private val submissionId           = "123456789"
 
   private val requestBody =
     CreateBody(fromDate = "2020-05-06", toDate = "2020-06-05", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))

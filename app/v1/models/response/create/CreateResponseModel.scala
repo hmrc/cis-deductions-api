@@ -16,9 +16,10 @@
 
 package v1.models.response.create
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import config.AppConfig
+import shared.hateoas._
 import play.api.libs.json._
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory}
 import v1.models.request.create.CreateRequestData
 
 case class CreateResponseModel(submissionId: String)

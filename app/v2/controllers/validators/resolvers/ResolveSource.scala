@@ -17,9 +17,10 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated
+import models.errors.RuleSourceInvalidError
 import shared.controllers.validators.resolvers.ResolverSupport
 import shared.models.domain.Source
-import shared.models.errors.{MtdError, RuleSourceInvalidError}
+import shared.models.errors.MtdError
 
 object ResolveSource extends ResolverSupport {
 

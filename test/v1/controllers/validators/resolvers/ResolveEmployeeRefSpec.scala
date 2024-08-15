@@ -17,8 +17,8 @@
 package v1.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
-import shared.models.errors.EmployerRefFormatError
+import models.errors.EmployerRefFormatError
+import shared.utils.UnitSpec
 import v1.controllers.validators.resolvers
 import v1.models.request.create.EmployeeRef
 

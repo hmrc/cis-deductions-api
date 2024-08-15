@@ -16,8 +16,10 @@
 
 package v1.controllers.validators
 
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import config.MockCisDeductionApiConfig
+import models.errors.{RuleMissingFromDateError, RuleSourceInvalidError}
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
 import shared.models.domain.{DateRange, Nino, Source, TaxYear}
 import shared.models.errors._
@@ -95,8 +97,8 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
     }
   }
 
-  private class Test extends MockAppConfig {
-    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
+  private class Test extends MockAppConfig with MockCisDeductionApiConfig {
+    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 
     protected def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =

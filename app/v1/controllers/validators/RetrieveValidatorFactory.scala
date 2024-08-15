@@ -19,6 +19,7 @@ package v1.controllers.validators
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
+import models.errors.RuleMissingFromDateError
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.{DateRange, Source}

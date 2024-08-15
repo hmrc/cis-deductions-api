@@ -16,11 +16,12 @@
 
 package v2.services
 
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
-import config.AppConfig
+import models.errors.RuleSourceInvalidError
+import shared.config.AppConfig
 import shared.controllers.RequestContext
 import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v2.connectors.RetrieveConnector
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}

@@ -16,8 +16,9 @@
 
 package v1.services
 
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.errors.{RuleDateRangeOutOfDateError, RuleSourceInvalidError}
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{DateRange, Nino, Source}
 import shared.models.errors._

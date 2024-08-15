@@ -16,32 +16,25 @@
 
 package v1.endpoints
 
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import models.errors._
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.{
-  EmployerRefFormatError,
   FromDateFormatError,
   InternalError,
   MtdError,
   NinoFormatError,
-  RuleCostOfMaterialsError,
   RuleDateRangeInvalidError,
-  RuleDeductionAmountError,
-  RuleDeductionsDateRangeInvalidError,
-  RuleDuplicatePeriodError,
-  RuleDuplicateSubmissionError,
-  RuleGrossAmountError,
   RuleIncorrectOrEmptyBodyError,
   RuleTaxYearNotEndedError,
   RuleTaxYearNotSupportedError,
-  RuleUnalignedDeductionsPeriodError,
   ToDateFormatError
 }
-import support.IntegrationBaseSpec
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
@@ -53,20 +46,20 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
       "any valid request is made" in new NonTysTest {
         override def setupStubs(): Unit = {
-          DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, OK, deductionsResponseBody, None)
+          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(OK, createDeductionResponseBody)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe OK
-        response.json shouldBe deductionsResponseBody
+        response.json shouldBe createDeductionResponseBody
       }
 
       "any valid request is made for a Tax Year Specific (TYS) tax year" in new TysIfsTest {
         override def setupStubs(): Unit = {
-          DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, CREATED, deductionsResponseBody, None)
+          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(CREATED, createDeductionResponseBody)
         }
 
         val response: WSResponse = await(request().post(requestBodyJsonTys))
-        response.json shouldBe deductionsResponseBodyTys
+        response.json shouldBe createDeductionResponseBodyTys
         response.status shouldBe OK
       }
     }
@@ -105,7 +98,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
             override def setupStubs(): Unit = {
-              DownstreamStub.mockDownstream(DownstreamStub.POST, downstreamUri, downstreamStatus, Json.parse(errorBody(downstreamCode)), None)
+              DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(downstreamStatus, Json.parse(errorBody(downstreamCode)))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))

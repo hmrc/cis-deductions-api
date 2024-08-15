@@ -16,16 +16,16 @@
 
 package v2.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.outcomes.ResponseWrapper
-import v2.mocks.MockFeatureSwitches
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.outcomes.ResponseWrapper
+import v2.mocks.MockCisDeductionApiFeatureSwitches
 import shared.models.domain.{Nino, Source, TaxYear}
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 import scala.concurrent.Future
 
-class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
+class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
 
   private val nino = "AA123456A"
 
@@ -60,7 +60,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/$nino",
-          queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
+          parameters = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -96,7 +96,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/$nino",
-          queryParams = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
+          parameters = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -131,7 +131,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
         willGet(
           url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
-          queryParams = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
+          parameters = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
@@ -149,10 +149,10 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
     protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source.`contractor`)
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockedAppConfig.desBaseUrl returns baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
 }

@@ -16,14 +16,15 @@
 
 package v1.endpoints
 
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.errors.{RuleDateRangeOutOfDateError, RuleMissingFromDateError, RuleSourceInvalidError}
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
-import support.IntegrationBaseSpec
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import v1.fixtures.RetrieveJson._
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
@@ -154,7 +155,8 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
+            DownstreamStub.when(DownstreamStub.GET, downstreamUri).thenReturn(downstreamStatus, errorBody(downstreamErrorCode))
+
           }
 
           val response: WSResponse = await(mtdRequest().get())
@@ -171,7 +173,8 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.mockDownstream(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamErrorCode), None)
+            DownstreamStub.when(DownstreamStub.GET, downstreamUri).thenReturn(downstreamStatus, errorBody(downstreamErrorCode))
+
           }
 
           val response: WSResponse = await(mtdRequest().get())

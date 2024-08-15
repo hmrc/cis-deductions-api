@@ -16,14 +16,14 @@
 
 package v1.models.response.retrieve
 
-import api.hateoas.Link
-import api.hateoas.Method.{DELETE, GET, POST, PUT}
-import api.mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.models.domain.TaxYear
 import v1.fixtures.RetrieveModels.cisDeductions
 import v1.fixtures.{RetrieveJson, RetrieveModels}
+import shared.hateoas.Method._
+import shared.hateoas._
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
@@ -62,7 +62,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     val taxYear  = TaxYear.fromMtd("2023-24")
 
     "return the correct links" in { () =>
-      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
 
@@ -74,7 +74,7 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     }
 
     "return the correct item links" in {
-      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
       val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"

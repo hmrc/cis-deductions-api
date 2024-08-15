@@ -16,11 +16,11 @@
 
 package v2.hateoas
 
-import api.hateoas.Link
-import api.hateoas.Method.{DELETE, GET, POST, PUT}
-import api.hateoas.RelType._
-import config.AppConfig
+import shared.hateoas.RelType._
+import shared.config.AppConfig
 import shared.models.domain.TaxYear
+import shared.hateoas.Link
+import shared.hateoas.Method._
 
 trait HateoasLinks {
 

@@ -16,8 +16,9 @@
 
 package v2.controllers.validators
 
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import models.errors.RuleSourceInvalidError
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, Source, TaxYear}
 import shared.models.errors._

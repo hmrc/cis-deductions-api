@@ -675,7 +675,7 @@ object CreateRequestFixtures {
 
   val emptyRequest: JsObject = JsObject.empty
 
-  val deductionsResponseBody: JsValue = Json.parse("""
+  val createDeductionResponseBody: JsValue = Json.parse("""
       |{
       |   "submissionId":"someResponse",
       |   "links":[
@@ -688,7 +688,7 @@ object CreateRequestFixtures {
       |}
     """.stripMargin)
 
-  val deductionsResponseBodyTys: JsValue = Json.parse("""
+  val createDeductionResponseBodyTys: JsValue = Json.parse("""
       |{
       |   "submissionId":"someResponse",
       |   "links":[

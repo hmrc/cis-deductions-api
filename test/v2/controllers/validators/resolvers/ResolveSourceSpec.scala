@@ -17,9 +17,9 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
+import models.errors.RuleSourceInvalidError
+import shared.utils.UnitSpec
 import shared.models.domain.Source
-import shared.models.errors.RuleSourceInvalidError
 import v2.controllers.validators.resolvers
 
 class ResolveSourceSpec extends UnitSpec {

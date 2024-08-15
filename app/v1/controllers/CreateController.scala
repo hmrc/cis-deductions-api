@@ -16,12 +16,13 @@
 
 package v1.controllers
 
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import shared.config.AppConfig
 import shared.controllers._
+import shared.hateoas._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v1.controllers.validators.CreateValidatorFactory
 import v1.models.response.create.CreateHateoasData
@@ -40,6 +41,8 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "create"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "CreateRequestController",
@@ -57,6 +60,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         auditService = auditService,
         auditType = "CreateCisDeductionsForSubcontractor",
         transactionName = "create-cis-deductions-for-subcontractor",
+        apiVersion = Version(request),
         params = Map("nino" -> nino),
         requestBody = Some(request.body),
         includeResponse = true

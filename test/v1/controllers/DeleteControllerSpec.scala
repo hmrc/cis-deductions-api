@@ -16,17 +16,20 @@
 
 package v1.controllers
 
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
+import models.errors.SubmissionIdFormatError
+import play.api.Configuration
+import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
-import shared.models.errors.{ErrorWrapper, NinoFormatError, SubmissionIdFormatError}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors.{ErrorWrapper, NinoFormatError}
+import shared.services.MockAuditService
 import v1.controllers.validators.MockedDeleteValidatorFactory
 import v1.mocks.services._
+import v1.models.domain.SubmissionId
 import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,10 +43,10 @@ class DeleteControllerSpec
     with MockDeleteService
     with MockAuditService {
 
-  private val submissionId       = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
-  private val rawTaxYear         = "2022-23"
-  private val taxYear            = TaxYear.fromMtd(rawTaxYear)
-  private val deleteRequestData  = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
+  private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+  private val rawTaxYear        = "2022-23"
+  private val taxYear           = TaxYear.fromMtd(rawTaxYear)
+  private val deleteRequestData = DeleteRequestData(Nino(validNino), SubmissionId(submissionId), Some(taxYear))
 
   "delete" should {
     "return a successful response with status 204 (No Content)" when {
@@ -82,7 +85,7 @@ class DeleteControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new DeleteController(
       authService = mockEnrolmentsAuthService,
@@ -94,7 +97,13 @@ class DeleteControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.delete(nino, submissionId, Some(rawTaxYear))(fakeRequest)
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.delete(validNino, submissionId, Some(rawTaxYear))(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -103,7 +112,8 @@ class DeleteControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "submissionId" -> submissionId, "taxYear" -> rawTaxYear),
+          versionNumber = apiVersion.name,
+          params = Map("nino" -> validNino, "submissionId" -> submissionId, "taxYear" -> rawTaxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

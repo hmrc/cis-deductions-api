@@ -28,7 +28,8 @@ object AppDependencies {
     "org.typelevel"                %% "cats-core"                 % "2.9.0",
     "com.chuusai"                  %% "shapeless"                 % "2.4.0-M1",
     "com.neovisionaries"            % "nv-i18n"                   % "1.29",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.15.2"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.15.2",
+    "com.github.jknack"             % "handlebars"                % "4.3.1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(

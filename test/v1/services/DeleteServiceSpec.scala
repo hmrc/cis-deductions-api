@@ -16,13 +16,25 @@
 
 package v1.services
 
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.errors.SubmissionIdFormatError
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
-import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, SubmissionIdFormatError, TaxYearFormatError}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors.{
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleTaxYearNotSupportedError,
+  TaxYearFormatError
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockDeleteConnector
+import v1.models.domain.SubmissionId
 import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global

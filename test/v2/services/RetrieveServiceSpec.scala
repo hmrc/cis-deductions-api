@@ -16,9 +16,10 @@
 
 package v2.services
 
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.errors.RuleSourceInvalidError
+import shared.config.MockAppConfig
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, Source, TaxYear}
 import shared.models.errors._
