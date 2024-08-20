@@ -16,6 +16,7 @@
 
 package v1.models.response.create
 
+import api.hateoas.HateoasLinks
 import shared.hateoas._
 import play.api.libs.json._
 import shared.config.AppConfig

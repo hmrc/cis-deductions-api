@@ -17,9 +17,9 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
+import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
 import shared.utils.UnitSpec
-import shared.models.domain.Source
 import v2.controllers.validators.resolvers
 
 class ResolveSourceSpec extends UnitSpec {
@@ -27,9 +27,9 @@ class ResolveSourceSpec extends UnitSpec {
   "ResolveSource" should {
     "return no errors" when {
       "passed a valid Source" in {
-        ResolveSource("all") shouldBe Valid(Source.`all`)
-        ResolveSource("customer") shouldBe Valid(Source.`customer`)
-        ResolveSource("contractor") shouldBe Valid(Source.`contractor`)
+        ResolveSource("all") shouldBe Valid(CisSource.`all`)
+        ResolveSource("customer") shouldBe Valid(CisSource.`customer`)
+        ResolveSource("contractor") shouldBe Valid(CisSource.`contractor`)
       }
     }
 

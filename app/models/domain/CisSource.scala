@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package shared.hateoas
+package models.domain
 
-object RelType {
-  val SELF         = "self"
-  val CREATE_CIS   = "create-cis-deductions-for-subcontractor"
-  val DELETE_CIS   = "delete-cis-deductions-for-subcontractor"
-  val AMEND_CIS    = "amend-cis-deductions-for-subcontractor"
-  val RETRIEVE_CIS = "retrieve-cis-deductions-for-subcontractor"
+import play.api.libs.json
+import shared.utils.enums.Enums
+
+sealed trait CisSource
+
+object CisSource {
+  case object `all`        extends CisSource
+  case object `contractor` extends CisSource
+  case object `customer`   extends CisSource
+
+  implicit val format: json.Format[CisSource] = Enums.format[CisSource]
+
+  val parser: PartialFunction[String, CisSource] = Enums.parser[CisSource]
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package v2.controllers.validators.resolvers
+package models.domain
 
-import cats.data.Validated
-import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
-import shared.controllers.validators.resolvers.ResolverSupport
-import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
-object ResolveSource extends ResolverSupport {
+class CisSourceSpec extends UnitSpec {
 
-  val resolver: Resolver[String, CisSource] = resolvePartialFunction(RuleSourceInvalidError)(CisSource.parser)
-
-  def apply(value: String): Validated[Seq[MtdError], CisSource] = resolver(value)
+  "toString" should {
+    "return the source value" in {
+      val source = CisSource.`all`
+      source.toString shouldBe "all"
+    }
+  }
 
 }

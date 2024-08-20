@@ -19,10 +19,11 @@ package v1.controllers.validators
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
+import models.domain.CisSource
 import models.errors.RuleMissingFromDateError
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
-import shared.models.domain.{DateRange, Source}
+import shared.models.domain.DateRange
 import shared.models.errors._
 import v1.controllers.validators.DeductionsValidator._
 import v1.models.request.retrieve.RetrieveRequestData
@@ -47,7 +48,7 @@ class RetrieveValidatorFactory {
     }
   }
 
-  private val resolveSource = ResolveSource.resolver.resolveOptionallyWithDefault(Source.`all`)
+  private val resolveSource = ResolveSource.resolver.resolveOptionallyWithDefault(CisSource.`all`)
 
   private val resolveDateRange = {
     val resolveFromDate = ResolveIsoDate(FromDateFormatError)

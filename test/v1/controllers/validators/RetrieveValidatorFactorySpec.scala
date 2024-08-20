@@ -17,12 +17,13 @@
 package v1.controllers.validators
 
 import config.MockCisDeductionApiConfig
+import models.domain.CisSource
 import models.errors.{RuleMissingFromDateError, RuleSourceInvalidError}
 import shared.config.MockAppConfig
-import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
-import shared.models.domain.{DateRange, Nino, Source, TaxYear}
+import shared.models.domain.{DateRange, Nino, TaxYear}
 import shared.models.errors._
+import shared.utils.UnitSpec
 import v1.models.request.retrieve.RetrieveRequestData
 
 import java.time.LocalDate
@@ -45,13 +46,13 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
       "all query parameters are passed in the request" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some(fromDateStr), Some(toDateStr), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, CisSource.`all`))
       }
 
       "an optional field returns None" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some(fromDateStr), Some(toDateStr), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, CisSource.`all`))
       }
     }
 

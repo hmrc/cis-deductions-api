@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import shared.models.outcomes.ResponseWrapper
+import models.domain.CisSource
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
@@ -24,8 +24,9 @@ import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.{HateoasWrapper, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{DateRange, Nino, Source, TaxYear}
+import shared.models.domain.{DateRange, Nino, TaxYear}
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v1.controllers.validators.MockedRetrieveValidatorFactory
 import v1.fixtures.RetrieveJson._
@@ -57,7 +58,7 @@ class RetrieveControllerSpec
   private val dateRange: DateRange = DateRange(fromDate, toDate)
 
   private val taxYear   = TaxYear.fromMtd("2019-20")
-  private val sourceRaw = Source.`customer`
+  private val sourceRaw = CisSource.`customer`
 
   private val retrieveRequestData = RetrieveRequestData(Nino(validNino), dateRange, sourceRaw)
 

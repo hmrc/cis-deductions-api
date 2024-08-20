@@ -16,8 +16,9 @@
 
 package v2.models.request.retrieve
 
-import shared.models.domain.{Nino, Source, TaxYear}
+import models.domain.CisSource
+import shared.models.domain.{Nino, TaxYear}
 
-case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: Source) {
+case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: CisSource) {
   val (startDate, endDate) = (taxYear.startDate.toString, taxYear.endDate.toString)
 }

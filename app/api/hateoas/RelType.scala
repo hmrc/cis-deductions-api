@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package v2.controllers.validators.resolvers
+package api.hateoas
 
-import cats.data.Validated
-import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
-import shared.controllers.validators.resolvers.ResolverSupport
-import shared.models.errors.MtdError
-
-object ResolveSource extends ResolverSupport {
-
-  val resolver: Resolver[String, CisSource] = resolvePartialFunction(RuleSourceInvalidError)(CisSource.parser)
-
-  def apply(value: String): Validated[Seq[MtdError], CisSource] = resolver(value)
-
+object RelType {
+  val SELF         = "self"
+  val CREATE_CIS   = "create-cis-deductions-for-subcontractor"
+  val DELETE_CIS   = "delete-cis-deductions-for-subcontractor"
+  val AMEND_CIS    = "amend-cis-deductions-for-subcontractor"
+  val RETRIEVE_CIS = "retrieve-cis-deductions-for-subcontractor"
 }

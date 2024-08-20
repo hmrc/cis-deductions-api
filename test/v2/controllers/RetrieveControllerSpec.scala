@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import models.domain.CisSource
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
@@ -23,7 +24,7 @@ import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas._
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
@@ -52,7 +53,7 @@ class RetrieveControllerSpec
 
   private val taxYearRaw          = "2019-20"
   private val taxYear             = TaxYear.fromMtd(taxYearRaw)
-  private val sourceRaw           = Source.`customer`
+  private val sourceRaw           = CisSource.`customer`
   private val retrieveRequestData = RetrieveRequestData(Nino(validNino), taxYear, sourceRaw)
 
   "retrieve" should {

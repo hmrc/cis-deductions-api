@@ -16,7 +16,7 @@
 
 package v2.fixtures
 
-import shared.models.domain.Source
+import models.domain.CisSource
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 object RetrieveModels {
@@ -38,7 +38,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-07-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Source.`customer`
+        source = CisSource.`customer`
       ),
       PeriodData(
         deductionFromDate = "2019-07-06",
@@ -48,7 +48,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-08-11T16:38:57.489Z",
         submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-        source = Source.`customer`
+        source = CisSource.`customer`
       )
     )
   )
@@ -70,7 +70,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-07-11T16:38:57.489Z",
         submissionId = None,
-        source = Source.`contractor`
+        source = CisSource.`contractor`
       ),
       PeriodData(
         deductionFromDate = "2019-07-06",
@@ -80,7 +80,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-08-11T16:38:57.489Z",
         submissionId = None,
-        source = Source.`contractor`
+        source = CisSource.`contractor`
       )
     )
   )
@@ -102,7 +102,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-07-11T16:38:57.489Z",
         submissionId = None,
-        source = Source.`contractor`
+        source = CisSource.`contractor`
       ),
       PeriodData(
         deductionFromDate = "2019-07-06",
@@ -112,7 +112,7 @@ object RetrieveModels {
         grossAmountPaid = Some(1457.00),
         submissionDate = "2020-08-11T16:38:57.489Z",
         submissionId = None,
-        source = Source.`contractor`
+        source = CisSource.`contractor`
       )
     )
   )
@@ -131,8 +131,8 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         List(
-          PeriodData("2020-04-06", "2020-05-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z", None, Source.`contractor`),
-          PeriodData("2020-05-06", "2020-06-05", Some(355.11), Some(35.11), Some(1457.11), "2020-06-11T16:38:57.489Z", None, Source.`contractor`),
+          PeriodData("2020-04-06", "2020-05-05", Some(355.11), Some(35.11), Some(1457.11), "2020-05-11T16:38:57.489Z", None, CisSource.`contractor`),
+          PeriodData("2020-05-06", "2020-06-05", Some(355.11), Some(35.11), Some(1457.11), "2020-06-11T16:38:57.489Z", None, CisSource.`contractor`),
           PeriodData(
             "2020-06-06",
             "2020-07-05",
@@ -141,7 +141,7 @@ object RetrieveModels {
             Some(1457.11),
             "2020-07-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            Source.`customer`
+            CisSource.`customer`
           ),
           PeriodData(
             "2020-07-06",
@@ -151,7 +151,7 @@ object RetrieveModels {
             Some(1457.11),
             "2020-08-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            Source.`customer`
+            CisSource.`customer`
           )
         )
       ),
@@ -164,8 +164,8 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         List(
-          PeriodData("2020-07-06", "2020-08-05", Some(60.11), Some(35.11), Some(1457.11), "2020-08-11T16:38:57.489Z", None, Source.`contractor`),
-          PeriodData("2020-09-06", "2020-10-05", Some(60.11), Some(35.11), Some(1457.11), "2020-10-11T16:38:57.489Z", None, Source.`contractor`)
+          PeriodData("2020-07-06", "2020-08-05", Some(60.11), Some(35.11), Some(1457.11), "2020-08-11T16:38:57.489Z", None, CisSource.`contractor`),
+          PeriodData("2020-09-06", "2020-10-05", Some(60.11), Some(35.11), Some(1457.11), "2020-10-11T16:38:57.489Z", None, CisSource.`contractor`)
         )
       )
     )
@@ -193,7 +193,7 @@ object RetrieveModels {
             Some(1457.00),
             "2020-07-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            Source.`customer`
+            CisSource.`customer`
           ),
           PeriodData(
             "2019-07-06",
@@ -203,7 +203,7 @@ object RetrieveModels {
             Some(1457.00),
             "2020-08-11T16:38:57.489Z",
             Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-            Source.`customer`
+            CisSource.`customer`
           )
         )
       )
@@ -224,8 +224,8 @@ object RetrieveModels {
         Some(6644.67),
         Some(3424.12),
         List(
-          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z", None, Source.`contractor`),
-          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z", None, Source.`contractor`)
+          PeriodData("2019-06-06", "2019-07-05", Some(355.00), Some(35.00), Some(1457.00), "2020-07-11T16:38:57.489Z", None, CisSource.`contractor`),
+          PeriodData("2019-07-06", "2019-08-05", Some(355.00), Some(35.00), Some(1457.00), "2020-08-11T16:38:57.489Z", None, CisSource.`contractor`)
         )
       )
     )
@@ -254,7 +254,7 @@ object RetrieveModels {
               grossAmountPaid = Some(1457.00),
               submissionDate = "2020-07-11T16:38:57.489Z",
               submissionId = Some("4557ecb5-fd32-48cc-81f5-e6acd1099f3c"),
-              source = Source.`customer`
+              source = CisSource.`customer`
             )
           )
         )

@@ -16,10 +16,11 @@
 
 package v2.connectors
 
+import models.domain.CisSource
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v2.mocks.MockCisDeductionApiFeatureSwitches
-import shared.models.domain.{Nino, Source, TaxYear}
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
@@ -147,7 +148,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatur
     protected val taxYear: TaxYear = TaxYear.fromIso(endDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, Source.`contractor`)
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, CisSource.`contractor`)
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"

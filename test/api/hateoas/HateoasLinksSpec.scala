@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package shared.hateoas
+package api.hateoas
 
 import shared.config.MockAppConfig
 import shared.hateoas.Method._
 import shared.models.domain.TaxYear
 import shared.utils.UnitSpec
+import shared.hateoas.Link
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 

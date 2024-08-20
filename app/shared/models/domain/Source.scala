@@ -22,12 +22,7 @@ import shared.utils.enums.Enums
 sealed trait Source
 
 object Source {
-  case object `MTD-SA`     extends Source
-  case object `all`        extends Source
-  case object `contractor` extends Source
-  case object `customer`   extends Source
+  case object `MTD-SA` extends Source
 
   implicit val format: json.Format[Source] = Enums.format[Source]
-
-  val parser: PartialFunction[String, Source] = Enums.parser[Source]
 }

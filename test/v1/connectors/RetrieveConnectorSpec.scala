@@ -16,10 +16,11 @@
 
 package v1.connectors
 
+import models.domain.CisSource
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{DateRange, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v1.mocks.MockCisDeductionApiFeatureSwitches
-import shared.models.domain.{DateRange, Nino, Source, TaxYear}
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
@@ -153,7 +154,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatur
     protected val dateRange: DateRange = DateRange(fromDate, toDate)
 
     protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
-    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), dateRange, Source.`contractor`)
+    protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), dateRange, CisSource.`contractor`)
 
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
