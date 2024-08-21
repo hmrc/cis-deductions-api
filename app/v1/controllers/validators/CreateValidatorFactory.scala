@@ -19,7 +19,7 @@ package v1.controllers.validators
 import cats.data.Validated
 import cats.data.Validated._
 import cats.implicits._
-import config.CisDeductionApiConfig
+import config.CisDeductionsApiConfig
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
@@ -32,7 +32,7 @@ import v1.models.request.create.{CreateBody, CreateRequestData}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateValidatorFactory @Inject() (appConfig: CisDeductionApiConfig) {
+class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
 
   private val resolveJson = new ResolveJsonObject[CreateBody]()
 

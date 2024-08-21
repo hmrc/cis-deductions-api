@@ -34,7 +34,7 @@ class CisApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) ext
         description = "An API for providing Construction industry scheme data",
         context = appConfig.apiGatewayContext,
         categories = Seq(mtdCategory),
-        versions = Seq(
+        versions = List(
           APIVersion(
             version = Version1,
             status = buildAPIStatus(Version1),

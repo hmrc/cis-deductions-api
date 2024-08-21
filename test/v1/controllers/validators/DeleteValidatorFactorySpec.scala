@@ -16,7 +16,7 @@
 
 package v1.controllers.validators
 
-import config.MockCisDeductionApiConfig
+import config.MockCisDeductionsApiConfig
 import models.errors.SubmissionIdFormatError
 import shared.config.MockAppConfig
 import shared.utils.UnitSpec
@@ -74,7 +74,7 @@ class DeleteValidatorFactorySpec extends UnitSpec {
     }
   }
 
-  private class Test extends MockAppConfig with MockCisDeductionApiConfig {
+  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
     MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
     private val validatorFactory = new DeleteValidatorFactory
 

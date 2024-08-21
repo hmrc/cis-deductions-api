@@ -16,22 +16,19 @@
 
 package config
 
-import play.api.Configuration
-import shared.config.FeatureSwitches
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 import shared.models.domain.TaxYear
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import javax.inject.{Inject, Singleton}
+trait MockCisDeductionsApiConfig extends MockFactory {
 
-/** Put API-specific config here...
-  */
-@Singleton
-class CisDeductionApiConfig @Inject() (config: ServicesConfig, configuration: Configuration) {
+  implicit val mockCisDeductionApiConfig: CisDeductionsApiConfig = mock[CisDeductionsApiConfig]
 
-  def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+  object MockedCisDeductionApiConfig {
 
-  def featureSwitches: FeatureSwitches = CisDeductionsApiFeatureSwitches(featureSwitchConfig)
+    def minTaxYearCisDeductions: CallHandler[TaxYear] =
+      (() => mockCisDeductionApiConfig.minTaxYearCisDeductions).expects()
 
-  def minTaxYearCisDeductions: TaxYear = TaxYear.starting(config.getInt("minTaxYearCisDeductions"))
+  }
 
 }

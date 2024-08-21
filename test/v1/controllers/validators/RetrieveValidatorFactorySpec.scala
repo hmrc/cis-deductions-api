@@ -16,7 +16,7 @@
 
 package v1.controllers.validators
 
-import config.MockCisDeductionApiConfig
+import config.MockCisDeductionsApiConfig
 import models.domain.CisSource
 import models.errors.{RuleMissingFromDateError, RuleSourceInvalidError}
 import shared.config.MockAppConfig
@@ -98,7 +98,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
     }
   }
 
-  private class Test extends MockAppConfig with MockCisDeductionApiConfig {
+  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
     MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 
