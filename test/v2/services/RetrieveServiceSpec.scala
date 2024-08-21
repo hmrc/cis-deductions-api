@@ -16,12 +16,14 @@
 
 package v2.services
 
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
+import shared.config.MockAppConfig
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.fixtures.RetrieveModels._
 import v2.mocks.connectors.MockRetrieveConnector
@@ -41,7 +43,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
   private val tysTaxYearRaw = "2023-24"
   private val tysTaxYear    = TaxYear.fromMtd(tysTaxYearRaw)
 
-  private val source                                 = Source.`contractor`
+  private val source                                 = CisSource.`contractor`
   val request: RetrieveRequestData                   = RetrieveRequestData(nino, taxYear, source)
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel

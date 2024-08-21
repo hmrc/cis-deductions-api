@@ -17,10 +17,10 @@
 package v1.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
-import shared.models.domain.SubmissionId
-import shared.models.errors.SubmissionIdFormatError
+import models.errors.SubmissionIdFormatError
+import shared.utils.UnitSpec
 import v1.controllers.validators.resolvers
+import v1.models.domain.SubmissionId
 
 class ResolveSubmissionIdSpec extends UnitSpec {
 

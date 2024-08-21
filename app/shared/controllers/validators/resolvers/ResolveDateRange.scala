@@ -47,7 +47,7 @@ case class ResolveDateRange(startDateFormatError: MtdError = StartDateFormatErro
     resolver thenValidate yearsLimitedTo(minYear, startDateFormatError, maxYear, endDateFormatError)
 
   private def resolveDateRange(parsedStartDate: LocalDate, parsedEndDate: LocalDate): Validated[Seq[MtdError], DateRange] =
-    if (parsedEndDate <= parsedStartDate)
+    if (parsedEndDate < parsedStartDate)
       Invalid(List(endBeforeStartDateError))
     else
       Valid(DateRange(parsedStartDate, parsedEndDate))

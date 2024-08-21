@@ -16,21 +16,21 @@
 
 package shared.controllers
 
-import api.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceOutcome
 import cats.data.EitherT
 import cats.data.Validated.Valid
 import cats.implicits._
-import config.AppConfig
-import config.Deprecation.Deprecated
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import routing.Version
+import shared.config.AppConfig
+import shared.config.Deprecation.Deprecated
 import shared.controllers.validators.Validator
-import shared.models.errors.{ErrorWrapper, InternalError}
+import shared.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
+import shared.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.Version
+import shared.services.ServiceOutcome
 import shared.utils.DateUtils.longDateTimestampGmt
 import shared.utils.Logging
 
@@ -57,7 +57,8 @@ object RequestHandler {
       service: Input => Future[ServiceOutcome[Output]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandler] = None,
+      responseModifier: Option[Output => Output] = None
   ) extends RequestHandler {
 
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
@@ -68,6 +69,9 @@ object RequestHandler {
 
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
+
+    def withResponseModifier(responseModifier: Output => Output): RequestHandlerBuilder[Input, Output] =
+      copy(responseModifier = Option(responseModifier))
 
     /** Shorthand for
       * {{{
@@ -158,11 +162,20 @@ object RequestHandler {
             s"with correlationId : ${ctx.correlationId}")
 
         val result =
-          for {
-            parsedRequest   <- EitherT.fromEither[Future](validator.validateAndWrapResult())
-            serviceResponse <- EitherT(service(parsedRequest))
-          } yield doWithContext(ctx.withCorrelationId(serviceResponse.correlationId)) { implicit ctx: RequestContext =>
-            handleSuccess(parsedRequest, serviceResponse)
+          if (simulateRequestCannotBeFulfilled) {
+            EitherT[Future, ErrorWrapper, Result](Future.successful(Left(ErrorWrapper(ctx.correlationId, RuleRequestCannotBeFulfilledError))))
+          } else {
+            for {
+              parsedRequest   <- EitherT.fromEither[Future](validator.validateAndWrapResult())
+              serviceResponse <- EitherT(service(parsedRequest))
+            } yield doWithContext(ctx.withCorrelationId(serviceResponse.correlationId)) { implicit ctx: RequestContext =>
+              responseModifier match {
+                case Some(modifier) =>
+                  handleSuccess(parsedRequest, serviceResponse.copy(responseData = modifier(serviceResponse.responseData)))
+                case None =>
+                  handleSuccess(parsedRequest, serviceResponse)
+              }
+            }
           }
 
         result.leftMap { errorWrapper =>
@@ -171,6 +184,10 @@ object RequestHandler {
           }
         }.merge
       }
+
+      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: AppConfig): Boolean =
+        request.headers.get("Gov-Test-Scenario").contains("REQUEST_CANNOT_BE_FULFILLED") &&
+          appConfig.allowRequestCannotBeFulfilledHeader(Version(request))
 
       private def doWithContext[A](ctx: RequestContext)(f: RequestContext => A): A = f(ctx)
 
@@ -215,7 +232,7 @@ object RequestHandler {
         InternalServerError(InternalError.asJson)
       }
 
-      def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext): Unit =

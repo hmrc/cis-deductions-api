@@ -16,16 +16,17 @@
 
 package shared.models.domain
 
-import play.api.libs.json.Json
-import shared.UnitSpec
+import play.api.libs.json.{JsValue, Json}
+import shared.utils.UnitSpec
 
 class EmptyJsonBodySpec extends UnitSpec {
 
   "EmptyJsonBody.writes" should {
     "return an empty JSON body" when {
       "called" in {
-        val json = EmptyJsonBody
-        Json.toJson(json)(EmptyJsonBody.writes) shouldBe Json.obj()
+        val json            = EmptyJsonBody
+        val result: JsValue = Json.toJson(json)(EmptyJsonBody.writes)
+        result shouldBe Json.obj()
       }
     }
   }

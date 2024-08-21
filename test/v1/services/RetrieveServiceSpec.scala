@@ -16,11 +16,13 @@
 
 package v1.services
 
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.domain.CisSource
+import models.errors.{RuleDateRangeOutOfDateError, RuleSourceInvalidError}
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{DateRange, Nino, Source}
+import shared.models.domain.{DateRange, Nino}
 import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveModels._
 import v1.mocks.connectors.MockRetrieveConnector
@@ -51,7 +53,7 @@ class RetrieveServiceSpec extends UnitSpec {
 
   private val tysDateRange: DateRange = DateRange(tysFromDate, tysToDate)
 
-  private val source = Source.`contractor`
+  private val source = CisSource.`contractor`
 
   private val request    = RetrieveRequestData(nino, dateRange, source)
   private val tysRequest = RetrieveRequestData(nino, tysDateRange, source)

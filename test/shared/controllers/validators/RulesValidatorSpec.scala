@@ -19,9 +19,9 @@ package shared.controllers.validators
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST
-import shared.UnitSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
 class RulesValidatorSpec extends UnitSpec {
 

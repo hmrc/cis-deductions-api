@@ -16,14 +16,14 @@
 
 package shared.models.domain
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class BusinessIdSpec extends UnitSpec {
 
   "toString" should {
     "return the BusinessId value" in {
-      val businessId = BusinessId("some id")
-      businessId.toString shouldBe "some id"
+      val result = BusinessId("some id").toString
+      result shouldBe "some id"
     }
   }
 

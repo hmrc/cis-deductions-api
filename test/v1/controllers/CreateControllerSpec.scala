@@ -16,17 +16,18 @@
 
 package v1.controllers
 
-import api.hateoas.Method._
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
+import models.errors.RuleUnalignedDeductionsPeriodError
+import play.api.Configuration
+import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.Nino
-import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleUnalignedDeductionsPeriodError}
+import shared.models.errors.{ErrorWrapper, NinoFormatError}
+import shared.services.MockAuditService
 import v1.controllers.validators.MockedCreateValidatorFactory
 import v1.fixtures.AmendRequestFixtures.requestJson
 import v1.fixtures.CreateRequestFixtures._
@@ -36,6 +37,8 @@ import v1.models.response.create.{CreateHateoasData, CreateResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import shared.hateoas.Method._
+import shared.hateoas._
 
 class CreateControllerSpec
     extends ControllerBaseSpec
@@ -46,20 +49,20 @@ class CreateControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  private val responseId         = "S4636A77V5KB8625U"
-  private val requestData        = CreateRequestData(Nino(nino), parsedRequestData)
+  private val responseId  = "S4636A77V5KB8625U"
+  private val requestData = CreateRequestData(Nino(validNino), parsedRequestData)
 
   val response: CreateResponseModel = CreateResponseModel(responseId)
 
   val testHateoasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/individuals/deductions/cis/$nino/current-position",
+      href = s"/individuals/deductions/cis/$validNino/current-position",
       rel = "retrieve-cis-deductions-for-subcontractor",
       method = GET
     )
   )
 
-  private val parsedHateoas = Json.parse(hateoasResponse(nino, responseId))
+  private val parsedHateoas = Json.parse(hateoasResponse(validNino, responseId))
 
   "create" should {
     "return a successful response with status 200 (OK)" when {
@@ -72,7 +75,7 @@ class CreateControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrap(response, CreateHateoasData(nino, requestData))
+          .wrap(response, CreateHateoasData(validNino, requestData))
           .returns(HateoasWrapper(response, testHateoasLinks))
 
         runOkTestWithAudit(
@@ -104,7 +107,7 @@ class CreateControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new CreateController(
       authService = mockEnrolmentsAuthService,
@@ -117,16 +120,23 @@ class CreateControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.create(nino)(fakePostRequest(requestJson))
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestJson))
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "CreateCisDeductionsForSubcontractor",
         transactionName = "create-cis-deductions-for-subcontractor",
         detail = GenericAuditDetail(
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino),
+          params = Map("nino" -> validNino),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

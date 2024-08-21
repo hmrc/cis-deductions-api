@@ -17,7 +17,7 @@
 package shared.models.domain
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 import java.time.{LocalDate, ZoneId}
 

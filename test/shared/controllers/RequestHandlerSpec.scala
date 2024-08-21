@@ -16,32 +16,30 @@
 
 package shared.controllers
 
-import api.hateoas._
-import api.mocks._
-import api.models.auth.UserDetails
-import api.models.outcomes.ResponseWrapper
-import api.services.{MockAuditService, ServiceOutcome}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxValidatedId
-import config.Deprecation.{Deprecated, NotDeprecated}
-import config.{AppConfig, Deprecation}
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.{FakeRequest, ResultExtractors}
-import routing.Version
-import shared.UnitSpec
+import shared.config.Deprecation.{Deprecated, NotDeprecated}
+import shared.config.{AppConfig, Deprecation, MockAppConfig}
 import shared.controllers.validators.Validator
+import shared.hateoas._
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.errors.{ErrorWrapper, MtdError, NinoFormatError}
+import shared.models.auth.UserDetails
+import shared.models.errors.{ErrorWrapper, InternalError, MtdError, NinoFormatError}
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version3}
+import shared.services.{MockAuditService, ServiceOutcome}
+import shared.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 class RequestHandlerSpec
     extends UnitSpec
@@ -54,34 +52,43 @@ class RequestHandlerSpec
     with ControllerSpecHateoasSupport
     with MockAppConfig {
 
+  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
   private val successCode         = ACCEPTED
 
   private val generatedCorrelationId = "generatedCorrelationId"
-  MockIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
+  private val serviceCorrelationId   = "serviceCorrelationId"
+
+  MockedIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
 
+  private val versionHeader = HeaderNames.ACCEPT -> "application/vnd.hmrc.3.0+json"
+
   implicit val hc: HeaderCarrier   = HeaderCarrier()
   implicit val ctx: RequestContext = RequestContext.from(mockIdGenerator, endpointLogContext)
-  private val serviceCorrelationId   = "serviceCorrelationId"
-  private val userDetails            = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
+
+  private val userDetails = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
 
   implicit val userRequest: UserRequest[AnyContent] = {
-    val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json")
+    val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(versionHeader)
     UserRequest[AnyContent](userDetails, fakeRequest)
   }
 
   implicit val appConfig: AppConfig = mockAppConfig
-  private val mockService            = mock[DummyService]
-
+  private val mockService           = mock[DummyService]
 
   private def service =
-    (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *)
+    (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
 
   case object Input
-  case object Output { implicit val writes: OWrites[Output.type] = _ => successResponseJson }
+
+  case object Output {
+    implicit val writes: OWrites[Output.type] = _ => successResponseJson
+  }
+
   case object HData extends HateoasData
 
   implicit object HLinksFactory extends HateoasLinksFactory[Output.type, HData.type] {
@@ -93,7 +100,7 @@ class RequestHandlerSpec
   }
 
   def mockDeprecation(deprecationStatus: Deprecation): CallHandler[Validated[String, Deprecation]] =
-    MockAppConfig
+    MockedAppConfig
       .deprecationFor(Version(userRequest))
       .returns(deprecationStatus.valid)
       .anyNumberOfTimes()
@@ -106,13 +113,16 @@ class RequestHandlerSpec
     def validate: Validated[Seq[MtdError], Input.type] = Invalid(List(NinoFormatError))
   }
 
+  private val successRequestHandler =
+    RequestHandler
+      .withValidator(successValidatorForRequest)
+      .withService(mockService.service)
+
   "RequestHandler" when {
-    "a request is successful" must {
+
+    "given a request" must {
       "return the correct response" in {
-        val requestHandler = RequestHandler
-          .withValidator(successValidatorForRequest)
-          .withService(mockService.service)
-          .withPlainJsonResult(successCode)
+        val requestHandler = successRequestHandler.withPlainJsonResult(successCode)
 
         mockDeprecation(NotDeprecated)
 
@@ -126,10 +136,7 @@ class RequestHandlerSpec
       }
 
       "return no content if required" in {
-        val requestHandler = RequestHandler
-          .withValidator(successValidatorForRequest)
-          .withService(mockService.service)
-          .withNoContentResult()
+        val requestHandler = successRequestHandler.withNoContentResult()
 
         mockDeprecation(NotDeprecated)
         service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
@@ -142,10 +149,7 @@ class RequestHandlerSpec
       }
 
       "wrap the response with hateoas links if required§" in {
-        val requestHandler = RequestHandler
-          .withValidator(successValidatorForRequest)
-          .withService(mockService.service)
-          .withHateoasResult(mockHateoasFactory)(HData, successCode)
+        val requestHandler = successRequestHandler.withHateoasResult(mockHateoasFactory)(HData, successCode)
 
         mockDeprecation(NotDeprecated)
         service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
@@ -158,15 +162,67 @@ class RequestHandlerSpec
         header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
         status(result) shouldBe successCode
       }
+    }
+
+    "given a request with a RequestCannotBeFulfilled gov-test-scenario header" when {
+      val gtsHeaders = List(
+        "gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED",
+        "Gov-Test-Scenario" -> "REQUEST_CANNOT_BE_FULFILLED",
+        "GOV-TEST-SCENARIO" -> "REQUEST_CANNOT_BE_FULFILLED"
+      )
+
+      "allowed in config" should {
+        "return RuleRequestCannotBeFulfilled error" in {
+          val requestHandler = successRequestHandler.withNoContentResult()
+
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
+          mockDeprecation(NotDeprecated)
+
+          val expectedContent = Json.parse(
+            """
+              |{
+              |  "code":"RULE_REQUEST_CANNOT_BE_FULFILLED",
+              |  "message":"Custom (will vary in production depending on the actual error)"
+              |}
+              |""".stripMargin
+          )
+
+          for (gtsHeader <- gtsHeaders) {
+
+            val userRequest2 = UserRequest[AnyContent](userDetails, FakeRequest().withHeaders(versionHeader, gtsHeader))
+            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockAppConfig)
+
+            status(result) shouldBe 422
+            header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
+            contentAsJson(result) shouldBe expectedContent
+          }
+        }
+      }
+
+      "not allowed in config" should {
+        "return success response, as the Gov-Test-Scenario should be ignored" in {
+          val requestHandler = successRequestHandler.withPlainJsonResult(successCode)
+
+          service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
+
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
+          mockDeprecation(NotDeprecated)
+
+          val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
+
+          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockAppConfig)
+
+          contentAsJson(result) shouldBe successResponseJson
+          header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
+          status(result) shouldBe successCode
+        }
+      }
 
       "a request is made to a deprecated version" must {
         "return the correct response" when {
           "deprecatedOn and sunsetDate exists" in {
 
-            val requestHandler = RequestHandler
-              .withValidator(successValidatorForRequest)
-              .withService(mockService.service)
-              .withPlainJsonResult(successCode)
+            val requestHandler = successRequestHandler.withPlainJsonResult(successCode)
 
             service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
@@ -177,7 +233,7 @@ class RequestHandlerSpec
               )
             )
 
-            MockAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 
@@ -191,10 +247,7 @@ class RequestHandlerSpec
           }
 
           "only deprecatedOn exists" in {
-            val requestHandler = RequestHandler
-              .withValidator(successValidatorForRequest)
-              .withService(mockService.service)
-              .withPlainJsonResult(successCode)
+            val requestHandler = successRequestHandler.withPlainJsonResult(successCode)
 
             service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
@@ -204,7 +257,7 @@ class RequestHandlerSpec
                 None
               )
             )
-            MockAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 
@@ -238,10 +291,7 @@ class RequestHandlerSpec
 
     "a request fails with service errors" must {
       "return the errors" in {
-        val requestHandler = RequestHandler
-          .withValidator(successValidatorForRequest)
-          .withService(mockService.service)
-          .withPlainJsonResult(successCode)
+        val requestHandler = successRequestHandler.withPlainJsonResult(successCode)
 
         mockDeprecation(NotDeprecated)
         service returns Future.successful(Left(ErrorWrapper(serviceCorrelationId, NinoFormatError)))
@@ -267,15 +317,13 @@ class RequestHandlerSpec
         mockAuditService,
         auditType = auditType,
         transactionName = txName,
+        apiVersion = Version3,
         params = params,
         requestBody = requestBody,
         includeResponse = includeResponse
       )
 
-      val basicRequestHandler = RequestHandler
-        .withValidator(successValidatorForRequest)
-        .withService(mockService.service)
-        .withPlainJsonResult(successCode)
+      val basicRequestHandler = successRequestHandler.withPlainJsonResult(successCode)
 
       val basicErrorRequestHandler = RequestHandler
         .withValidator(singleErrorValidatorForRequest)
@@ -290,6 +338,7 @@ class RequestHandlerSpec
             GenericAuditDetail(
               userDetails,
               params = params,
+              apiVersion = Version3.name,
               requestBody = requestBody,
               `X-CorrelationId` = correlationId,
               auditResponse = auditResponse)
@@ -361,9 +410,40 @@ class RequestHandlerSpec
           header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
           status(result) shouldBe NinoFormatError.httpStatus
 
-          verifyAudit(serviceCorrelationId, AuditResponse(NinoFormatError.httpStatus, Left(List(AuditError(NinoFormatError.code)))))
+          verifyAudit(
+            serviceCorrelationId,
+            AuditResponse(NinoFormatError.httpStatus, Left(List(AuditError(NinoFormatError.code))))
+          )
         }
       }
+    }
+
+    "given an error handler that doesn't handle an error" should {
+      "return an InternalServerError" in {
+        mockDeprecation(NotDeprecated)
+        service returns Future.successful(Left(ErrorWrapper(serviceCorrelationId, NinoFormatError)))
+
+        val errorHandler = ErrorHandling {
+          case _: ErrorWrapper if false =>
+            throw new Exception("Should not have been matched")
+        }
+
+        val requestHandler = successRequestHandler.withErrorHandling(errorHandler)
+
+        val result = requestHandler.handleRequest()
+        status(result) shouldBe InternalError.httpStatus
+        contentAsJson(result) shouldBe InternalError.asJson
+      }
+    }
+
+  }
+
+  "withErrorHandling()" should {
+    "return a new RequestHandlerBuilder with the expected error handling" in {
+      class CustomErrorHandling extends ErrorHandling(null)
+
+      val result = successRequestHandler.withErrorHandling(new CustomErrorHandling)
+      result.errorHandling shouldBe a[CustomErrorHandling]
     }
   }
 

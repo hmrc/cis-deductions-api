@@ -17,9 +17,9 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.domain.BusinessId
 import shared.models.errors.BusinessIdFormatError
+import shared.utils.UnitSpec
 
 class ResolveBusinessIdSpec extends UnitSpec {
 

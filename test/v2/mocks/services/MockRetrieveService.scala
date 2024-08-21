@@ -16,7 +16,7 @@
 
 package v2.mocks.services
 
-import api.models.outcomes.ResponseWrapper
+import shared.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.RequestContext

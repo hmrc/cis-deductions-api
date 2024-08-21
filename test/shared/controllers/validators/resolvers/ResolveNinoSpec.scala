@@ -17,9 +17,9 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.domain.Nino
 import shared.models.errors.NinoFormatError
+import shared.utils.UnitSpec
 
 class ResolveNinoSpec extends UnitSpec {
 

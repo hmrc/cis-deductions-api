@@ -17,8 +17,8 @@
 package shared.models.audit
 
 import play.api.libs.json.Json
-import shared.UnitSpec
-import v1.fixtures.CreateRequestFixtures._
+import shared.models.audit.AuditResponseFixture._
+import shared.utils.UnitSpec
 
 class AuditResponseSpec extends UnitSpec {
 
@@ -28,11 +28,11 @@ class AuditResponseSpec extends UnitSpec {
         Json.toJson(auditResponseModelWithBody) shouldBe auditResponseJsonWithBody
       }
     }
-  }
 
-  "written to JSON with Audit Errors" should {
-    "produce the expected JsObject" in {
-      Json.toJson(auditResponseModelWithErrors) shouldBe auditResponseJsonWithErrors
+    "written to JSON with Audit Errors" should {
+      "produce the expected JsObject" in {
+        Json.toJson(auditResponseModelWithErrors) shouldBe auditResponseJsonWithErrors
+      }
     }
   }
 

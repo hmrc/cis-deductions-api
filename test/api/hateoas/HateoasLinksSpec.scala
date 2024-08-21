@@ -16,10 +16,11 @@
 
 package api.hateoas
 
-import api.hateoas.Method.{DELETE, GET, POST, PUT}
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.hateoas.Method._
 import shared.models.domain.TaxYear
+import shared.utils.UnitSpec
+import shared.hateoas.Link
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
@@ -33,7 +34,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
   private val taxYear2024 = TaxYear.fromMtd("2023-24")
 
   class Test {
-    MockAppConfig.apiGatewayContext.returns("individuals/deductions/cis")
+    MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis")
   }
 
   "createCisDeduction" when {

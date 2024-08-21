@@ -16,11 +16,13 @@
 
 package v1.controllers.validators
 
+import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError, SubmissionIdFormatError}
 import play.api.libs.json.JsValue
-import shared.UnitSpec
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.utils.UnitSpec
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import v1.fixtures.AmendRequestFixtures._
+import v1.models.domain.SubmissionId
 import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v1.models.request.amend.AmendRequestData
 
@@ -45,9 +47,10 @@ class AmendValidatorFactorySpec extends UnitSpec {
       }
 
       "given a valid request with none of the optional values" in {
-        val amendBodyTaxYear    = "2019-20"
-        val amendRequestDataObj = AmendRequestData(Nino(validNino), SubmissionId(validId), TaxYear.fromMtd(amendBodyTaxYear), amendMissingOptionalRequestObj)
-        val result              = validator(validNino, validId, requestJsonWithoutOptionalValues).validateAndWrapResult()
+        val amendBodyTaxYear = "2019-20"
+        val amendRequestDataObj =
+          AmendRequestData(Nino(validNino), SubmissionId(validId), TaxYear.fromMtd(amendBodyTaxYear), amendMissingOptionalRequestObj)
+        val result = validator(validNino, validId, requestJsonWithoutOptionalValues).validateAndWrapResult()
         result shouldBe Right(amendRequestDataObj)
       }
     }

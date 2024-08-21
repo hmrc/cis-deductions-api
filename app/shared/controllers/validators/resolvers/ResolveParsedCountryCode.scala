@@ -37,6 +37,13 @@ case class ResolveParsedCountryCode(path: String) {
     }
   }
 
+  def apply(maybeValue: Option[String]): Validated[List[MtdError], Option[String]] = {
+    maybeValue match {
+      case Some(value) => apply(value).map(Option(_))
+      case None        => Valid(None)
+    }
+  }
+
 }
 
 object ResolveParsedCountryCode {
@@ -47,6 +54,11 @@ object ResolveParsedCountryCode {
     val resolver = ResolveParsedCountryCode(path)
 
     resolver(value)
+  }
+
+  def apply(maybeValue: Option[String], path: String): Validated[Seq[MtdError], Option[String]] = {
+    val resolver = ResolveParsedCountryCode(path)
+    resolver(maybeValue)
   }
 
 }

@@ -16,10 +16,10 @@
 
 package shared.controllers
 
+import shared.models.errors.ErrorWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results.Status
-import shared.models.errors.ErrorWrapper
 
 case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
 

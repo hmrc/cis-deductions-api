@@ -18,8 +18,8 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxOption
-import shared.UnitSpec
 import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -137,22 +137,20 @@ class ResolverSupportSpec extends UnitSpec with ResolverSupport {
       resolver(11) shouldBe Invalid(List(outOfRangeError))
     }
 
-    "provides the ability to create validators our of a resolver (throwing away any result)" in {
+    "provides the ability to create validators out of a resolver (throwing away any result)" in {
       val validator = resolveInt.asValidator
 
       validator("1") shouldBe None
       validator("XX") shouldBe Some(List(notIntegerError))
     }
 
-
     "provides the ability to combine resolvers with thenResolve" in {
       val resolvePresent: Resolver[Option[Int], Int] = _.toValid(Seq(notPresentError))
-      val resolver = resolveInt.resolveOptionally thenResolve resolvePresent
+      val resolver                                   = resolveInt.resolveOptionally thenResolve resolvePresent
 
       resolver(Some("1")) shouldBe Valid(1)
       resolver(Some("XX")) shouldBe Invalid(List(notIntegerError))
     }
-
 
     "provides the ability to create a validator for a larger object based on validators of its parts" in {
       val partValidator = satisfiesMax(10, outOfRangeError)

@@ -17,9 +17,9 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.domain.TransactionId
 import shared.models.errors.TransactionIdFormatError
+import shared.utils.UnitSpec
 
 class ResolveTransactionIdSpec extends UnitSpec {
 

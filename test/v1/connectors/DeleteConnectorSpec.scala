@@ -16,15 +16,16 @@
 
 package v1.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.outcomes.ResponseWrapper
-import v1.mocks.MockFeatureSwitches
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v1.mocks.MockCisDeductionApiFeatureSwitches
+import v1.models.domain.SubmissionId
 import v1.models.request.delete.DeleteRequestData
 
 import scala.concurrent.Future
 
-class DeleteConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
+class DeleteConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
 
   private val nino         = "AA123456A"
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"

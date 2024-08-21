@@ -16,14 +16,26 @@
 
 package v1.services
 
-import api.models.outcomes.ResponseWrapper
-import shared.UnitSpec
+import models.errors.{RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
+import shared.models.outcomes.ResponseWrapper
+import shared.utils.UnitSpec
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
-import shared.models.errors.{DownstreamErrorCode, DownstreamErrors, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors.{
+  DownstreamErrorCode,
+  DownstreamErrors,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotSupportedError
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.connectors.MockAmendConnector
+import v1.models.domain.SubmissionId
 import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global

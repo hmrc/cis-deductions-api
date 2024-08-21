@@ -16,11 +16,14 @@
 
 package v1.controllers.validators
 
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import config.MockCisDeductionsApiConfig
+import models.domain.CisSource
+import models.errors.{RuleMissingFromDateError, RuleSourceInvalidError}
+import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
-import shared.models.domain.{DateRange, Nino, Source, TaxYear}
+import shared.models.domain.{DateRange, Nino, TaxYear}
 import shared.models.errors._
+import shared.utils.UnitSpec
 import v1.models.request.retrieve.RetrieveRequestData
 
 import java.time.LocalDate
@@ -43,13 +46,13 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
       "all query parameters are passed in the request" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some(fromDateStr), Some(toDateStr), Some("all")).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, CisSource.`all`))
       }
 
       "an optional field returns None" in new Test {
         val result: Either[ErrorWrapper, RetrieveRequestData] =
           validator(nino, Some(fromDateStr), Some(toDateStr), None).validateAndWrapResult()
-        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, Source.`all`))
+        result shouldBe Right(RetrieveRequestData(Nino(nino), dateRange, CisSource.`all`))
       }
     }
 
@@ -95,8 +98,8 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
     }
   }
 
-  private class Test extends MockAppConfig {
-    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
+  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
+    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 
     protected def validator(nino: String, fromDate: Option[String], toDate: Option[String], source: Option[String]): Validator[RetrieveRequestData] =

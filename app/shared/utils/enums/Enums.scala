@@ -27,17 +27,20 @@ object Shows {
 }
 
 object Enums {
-  private def typeName[E: ClassTag]: String = implicitly[ClassTag[E]].runtimeClass.getSimpleName
 
-  def parser[E: MkValues](implicit ev: Show[E] = Shows.toStringShow[E]): PartialFunction[String, E] =
-    implicitly[MkValues[E]].values.map(e => ev.show(e) -> e).toMap
+  def format[E: MkValues: ClassTag](implicit ev: Show[E] = Shows.toStringShow[E]): Format[E] =
+    Format(reads, writes)
 
   def reads[E: MkValues: ClassTag](implicit ev: Show[E] = Shows.toStringShow[E]): Reads[E] =
     implicitly[Reads[String]].collect(JsonValidationError(s"error.expected.$typeName"))(parser)
 
-  def writes[E: MkValues](implicit ev: Show[E] = Shows.toStringShow[E]): Writes[E] = Writes[E](e => JsString(ev.show(e)))
+  def typeName[E: ClassTag]: String =
+    implicitly[ClassTag[E]].runtimeClass.getSimpleName
 
-  def format[E: MkValues: ClassTag](implicit ev: Show[E] = Shows.toStringShow[E]): Format[E] =
-    Format(reads, writes)
+  def parser[E: MkValues](implicit ev: Show[E] = Shows.toStringShow[E]): PartialFunction[String, E] =
+    implicitly[MkValues[E]].values.map(e => ev.show(e) -> e).toMap
+
+  def writes[E: MkValues](implicit ev: Show[E] = Shows.toStringShow[E]): Writes[E] =
+    Writes[E](e => JsString(ev.show(e)))
 
 }

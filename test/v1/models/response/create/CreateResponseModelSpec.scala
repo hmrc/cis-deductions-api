@@ -16,15 +16,15 @@
 
 package v1.models.response.create
 
-import api.hateoas.Link
-import api.hateoas.Method.GET
-import api.mocks.MockAppConfig
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.models.domain.Nino
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.{CreateBody, CreateRequestData}
+import shared.hateoas.Method._
+import shared.hateoas._
 
 class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
 
@@ -63,7 +63,7 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
       val request        = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
 
       () =>
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
         CreateResponseModel.CreateLinksFactory
           .links(mockAppConfig, CreateHateoasData(nino, request)) shouldBe
           Seq(

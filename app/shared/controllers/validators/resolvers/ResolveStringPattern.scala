@@ -37,7 +37,6 @@ object ResolveStringPattern {
 
   def apply(value: String, regexFormat: Regex, error: MtdError): Validated[Seq[MtdError], String] = {
     val resolver = ResolveStringPattern(regexFormat, error)
-
     resolver(value)
   }
 

@@ -16,15 +16,17 @@
 
 package v1.controllers.validators
 
-import api.mocks.MockAppConfig
+import models.errors.{EmployerRefFormatError, RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
 import play.api.libs.json.JsValue
-import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v1.models.request.create.CreateRequestData
+import config.MockCisDeductionsApiConfig
 
 class CreateValidatorFactorySpec extends UnitSpec {
 
@@ -162,9 +164,9 @@ class CreateValidatorFactorySpec extends UnitSpec {
     }
   }
 
-  private class Test extends MockAppConfig {
-    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
-    private val validatorFactory = new CreateValidatorFactory(mockAppConfig)
+  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
+    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
+    private val validatorFactory = new CreateValidatorFactory(mockCisDeductionApiConfig)
 
     protected val createRequestData: CreateRequestData         = CreateRequestData(Nino(nino), parsedRequestData)
     protected val createRequestOptionalData: CreateRequestData = CreateRequestData(Nino(nino), parsedRequestDataMissingOptional)

@@ -16,8 +16,6 @@
 
 package shared.utils
 
-import shared.UnitSpec
-
 import java.time.LocalDateTime
 
 class DateUtilsSpec extends UnitSpec {

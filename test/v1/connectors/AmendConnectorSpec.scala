@@ -16,16 +16,17 @@
 
 package v1.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.outcomes.ResponseWrapper
-import v1.mocks.MockFeatureSwitches
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.outcomes.ResponseWrapper
+import v1.mocks.MockCisDeductionApiFeatureSwitches
+import shared.models.domain.{Nino, TaxYear}
 import v1.fixtures.AmendRequestFixtures._
+import v1.models.domain.SubmissionId
 import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.Future
 
-class AmendConnectorSpec extends ConnectorSpec with MockFeatureSwitches{
+class AmendConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
 
   "AmendConnector" should {
 

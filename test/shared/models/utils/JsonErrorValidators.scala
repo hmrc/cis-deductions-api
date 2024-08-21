@@ -17,7 +17,7 @@
 package shared.models.utils
 
 import play.api.libs.json._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 trait JsonErrorValidators {
   _: UnitSpec =>
@@ -72,7 +72,33 @@ trait JsonErrorValidators {
 
   }
 
-  def testMandatoryProperty[A: Reads](json: JsValue)(property: String): Unit = {
+  def testJsonFields[A](json: JsValue)(mandatoryFields: Seq[String], optionalFields: Seq[String], modelName: Option[String] = None)(implicit
+      rds: Reads[A]): Unit = {
+    s"For data model ${modelName.fold("")(modelName => s"- $modelName")}" when {
+      mandatoryFields.foreach(property => testMandatoryFields(json)(property))
+      optionalFields.foreach(property => testOptionalFields(json)(property))
+    }
+  }
+
+  def testAllOptionalJsonFieldsExcept[A: Reads](json: JsValue)(exceptMandatoryFields: String*): Unit = {
+    val optionalFields = json.as[JsObject].fields.map(_._1).filterNot(field => exceptMandatoryFields.contains(field))
+
+    testJsonFields(json)(exceptMandatoryFields, optionalFields.toSeq)
+  }
+
+  def testOptionalJsonFields[A: Reads](json: JsValue): Unit =
+    testAllOptionalJsonFieldsExcept(json)()
+
+  def testAllMandatoryJsonFieldsExcept[A: Reads](json: JsValue)(exceptOptionalProperties: String*): Unit = {
+    val mandatoryFields = json.as[JsObject].fields.map(_._1).filterNot(field => exceptOptionalProperties.contains(field))
+
+    testJsonFields(json)(mandatoryFields.toSeq, exceptOptionalProperties)
+  }
+
+  def testMandatoryJsonFields[A: Reads](json: JsValue): Unit =
+    testAllMandatoryJsonFieldsExcept(json)()
+
+  def testMandatoryFields[A: Reads](json: JsValue)(property: String): Unit = {
     s"the JSON is missing the required property $property" should {
 
       val jsPath: JsPath = jsPathFrom(property)
@@ -90,6 +116,22 @@ trait JsonErrorValidators {
 
       "throw a missing path error" in {
         filterErrorByPath(jsPath, jsError).message shouldBe JsonError.PATH_MISSING_EXCEPTION
+      }
+    }
+  }
+
+  def testOptionalFields[A](json: JsValue)(property: String)(implicit rds: Reads[A]): Unit = {
+    s"the JSON is missing the optional property $property" should {
+
+      val jsonWithoutProperty = json.as[JsObject].-(property)
+
+      "not throw any errors" in {
+        val result = jsonWithoutProperty.validate[A].isError
+        result shouldBe false
+      }
+
+      "exist in the sample json" in {
+        jsonWithoutProperty should not equal json
       }
     }
   }

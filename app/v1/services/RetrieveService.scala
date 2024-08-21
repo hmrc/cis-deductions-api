@@ -16,10 +16,11 @@
 
 package v1.services
 
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
+import models.errors.{RuleDateRangeOutOfDateError, RuleSourceInvalidError}
 import shared.controllers.RequestContext
 import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v1.connectors.RetrieveConnector
 import v1.models.request.retrieve.RetrieveRequestData
 import v1.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -31,8 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseService {
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
-                                                       ctx: RequestContext,
-                                                       ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 

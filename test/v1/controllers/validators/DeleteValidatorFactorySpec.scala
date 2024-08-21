@@ -16,11 +16,14 @@
 
 package v1.controllers.validators
 
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import config.MockCisDeductionsApiConfig
+import models.errors.SubmissionIdFormatError
+import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import v1.models.domain.SubmissionId
 import v1.models.request.delete.DeleteRequestData
 
 class DeleteValidatorFactorySpec extends UnitSpec {
@@ -71,8 +74,8 @@ class DeleteValidatorFactorySpec extends UnitSpec {
     }
   }
 
-  private class Test extends MockAppConfig {
-    MockAppConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
+  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
+    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
     private val validatorFactory = new DeleteValidatorFactory
 
     protected def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =

@@ -16,13 +16,14 @@
 
 package v2.endpoints
 
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import models.errors.RuleSourceInvalidError
 import play.api.http.HeaderNames._
 import play.api.http.Status._
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
-import support.IntegrationBaseSpec
+import shared.support.IntegrationBaseSpec
 import v2.fixtures.RetrieveJson._
+import shared.services._
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 

@@ -16,8 +16,4 @@
 
 package shared.models.audit
 
-case class AuditEvent[T](
-    auditType: String,
-    transactionName: String,
-    detail: T
-)
+case class AuditEvent[T](auditType: String, transactionName: String, detail: T)

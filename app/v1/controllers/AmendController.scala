@@ -16,11 +16,12 @@
 
 package v1.controllers
 
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import shared.config.AppConfig
 import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v1.controllers.validators.AmendValidatorFactory
 import v1.services.AmendService
@@ -36,6 +37,8 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
                                  cc: ControllerComponents,
                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
+
+  override val endpointName: String = "amend"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -54,6 +57,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
         auditService = auditService,
         auditType = "AmendCisDeductionsForSubcontractor",
         transactionName = "amend-cis-deductions-for-subcontractor",
+        apiVersion = Version(request),
         params = Map("nino" -> nino, "submissionId" -> submissionId),
         requestBody = Some(request.body)
       ))

@@ -16,18 +16,20 @@
 
 package v1.controllers
 
-import api.mocks.MockAppConfig
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
+import play.api.Configuration
+import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, SubmissionId, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
+import shared.services.MockAuditService
 import v1.controllers.validators.MockedAmendValidatorFactory
 import v1.fixtures.AmendRequestFixtures._
 import v1.mocks.services.MockAmendService
+import v1.models.domain.SubmissionId
 import v1.models.request.amend.AmendRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,9 +43,9 @@ class AmendControllerSpec
     with MockAmendService
     with MockAuditService {
 
-  private val submissionId                  = "S4636A77V5KB8625U"
-  private val taxYear                       = TaxYear.fromIso("2019-07-05")
-  private val requestData                   = AmendRequestData(Nino(nino), SubmissionId(submissionId), taxYear, amendRequestObj)
+  private val submissionId = "S4636A77V5KB8625U"
+  private val taxYear      = TaxYear.fromIso("2019-07-05")
+  private val requestData  = AmendRequestData(Nino(validNino), SubmissionId(submissionId), taxYear, amendRequestObj)
 
   "amend" should {
     "return a successful response with status 204 (NO CONTENT)" when {
@@ -81,7 +83,7 @@ class AmendControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new AmendController(
       authService = mockEnrolmentsAuthService,
@@ -93,16 +95,23 @@ class AmendControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.amend(nino, submissionId)(fakePostRequest(requestJson))
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.amend(validNino, submissionId)(fakePostRequest(requestJson))
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "AmendCisDeductionsForSubcontractor",
         transactionName = "amend-cis-deductions-for-subcontractor",
         detail = GenericAuditDetail(
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "submissionId" -> submissionId),
+          params = Map("nino" -> validNino, "submissionId" -> submissionId),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

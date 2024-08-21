@@ -16,11 +16,13 @@
 
 package v2.controllers.validators
 
-import api.mocks.MockAppConfig
-import shared.UnitSpec
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
+import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, Source, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import shared.utils.UnitSpec
 import v2.models.request.retrieve.RetrieveRequestData
 
 class RetrieveValidatorFactorySpec extends UnitSpec {
@@ -30,7 +32,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec {
   private val invalidNino       = "GHFG197854"
   private val taxYearRaw        = "2019-20"
   private val invalidTaxYearRaw = "2019-2020"
-  private val sourceRaw         = Source.`all`
+  private val sourceRaw         = CisSource.`all`
   private val invalidSource     = "All"
 
   class SetUp extends MockAppConfig {

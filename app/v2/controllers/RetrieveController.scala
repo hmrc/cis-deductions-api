@@ -16,11 +16,12 @@
 
 package v2.controllers
 
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
+import shared.config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v2.controllers.validators.RetrieveValidatorFactory
 import v2.models.response.retrieve.RetrieveHateoasData
@@ -38,6 +39,8 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     cc: ControllerComponents,
                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
+
+  override val endpointName: String = "retrieve"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -64,6 +67,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
             auditService = auditService,
             auditType = "RetrieveCisDeductionsForSubcontractor",
             transactionName = "retrieve-cis-deductions-for-subcontractor",
+            apiVersion = Version(request),
             params = params,
             requestBody = None,
             includeResponse = true

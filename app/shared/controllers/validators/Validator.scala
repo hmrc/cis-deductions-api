@@ -16,13 +16,13 @@
 
 package shared.controllers.validators
 
+import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
-import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import shared.utils.Logging
+import cats.implicits._
 
-trait Validator[PARSED] extends Logging {
+trait Validator[+PARSED] extends Logging {
 
   def validate: Validated[Seq[MtdError], PARSED]
 
@@ -69,5 +69,10 @@ trait Validator[PARSED] extends Logging {
       .toList
       .sortBy(_.code)
   }
+
+}
+
+object Validator {
+  def returningErrors(errors: Seq[MtdError]): Validator[Nothing] = AlwaysErrorsValidator(errors)
 
 }

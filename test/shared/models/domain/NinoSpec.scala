@@ -16,7 +16,7 @@
 
 package shared.models.domain
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class NinoSpec extends UnitSpec {
 

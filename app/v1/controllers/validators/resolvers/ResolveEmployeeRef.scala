@@ -17,8 +17,9 @@
 package v1.controllers.validators.resolvers
 
 import cats.data.Validated
+import models.errors.EmployerRefFormatError
 import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
-import shared.models.errors.{EmployerRefFormatError, MtdError}
+import shared.models.errors.MtdError
 import v1.models.request.create.EmployeeRef
 
 object ResolveEmployeeRef extends ResolverSupport {

@@ -17,8 +17,8 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.errors.BadRequestError
+import shared.utils.UnitSpec
 
 class ResolveBooleanSpec extends UnitSpec {
 

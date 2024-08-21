@@ -20,13 +20,15 @@ import cats.Show
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.Inspectors
 import play.api.libs.json._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 sealed trait Enum
 
 object Enum {
-  case object `enum-one`   extends Enum
-  case object `enum-two`   extends Enum
+  case object `enum-one` extends Enum
+
+  case object `enum-two` extends Enum
+
   case object `enum-three` extends Enum
 
   implicit val format: Format[Enum] = Enums.format[Enum]
@@ -51,9 +53,9 @@ class EnumsSpec extends UnitSpec with Inspectors {
     }
 
     def json(value: Enum): JsValue = Json.parse(s"""
-            |{
-            | "someField": "$value"
-            |}
+         |{
+         | "someField": "$value"
+         |}
           """.stripMargin)
 
     "generates reads" in {
@@ -90,9 +92,11 @@ class EnumsSpec extends UnitSpec with Inspectors {
         case object `enum-one` extends Enum2 {
           override def altName: String = "one"
         }
+
         case object `enum-two` extends Enum2 {
           override def altName: String = "two"
         }
+
         case object `enum-three` extends Enum2 {
           override def altName: String = "three"
         }
@@ -102,9 +106,9 @@ class EnumsSpec extends UnitSpec with Inspectors {
       }
 
       val json = Json.parse("""
-      |{
-      | "someField": "one"
-      |}""".stripMargin)
+          |{
+          | "someField": "one"
+          |}""".stripMargin)
 
       json.as[Foo[Enum2]] shouldBe Foo(Enum2.`enum-one`)
       Json.toJson(Foo[Enum2](Enum2.`enum-one`)) shouldBe json
@@ -112,32 +116,32 @@ class EnumsSpec extends UnitSpec with Inspectors {
 
     "detects badly formatted values" in {
       val badJson = Json.parse(s"""
-      |{
-      | "someField": "unknown"
-      |}
-      |""".stripMargin)
+           |{
+           | "someField": "unknown"
+           |}
+           |""".stripMargin)
 
       badJson.validate[Foo[Enum]] shouldBe JsError(__ \ "someField", JsonValidationError("error.expected.Enum"))
     }
 
     "detects type errors" in {
       val badJson = Json.parse(s"""
-                                  |{
-                                  | "someField": 123
-                                  |}
-                                  |""".stripMargin)
+           |{
+           | "someField": 123
+           |}
+           |""".stripMargin)
 
       badJson.validate[Foo[Enum]] shouldBe JsError(__ \ "someField", JsonValidationError("error.expected.jsstring"))
     }
 
     "only work for sealed trait singletons (objects)" in {
       assertTypeError("""
-        |      sealed trait NotEnum
-        |
-        |      case object ObjectOne                  extends NotEnum
-        |      case class CaseClassTwo(value: String) extends NotEnum
-        |
-        |      Enums.format[NotEnum]
+          |      sealed trait NotEnum
+          |
+          |      case object ObjectOne                  extends NotEnum
+          |      case class CaseClassTwo(value: String) extends NotEnum
+          |
+          |      Enums.format[NotEnum]
         """.stripMargin)
     }
   }

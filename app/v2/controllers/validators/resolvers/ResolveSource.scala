@@ -17,14 +17,15 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
 import shared.controllers.validators.resolvers.ResolverSupport
-import shared.models.domain.Source
-import shared.models.errors.{MtdError, RuleSourceInvalidError}
+import shared.models.errors.MtdError
 
 object ResolveSource extends ResolverSupport {
 
-  val resolver: Resolver[String, Source] = resolvePartialFunction(RuleSourceInvalidError)(Source.parser)
+  val resolver: Resolver[String, CisSource] = resolvePartialFunction(RuleSourceInvalidError)(CisSource.parser)
 
-  def apply(value: String): Validated[Seq[MtdError], Source] = resolver(value)
+  def apply(value: String): Validated[Seq[MtdError], CisSource] = resolver(value)
 
 }

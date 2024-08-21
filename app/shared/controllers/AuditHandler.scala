@@ -16,12 +16,13 @@
 
 package shared.controllers
 
-import api.models.auth.UserDetails
-import api.services.AuditService
 import cats.syntax.either._
 import play.api.libs.json.{JsValue, Writes}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.auth.UserDetails
 import shared.models.errors.ErrorWrapper
+import shared.routing.Version
+import shared.services.AuditService
 
 import scala.Function.const
 import scala.concurrent.ExecutionContext
@@ -36,13 +37,10 @@ trait AuditHandler extends RequestContextImplicits {
 
 object AuditHandler {
 
-  trait AuditDetailCreator[A] {
-    def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit ctx: RequestContext): A
-  }
-
   def apply(auditService: AuditService,
             auditType: String,
             transactionName: String,
+            apiVersion: Version,
             params: Map[String, String],
             requestBody: Option[JsValue] = None,
             includeResponse: Boolean = false): AuditHandler =
@@ -50,7 +48,7 @@ object AuditHandler {
       auditService = auditService,
       auditType = auditType,
       transactionName = transactionName,
-      auditDetailCreator = GenericAuditDetail.auditDetailCreator(params),
+      auditDetailCreator = GenericAuditDetail.auditDetailCreator(apiVersion, params),
       requestBody = requestBody,
       responseBodyMap = if (includeResponse) identity else const(None)
     )
@@ -60,7 +58,8 @@ object AuditHandler {
                         transactionName: String,
                         auditDetailCreator: AuditDetailCreator[A],
                         requestBody: Option[JsValue] = None,
-                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler =
+                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler = {
+    // $COVERAGE-OFF$
     new AuditHandlerImpl[A](
       auditService = auditService,
       auditType = auditType,
@@ -69,6 +68,12 @@ object AuditHandler {
       requestBody = requestBody,
       responseBodyMap = responseBodyMap
     )
+    // $COVERAGE-ON$
+  }
+
+  trait AuditDetailCreator[A] {
+    def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit ctx: RequestContext): A
+  }
 
   private class AuditHandlerImpl[A: Writes](auditService: AuditService,
                                             auditType: String,
@@ -83,7 +88,7 @@ object AuditHandler {
         ec: ExecutionContext): Unit = {
 
       val auditEvent = {
-        val auditResponse = AuditResponse(httpStatus, response.map(responseBodyMap).leftMap(ew => ew.auditErrors))
+        val auditResponse = AuditResponse(httpStatus, response.map(responseBodyMap).leftMap(_.auditErrors))
 
         val detail = auditDetailCreator.createAuditDetail(
           userDetails = userDetails,

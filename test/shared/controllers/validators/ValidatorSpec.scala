@@ -17,15 +17,15 @@
 package shared.controllers.validators
 
 import cats.data.Validated
-import cats.data.Validated.Invalid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json, Reads}
-import shared.UnitSpec
 import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import shared.utils.UnitSpec
 
 class ValidatorSpec extends UnitSpec with MockFactory {
 
@@ -62,6 +62,9 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         jsonResolver(jsonBody)
       ).mapN(TestParsedRequest) andThen TestRulesValidator.validateBusinessRules
 
+    override def invalid(error: MtdError): Invalid[Seq[MtdError]] = super.invalid(error)
+
+    override def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] = super.combine(results: _*)
   }
 
   /** Perform additional business-rules validation on the correctly parsed request.
@@ -82,6 +85,43 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
   private object RuleValue1Invalid extends MtdError("RULE_VALUE_1_INVALID", "value1 can only be 'value 1'", BAD_REQUEST)
   private object RuleValue2Invalid extends MtdError("RULE_VALUE_2_INVALID", "value2 can only be true", BAD_REQUEST)
+
+  "invalid(error)" should {
+    "return the error wrapped in an Invalid(Seq)" in {
+      val validator                      = new TestValidator()
+      val result: Invalid[Seq[MtdError]] = validator.invalid(NinoFormatError)
+      result shouldBe Invalid(List(NinoFormatError))
+    }
+  }
+
+  "combine(results)" when {
+    val validator = new TestValidator()
+
+    "given Valid results" should {
+      "return the results combined into a single Valid(Unit)" in {
+        val result = validator.combine(
+          Valid("any value"),
+          Valid("any other value")
+        )
+
+        result shouldBe Valid(())
+      }
+    }
+
+    "given some results including errors" should {
+      "return the errors combined into a single Invalid that includes the MTD errors" in {
+        val result = validator.combine(
+          Valid("any value"),
+          Valid("any other value"),
+          Invalid(List(NinoFormatError)),
+          Invalid(List(DateFormatError))
+        )
+
+        result shouldBe Invalid(List(NinoFormatError, DateFormatError))
+      }
+    }
+
+  }
 
   "validateAndWrapResult()" should {
 

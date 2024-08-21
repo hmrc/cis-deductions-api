@@ -16,8 +16,8 @@
 
 package shared.controllers
 
-import shared.utils.IdGenerator
 import uk.gov.hmrc.http.HeaderCarrier
+import shared.utils.IdGenerator
 
 case class RequestContext(hc: HeaderCarrier, correlationId: String, endpointLogContext: EndpointLogContext) {
 

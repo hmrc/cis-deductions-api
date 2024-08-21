@@ -17,9 +17,9 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.domain.DateRange
 import shared.models.errors.{EndDateFormatError, RuleEndBeforeStartDateError, StartDateFormatError}
+import shared.utils.UnitSpec
 
 import java.time.LocalDate
 
@@ -27,6 +27,9 @@ class ResolveDateRangeSpec extends UnitSpec {
 
   private val validStart = "2023-06-21"
   private val validEnd   = "2024-06-21"
+
+  private val sameValidStart = "2023-06-21"
+  private val sameValidEnd   = "2023-06-21"
 
   // To be sure it's using the construction params...
   private val startDateFormatError    = StartDateFormatError.withPath("pathToStartDate")
@@ -43,6 +46,11 @@ class ResolveDateRangeSpec extends UnitSpec {
       "passed a valid start and end date" in {
         val result = resolveDateRange(validStart -> validEnd)
         result shouldBe Valid(DateRange(LocalDate.parse(validStart), LocalDate.parse(validEnd)))
+      }
+
+      "passed an end date equal to start date" in {
+        val result = resolveDateRange(sameValidStart -> sameValidEnd)
+        result shouldBe Valid(DateRange(LocalDate.parse(sameValidStart), LocalDate.parse(sameValidEnd)))
       }
     }
 
@@ -61,6 +69,7 @@ class ResolveDateRangeSpec extends UnitSpec {
         val result = resolveDateRange(validEnd -> validStart)
         result shouldBe Invalid(List(endBeforeStartDateError))
       }
+
     }
   }
 

@@ -17,8 +17,8 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
 import shared.models.errors.{CountryCodeFormatError, RuleCountryCodeError}
+import shared.utils.UnitSpec
 
 class ResolveParsedCountryCodeSpec extends UnitSpec {
 
@@ -48,6 +48,21 @@ class ResolveParsedCountryCodeSpec extends UnitSpec {
             }
         }
       // @formatter:on
+
+    "return valid for an empty optional country code" in {
+      val result = ResolveParsedCountryCode(None, path = "path")
+      result shouldBe Valid(None)
+    }
+
+    "return valid for a valid optional country code" in {
+      val result = ResolveParsedCountryCode(Some("VEN"), path = "path")
+      result shouldBe Valid(Some("VEN"))
+    }
+
+    "return a CountryCodeFormatError for an invalid optional country code" in {
+      val result = ResolveParsedCountryCode(Some("notACountryCode"), path = "path")
+      result shouldBe Invalid(List(CountryCodeFormatError.withPath("path")))
+    }
 
     "return a CountryCodeFormatError for an invalid country code" in {
       val result = ResolveParsedCountryCode("notACountryCode", path = "path")

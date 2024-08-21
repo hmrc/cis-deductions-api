@@ -16,10 +16,11 @@
 
 package v1.controllers
 
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
+import shared.config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v1.controllers.validators.DeleteValidatorFactory
 import v1.services.DeleteService
@@ -35,6 +36,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
                                   cc: ControllerComponents,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
+  override val endpointName: String = "delete"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -57,6 +59,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
             auditService = auditService,
             auditType = "DeleteCisDeductionsForSubcontractor",
             transactionName = "delete-cis-deductions-for-subcontractor",
+            apiVersion = Version(request),
             params = params,
             requestBody = None
           )

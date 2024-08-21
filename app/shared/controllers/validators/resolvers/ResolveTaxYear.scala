@@ -46,8 +46,7 @@ object ResolveTaxYear extends ResolverSupport {
       case None        => Valid(None)
     }
 
-  /**
-    * Adaptor for existing callers.
+  /** Adaptor for existing callers.
     */
   def apply(minimumTaxYear: TaxYear, value: String): Validated[Seq[MtdError], TaxYear] = {
     val resolver = ResolveTaxYearMinimum(minimumTaxYear)
@@ -56,10 +55,44 @@ object ResolveTaxYear extends ResolverSupport {
 
 }
 
-case class ResolveTaxYearMinimum(minimumTaxYear: TaxYear) extends ResolverSupport {
+case class ResolveTaxYearMinimum(minimumTaxYear: TaxYear, error: MtdError = RuleTaxYearNotSupportedError) extends ResolverSupport {
 
   val resolver: Resolver[String, TaxYear] =
-    ResolveTaxYear.resolver thenValidate satisfiesMin(minimumTaxYear, RuleTaxYearNotSupportedError)
+    ResolveTaxYear.resolver thenValidate satisfiesMin(minimumTaxYear, error)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+
+}
+
+case class ResolveTaxYearMaximum(maximumTaxYear: TaxYear) extends ResolverSupport {
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMax(maximumTaxYear, RuleTaxYearNotSupportedError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+
+}
+
+case class ResolveTaxYearMinMax(minMax: (TaxYear, TaxYear), error: MtdError = RuleTaxYearNotSupportedError) extends ResolverSupport {
+
+  private val (minimumTaxYear, maximumTaxYear) = minMax
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate
+      satisfiesMin(minimumTaxYear, error) thenValidate
+      satisfiesMax(maximumTaxYear, error)
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
 

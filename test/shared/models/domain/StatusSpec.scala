@@ -17,7 +17,7 @@
 package shared.models.domain
 
 import play.api.libs.json.{JsString, JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class StatusSpec extends UnitSpec {
 

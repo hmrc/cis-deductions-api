@@ -16,8 +16,6 @@
 
 package shared.utils
 
-import shared.UnitSpec
-
 class JsonErrorSanitiserSpec extends UnitSpec {
 
   "JsonErrorSanitiser" should {
