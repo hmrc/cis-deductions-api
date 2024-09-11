@@ -28,7 +28,6 @@ class CisApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) ext
 
   lazy val definition: Definition =
     Definition(
-      scopes = scopes,
       api = APIDefinition(
         name = "CIS Deductions (MTD)",
         description = "An API for providing Construction industry scheme data",
