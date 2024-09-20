@@ -12,7 +12,7 @@ The CIS Deductions API allows a developer to create, retrieve, amend and delete 
 ## Running the microservice
 Run from the console using: `sbt run` (starts on port 7781 by default)
 
-Start the service manager profile: `sm --start CIS_DEDUCTIONS_ALL`
+Start the service manager profile: `sm2 --start CIS_DEDUCTIONS_ALL`
 
 ## Running tests
 Run unit tests: `sbt test`

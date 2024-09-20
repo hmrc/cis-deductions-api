@@ -44,7 +44,7 @@ trait WireMockMethods {
       }
 
       body match {
-        case Some(extractedBody) => uriMappingWithHeaders.withRequestBody(equalToJson(extractedBody))
+        case Some(extractedBody) => uriMappingWithHeaders.withRequestBody(equalTo(extractedBody))
         case None                => uriMappingWithHeaders
       }
     }
