@@ -147,7 +147,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatur
 
     protected val taxYear: TaxYear = TaxYear.fromIso(endDate)
 
-    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
     protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, CisSource.`contractor`)
   }
 

@@ -18,7 +18,7 @@ package v1.controllers
 
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.hateoas._
 import shared.routing.Version
@@ -38,7 +38,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   hateoasFactory: HateoasFactory,
                                   auditService: AuditService,
                                   cc: ControllerComponents,
-                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "create"

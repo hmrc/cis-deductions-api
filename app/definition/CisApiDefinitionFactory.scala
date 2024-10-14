@@ -16,7 +16,7 @@
 
 package definition
 
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.definition._
 import shared.routing.{Version1, Version2}
 import shared.utils.Logging
@@ -24,7 +24,7 @@ import shared.utils.Logging
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CisApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory with Logging {
+class CisApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory with Logging {
 
   lazy val definition: Definition =
     Definition(

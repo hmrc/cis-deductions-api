@@ -18,11 +18,10 @@ package v2.models.response.retrieve
 
 import cats.Functor
 import play.api.libs.json._
-import shared.config.AppConfig
-import shared.hateoas.{HateoasData, HateoasListLinksFactory}
+import shared.config.SharedAppConfig
+import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
 import shared.models.domain.TaxYear
 import v2.hateoas.HateoasLinks
-import shared.hateoas.Link
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
                                     totalCostOfMaterials: Option[BigDecimal],
@@ -37,7 +36,7 @@ object RetrieveResponseModel extends HateoasLinks {
 
   implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: RetrieveHateoasData, item: CisDeductions): Seq[Link] = {
+    override def itemLinks(appConfig: SharedAppConfig, data: RetrieveHateoasData, item: CisDeductions): Seq[Link] = {
       val submissionIds = item.periodData.flatMap(_.submissionId)
 
       submissionIds.headOption match {
@@ -50,7 +49,7 @@ object RetrieveResponseModel extends HateoasLinks {
       }
     }
 
-    override def links(appConfig: AppConfig, data: RetrieveHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: RetrieveHateoasData): Seq[Link] = {
       Seq(
         retrieveCisDeduction(appConfig, data.nino, data.taxYear, data.source, isSelf = true),
         createCisDeduction(appConfig, data.nino, isSelf = false))

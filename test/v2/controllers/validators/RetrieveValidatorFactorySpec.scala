@@ -18,7 +18,7 @@ package v2.controllers.validators
 
 import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -35,7 +35,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec {
   private val sourceRaw         = CisSource.`all`
   private val invalidSource     = "All"
 
-  class SetUp extends MockAppConfig {
+  class SetUp extends MockSharedAppConfig {
     val validatorFactory = new RetrieveValidatorFactory()
 
     def validator(nino: String, taxYear: String, source: String): Validator[RetrieveRequestData] =

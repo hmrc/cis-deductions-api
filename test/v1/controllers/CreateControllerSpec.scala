@@ -18,15 +18,16 @@ package v1.controllers
 
 import models.errors.RuleUnalignedDeductionsPeriodError
 import play.api.Configuration
-import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
+import shared.hateoas.Method._
+import shared.hateoas._
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.Nino
 import shared.models.errors.{ErrorWrapper, NinoFormatError}
+import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v1.controllers.validators.MockedCreateValidatorFactory
 import v1.fixtures.AmendRequestFixtures.requestJson
@@ -37,13 +38,11 @@ import v1.models.response.create.{CreateHateoasData, CreateResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import shared.hateoas.Method._
-import shared.hateoas._
 
 class CreateControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockedCreateValidatorFactory
     with MockCreateService
     with MockHateoasFactory
@@ -120,11 +119,11 @@ class CreateControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestJson))
 

@@ -18,7 +18,7 @@ package v2.services
 
 import cats.implicits.toBifunctorOps
 import models.errors.RuleSourceInvalidError
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: AppConfig) extends BaseService {
+class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: SharedAppConfig) extends BaseService {
 
   def retrieveDeductions(request: RetrieveRequestData)(implicit
       ctx: RequestContext,

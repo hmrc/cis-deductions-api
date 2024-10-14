@@ -18,7 +18,7 @@ package v2.services
 
 import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -33,7 +33,7 @@ import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
+class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig {
 
   private val nino = Nino("AA123456A")
 
@@ -54,7 +54,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockRetrieveConnector, mockAppConfig)
+    val service = new RetrieveService(mockRetrieveConnector, mockSharedAppConfig)
   }
 
   "RetrieveDeductions" should {
