@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
 
-class AppConfigSpec extends UnitSpec {
+class SharedAppConfigSpec extends UnitSpec {
 
   private val simpleAppConfig = appConfig(versionConf = "")
 
@@ -309,7 +309,7 @@ class AppConfigSpec extends UnitSpec {
     }
   }
 
-  private def appConfig(versionConf: String): AppConfig = {
+  private def appConfig(versionConf: String): SharedAppConfig = {
     val conf = ConfigFactory.parseString(
       """
         |  appName = "any-name-api"
@@ -361,7 +361,7 @@ class AppConfigSpec extends UnitSpec {
 
     val configuration  = Configuration(conf)
     val servicesConfig = new ServicesConfig(configuration)
-    new AppConfig(servicesConfig, configuration)
+    new SharedAppConfig(servicesConfig, configuration)
   }
 
 }

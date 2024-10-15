@@ -7,6 +7,17 @@ For the Shared Code update steps, see: https://confluence.tools.tax.service.gov.
 
 Place new items at the top, and auto-format the file...
 
+## October 7 2024: Intent parameter for all BaseDownstreamConnector methods.
+
+- Based on code added to property-business-api where intent will be required for some DEFAULT GTSs
+
+## September 26 2024: SharedAppConfig
+
+* Renamed AppConfig -> SharedAppConfig
+* Extracted trait AppConfigBase; make sure your API config extends this
+* Added two methods to trait EnumJsonSpecSupport (testSerialization and testDeserialization)
+* Added method to ValueFormatError (forPathAndMin)
+
 ## September 17 2024:  ResolveTaxYearMinimum
 
 Added an apply function on ResolveTaxYearMinimum to allow adding custom errors. Required in individual-losses-api.

@@ -98,7 +98,7 @@ class AmendConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSw
 
     def taxYearIso: String
 
-    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
     lazy val request: AmendRequestData = AmendRequestData(Nino(nino), SubmissionId(submissionId), TaxYear.fromIso(taxYearIso), amendRequestObj)
   }

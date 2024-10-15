@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.controllers._
 import shared.hateoas.HateoasFactory
@@ -37,7 +37,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     auditService: AuditService,
                                     hateoasFactory: HateoasFactory,
                                     cc: ControllerComponents,
-                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "retrieve"

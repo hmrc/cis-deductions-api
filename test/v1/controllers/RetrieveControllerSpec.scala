@@ -20,7 +20,7 @@ import models.domain.CisSource
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.{HateoasWrapper, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -46,7 +46,7 @@ class RetrieveControllerSpec
     with MockedRetrieveValidatorFactory
     with MockRetrieveService
     with MockHateoasFactory
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockAuditService {
 
   private val fromDateStr = "2019-04-06"
@@ -66,8 +66,8 @@ class RetrieveControllerSpec
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
 
-        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
-        MockedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
           RetrieveResponseModel(
@@ -78,14 +78,14 @@ class RetrieveControllerSpec
               HateoasWrapper(
                 cisDeductions,
                 Seq(
-                  deleteCisDeduction(mockAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
-                  amendCisDeduction(mockAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
+                  deleteCisDeduction(mockSharedAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
+                  amendCisDeduction(mockSharedAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
                 )
               ))
           ),
           Seq(
-            retrieveCisDeduction(mockAppConfig, validNino, fromDateStr, toDateStr, Some(sourceRaw.toString), isSelf = true),
-            createCisDeduction(mockAppConfig, validNino, isSelf = false)
+            retrieveCisDeduction(mockSharedAppConfig, validNino, fromDateStr, toDateStr, Some(sourceRaw.toString), isSelf = true),
+            createCisDeduction(mockSharedAppConfig, validNino, isSelf = false)
           )
         )
 
@@ -142,11 +142,11 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] =
       controller.retrieve(validNino, Some(fromDateStr), Some(toDateStr), Some(sourceRaw.toString))(fakeRequest)

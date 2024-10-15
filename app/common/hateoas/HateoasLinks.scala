@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package api.hateoas
+package common.hateoas
 
-import api.hateoas.RelType._
-import shared.config.AppConfig
+import RelType._
+import shared.config.SharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method._
 import shared.models.domain.TaxYear
 
 trait HateoasLinks {
 
-  private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
+  private def withTaxYearParameter(appConfig: SharedAppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
 
     maybeTaxYear match {
       case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
@@ -32,32 +32,37 @@ trait HateoasLinks {
     }
   }
 
-  private def baseUri(appConfig: AppConfig, nino: String) =
+  private def baseUri(appConfig: SharedAppConfig, nino: String) =
     s"/${appConfig.apiGatewayContext}/$nino"
 
-  private def retrieveUri(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String]): String = {
-    val sourceParam = if (!source.isDefined) "" else s"&source=${source.get}"
+  private def retrieveUri(appConfig: SharedAppConfig, nino: String, fromDate: String, toDate: String, source: Option[String]): String = {
+    val sourceParam = if (source.isEmpty) "" else s"&source=${source.get}"
     s"${baseUri(appConfig, nino)}/current-position?fromDate=$fromDate&toDate=$toDate$sourceParam"
   }
 
   // API resource links
   // L1
-  def createCisDeduction(appConfig: AppConfig, nino: String, isSelf: Boolean): Link =
+  def createCisDeduction(appConfig: SharedAppConfig, nino: String, isSelf: Boolean): Link =
     Link(href = baseUri(appConfig, nino) + s"/amendments", method = POST, rel = if (isSelf) SELF else CREATE_CIS)
 
   // L2
-  def deleteCisDeduction(appConfig: AppConfig, nino: String, id: String, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
+  def deleteCisDeduction(appConfig: SharedAppConfig, nino: String, id: String, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
     val uri = baseUri(appConfig, nino) + s"/amendments/$id"
 
     Link(href = withTaxYearParameter(appConfig, uri, taxYear), method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
   }
 
   // L3
-  def amendCisDeduction(appConfig: AppConfig, nino: String, id: String, isSelf: Boolean): Link =
+  def amendCisDeduction(appConfig: SharedAppConfig, nino: String, id: String, isSelf: Boolean): Link =
     Link(href = baseUri(appConfig, nino) + s"/amendments/$id", method = PUT, rel = if (isSelf) SELF else AMEND_CIS)
 
   // L4
-  def retrieveCisDeduction(appConfig: AppConfig, nino: String, fromDate: String, toDate: String, source: Option[String], isSelf: Boolean): Link =
+  def retrieveCisDeduction(appConfig: SharedAppConfig,
+                           nino: String,
+                           fromDate: String,
+                           toDate: String,
+                           source: Option[String],
+                           isSelf: Boolean): Link =
     Link(href = retrieveUri(appConfig, nino, fromDate, toDate, source), method = GET, rel = if (isSelf) SELF else RETRIEVE_CIS)
 
 }

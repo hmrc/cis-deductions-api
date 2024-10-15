@@ -19,7 +19,7 @@ package config
 import org.apache.commons.lang3.BooleanUtils
 import play.api.Configuration
 import play.api.mvc.Request
-import shared.config.{AppConfig, FeatureSwitches}
+import shared.config.{FeatureSwitches, SharedAppConfig}
 
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ import javax.inject.Inject
 case class CisDeductionsApiFeatureSwitches(protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   @Inject
-  def this(appConfig: AppConfig) = this(appConfig.featureSwitchConfig)
+  def this(appConfig: SharedAppConfig) = this(appConfig.featureSwitchConfig)
 
   def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension")) {

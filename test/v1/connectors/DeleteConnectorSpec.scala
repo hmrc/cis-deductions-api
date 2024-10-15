@@ -78,7 +78,7 @@ class DeleteConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureS
   trait Test { _: ConnectorTest =>
     def taxYear: TaxYear
 
-    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
     protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
   }
 

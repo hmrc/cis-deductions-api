@@ -17,15 +17,15 @@
 package v1.models.response.retrieve
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.config.MockAppConfig
-import shared.utils.UnitSpec
-import shared.models.domain.TaxYear
-import v1.fixtures.RetrieveModels.cisDeductions
-import v1.fixtures.{RetrieveJson, RetrieveModels}
+import shared.config.MockSharedAppConfig
 import shared.hateoas.Method._
 import shared.hateoas._
+import shared.models.domain.TaxYear
+import shared.utils.UnitSpec
+import v1.fixtures.RetrieveModels.cisDeductions
+import v1.fixtures.{RetrieveJson, RetrieveModels}
 
-class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
+class RetrieveResponseModelSpec extends UnitSpec with MockSharedAppConfig {
 
   "RetrieveResponseModel" when {
     "processing a complete response" should {
@@ -62,11 +62,11 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     val taxYear  = TaxYear.fromMtd("2023-24")
 
     "return the correct links" in { () =>
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
 
-      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
+      RetrieveResponseModel.CreateLinksFactory.links(mockSharedAppConfig, hateoasData) shouldBe
         Seq(
           Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "self"),
           Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
@@ -74,12 +74,12 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     }
 
     "return the correct item links" in {
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData              = RetrieveHateoasData(nino, fromDate, toDate, None, taxYear)
       val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
-      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
+      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockSharedAppConfig, hateoasData, cisDeductions) shouldBe
         Seq(
           Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
           Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")

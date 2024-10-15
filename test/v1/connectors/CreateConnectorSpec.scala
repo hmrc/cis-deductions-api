@@ -17,8 +17,8 @@
 package v1.connectors
 
 import shared.connectors.ConnectorSpec
-import shared.models.outcomes.ResponseWrapper
 import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
 import v1.fixtures.CreateRequestFixtures.parsedRequestData
 import v1.models.request.create.CreateRequestData
 import v1.models.response.create.CreateResponseModel
@@ -30,7 +30,7 @@ class CreateConnectorSpec extends ConnectorSpec {
   trait Test { _: ConnectorTest =>
     val toDate: String
 
-    val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
     val outcome = Right(ResponseWrapper(correlationId, CreateResponseModel("123456789")))
 

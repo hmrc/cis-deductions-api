@@ -19,7 +19,7 @@ package v1.controllers.validators
 import config.MockCisDeductionsApiConfig
 import models.domain.CisSource
 import models.errors.{RuleMissingFromDateError, RuleSourceInvalidError}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{DateRange, Nino, TaxYear}
 import shared.models.errors._
@@ -28,7 +28,7 @@ import v1.models.request.retrieve.RetrieveRequestData
 
 import java.time.LocalDate
 
-class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class RetrieveValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
   private implicit val correlationId: String = "1234"
   private val nino                           = "AA123456A"
   private val invalidNino                    = "GHFG197854"
@@ -98,7 +98,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
     }
   }
 
-  private class Test extends MockAppConfig with MockCisDeductionsApiConfig {
+  private class Test extends MockSharedAppConfig with MockCisDeductionsApiConfig {
     MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2020))
     private val validatorFactory: RetrieveValidatorFactory = new RetrieveValidatorFactory
 

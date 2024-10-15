@@ -17,15 +17,15 @@
 package v2.models.response.retrieve
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.config.MockAppConfig
-import shared.utils.UnitSpec
-import shared.models.domain.TaxYear
-import v2.fixtures.RetrieveModels.cisDeductions
-import v2.fixtures.{RetrieveJson, RetrieveModels}
+import shared.config.MockSharedAppConfig
 import shared.hateoas.Method._
 import shared.hateoas._
+import shared.models.domain.TaxYear
+import shared.utils.UnitSpec
+import v2.fixtures.RetrieveModels.cisDeductions
+import v2.fixtures.{RetrieveJson, RetrieveModels}
 
-class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
+class RetrieveResponseModelSpec extends UnitSpec with MockSharedAppConfig {
 
   "RetrieveResponseModel" when {
     "processing a complete response" should {
@@ -34,20 +34,24 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
           .toJson(RetrieveJson.multipleDeductionsJson)
           .validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(RetrieveModels.multipleDeductionsModel)
       }
+
       "produce a valid model with single deduction from json" in {
         Json.toJson(RetrieveJson.singleDeductionJson()).validate[RetrieveResponseModel[CisDeductions]] shouldBe JsSuccess(
           RetrieveModels.singleDeductionModel)
       }
+
       "produce a valid model with single deduction(contractor submission only) from json" in {
         Json.toJson(RetrieveJson.singleDeductionContractorJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe
           JsSuccess(RetrieveModels.singleDeductionModelContractor)
       }
     }
+
     "processing bad json" should {
       "produce an error" in {
         Json.parse(RetrieveJson.errorJson).validate[RetrieveResponseModel[CisDeductions]] shouldBe a[JsError]
       }
     }
+
     "producing json from a valid model" should {
       "produce valid json" in {
         Json.toJson(RetrieveModels.multipleDeductionsModel) shouldBe Json.toJson(RetrieveJson.multipleDeductionsJson)
@@ -62,11 +66,11 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     val taxYear    = TaxYear.fromMtd("2023-24")
 
     "return the correct links" in { () =>
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData = RetrieveHateoasData(nino, taxYear, source)
 
-      RetrieveResponseModel.CreateLinksFactory.links(mockAppConfig, hateoasData) shouldBe
+      RetrieveResponseModel.CreateLinksFactory.links(mockSharedAppConfig, hateoasData) shouldBe
         Seq(
           Link(s"/my/context/$nino/current-position/$taxYearRaw/$source", GET, "self"),
           Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
@@ -74,12 +78,12 @@ class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
     }
 
     "return the correct item links" in {
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       val hateoasData              = RetrieveHateoasData(nino, taxYear, "customer")
       val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
 
-      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockAppConfig, hateoasData, cisDeductions) shouldBe
+      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockSharedAppConfig, hateoasData, cisDeductions) shouldBe
         Seq(
           Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
           Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")

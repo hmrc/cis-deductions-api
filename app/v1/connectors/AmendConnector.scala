@@ -17,7 +17,7 @@
 package v1.connectors
 
 import config.CisDeductionsApiFeatureSwitches
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -27,7 +27,7 @@ import v1.models.request.amend.AmendRequestData
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit
+class AmendConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
     featureSwitches: CisDeductionsApiFeatureSwitches
 ) extends BaseDownstreamConnector {
 

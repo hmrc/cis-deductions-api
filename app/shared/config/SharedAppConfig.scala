@@ -30,40 +30,14 @@ import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.time.temporal.ChronoField
 import javax.inject.{Inject, Singleton}
 
+/** Do not extend/sub-class this class, instead make your own api-specific config file and pass in separately. */
 @Singleton
-class AppConfig @Inject() (config: ServicesConfig, protected[config] val configuration: Configuration) {
+class SharedAppConfig @Inject() (val config: ServicesConfig, protected[config] val configuration: Configuration) extends AppConfigBase {
   // API name
   def appName: String = config.getString("appName")
 
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
-
-  private def serviceKeyFor(serviceName: String) = s"microservice.services.$serviceName"
-
-  protected def downstreamConfig(serviceName: String): DownstreamConfig = {
-    val baseUrl = config.baseUrl(serviceName)
-
-    val serviceKey = serviceKeyFor(serviceName)
-
-    val env                = config.getString(s"$serviceKey.env")
-    val token              = config.getString(s"$serviceKey.token")
-    val environmentHeaders = configuration.getOptional[Seq[String]](s"$serviceKey.environmentHeaders")
-
-    DownstreamConfig(baseUrl, env, token, environmentHeaders)
-  }
-
-  protected def basicAuthDownstreamConfig(serviceName: String): BasicAuthDownstreamConfig = {
-    val baseUrl = config.baseUrl(serviceName)
-
-    val serviceKey = serviceKeyFor(serviceName)
-
-    val env                = config.getString(s"$serviceKey.env")
-    val clientId           = config.getString(s"$serviceKey.clientId")
-    val clientSecret       = config.getString(s"$serviceKey.clientSecret")
-    val environmentHeaders = configuration.getOptional[Seq[String]](s"$serviceKey.environmentHeaders")
-
-    BasicAuthDownstreamConfig(baseUrl, env, clientId, clientSecret, environmentHeaders)
-  }
 
   def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
   def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")

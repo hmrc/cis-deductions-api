@@ -23,14 +23,6 @@ import shared.utils.UnitSpec
 class CisDeductionApiFeatureSwitchesSpec extends UnitSpec with FeatureSwitchesBehaviour[CisDeductionsApiFeatureSwitches] {
   override def featureSwitches(configuration: Configuration): CisDeductionsApiFeatureSwitches = CisDeductionsApiFeatureSwitches(configuration)
 
-//  "isIfsEnabled" should {
-//    behave like aFeatureSwitchWithKey("ifs.enabled", _.isIfsEnabled)
-//  }
-//
-//  "isIfsInProduction" should {
-//    behave like aFeatureSwitchWithKey("ifs.released-in-production", _.isIfsInProduction)
-//  }
-
   "supportingAgentsAccessControlEnabled" should {
     behave like aFeatureSwitchWithKey("supporting-agents-access-control.enabled", _.supportingAgentsAccessControlEnabled)
   }

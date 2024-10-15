@@ -17,16 +17,16 @@
 package v1.models.response.create
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.config.MockAppConfig
-import shared.utils.UnitSpec
+import shared.config.MockSharedAppConfig
+import shared.hateoas.Method._
+import shared.hateoas._
 import shared.models.domain.Nino
+import shared.utils.UnitSpec
 import v1.fixtures.CreateRequestFixtures._
 import v1.models.request.amend.PeriodDetails
 import v1.models.request.create.{CreateBody, CreateRequestData}
-import shared.hateoas.Method._
-import shared.hateoas._
 
-class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
+class CreateResponseModelSpec extends UnitSpec with MockSharedAppConfig {
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {
@@ -63,9 +63,9 @@ class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
       val request        = CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
 
       () =>
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
         CreateResponseModel.CreateLinksFactory
-          .links(mockAppConfig, CreateHateoasData(nino, request)) shouldBe
+          .links(mockSharedAppConfig, CreateHateoasData(nino, request)) shouldBe
           Seq(
             Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "retrieve-cis-deductions-for-subcontractor")
           )

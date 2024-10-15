@@ -153,7 +153,7 @@ class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatur
 
     protected val dateRange: DateRange = DateRange(fromDate, toDate)
 
-    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
     protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), dateRange, CisSource.`contractor`)
   }
 

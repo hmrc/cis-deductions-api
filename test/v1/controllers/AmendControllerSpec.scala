@@ -17,14 +17,14 @@
 package v1.controllers
 
 import play.api.Configuration
-import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
+import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v1.controllers.validators.MockedAmendValidatorFactory
 import v1.fixtures.AmendRequestFixtures._
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class AmendControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockedAmendValidatorFactory
     with MockAmendService
     with MockAuditService {
@@ -95,11 +95,11 @@ class AmendControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.amend(validNino, submissionId)(fakePostRequest(requestJson))
 
