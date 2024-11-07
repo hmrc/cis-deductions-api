@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.request.amend
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
+import play.api.libs.json.{Json, OWrites, Reads}
 
-import javax.inject.Inject
+case class PeriodDetails(deductionAmount: BigDecimal,
+                         deductionFromDate: String,
+                         deductionToDate: String,
+                         costOfMaterials: Option[BigDecimal],
+                         grossAmountPaid: Option[BigDecimal])
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+object PeriodDetails {
 
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
+  implicit val reads: Reads[PeriodDetails] = Json.reads[PeriodDetails]
+
+  implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 
 }

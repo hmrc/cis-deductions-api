@@ -20,7 +20,7 @@ import play.api.http.Status.CREATED
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthMainAgentsOnlyISpec
-import v1.fixtures.CreateRequestFixtures.{createDeductionResponseBodyTys, requestBodyJsonTys}
+import v2.fixtures.CreateRequestFixtures.{createDeductionResponseBodyTys, requestBodyJsonTys}
 
 class CisDeductionsApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 

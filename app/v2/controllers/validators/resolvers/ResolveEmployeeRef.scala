@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package routing
+package v2.controllers.validators.resolvers
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
+import cats.data.Validated
+import models.errors.EmployerRefFormatError
+import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
+import shared.models.errors.MtdError
+import v2.models.request.create.EmployeeRef
 
-import javax.inject.Inject
+object ResolveEmployeeRef extends ResolverSupport {
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+  private val empRefFormat = "[0-9]{3}/[^ ]{0,9}".r
 
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
+  val resolver: Resolver[String, EmployeeRef] =
+    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef)
+
+  def apply(value: String): Validated[Seq[MtdError], EmployeeRef] = resolver(value)
 
 }

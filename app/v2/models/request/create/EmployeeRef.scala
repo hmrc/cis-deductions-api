@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.request.create
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
-
-import javax.inject.Inject
-
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
-
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
-
+case class EmployeeRef(employeeRef: String) {
+  override def toString: String = employeeRef
 }
