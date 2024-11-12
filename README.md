@@ -29,7 +29,7 @@ To view documentation locally ensure the CIS Deductions API is running, and run 
 Then go to http://localhost:9680/api-documentation/docs/openapi/preview and use this port and version:
 
 ```
-http://localhost:7781/api/conf/1.0/application.yaml
+http://localhost:7781/api/conf/2.0/application.yaml
 ```
 
 ## Changelog
@@ -42,7 +42,7 @@ You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-chan
 
 ## API Reference / Documentation 
 
-Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/cis-deductions-api/1.0)
+Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/cis-deductions-api/2.0)
 
 ## License
 
