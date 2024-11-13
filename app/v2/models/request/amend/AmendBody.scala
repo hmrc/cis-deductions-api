@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.request.amend
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
+import play.api.libs.json._
 
-import javax.inject.Inject
+case class AmendBody(periodData: Seq[PeriodDetails])
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+object AmendBody {
+  implicit val reads: Reads[AmendBody] = Json.reads[AmendBody]
 
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
+  implicit val writes: OWrites[AmendBody] = Json.writes[AmendBody]
 
 }

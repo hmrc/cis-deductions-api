@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.request.delete
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
+import shared.models.domain.{Nino, TaxYear}
+import v2.models.domain.SubmissionId
 
-import javax.inject.Inject
-
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
-
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
-
-}
+case class DeleteRequestData(nino: Nino, submissionId: SubmissionId, taxYear: Option[TaxYear])

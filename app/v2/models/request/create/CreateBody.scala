@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.request.create
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, VersionRoutingMap}
+import play.api.libs.json.{Json, Reads, Writes}
+import v2.models.request.amend.PeriodDetails
 
-import javax.inject.Inject
+case class CreateBody(
+    fromDate: String,
+    toDate: String,
+    contractorName: String,
+    employerRef: String,
+    periodData: Seq[PeriodDetails]
+)
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
-
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router
-  )
-
+object CreateBody {
+  implicit val reads: Reads[CreateBody]   = Json.reads[CreateBody]
+  implicit val writes: Writes[CreateBody] = Json.writes[CreateBody]
 }
