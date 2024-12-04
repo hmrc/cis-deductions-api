@@ -32,23 +32,8 @@ class DeleteConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureS
 
   "DeleteConnector" when {
     "called for a non-TYS tax year" should {
-      "return a successful result from Des" in new DesTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-
-        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-
-        willDelete(url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.delete(request))
-        result shouldBe outcome
-      }
-
       "return a successful result from Ifs" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 

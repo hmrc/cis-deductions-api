@@ -32,30 +32,9 @@ class AmendConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSw
 
     "return a result" when {
 
-      "the downstream call is successful from Des" in new DesTest with Test {
-
-        def taxYearIso: String = "2019-07-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-
-        private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/$submissionId",
-          body = amendRequestObj
-        )
-          .returns(Future.successful(expectedOutcome))
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
-
-        result shouldBe expectedOutcome
-      }
-
       "the downstream call is successful from Ifs" in new IfsTest with Test {
 
         def taxYearIso: String = "2019-07-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
         private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
 

@@ -38,5 +38,4 @@ case class CisDeductionsApiFeatureSwitches(protected val featureSwitchConfig: Co
     }
   }
 
-  def isDesIf_MigrationEnabled: Boolean = isEnabled("desIf_Migration")
 }

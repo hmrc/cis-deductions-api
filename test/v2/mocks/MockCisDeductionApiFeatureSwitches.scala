@@ -17,18 +17,12 @@
 package v2.mocks
 
 import config.CisDeductionsApiFeatureSwitches
-import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 
 trait MockCisDeductionApiFeatureSwitches extends MockFactory {
 
   implicit val mockFeatureSwitches: CisDeductionsApiFeatureSwitches = mock[CisDeductionsApiFeatureSwitches]
 
-  object MockFeatureSwitches {
-
-    def isDesIf_MigrationEnabled: CallHandler[Boolean] =
-      (() => mockFeatureSwitches.isDesIf_MigrationEnabled).expects()
-
-  }
+  object MockFeatureSwitches {}
 
 }
