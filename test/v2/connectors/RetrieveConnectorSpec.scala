@@ -20,13 +20,12 @@ import models.domain.CisSource
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 import scala.concurrent.Future
 
-class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class RetrieveConnectorSpec extends ConnectorSpec {
 
   private val nino = "AA123456A"
 

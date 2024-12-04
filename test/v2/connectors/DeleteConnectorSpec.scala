@@ -19,13 +19,12 @@ package v2.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.models.domain.SubmissionId
 import v2.models.request.delete.DeleteRequestData
 
 import scala.concurrent.Future
 
-class DeleteConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class DeleteConnectorSpec extends ConnectorSpec {
 
   private val nino         = "AA123456A"
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"

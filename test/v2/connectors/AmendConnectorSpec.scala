@@ -19,14 +19,13 @@ package v2.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.fixtures.AmendRequestFixtures._
 import v2.models.domain.SubmissionId
 import v2.models.request.amend.AmendRequestData
 
 import scala.concurrent.Future
 
-class AmendConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class AmendConnectorSpec extends ConnectorSpec {
 
   "AmendConnector" should {
 
