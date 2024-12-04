@@ -100,8 +100,8 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
       }
 
       "downstream service error" when {
-        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"ifs returns an $ifsCode error and status $ifsStatus" in new NonTysTest {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -109,7 +109,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
               DownstreamStub
                 .when(method = DownstreamStub.DELETE, uri = downstreamUri)
-                .thenReturn(status = ifsStatus, Json.parse(errorBody(ifsCode)))
+                .thenReturn(status = downstreamStatus, Json.parse(errorBody(downstreamCode)))
             }
 
             val response: WSResponse = await(mtdRequest().delete())
