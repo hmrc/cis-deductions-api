@@ -19,43 +19,21 @@ package v2.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.fixtures.AmendRequestFixtures._
 import v2.models.domain.SubmissionId
 import v2.models.request.amend.AmendRequestData
 
 import scala.concurrent.Future
 
-class AmendConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class AmendConnectorSpec extends ConnectorSpec {
 
   "AmendConnector" should {
 
     "return a result" when {
 
-      "the downstream call is successful from Des" in new DesTest with Test {
-
-        def taxYearIso: String = "2019-07-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-
-        private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/$submissionId",
-          body = amendRequestObj
-        )
-          .returns(Future.successful(expectedOutcome))
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendDeduction(request))
-
-        result shouldBe expectedOutcome
-      }
-
       "the downstream call is successful from Ifs" in new IfsTest with Test {
 
         def taxYearIso: String = "2019-07-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
         private val expectedOutcome = Right(ResponseWrapper(correlationId, ()))
 

@@ -20,60 +20,21 @@ import models.domain.CisSource
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
 import scala.concurrent.Future
 
-class RetrieveConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class RetrieveConnectorSpec extends ConnectorSpec {
 
   private val nino = "AA123456A"
 
   "Retrieve connector" when {
     "given a valid non-TYS request" must {
-      "return a valid response from downstream Des" in new DesTest with Test {
-        protected def startDate = "2019-04-06"
-
-        protected def endDate = "2020-04-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-
-        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
-          ResponseWrapper(
-            correlationId,
-            RetrieveResponseModel(
-              Some(0.00),
-              Some(0.00),
-              Some(0.00),
-              List(CisDeductions(
-                request.startDate,
-                request.endDate,
-                Some(""),
-                "",
-                Some(0.00),
-                Some(0.00),
-                Some(0.00),
-                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
-              ))
-            )
-          ))
-
-        willGet(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino",
-          parameters = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
-        ) returns Future.successful(outcome)
-
-        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
-        result shouldBe outcome
-      }
-
       "return a valid response from downstream Ifs" in new IfsTest with Test {
         protected def startDate = "2019-04-06"
 
         protected def endDate = "2020-04-05"
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
         val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
           ResponseWrapper(

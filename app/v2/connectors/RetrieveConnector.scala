@@ -16,9 +16,8 @@
 
 package v2.connectors
 
-import config.CisDeductionsApiFeatureSwitches
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -29,8 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit featureSwitches: CisDeductionsApiFeatureSwitches)
-    extends BaseDownstreamConnector {
+class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def retrieve(request: RetrieveRequestData)(implicit
       hc: HeaderCarrier,
@@ -47,14 +45,9 @@ class RetrieveConnector @Inject() (val http: HttpClient, val appConfig: SharedAp
           TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
           List("startDate" -> startDate, "endDate" -> endDate, "source" -> source.toString)
         )
-      } else if (featureSwitches.isDesIf_MigrationEnabled) {
-        (
-          IfsUri[RetrieveResponseModel[CisDeductions]](path),
-          List("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
-        )
       } else {
         (
-          DesUri[RetrieveResponseModel[CisDeductions]](path),
+          IfsUri[RetrieveResponseModel[CisDeductions]](path),
           List("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
         )
       }

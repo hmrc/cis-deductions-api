@@ -16,9 +16,8 @@
 
 package v2.connectors
 
-import config.CisDeductionsApiFeatureSwitches
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -27,9 +26,7 @@ import v2.models.request.amend.AmendRequestData
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
-    featureSwitches: CisDeductionsApiFeatureSwitches
-) extends BaseDownstreamConnector {
+class AmendConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def amendDeduction(
       request: AmendRequestData
@@ -45,10 +42,8 @@ class AmendConnector @Inject() (val http: HttpClient, val appConfig: SharedAppCo
 
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
       TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
-    } else if (featureSwitches.isDesIf_MigrationEnabled) {
-      IfsUri[Unit](path)
     } else {
-      DesUri[Unit](path)
+      IfsUri[Unit](path)
     }
 
     put(body, downstreamUri)

@@ -19,36 +19,20 @@ package v2.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v2.mocks.MockCisDeductionApiFeatureSwitches
 import v2.models.domain.SubmissionId
 import v2.models.request.delete.DeleteRequestData
 
 import scala.concurrent.Future
 
-class DeleteConnectorSpec extends ConnectorSpec with MockCisDeductionApiFeatureSwitches {
+class DeleteConnectorSpec extends ConnectorSpec {
 
   private val nino         = "AA123456A"
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
   "DeleteConnector" when {
     "called for a non-TYS tax year" should {
-      "return a successful result from Des" in new DesTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-
-        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
-
-        willDelete(url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.delete(request))
-        result shouldBe outcome
-      }
-
       "return a successful result from Ifs" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
 
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
