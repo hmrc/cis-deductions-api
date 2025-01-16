@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package routing
+package v3.controllers.validators.resolvers
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, Version3, VersionRoutingMap}
+import cats.data.Validated
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
+import shared.controllers.validators.resolvers.ResolverSupport
+import shared.models.errors.MtdError
 
-import javax.inject.Inject
+object ResolveSource extends ResolverSupport {
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes,
-    v3Router: v3.Routes
-) extends VersionRoutingMap {
+  val resolver: Resolver[String, CisSource] = resolvePartialFunction(RuleSourceInvalidError)(CisSource.parser)
 
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router,
-    Version3 -> v3Router
-  )
+  def apply(value: String): Validated[Seq[MtdError], CisSource] = resolver(value)
 
 }

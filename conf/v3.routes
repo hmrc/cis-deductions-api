@@ -1,0 +1,7 @@
+POST       /:nino/amendments                                v2.controllers.CreateController.create(nino: String)
+
+GET        /:nino/current-position/:taxYear/:source         v2.controllers.RetrieveController.retrieve(nino: String, taxYear: String, source: String)
+
+DELETE     /:nino/amendments/:id                            v2.controllers.DeleteController.delete(nino: String, id: String, taxYear: Option[String])
+
+PUT        /:nino/amendments/:id                            v2.controllers.AmendController.amend(nino: String, id: String)

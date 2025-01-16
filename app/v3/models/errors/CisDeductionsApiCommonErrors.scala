@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package routing
+package v3.models.errors
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, Version3, VersionRoutingMap}
+import play.api.http.Status.BAD_REQUEST
+import shared.models.errors.MtdError
 
-import javax.inject.Inject
+object CisDeductionsApiCommonErrors {
 
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes,
-    v3Router: v3.Routes
-) extends VersionRoutingMap {
+  // MtdError types that are common to CIS DEDUCTIONS API.
 
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router,
-    Version3 -> v3Router
-  )
+  object DeductionFromDateFormatError extends MtdError("FORMAT_DEDUCTIONS_FROM_DATE", "The provided deductions From date is invalid", BAD_REQUEST)
+  object DeductionToDateFormatError   extends MtdError("FORMAT_DEDUCTIONS_TO_DATE", "The provided deductions To date is invalid", BAD_REQUEST)
 
 }

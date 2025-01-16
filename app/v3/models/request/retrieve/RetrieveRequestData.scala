@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package routing
+package v3.models.request.retrieve
 
-import play.api.routing.Router
-import shared.routing.{Version, Version2, Version3, VersionRoutingMap}
+import models.domain.CisSource
+import shared.models.domain.{Nino, TaxYear}
 
-import javax.inject.Inject
-
-case class CisVersionRoutingMap @Inject() (
-    defaultRouter: Router,
-    v2Router: v2.Routes,
-    v3Router: v3.Routes
-) extends VersionRoutingMap {
-
-  val map: Map[Version, Router] = Map(
-    Version2 -> v2Router,
-    Version3 -> v3Router
-  )
-
+case class RetrieveRequestData(nino: Nino, taxYear: TaxYear, source: CisSource) {
+  val (startDate, endDate) = (taxYear.startDate.toString, taxYear.endDate.toString)
 }
