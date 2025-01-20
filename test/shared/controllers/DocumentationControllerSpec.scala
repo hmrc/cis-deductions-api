@@ -82,7 +82,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockSharedAppC
     }
 
     "return a 400 response" when {
-      "the requested asseet's URI encoding is wrong" in new Test {
+      "the requested asset's URI encoding is wrong" in new Test {
         val badlyEncodedAssetName = "applica\n\ntion"
         MockedSharedAppConfig.endpointReleasedInProduction(apiVersionName, badlyEncodedAssetName).anyNumberOfTimes() returns true
         MockedSharedAppConfig.endpointsEnabled(apiVersionName).anyNumberOfTimes() returns true

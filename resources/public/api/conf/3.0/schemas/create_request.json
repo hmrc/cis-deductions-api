@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create CIS Deduction",
+  "description": "Create CIS Deduction",
+  "type": "object",
+  "properties": {
+    "fromDate": {
+      "description": "CIS tax year start date. The minimum tax year is 2020-21. The minimum tax year in Sandbox is 2019-20.",
+      "type": "string",
+      "example": "2020-04-06"
+    },
+    "toDate": {
+      "description": "CIS tax year end date. The minimum tax year is 2020-21. The minimum tax year in Sandbox is 2019-20.",
+      "type": "string",
+      "example": "2021-04-05"
+    },
+    "contractorName": {
+      "description": "The name of the contractor the subcontractor worked for.",
+      "type": "string"
+    },
+    "employerRef": {
+      "description": "A unique identifier, the contractor reference number.",
+      "pattern": "^[0-9]{3}\\/[^ ].{0,9}$",
+      "type": "string",
+      "example": "123/AB56797"
+    },
+    "periodData": {
+      "description": "List of deductions. At least one item is required.",
+      "type": "array",
+      "items": {
+        "title": "item",
+        "type": "object",
+        "properties": {
+          "deductionAmount": {
+            "description": "The amount of tax deducted by the contractor. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "multipleOf": 0.01,
+            "minimum": 0,
+            "maximum": 99999999999.99,
+            "example": "5000.99"
+          },
+          "deductionFromDate" : {
+            "description": "The From date when the deduction was made within the CIS tax year period.",
+            "type": "string",
+            "example": "2020-07-06"
+          },
+          "deductionToDate" : {
+            "description": "The To date when the deduction was made within the CIS tax year period.",
+            "type": "string",
+            "example": "2020-08-05"
+          },
+          "costOfMaterials" : {
+            "description": "The cost of materials incurred under CIS. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "multipleOf": 0.01,
+            "minimum": 0,
+            "maximum": 99999999999.99,
+            "example": "5000.99"
+          },
+          "grossAmountPaid" : {
+            "description": "The gross amount paid under CIS. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+            "type": "number",
+            "multipleOf": 0.01,
+            "minimum": 0,
+            "maximum": 99999999999.99,
+            "example": "5000.99"
+          }
+        },
+        "required": [
+          "deductionAmount", "deductionFromDate" ,"deductionToDate"
+        ]
+      }
+    }
+  },
+  "required": [
+    "periodData", "fromDate", "toDate", "contractorName", "employerRef"
+  ]
+}

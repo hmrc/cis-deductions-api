@@ -1,0 +1,96 @@
+get:
+  summary: Retrieve CIS Deductions for Subcontractor
+  description: |
+    This endpoint allows a developer to retrieve a customer's latest CIS deductions data and whether it was submitted by a contractor or user. A National Insurance number and submission ID must be provided.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario)                | Scenario                                                                                                                    |
+    |-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+    | N/A - DEFAULT                                   | Simulates success response with customer and contractor deductions.                                                         |
+    | N/A - DEFAULT <br> using source **all**         | Simulates success response with customer and contractor deductions                                                          |
+    | N/A - DEFAULT <br> using source **contractor**  | Simulates success response with contractor deductions.                                                                      |
+    | N/A - DEFAULT <br> using source **customer**    | Simulates success response with customer deductions.                                                                        |
+    | TAX_YEAR_RANGE_INVALID                          | Simulates the scenario where specified tax year is outside the allowable tax years (the current tax year minus four years). |
+    | TAX_YEAR_NOT_SUPPORTED                          | Simulates the scenario where the tax year is not supported.                                                                 |
+    | NOT_FOUND                                       | Simulates the scenario where no data is found.                                                                              |
+    | DYNAMIC                                         | The following response values will change to correspond to the values submitted in the request: <br/> &bull; fromDate <br/> &bull; toDate <br/> &bull; deductionFromDate <br/> &bull; deductionToDate <br/> &bull; submissionDate <br/> &bull; source |
+    | STATEFUL                                        | Performs a stateful retrieve.                                                                                               |
+
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+    - $ref: './common/pathParameters.yaml#/components/parameters/source'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/acceptJson'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - read:self-assessment
+
+  responses:
+    "200":
+      description: Success
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: ./common/headers.yaml#/components/parameters/deprecationHeader
+        Sunset:
+          $ref: ./common/headers.yaml#/components/parameters/sunsetHeader
+        Link:
+          $ref: ./common/headers.yaml#/components/parameters/linkHeader
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/list_response.json'
+          examples:
+            example-response:
+              description: Example Response
+              value:
+                $ref: './examples/list_response_1.json'
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+            RULE_DATE_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleDateRangeInvalid'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+            RULE_SOURCE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleSourceInvalid'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/incorrectOrEmptyBody'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'

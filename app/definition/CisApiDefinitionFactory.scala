@@ -18,7 +18,7 @@ package definition
 
 import shared.config.SharedAppConfig
 import shared.definition._
-import shared.routing.Version2
+import shared.routing.{Version2, Version3}
 import shared.utils.Logging
 
 import javax.inject.{Inject, Singleton}
@@ -38,6 +38,11 @@ class CisApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfi
             version = Version2,
             status = buildAPIStatus(Version2),
             endpointsEnabled = appConfig.endpointsEnabled(Version2)
+          ),
+          APIVersion(
+            version = Version3,
+            status = buildAPIStatus(Version3),
+            endpointsEnabled = appConfig.endpointsEnabled(Version3)
           )
         ),
         requiresTrust = None

@@ -1,0 +1,104 @@
+summary: Amend CIS Deductions for Subcontractor
+description: |
+  This endpoint allows a developer to amend a customer’s CIS deductions data that has been previously populated. A National Insurance number and submission ID must be provided.
+  
+  ### Test data
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                       |
+  |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                    | Simulates success response.                                                                                                    |
+  | DEDUCTIONS_DATE_RANGE_INVALID    | Simulates the scenario where the deductions period does not align from the 6th of one month to the 5th of the following month. |
+  | UNALIGNED_DEDUCTIONS_PERIOD      | Simulates the scenario where the deductions periods do not align with the tax year supplied.                                   |
+  | DUPLICATE_PERIOD                 | Simulates the scenario where CIS deductions already exists for this period.                                                    |
+  | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.                                                                  |
+  | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year is not supported.                                                                    |
+  | STATEFUL                         | Performs a stateful update.                                                                                                    |
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/submissionId'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/acceptJson'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/amendCisDeductions/amend_cis_deductions_request.json'
+      examples:
+        example-1:
+          description: Amend CIS request
+          value:
+            $ref: './examples/AmendCisDeductions/amend_cis_deductions_request.json'
+
+responses:
+  "204":
+    description: No Content
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: ./common/headers.yaml#/components/parameters/deprecationHeader
+      Sunset:
+        $ref: ./common/headers.yaml#/components/parameters/sunsetHeader
+      Link:
+        $ref: ./common/headers.yaml#/components/parameters/linkHeader
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/incorrectOrEmptyBody'
+          FORMAT_DEDUCTIONS_FROM_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatDeductionsFromDate'
+          FORMAT_DEDUCTIONS_TO_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatDeductionsToDate'
+          RULE_DEDUCTIONS_AMOUNT:
+            $ref: './common/errors.yaml#/components/examples/ruleDeductionsAmount'
+          RULE_COST_OF_MATERIALS:
+            $ref: './common/errors.yaml#/components/examples/ruleCostOfMaterials'
+          RULE_GROSS_AMOUNT_PAID:
+            $ref: './common/errors.yaml#/components/examples/ruleGrossAmountPaid'
+          RULE_DEDUCTIONS_DATE_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleDeductionsDateRangeInvalid'
+          FORMAT_SUBMISSION_ID:
+            $ref: './common/errors.yaml#/components/examples/formatSubmissionId'
+          RULE_UNALIGNED_DEDUCTIONS_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleUnalignedDeductionsPeriod'
+          RULE_DUPLICATE_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleDuplicatePeriod'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'
