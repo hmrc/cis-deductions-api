@@ -23,7 +23,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
 import shared.services._
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.RetrieveJson._
+import v3.fixtures.RetrieveJson._
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 
@@ -194,7 +194,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }

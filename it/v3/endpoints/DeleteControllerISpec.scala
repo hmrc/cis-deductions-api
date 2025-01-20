@@ -26,7 +26,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures._
 
 class DeleteControllerISpec extends IntegrationBaseSpec {
 
@@ -147,7 +147,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/amendments/$submissionId$taxYearParam")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }

@@ -35,8 +35,8 @@ import shared.models.errors.{
 }
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.CreateRequestFixtures._
-import v2.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
+import v3.fixtures.CreateRequestFixtures._
+import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
 class CreateControllerISpec extends IntegrationBaseSpec {
 
@@ -151,7 +151,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
       buildRequest(s"/$nino/amendments")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
