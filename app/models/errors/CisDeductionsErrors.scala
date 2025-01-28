@@ -34,12 +34,6 @@ object RuleDeductionsDateRangeInvalidError
       "The deductions period must align from the 6th of one month to the 5th of the following month",
       BAD_REQUEST)
 
-object RuleDateRangeOutOfDateError
-    extends MtdError(
-      "RULE_DATE_RANGE_OUT_OF_DATE",
-      "The specified date range is outside the allowable tax years (the current tax year minus four years)",
-      BAD_REQUEST)
-
 object RuleSourceInvalidError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid", BAD_REQUEST)
 
 object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for this tax year", BAD_REQUEST)
@@ -52,8 +46,6 @@ object RuleDeductionAmountError
       "The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places",
       BAD_REQUEST)
 
-object RuleMissingFromDateError extends MtdError("MISSING_FROM_DATE", "The From date parameter is missing", BAD_REQUEST)
-
 object RuleCostOfMaterialsError
     extends MtdError(
       "RULE_COST_OF_MATERIALS",
@@ -65,3 +57,10 @@ object RuleGrossAmountError
       "RULE_GROSS_AMOUNT_PAID",
       "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places",
       BAD_REQUEST)
+
+object RuleOutsideAmendmentWindowError
+    extends MtdError(
+      code = "RULE_OUTSIDE_AMENDMENT_WINDOW",
+      message = "You are outside the amendment window",
+      BAD_REQUEST
+    )

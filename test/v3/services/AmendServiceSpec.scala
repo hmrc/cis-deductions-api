@@ -16,7 +16,13 @@
 
 package v3.services
 
-import models.errors.{RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
+import models.errors.{
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleOutsideAmendmentWindowError,
+  RuleUnalignedDeductionsPeriodError,
+  SubmissionIdFormatError
+}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{
@@ -81,9 +87,10 @@ class AmendServiceSpec extends UnitSpec {
         "SERVICE_ERROR"             -> InternalError
       )
       val extraTysErrors = List(
-        "INVALID_TAX_YEAR"       -> InternalError,
-        "INVALID_CORRELATION_ID" -> InternalError,
-        "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+        "INVALID_TAX_YEAR"         -> InternalError,
+        "INVALID_CORRELATION_ID"   -> InternalError,
+        "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+        "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
       )
 
       (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

@@ -17,7 +17,7 @@
 package v3.services
 
 import cats.implicits.toBifunctorOps
-import models.errors.SubmissionIdFormatError
+import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
 import shared.controllers.RequestContext
 import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, TaxYearFormatError}
 import shared.services.{BaseService, ServiceOutcome}
@@ -46,10 +46,11 @@ class DeleteService @Inject() (connector: DeleteConnector) extends BaseService {
     )
 
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
-      "INVALID_SUBMISSIONID"   -> SubmissionIdFormatError,
-      "NOT_FOUND"              -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "INVALID_TAX_YEAR"         -> TaxYearFormatError,
+      "INVALID_SUBMISSIONID"     -> SubmissionIdFormatError,
+      "NOT_FOUND"                -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
     )
 
     errors ++ extraTysErrors

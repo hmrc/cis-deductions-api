@@ -5,11 +5,12 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                      |
-  |----------------------------------|---------------------------------------------------------------|
-  | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.               |
-  | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found. |
-  | STATEFUL                         | Performs a stateful delete.                                   |
+  | Header Value (Gov-Test-Scenario) | Scenario                                                            |
+  |----------------------------------|---------------------------------------------------------------------|
+  | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.                     |
+  | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.       |
+  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where you are outside the amendment window.  |
+  | STATEFUL                         | Performs a stateful delete.                                         |
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -56,6 +57,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/invalidTaxYear'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
   "403":
     description: Forbidden
     content:
