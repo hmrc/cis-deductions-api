@@ -16,7 +16,7 @@
 
 package v3.services
 
-import models.errors.SubmissionIdFormatError
+import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{
@@ -92,9 +92,10 @@ class DeleteServiceSpec extends UnitSpec {
     )
 
     val extraTysErrors = List(
-      "INVALID_TAX_YEAR"       -> TaxYearFormatError,
-      "INVALID_SUBMISSIONID"   -> SubmissionIdFormatError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "INVALID_TAX_YEAR"         -> TaxYearFormatError,
+      "INVALID_SUBMISSIONID"     -> SubmissionIdFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
     )
 
     (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

@@ -107,7 +107,8 @@ class CreateServiceSpec extends UnitSpec {
           ("INVALID_TAX_YEAR_ALIGN", RuleUnalignedDeductionsPeriodError),
           ("EARLY_SUBMISSION", RuleTaxYearNotEndedError),
           ("INVALID_DATE_RANGE", RuleDeductionsDateRangeInvalidError),
-          ("DUPLICATE_MONTH", RuleDuplicatePeriodError)
+          ("DUPLICATE_MONTH", RuleDuplicatePeriodError),
+          ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

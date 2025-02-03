@@ -65,3 +65,10 @@ object RuleGrossAmountError
       "RULE_GROSS_AMOUNT_PAID",
       "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places",
       BAD_REQUEST)
+
+object RuleOutsideAmendmentWindowError
+    extends MtdError(
+      code = "RULE_OUTSIDE_AMENDMENT_WINDOW",
+      message = "You are outside the amendment window",
+      BAD_REQUEST
+    )

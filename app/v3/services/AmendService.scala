@@ -17,7 +17,13 @@
 package v3.services
 
 import cats.implicits.toBifunctorOps
-import models.errors.{RuleDeductionsDateRangeInvalidError, RuleDuplicatePeriodError, RuleUnalignedDeductionsPeriodError, SubmissionIdFormatError}
+import models.errors.{
+  RuleDeductionsDateRangeInvalidError,
+  RuleDuplicatePeriodError,
+  RuleOutsideAmendmentWindowError,
+  RuleUnalignedDeductionsPeriodError,
+  SubmissionIdFormatError
+}
 import shared.controllers.RequestContext
 import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import shared.services.{BaseService, ServiceOutcome}
@@ -49,9 +55,10 @@ class AmendService @Inject() (connector: AmendConnector) extends BaseService {
       "SERVICE_ERROR"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"       -> InternalError,
-      "INVALID_CORRELATION_ID" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "INVALID_TAX_YEAR"         -> InternalError,
+      "INVALID_CORRELATION_ID"   -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
     )
 
     errors ++ extraTysErrors

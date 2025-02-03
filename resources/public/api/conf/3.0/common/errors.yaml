@@ -220,12 +220,20 @@ components:
       value:
         code: RULE_TAX_YEAR_RANGE_EXCEEDED
         message: Tax year range exceeded. A tax year range of one year is required
+
     ruleIncorrectGovTestScenario:
       description: |
         The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
       value:
         code: RULE_INCORRECT_GOV_TEST_SCENARIO
         message: The Gov-Test-Scenario was not found
+
+    ruleOutsideAmendmentWindow:
+      description: |
+        The request cannot be completed as you are outside the amendment window.
+      value:
+        code: RULE_OUTSIDE_AMENDMENT_WINDOW
+        message: You are outside the amendment window
 
     # 403
     clientOrAgentNotAuthorised:
