@@ -13,7 +13,7 @@ description: |
   | DUPLICATE_PERIOD                 | Simulates the scenario where CIS deductions already exists for this period.                                                    |
   | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.                                                                  |
   | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year is not supported.                                                                    |
-  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where you are outside the amendment window.                                                             |
+  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                |
   | STATEFUL                         | Performs a stateful update.                                                                                                    |
 
 parameters:
