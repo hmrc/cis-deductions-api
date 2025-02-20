@@ -46,11 +46,11 @@ post:
         X-CorrelationId:
           $ref: './common/headers.yaml#/components/parameters/correlationId'
         Deprecation:
-          $ref: ./common/headers.yaml#/components/parameters/deprecationHeader
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
         Sunset:
-          $ref: ./common/headers.yaml#/components/parameters/sunsetHeader
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
         Link:
-          $ref: ./common/headers.yaml#/components/parameters/linkHeader
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
       content:
         application/json:
           schema:
@@ -62,6 +62,15 @@ post:
                 $ref: './examples/example_1.json'
     "400":
       description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
       content:
         application/json:
           schema:
@@ -107,6 +116,15 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
     "403":
       description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
       content:
         application/json:
           schema:
