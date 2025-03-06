@@ -63,7 +63,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     def taxYear: TaxYear
 
     protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
-    protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), Some(taxYear))
+    protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), taxYear)
   }
 
 }

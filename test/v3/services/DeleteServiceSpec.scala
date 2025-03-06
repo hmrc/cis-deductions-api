@@ -48,7 +48,7 @@ class DeleteServiceSpec extends UnitSpec {
 
   private implicit val correlationId: String = "X-123"
 
-  private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), Some(taxYear))
+  private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), taxYear)
 
   trait Test extends MockDeleteConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()

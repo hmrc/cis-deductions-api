@@ -44,7 +44,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
       endpointName = "deleteEndpoint"
     )
 
-  def delete(nino: String, submissionId: String, taxYear: Option[String]): Action[AnyContent] =
+  def delete(nino: String, submissionId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -53,7 +53,7 @@ class DeleteController @Inject() (val authService: EnrolmentsAuthService,
         .withValidator(validator)
         .withService(service.deleteDeductions)
         .withAuditing {
-          val params = Map("nino" -> nino, "submissionId" -> submissionId) ++ taxYear.map(x => "taxYear" -> x)
+          val params = Map("nino" -> nino, "submissionId" -> submissionId, "taxYear" -> taxYear)
 
           AuditHandler(
             auditService = auditService,

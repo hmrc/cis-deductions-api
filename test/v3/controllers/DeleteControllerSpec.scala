@@ -46,7 +46,7 @@ class DeleteControllerSpec
   private val submissionId      = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   private val rawTaxYear        = "2022-23"
   private val taxYear           = TaxYear.fromMtd(rawTaxYear)
-  private val deleteRequestData = DeleteRequestData(Nino(validNino), SubmissionId(submissionId), Some(taxYear))
+  private val deleteRequestData = DeleteRequestData(Nino(validNino), SubmissionId(submissionId), taxYear)
 
   "delete" should {
     "return a successful response with status 204 (No Content)" when {
@@ -103,7 +103,7 @@ class DeleteControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.delete(validNino, submissionId, Some(rawTaxYear))(fakeRequest)
+    protected def callController(): Future[Result] = controller.delete(validNino, submissionId, rawTaxYear)(fakeRequest)
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

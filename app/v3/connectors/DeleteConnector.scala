@@ -33,13 +33,11 @@ class DeleteConnector @Inject() (val http: HttpClient, val appConfig: SharedAppC
 
     import request._
 
-    val downstreamUri =
-      taxYear match {
-        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-          TaxYearSpecificIfsUri[Unit](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/$submissionId")
-        case _ =>
-          IfsUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
-      }
+    val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
+      TaxYearSpecificIfsUri[Unit](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/$submissionId")
+    } else {
+      IfsUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
+    }
 
     delete(downstreamUri)
   }
