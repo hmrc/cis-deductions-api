@@ -89,12 +89,11 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           (RequestData("AA1123A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", "2022-23"), BAD_REQUEST, NinoFormatError),
-          (RequestData("AA123456A", "4cc-81f5-e6acd1099f3c", "2023-24"), BAD_REQUEST, SubmissionIdFormatError)
+          (RequestData("AA123456A", "4cc-81f5-e6acd1099f3c", "2022-23"), BAD_REQUEST, SubmissionIdFormatError),
+          (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", "2023"), BAD_REQUEST, TaxYearFormatError)
         )
 
-        val extraTysInput = (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", "2023"), BAD_REQUEST, TaxYearFormatError)
-
-        (input :+ extraTysInput).foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
       "downstream service error" when {
