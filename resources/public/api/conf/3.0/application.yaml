@@ -55,4 +55,6 @@ paths:
   /individuals/deductions/cis/{nino}/amendments:
     $ref: "./cis_deductions_create.yaml"
   /individuals/deductions/cis/{nino}/amendments/{submissionId}:
-    $ref: "./cis_deductions_amend_delete.yaml"
+    $ref: "./cis_deductions_amend.yaml"
+  /individuals/deductions/cis/{nino}/amendments/{submissionId}/{taxYear}:
+    $ref: "./cis_deductions_delete.yaml"
