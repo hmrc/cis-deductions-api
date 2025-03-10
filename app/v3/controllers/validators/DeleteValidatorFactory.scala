@@ -19,7 +19,7 @@ package v3.controllers.validators
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveTysTaxYear}
+import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import shared.models.errors.MtdError
 import v3.controllers.validators.resolvers.ResolveSubmissionId
 import v3.models.request.delete.DeleteRequestData
@@ -29,14 +29,14 @@ import javax.inject.Singleton
 @Singleton
 class DeleteValidatorFactory {
 
-  def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =
+  def validator(nino: String, submissionId: String, taxYear: String): Validator[DeleteRequestData] =
     new Validator[DeleteRequestData] {
 
       def validate: Validated[Seq[MtdError], DeleteRequestData] =
         (
           ResolveNino(nino),
           ResolveSubmissionId(submissionId),
-          ResolveTysTaxYear(taxYear)
+          ResolveTaxYear(taxYear)
         ).mapN(DeleteRequestData)
 
     }

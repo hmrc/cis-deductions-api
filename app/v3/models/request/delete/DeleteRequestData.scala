@@ -19,4 +19,4 @@ package v3.models.request.delete
 import shared.models.domain.{Nino, TaxYear}
 import v3.models.domain.SubmissionId
 
-case class DeleteRequestData(nino: Nino, submissionId: SubmissionId, taxYear: Option[TaxYear])
+case class DeleteRequestData(nino: Nino, submissionId: SubmissionId, taxYear: TaxYear)

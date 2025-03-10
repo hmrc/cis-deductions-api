@@ -30,7 +30,7 @@ trait MockedDeleteValidatorFactory extends MockFactory {
   object MockedDeleteValidatorFactory {
 
     def validator(): CallHandler[Validator[DeleteRequestData]] =
-      (mockedDeleteValidatorFactory.validator(_: String, _: String, _: Option[String])).expects(*, *, *)
+      (mockedDeleteValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
 
   }
 

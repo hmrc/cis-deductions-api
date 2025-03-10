@@ -38,29 +38,24 @@ class DeleteValidatorFactorySpec extends UnitSpec {
 
     "return no errors" when {
       "given a valid request" in new Test {
-        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, validSubmissionId, Some(rawTaxYear)).validateAndWrapResult()
-        result shouldBe Right(DeleteRequestData(Nino(validNino), SubmissionId(validSubmissionId), Some(TaxYear.fromMtd(rawTaxYear))))
+        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, validSubmissionId, rawTaxYear).validateAndWrapResult()
+        result shouldBe Right(DeleteRequestData(Nino(validNino), SubmissionId(validSubmissionId), TaxYear.fromMtd(rawTaxYear)))
       }
     }
 
     "return a single error" when {
       "given an invalid nino" in new Test {
-        val result: Either[ErrorWrapper, DeleteRequestData] = validator("23456A", validSubmissionId, Some(rawTaxYear)).validateAndWrapResult()
+        val result: Either[ErrorWrapper, DeleteRequestData] = validator("23456A", validSubmissionId, rawTaxYear).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
       "given an invalid submission id" in new Test {
-        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, "contractor1", Some(rawTaxYear)).validateAndWrapResult()
+        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, "contractor1", rawTaxYear).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, SubmissionIdFormatError))
       }
 
-      "given a pre-TYS taxYear param" in new Test {
-        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, validSubmissionId, Some("2021-22")).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, InvalidTaxYearParameterError))
-      }
-
       "given an invalid tax year" in new Test {
-        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, validSubmissionId, Some("2023-25")).validateAndWrapResult()
+        val result: Either[ErrorWrapper, DeleteRequestData] = validator(validNino, validSubmissionId, "2023-25").validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
       }
     }
@@ -68,7 +63,7 @@ class DeleteValidatorFactorySpec extends UnitSpec {
     "return multiple errors" when {
       "given multiple wrong fields" in new Test {
         val result: Either[ErrorWrapper, DeleteRequestData] =
-          validator("2sbt3456A", "idcontract123", Some("bad-tax-year-format")).validateAndWrapResult()
+          validator("2sbt3456A", "idcontract123", "bad-tax-year-format").validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, SubmissionIdFormatError, TaxYearFormatError))))
       }
     }
@@ -78,7 +73,7 @@ class DeleteValidatorFactorySpec extends UnitSpec {
     MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
     private val validatorFactory = new DeleteValidatorFactory
 
-    protected def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =
+    protected def validator(nino: String, submissionId: String, taxYear: String): Validator[DeleteRequestData] =
       validatorFactory.validator(nino, submissionId, taxYear)
 
   }

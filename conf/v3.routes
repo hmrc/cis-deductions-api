@@ -2,6 +2,6 @@ POST       /:nino/amendments                                v3.controllers.Creat
 
 GET        /:nino/current-position/:taxYear/:source         v3.controllers.RetrieveController.retrieve(nino: String, taxYear: String, source: String)
 
-DELETE     /:nino/amendments/:id                            v3.controllers.DeleteController.delete(nino: String, id: String, taxYear: Option[String])
+DELETE     /:nino/amendments/:id/:taxYear                   v3.controllers.DeleteController.delete(nino: String, id: String, taxYear: String)
 
 PUT        /:nino/amendments/:id                            v3.controllers.AmendController.amend(nino: String, id: String)

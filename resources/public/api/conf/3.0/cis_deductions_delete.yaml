@@ -1,106 +1,105 @@
-summary: Delete CIS Deductions for Subcontractor
-description: |
-  This endpoint allows a developer to remove a customer’s CIS deductions data that has been previously populated. A National Insurance number and submission ID must be provided.
-  
-  ### Test data
-  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
-  
-  | Header Value (Gov-Test-Scenario) | Scenario                                                                                         |
-  |----------------------------------|--------------------------------------------------------------------------------------------------|
-  | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.                                                  |
-  | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.                                    |
-  | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.  |
-  | STATEFUL                         | Performs a stateful delete.                                                                      |
+delete:
+  summary: Delete CIS Deductions for Subcontractor
+  description: |
+    This endpoint allows a developer to remove a customer’s CIS deductions data that has been previously populated. A National Insurance number and submission ID must be provided.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                         |
+    |----------------------------------|--------------------------------------------------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.                                                  |
+    | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.                                    |
+    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.  |
+    | STATEFUL                         | Performs a stateful delete.                                                                      |
 
-parameters:
-  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
-  - $ref: './common/pathParameters.yaml#/components/parameters/submissionId'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTYS'
-  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
-  - $ref: './common/headers.yaml#/components/parameters/acceptJson'
-  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/submissionId'
+    - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/acceptJson'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
-security:
-  - User-Restricted:
-      - write:self-assessment
+  security:
+    - User-Restricted:
+        - write:self-assessment
 
-responses:
-  "204":
-    description: No Content
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-      Deprecation:
-        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
-      Sunset:
-        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
-      Link:
-        $ref: './common/headers.yaml#/components/parameters/linkHeader'
-  "400":
-    description: Bad request
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-      Deprecation:
-        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
-      Sunset:
-        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
-      Link:
-        $ref: './common/headers.yaml#/components/parameters/linkHeader'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error-response.yaml'
-        examples:
-          FORMAT_NINO:
-            $ref: './common/errors.yaml#/components/examples/formatNino'
-          FORMAT_TAX_YEAR:
-            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
-          FORMAT_SUBMISSION_ID:
-            $ref: './common/errors.yaml#/components/examples/formatSubmissionId'
-          RULE_TAX_YEAR_RANGE_EXCEEDED:
-            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeExceeded'
-          RULE_TAX_YEAR_NOT_SUPPORTED:
-            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
-          INVALID_TAX_YEAR_PARAMETER:
-            $ref: './common/errors.yaml#/components/examples/invalidTaxYear'
-          RULE_INCORRECT_GOV_TEST_SCENARIO:
-            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
-          RULE_OUTSIDE_AMENDMENT_WINDOW:
-            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
-  "403":
-    description: Forbidden
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-      Deprecation:
-        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
-      Sunset:
-        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
-      Link:
-        $ref: './common/headers.yaml#/components/parameters/linkHeader'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error-response.yaml'
-        examples:
-          CLIENT_OR_AGENT_NOT_AUTHORISED:
-            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
-  "404":
-    description: Not Found
-    headers:
-      X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
-      Deprecation:
-        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
-      Sunset:
-        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
-      Link:
-        $ref: './common/headers.yaml#/components/parameters/linkHeader'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/error-response.yaml'
-        examples:
-          MATCHING_RESOURCE_NOT_FOUND:
-            $ref: './common/errors.yaml#/components/examples/notFound'
+  responses:
+    "204":
+      description: No Content
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
+    "400":
+      description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_TAX_YEAR:
+              $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+            FORMAT_SUBMISSION_ID:
+              $ref: './common/errors.yaml#/components/examples/formatSubmissionId'
+            RULE_TAX_YEAR_RANGE_EXCEEDED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeExceeded'
+            RULE_TAX_YEAR_NOT_SUPPORTED:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            RULE_OUTSIDE_AMENDMENT_WINDOW:
+              $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+    "403":
+      description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+    "404":
+      description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+        Sunset:
+          $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+        Link:
+          $ref: './common/headers.yaml#/components/parameters/linkHeader'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error-response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'
