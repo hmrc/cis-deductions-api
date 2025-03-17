@@ -31,18 +31,6 @@
           "submissionDate": "2020-05-11T16:38:57Z",
           "source": "contractor"
         }
-      ],
-      "links":[
-        {
-          "href":"individuals/deductions/cis/TC663795B/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-          "rel":"delete-cis-deductions-for-subcontractor",
-          "method":"DELETE"
-        },
-        {
-          "href":"individuals/deductions/cis/TC663795B/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c",
-          "rel":"amend-cis-deductions-for-subcontractor",
-          "method":"PUT"
-        }
       ]
     },
     {
@@ -73,18 +61,6 @@
           "source": "contractor"
         }
       ]
-    }
-  ],
-  "links":[
-    {
-      "href": "individuals/deductions/cis/TC663795B/current-position/2020-21/all",
-      "rel": "self",
-      "method": "GET"
-    },
-    {
-      "href":"individuals/deductions/cis/TC663795B/amendments",
-      "rel":"create-cis-deductions-for-subcontractor",
-      "method":"POST"
     }
   ]
 }
