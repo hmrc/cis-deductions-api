@@ -42,25 +42,24 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
   "Calling the create endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "any valid request is made" in new NonTysTest {
         override def setupStubs(): Unit = {
-          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(OK, createDeductionResponseBody)
+          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(NO_CONTENT)
         }
         val response: WSResponse = await(request().post(requestBodyJson))
-        response.status shouldBe OK
-        response.json shouldBe createDeductionResponseBody
+        response.status shouldBe NO_CONTENT
+        response.header("Content-Type") shouldBe None
       }
 
       "any valid request is made for a Tax Year Specific (TYS) tax year" in new TysIfsTest {
         override def setupStubs(): Unit = {
-          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(CREATED, createDeductionResponseBody)
+          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJsonTys))
-        response.json shouldBe createDeductionResponseBodyTys
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
       }
     }
     "return error according to spec" when {

@@ -23,7 +23,6 @@ import shared.models.errors.{InternalError, MtdError, NinoFormatError, RuleTaxYe
 import shared.services.{BaseService, ServiceOutcome}
 import v3.connectors.CreateConnector
 import v3.models.request.create.CreateRequestData
-import v3.models.response.create.CreateResponseModel
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,8 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
-  def createDeductions(
-      request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
+  def createDeductions(request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.create(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }

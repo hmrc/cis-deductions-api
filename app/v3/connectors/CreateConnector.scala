@@ -16,13 +16,11 @@
 
 package v3.connectors
 
-import play.api.http.Status.{CREATED, OK}
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.response.create.CreateResponseModel
 import v3.models.request.create.CreateRequestData
 
 import javax.inject.{Inject, Singleton}
@@ -31,20 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
-  def create(request: CreateRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[CreateResponseModel]] = {
+  def create(request: CreateRequestData)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 
-    val (downstreamUri, statusCode) = if (taxYear.useTaxYearSpecificApi) {
-      (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
+    val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
+      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino")
     } else {
-      (DesUri[CreateResponseModel](s"income-tax/cis/deductions/$nino"), OK)
+      DesUri[Unit](s"income-tax/cis/deductions/$nino")
     }
-
-    implicit val successCode: SuccessCode = SuccessCode(statusCode)
 
     post(body, downstreamUri)
   }

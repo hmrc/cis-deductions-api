@@ -22,7 +22,6 @@ import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.CreateConnector
 import v3.models.request.create.CreateRequestData
-import v3.models.response.create.CreateResponseModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,7 +31,7 @@ trait MockCreateConnector extends MockFactory {
 
   object MockCreateCisDeductionsConnector {
 
-    def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DownstreamOutcome[CreateResponseModel]]] = {
+    def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockCreateConnector
         .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

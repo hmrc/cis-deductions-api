@@ -21,7 +21,6 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.models.audit.{AuditError, AuditResponse}
 import v3.models.request.amend.PeriodDetails
 import v3.models.request.create.CreateBody
-import v3.models.response.create.CreateResponseModel
 
 object CreateRequestFixtures {
 
@@ -620,8 +619,6 @@ object CreateRequestFixtures {
       |""".stripMargin
   )
 
-  val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
-
   val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
 
   val auditErrors: Seq[AuditError] = List(AuditError(errorCode = "FORMAT_NINO"))
@@ -659,19 +656,6 @@ object CreateRequestFixtures {
        |}
     """.stripMargin
   )
-
-  val hateoasResponse: (String, String) => String = (nino: String, responseId: String) => s"""
-       |{
-       |  "submissionId": "$responseId",
-       |  "links":[
-       |    {
-       |      "href":"/individuals/deductions/cis/$nino/current-position",
-       |      "rel":"retrieve-cis-deductions-for-subcontractor",
-       |      "method":"GET"
-       |     }
-       |  ]
-       |}
-    """.stripMargin
 
   val emptyRequest: JsObject = JsObject.empty
 

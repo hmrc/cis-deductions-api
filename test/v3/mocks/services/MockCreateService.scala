@@ -22,7 +22,6 @@ import shared.controllers.RequestContext
 import shared.models.errors.ErrorWrapper
 import shared.models.outcomes.ResponseWrapper
 import v3.models.request.create.CreateRequestData
-import v3.models.response.create.CreateResponseModel
 import v3.services.CreateService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +32,7 @@ trait MockCreateService extends MockFactory {
 
   object MockCreateService {
 
-    def create(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
+    def create(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockCreateService
         .createDeductions(_: CreateRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

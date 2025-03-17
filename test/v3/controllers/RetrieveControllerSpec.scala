@@ -22,7 +22,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas._
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -33,9 +32,6 @@ import v3.fixtures.RetrieveJson._
 import v3.fixtures.RetrieveModels._
 import v3.mocks.services.MockRetrieveService
 import v3.models.request.retrieve.RetrieveRequestData
-import v3.models.response.retrieve.RetrieveResponseModel._
-import v3.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -44,7 +40,6 @@ class RetrieveControllerSpec
     with ControllerTestRunner
     with MockedRetrieveValidatorFactory
     with MockRetrieveService
-    with MockHateoasFactory
     with MockSharedAppConfig
     with MockAuditService {
 
@@ -63,41 +58,17 @@ class RetrieveControllerSpec
         MockedSharedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-        val responseWithHateoas: HateoasWrapper[RetrieveResponseModel[HateoasWrapper[CisDeductions]]] = HateoasWrapper(
-          RetrieveResponseModel(
-            totalDeductionAmount = Some(12345.56),
-            totalCostOfMaterials = Some(234234.33),
-            totalGrossAmountPaid = Some(2342424.56),
-            Seq(
-              HateoasWrapper(
-                cisDeductions,
-                Seq(
-                  deleteCisDeduction(mockSharedAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", None, isSelf = false),
-                  amendCisDeduction(mockSharedAppConfig, validNino, "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", isSelf = false)
-                )
-              ))
-          ),
-          Seq(
-            retrieveCisDeduction(mockSharedAppConfig, validNino, taxYear, sourceRaw.toString, isSelf = true),
-            createCisDeduction(mockSharedAppConfig, validNino, isSelf = false)
-          )
-        )
-
         willUseValidator(returningSuccess(retrieveRequestData))
 
         MockRetrieveService
           .retrieve(retrieveRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(validNino, taxYear, sourceRaw.toString))
-          .returns(responseWithHateoas)
-
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
-          maybeExpectedResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw)),
-          maybeAuditResponseBody = Some(singleDeductionJsonHateoas(fromDate, toDate, taxYearRaw))
+          maybeExpectedResponseBody = Some(singleDeductionJson(fromDate, toDate)),
+          maybeAuditResponseBody = Some(singleDeductionJson(fromDate, toDate))
         )
       }
     }
@@ -131,7 +102,6 @@ class RetrieveControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedRetrieveValidatorFactory,
       service = mockRetrieveService,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
