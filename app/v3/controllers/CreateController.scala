@@ -62,7 +62,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         requestBody = Some(request.body),
         includeResponse = true
       ))
-      .withNoContentResult(NO_CONTENT)
+      .withPlainJsonResult()
 
     requestHandler.handleRequest()
 
