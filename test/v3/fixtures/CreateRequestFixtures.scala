@@ -21,6 +21,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.models.audit.{AuditError, AuditResponse}
 import v3.models.request.amend.PeriodDetails
 import v3.models.request.create.CreateBody
+import v3.models.response.create.CreateResponseModel
 
 object CreateRequestFixtures {
 
@@ -619,6 +620,8 @@ object CreateRequestFixtures {
       |""".stripMargin
   )
 
+  val responseObj: CreateResponseModel = CreateResponseModel("S4636A77V5KB8625U")
+
   val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
 
   val auditErrors: Seq[AuditError] = List(AuditError(errorCode = "FORMAT_NINO"))
@@ -661,27 +664,13 @@ object CreateRequestFixtures {
 
   val createDeductionResponseBody: JsValue = Json.parse("""
       |{
-      |   "submissionId":"someResponse",
-      |   "links":[
-      |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
-      |         "method":"GET",
-      |         "rel":"retrieve-cis-deductions-for-subcontractor"
-      |      }
-      |   ]
+      |   "submissionId":"someResponse"
       |}
     """.stripMargin)
 
   val createDeductionResponseBodyTys: JsValue = Json.parse("""
       |{
-      |   "submissionId":"someResponse",
-      |   "links":[
-      |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2023-04-06&toDate=2024-04-05",
-      |         "method":"GET",
-      |         "rel":"retrieve-cis-deductions-for-subcontractor"
-      |      }
-      |   ]
+      |   "submissionId":"someResponse"
       |}
     """.stripMargin)
 

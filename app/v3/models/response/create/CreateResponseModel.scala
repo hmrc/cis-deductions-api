@@ -16,12 +16,11 @@
 
 package v3.models.response.create
 
-import common.hateoas.HateoasLinks
 import play.api.libs.json._
 
 case class CreateResponseModel(submissionId: String)
 
-object CreateResponseModel extends HateoasLinks {
+object CreateResponseModel {
   implicit val reads: Reads[CreateResponseModel]    = Json.reads[CreateResponseModel]
   implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
 }

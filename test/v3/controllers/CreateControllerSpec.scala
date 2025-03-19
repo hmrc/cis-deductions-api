@@ -32,6 +32,8 @@ import v3.fixtures.AmendRequestFixtures.requestJson
 import v3.fixtures.CreateRequestFixtures._
 import v3.mocks.services.MockCreateService
 import v3.models.request.create
+import v3.models.response.create.CreateResponseModel
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -43,7 +45,10 @@ class CreateControllerSpec
     with MockCreateService
     with MockAuditService {
 
+  private val responseId  = "S4636A77V5KB8625U"
   private val requestData = create.CreateRequestData(Nino(validNino), parsedRequestData)
+
+  val response: CreateResponseModel = CreateResponseModel(responseId)
 
   "create" should {
     "return a successful response with status 204 (NO_CONTENT)" when {
@@ -53,13 +58,13 @@ class CreateControllerSpec
 
         MockCreateService
           .create(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         runOkTestWithAudit(
-          expectedStatus = NO_CONTENT,
+          expectedStatus = OK,
           maybeAuditRequestBody = Some(requestJson),
-          maybeExpectedResponseBody = None,
-          maybeAuditResponseBody = None
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = Some(responseJson)
         )
       }
     }

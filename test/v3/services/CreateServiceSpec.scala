@@ -36,6 +36,8 @@ import v3.mocks.connectors.MockCreateConnector
 import v3.models.request.amend.PeriodDetails
 import v3.models.request.create
 import v3.models.request.create.CreateBody
+import v3.models.response.create.CreateResponseModel
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -43,6 +45,7 @@ class CreateServiceSpec extends UnitSpec {
 
   private val nino                   = "AA123456A"
   implicit val correlationId: String = "X-123"
+  private val submissionId           = "123456789"
 
   private val requestBody =
     CreateBody(fromDate = "2020-05-06", toDate = "2020-06-05", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
@@ -64,9 +67,9 @@ class CreateServiceSpec extends UnitSpec {
       "return mapped result" in new Test {
         MockCreateCisDeductionsConnector
           .createCisDeduction(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, CreateResponseModel(submissionId)))))
 
-        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
+        await(service.createDeductions(requestData)) shouldBe Right(ResponseWrapper(correlationId, CreateResponseModel(submissionId)))
       }
     }
 

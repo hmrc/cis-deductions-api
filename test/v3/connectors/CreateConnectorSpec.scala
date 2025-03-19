@@ -21,6 +21,7 @@ import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
 import v3.fixtures.CreateRequestFixtures.parsedRequestData
 import v3.models.request.create
+import v3.models.response.create.CreateResponseModel
 
 import scala.concurrent.Future
 
@@ -31,7 +32,7 @@ class CreateConnectorSpec extends ConnectorSpec {
 
     val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
-    val outcome = Right(ResponseWrapper(correlationId, ()))
+    val outcome = Right(ResponseWrapper(correlationId, CreateResponseModel("123456789")))
 
     lazy val request = create.CreateRequestData(Nino("AA123456A"), parsedRequestData.copy(toDate = toDate))
   }
