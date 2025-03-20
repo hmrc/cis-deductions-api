@@ -154,12 +154,6 @@ class CreateControllerISpec extends IntegrationBaseSpec {
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
-  private trait TysIfsTest extends Test {
-    val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino"
 
-    override def request(): WSRequest =
-      super.request().addHttpHeaders("suspend-temporal-validations" -> "true")
-
-  }
 
 }
