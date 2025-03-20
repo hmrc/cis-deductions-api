@@ -19,12 +19,10 @@ package v3.controllers
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
-import shared.hateoas.HateoasFactory
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v3.controllers.validators.RetrieveValidatorFactory
-import v3.models.response.retrieve.RetrieveHateoasData
 import v3.services.RetrieveService
 
 import javax.inject.Inject
@@ -35,7 +33,6 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
                                     validatorFactory: RetrieveValidatorFactory,
                                     service: RetrieveService,
                                     auditService: AuditService,
-                                    hateoasFactory: HateoasFactory,
                                     cc: ControllerComponents,
                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
@@ -56,9 +53,7 @@ class RetrieveController @Inject() (val authService: EnrolmentsAuthService,
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.retrieveDeductions)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory) { (req, _) =>
-          RetrieveHateoasData(nino, req.taxYear, source)
-        })
+        .withPlainJsonResult()
         .withAuditing {
           val params =
             Map("nino" -> nino, "taxYear" -> taxYear, "source" -> source)

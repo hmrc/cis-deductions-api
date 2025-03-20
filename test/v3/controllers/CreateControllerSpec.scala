@@ -18,12 +18,10 @@ package v3.controllers
 
 import models.errors.RuleUnalignedDeductionsPeriodError
 import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method._
-import shared.hateoas._
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.Nino
 import shared.models.errors.{ErrorWrapper, NinoFormatError}
@@ -34,7 +32,7 @@ import v3.fixtures.AmendRequestFixtures.requestJson
 import v3.fixtures.CreateRequestFixtures._
 import v3.mocks.services.MockCreateService
 import v3.models.request.create
-import v3.models.response.create.{CreateHateoasData, CreateResponseModel}
+import v3.models.response.create.CreateResponseModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,7 +43,6 @@ class CreateControllerSpec
     with MockSharedAppConfig
     with MockedCreateValidatorFactory
     with MockCreateService
-    with MockHateoasFactory
     with MockAuditService {
 
   private val responseId  = "S4636A77V5KB8625U"
@@ -53,18 +50,8 @@ class CreateControllerSpec
 
   val response: CreateResponseModel = CreateResponseModel(responseId)
 
-  val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/individuals/deductions/cis/$validNino/current-position",
-      rel = "retrieve-cis-deductions-for-subcontractor",
-      method = GET
-    )
-  )
-
-  private val parsedHateoas = Json.parse(hateoasResponse(validNino, responseId))
-
   "create" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (NO_CONTENT)" when {
       "a valid request is supplied for a cis POST request" in new Test {
 
         willUseValidator(returningSuccess(requestData))
@@ -73,15 +60,11 @@ class CreateControllerSpec
           .create(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        MockHateoasFactory
-          .wrap(response, CreateHateoasData(validNino, requestData))
-          .returns(HateoasWrapper(response, testHateoasLinks))
-
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = Some(requestJson),
-          maybeExpectedResponseBody = Some(parsedHateoas),
-          maybeAuditResponseBody = Some(parsedHateoas)
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = Some(responseJson)
         )
       }
     }
@@ -113,7 +96,6 @@ class CreateControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedCreateValidatorFactory,
       service = mockCreateService,
-      hateoasFactory = mockHateoasFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

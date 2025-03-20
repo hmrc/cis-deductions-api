@@ -660,44 +660,11 @@ object CreateRequestFixtures {
     """.stripMargin
   )
 
-  val hateoasResponse: (String, String) => String = (nino: String, responseId: String) => s"""
-       |{
-       |  "submissionId": "$responseId",
-       |  "links":[
-       |    {
-       |      "href":"/individuals/deductions/cis/$nino/current-position",
-       |      "rel":"retrieve-cis-deductions-for-subcontractor",
-       |      "method":"GET"
-       |     }
-       |  ]
-       |}
-    """.stripMargin
-
   val emptyRequest: JsObject = JsObject.empty
 
   val createDeductionResponseBody: JsValue = Json.parse("""
       |{
-      |   "submissionId":"someResponse",
-      |   "links":[
-      |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2019-04-06&toDate=2020-04-05",
-      |         "method":"GET",
-      |         "rel":"retrieve-cis-deductions-for-subcontractor"
-      |      }
-      |   ]
-      |}
-    """.stripMargin)
-
-  val createDeductionResponseBodyTys: JsValue = Json.parse("""
-      |{
-      |   "submissionId":"someResponse",
-      |   "links":[
-      |      {
-      |         "href":"/individuals/deductions/cis/AA123456A/current-position?fromDate=2023-04-06&toDate=2024-04-05",
-      |         "method":"GET",
-      |         "rel":"retrieve-cis-deductions-for-subcontractor"
-      |      }
-      |   ]
+      |   "submissionId":"someResponse"
       |}
     """.stripMargin)
 

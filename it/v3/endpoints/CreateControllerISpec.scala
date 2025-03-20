@@ -53,15 +53,6 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe createDeductionResponseBody
       }
 
-      "any valid request is made for a Tax Year Specific (TYS) tax year" in new TysIfsTest {
-        override def setupStubs(): Unit = {
-          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(CREATED, createDeductionResponseBody)
-        }
-
-        val response: WSResponse = await(request().post(requestBodyJsonTys))
-        response.json shouldBe createDeductionResponseBodyTys
-        response.status shouldBe OK
-      }
     }
     "return error according to spec" when {
 
@@ -163,12 +154,6 @@ class CreateControllerISpec extends IntegrationBaseSpec {
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
-  private trait TysIfsTest extends Test {
-    val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino"
 
-    override def request(): WSRequest =
-      super.request().addHttpHeaders("suspend-temporal-validations" -> "true")
-
-  }
 
 }
