@@ -668,11 +668,7 @@ object CreateRequestFixtures {
       |}
     """.stripMargin)
 
-  val createDeductionResponseBodyTys: JsValue = Json.parse("""
-      |{
-      |   "submissionId":"someResponse"
-      |}
-    """.stripMargin)
+
 
   def errorBody(code: String): String =
     s"""
