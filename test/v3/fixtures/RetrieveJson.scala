@@ -235,11 +235,6 @@ object RetrieveJson {
       |""".stripMargin
   }
 
-  val singleDeductionRequestJson: String =
-    """
-      |
-      |""".stripMargin
-
   val errorJson: String =
     """
       |{
