@@ -668,8 +668,6 @@ object CreateRequestFixtures {
       |}
     """.stripMargin)
 
-
-
   def errorBody(code: String): String =
     s"""
        |      {
