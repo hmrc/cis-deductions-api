@@ -18,8 +18,14 @@ package v3.models.response.create
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import shared.config.MockSharedAppConfig
+import shared.hateoas.Method._
+import shared.hateoas._
+import shared.models.domain.Nino
 import shared.utils.UnitSpec
 import v3.fixtures.CreateRequestFixtures._
+import v3.models.request.amend.PeriodDetails
+import v3.models.request.create
+import v3.models.request.create.CreateBody
 
 class CreateResponseModelSpec extends UnitSpec with MockSharedAppConfig {
 
@@ -45,6 +51,27 @@ class CreateResponseModelSpec extends UnitSpec with MockSharedAppConfig {
     "return the expected error when submission id field is missing" in {
       missingMandatoryResponseJson.validate[CreateResponseModel] shouldBe a[JsError]
     }
+  }
+
+  "LinksFactory" should {
+    "return the correct links" in {
+      val nino           = "AA999999A"
+      val fromDate       = "2020-05-06"
+      val toDate         = "2020-06-05"
+      val contractorName = "name"
+      val employerRef    = "reference"
+      val periodData     = Seq(PeriodDetails(11.12, fromDate, toDate, None, None))
+      val request        = create.CreateRequestData(Nino(nino), CreateBody(fromDate, toDate, contractorName, employerRef, periodData))
+
+      () =>
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        CreateResponseModel.CreateLinksFactory
+          .links(mockSharedAppConfig, CreateHateoasData(nino, request)) shouldBe
+          Seq(
+            Link(s"/my/context/$nino/current-position?fromDate=$fromDate&toDate=$toDate", GET, "retrieve-cis-deductions-for-subcontractor")
+          )
+    }
+
   }
 
 }

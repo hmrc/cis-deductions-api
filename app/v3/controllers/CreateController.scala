@@ -20,10 +20,12 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
+import shared.hateoas._
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v3.controllers.validators.CreateValidatorFactory
+import v3.models.response.create.CreateHateoasData
 import v3.services.CreateService
 
 import javax.inject.Inject
@@ -33,6 +35,7 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   val lookupService: MtdIdLookupService,
                                   validatorFactory: CreateValidatorFactory,
                                   service: CreateService,
+                                  hateoasFactory: HateoasFactory,
                                   auditService: AuditService,
                                   cc: ControllerComponents,
                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
@@ -62,7 +65,9 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
         requestBody = Some(request.body),
         includeResponse = true
       ))
-      .withPlainJsonResult()
+      .withHateoasResultFrom(hateoasFactory) { (request, _) =>
+        CreateHateoasData(nino, request)
+      }
 
     requestHandler.handleRequest()
 

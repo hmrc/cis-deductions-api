@@ -641,6 +641,19 @@ object AmendRequestFixtures {
       |""".stripMargin
   )
 
+  val hateoasResponse: (String, String) => String = (nino: String, responseId: String) => s"""
+       |{
+       |  "id": "$responseId",
+       |  "links":[
+       |    {
+       |      "href":"/deductions/cis/$nino/current-position",
+       |      "rel":"retrieve-cis-deductions-for-subcontractor",
+       |      "method":"GET"
+       |     }
+       |  ]
+       |}
+    """.stripMargin
+
   val invalidDeductionDateRange: JsValue = Json.parse {
     """
       |{

@@ -27,7 +27,8 @@ import shared.models.domain.{DateRange, TaxYear}
 import shared.models.errors._
 import v3.controllers.validators.DeductionsValidator._
 import v3.controllers.validators.resolvers.ResolveEmployeeRef
-import v3.models.request.create.{CreateBody, CreateRequestData}
+import v3.models.request.create.CreateBody
+import v3.models.request.create.CreateRequestData
 
 import javax.inject.{Inject, Singleton}
 

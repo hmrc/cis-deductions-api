@@ -26,7 +26,8 @@ import shared.models.errors._
 import v2.controllers.validators.DeductionsValidator._
 import v2.controllers.validators.resolvers.ResolveSubmissionId
 import v2.models.errors.CisDeductionsApiCommonErrors.DeductionToDateFormatError
-import v2.models.request.amend.{AmendBody, AmendRequestData}
+import v2.models.request.amend.AmendBody
+import v2.models.request.amend.AmendRequestData
 
 import javax.inject.Singleton
 

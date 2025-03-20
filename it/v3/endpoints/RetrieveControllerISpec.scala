@@ -44,7 +44,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, taxYear)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
@@ -62,7 +62,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionWithoutIdsJson
+        response.json shouldBe singleDeductionWithoutIdsJsonHateoas
       }
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
@@ -79,7 +79,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24", isTys = true)
 
       }
 

@@ -18,17 +18,44 @@ package v3.models.response.retrieve
 
 import cats.Functor
 import play.api.libs.json._
+import shared.config.SharedAppConfig
+import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
+import shared.models.domain.TaxYear
+import v3.hateoas.HateoasLinks
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
                                     totalCostOfMaterials: Option[BigDecimal],
                                     totalGrossAmountPaid: Option[BigDecimal],
                                     cisDeductions: Seq[I])
 
-object RetrieveResponseModel {
+object RetrieveResponseModel extends HateoasLinks {
 
   implicit def reads[I: Reads]: Reads[RetrieveResponseModel[I]] = implicitly(Json.reads[RetrieveResponseModel[I]])
 
   implicit def writes[I: Writes]: OWrites[RetrieveResponseModel[I]] = Json.writes[RetrieveResponseModel[I]]
+
+  implicit object CreateLinksFactory extends HateoasListLinksFactory[RetrieveResponseModel, CisDeductions, RetrieveHateoasData] {
+
+    override def itemLinks(appConfig: SharedAppConfig, data: RetrieveHateoasData, item: CisDeductions): Seq[Link] = {
+      val submissionIds = item.periodData.flatMap(_.submissionId)
+
+      submissionIds.headOption match {
+        case None => Seq()
+        case Some(submissionId) =>
+          Seq(
+            deleteCisDeduction(appConfig, data.nino, submissionId, Some(data.taxYear), isSelf = false),
+            amendCisDeduction(appConfig, data.nino, submissionId, isSelf = false)
+          )
+      }
+    }
+
+    override def links(appConfig: SharedAppConfig, data: RetrieveHateoasData): Seq[Link] = {
+      Seq(
+        retrieveCisDeduction(appConfig, data.nino, data.taxYear, data.source, isSelf = true),
+        createCisDeduction(appConfig, data.nino, isSelf = false))
+    }
+
+  }
 
   implicit object ResponseFunctor extends Functor[RetrieveResponseModel] {
 
@@ -38,3 +65,5 @@ object RetrieveResponseModel {
   }
 
 }
+
+case class RetrieveHateoasData(nino: String, taxYear: TaxYear, source: String) extends HateoasData

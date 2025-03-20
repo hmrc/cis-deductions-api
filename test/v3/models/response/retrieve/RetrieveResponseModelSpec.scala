@@ -18,7 +18,11 @@ package v3.models.response.retrieve
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import shared.config.MockSharedAppConfig
+import shared.hateoas.Method._
+import shared.hateoas._
+import shared.models.domain.TaxYear
 import shared.utils.UnitSpec
+import v3.fixtures.RetrieveModels.cisDeductions
 import v3.fixtures.{RetrieveJson, RetrieveModels}
 
 class RetrieveResponseModelSpec extends UnitSpec with MockSharedAppConfig {
@@ -53,6 +57,39 @@ class RetrieveResponseModelSpec extends UnitSpec with MockSharedAppConfig {
         Json.toJson(RetrieveModels.multipleDeductionsModel) shouldBe Json.toJson(RetrieveJson.multipleDeductionsJson)
       }
     }
+  }
+
+  "LinksFactory" should {
+    val nino       = "mynino"
+    val taxYearRaw = "2023-24"
+    val source     = "all"
+    val taxYear    = TaxYear.fromMtd("2023-24")
+
+    "return the correct links" in { () =>
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+
+      val hateoasData = RetrieveHateoasData(nino, taxYear, source)
+
+      RetrieveResponseModel.CreateLinksFactory.links(mockSharedAppConfig, hateoasData) shouldBe
+        Seq(
+          Link(s"/my/context/$nino/current-position/$taxYearRaw/$source", GET, "self"),
+          Link(s"/my/context/$nino/amendments", POST, "create-cis-deductions-for-subcontractor")
+        )
+    }
+
+    "return the correct item links" in {
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+
+      val hateoasData              = RetrieveHateoasData(nino, taxYear, "customer")
+      val expectedDeleteHateoasUri = s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c?taxYear=2023-24"
+
+      RetrieveResponseModel.CreateLinksFactory.itemLinks(mockSharedAppConfig, hateoasData, cisDeductions) shouldBe
+        Seq(
+          Link(expectedDeleteHateoasUri, DELETE, "delete-cis-deductions-for-subcontractor"),
+          Link(s"/my/context/$nino/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c", PUT, "amend-cis-deductions-for-subcontractor")
+        )
+    }
+
   }
 
 }
