@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create CIS Deduction",
+  "description": "Create CIS Deduction",
+  "type": "object",
+  "properties": {
+    "submissionId": { "$ref": "definitions.json#/definitions/uid" }
+  },
+  "required": [
+    "submissionId"
+  ]
+}

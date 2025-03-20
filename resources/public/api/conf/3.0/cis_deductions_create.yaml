@@ -40,8 +40,8 @@ post:
               $ref: './examples/create_request.json'
 
   responses:
-    "204":
-      description: No Content
+    "200":
+      description: Success
       headers:
         X-CorrelationId:
           $ref: './common/headers.yaml#/components/parameters/correlationId'
@@ -51,7 +51,15 @@ post:
           $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
         Link:
           $ref: './common/headers.yaml#/components/parameters/linkHeader'
-
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/create_response.json'
+          examples:
+            example-user-response:
+              description: Example user response
+              value:
+                $ref: './examples/example_1.json'
     "400":
       description: Bad request
       headers:
