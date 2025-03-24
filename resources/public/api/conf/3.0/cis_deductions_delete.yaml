@@ -1,7 +1,7 @@
 delete:
   summary: Delete CIS Deductions for Subcontractor
   description: |
-    This endpoint allows a developer to remove a customer’s CIS deductions data that has been previously populated. A National Insurance number and submission ID must be provided.
+    This endpoint allows a developer to remove a customer’s CIS deductions data that has been previously populated. A National Insurance number, submission ID and tax year must be provided.
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
