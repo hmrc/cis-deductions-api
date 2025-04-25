@@ -154,6 +154,4 @@ class CreateControllerISpec extends IntegrationBaseSpec {
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
   }
 
-
-
 }
