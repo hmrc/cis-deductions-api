@@ -10,6 +10,7 @@ delete:
     |----------------------------------|--------------------------------------------------------------------------------------------------|
     | N/A - DEFAULT                    | Simulates successfully deleting CIS deductions.                                                  |
     | NOT_FOUND                        | Simulates the scenario where the CIS deduction was not found.                                    |
+    | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year is not supported.	                                  |
     | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.  |
     | STATEFUL                         | Performs a stateful delete.                                                                      |
 
