@@ -20,6 +20,7 @@ import models.domain.CisSource
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
 
@@ -57,7 +58,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
           ))
 
         willGet(
-          url = s"$baseUrl/income-tax/cis/deductions/$nino",
+          url = url"$baseUrl/income-tax/cis/deductions/$nino",
           parameters = List("periodStart" -> request.startDate, "periodEnd" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
@@ -92,7 +93,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
           ))
 
         willGet(
-          url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
+          url = url"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
           parameters = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 
