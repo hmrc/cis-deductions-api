@@ -46,8 +46,8 @@ lazy val microservice = Project(appName, file("."))
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
   )
   .settings(majorVersion := 0)
-  .settings(CodeCoverageSettings.settings: _*)
-  .settings(defaultSettings(): _*)
+  .settings(CodeCoverageSettings.settings *)
+  .settings(defaultSettings() *)
   .configs(ItTest)
   .settings(inConfig(ItTest)(
     Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest) ++ ScalafmtPlugin.scalafmtConfigSettings))
@@ -59,9 +59,6 @@ lazy val microservice = Project(appName, file("."))
     ItTest / javaOptions += "-Dlogger.resource=logback-test.xml",
     ItTest / parallelExecution := false,
     addTestReportOption(ItTest, directory = "int-test-reports")
-  )
-  .settings(
-    resolvers += Resolver.jcenterRepo
   )
   .settings(PlayKeys.playDefaultPort := 7781)
 
