@@ -23,10 +23,11 @@ import shared.models.errors.ErrorWrapper
 import shared.models.outcomes.ResponseWrapper
 import v2.models.request.amend.AmendRequestData
 import v2.services.AmendService
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendService extends MockFactory {
+trait MockAmendService extends MockFactory { self: TestSuite =>
 
   val mockAmendService: AmendService = mock[AmendService]
 

@@ -24,8 +24,9 @@ import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import v2.models.request.amend.AmendRequestData
+import org.scalatest.TestSuite
 
-trait MockedAmendValidatorFactory extends MockFactory {
+trait MockedAmendValidatorFactory extends MockFactory { self: TestSuite =>
   val mockedAmendValidatorFactory: AmendValidatorFactory = mock[AmendValidatorFactory]
 
   object MockedAmendValidatorFactory {

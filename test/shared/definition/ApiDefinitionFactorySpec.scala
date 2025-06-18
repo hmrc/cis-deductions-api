@@ -26,7 +26,7 @@ import shared.utils.UnitSpec
 
 import scala.language.reflectiveCalls
 
-class ApiDefinitionFactorySpec extends UnitSpec {
+class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSharedAppConfig {
 
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
@@ -52,8 +52,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
     "the 'deprecatedOn' parameter is missing for a deprecated version" should {
       "throw an exception" in new Test {
-        MockedSharedAppConfig.apiStatus(Version9) returns "DEPRECATED"
-
         MockedSharedAppConfig
           .deprecationFor(Version9)
           .returns("deprecatedOn date is required for a deprecated version".invalid)
@@ -69,8 +67,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     }
   }
 
-  class Test extends MockHttpClient with MockSharedAppConfig {
-    MockedSharedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
+  class Test {
 
     protected val apiDefinitionFactory = new ApiDefinitionFactory {
       protected val appConfig: SharedAppConfig = mockSharedAppConfig

@@ -51,7 +51,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
     )
 
   private val standardContractHeaders = Seq(
-    "Authorization"       -> "auth",
+    "Authorization"       -> "test/auth",
     "CorrelationId"       -> correlationId,
     "OtherContractHeader" -> "OtherContractHeaderValue"
   )

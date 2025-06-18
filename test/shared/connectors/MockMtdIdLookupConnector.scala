@@ -21,8 +21,9 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import org.scalatest.TestSuite
 
-trait MockMtdIdLookupConnector extends MockFactory {
+trait MockMtdIdLookupConnector extends MockFactory { self: TestSuite =>
 
   val mockMtdIdLookupConnector: MtdIdLookupConnector = mock[MtdIdLookupConnector]
 

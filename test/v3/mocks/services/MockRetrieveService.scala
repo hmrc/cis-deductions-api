@@ -24,10 +24,11 @@ import shared.models.errors.ErrorWrapper
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import v3.services.RetrieveService
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveService extends MockFactory {
+trait MockRetrieveService extends MockFactory { self: TestSuite =>
 
   val mockRetrieveService: RetrieveService = mock[RetrieveService]
 

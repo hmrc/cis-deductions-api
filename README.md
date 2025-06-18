@@ -17,7 +17,7 @@ Start the service manager profile: `sm2 --start CIS_DEDUCTIONS_ALL`
 ## Running tests
 Run unit tests: `sbt test`
 
-Run integration tests: `sbt it:test`
+Run integration tests: `sbt it/test`
 
 ## Vieweing OAS
 To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:

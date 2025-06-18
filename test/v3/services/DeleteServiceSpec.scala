@@ -40,7 +40,7 @@ import v3.models.request.delete.DeleteRequestData
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteServiceSpec extends UnitSpec {
+class DeleteServiceSpec extends UnitSpec with MockDeleteConnector {
 
   private val nino         = Nino("AA123456A")
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
@@ -50,7 +50,7 @@ class DeleteServiceSpec extends UnitSpec {
 
   private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), taxYear)
 
-  trait Test extends MockDeleteConnector {
+  trait Test {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 

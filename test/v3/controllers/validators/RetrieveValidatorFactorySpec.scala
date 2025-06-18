@@ -25,7 +25,7 @@ import shared.models.errors._
 import shared.utils.UnitSpec
 import v3.models.request.retrieve.RetrieveRequestData
 
-class RetrieveValidatorFactorySpec extends UnitSpec {
+class RetrieveValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
   private implicit val correlationId: String = "1234"
 
   private val nino              = "AA123456A"
@@ -35,7 +35,7 @@ class RetrieveValidatorFactorySpec extends UnitSpec {
   private val sourceRaw         = CisSource.`all`
   private val invalidSource     = "All"
 
-  class SetUp extends MockSharedAppConfig {
+  class SetUp {
     val validatorFactory = new RetrieveValidatorFactory()
 
     def validator(nino: String, taxYear: String, source: String): Validator[RetrieveRequestData] =

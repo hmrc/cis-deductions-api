@@ -23,8 +23,9 @@ import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import v3.models.request.delete.DeleteRequestData
+import org.scalatest.TestSuite
 
-trait MockedDeleteValidatorFactory extends MockFactory {
+trait MockedDeleteValidatorFactory extends MockFactory { self: TestSuite =>
   val mockedDeleteValidatorFactory: DeleteValidatorFactory = mock[DeleteValidatorFactory]
 
   object MockedDeleteValidatorFactory {

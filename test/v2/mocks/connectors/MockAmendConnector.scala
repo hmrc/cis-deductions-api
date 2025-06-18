@@ -22,10 +22,11 @@ import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.AmendConnector
 import v2.models.request.amend.AmendRequestData
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendConnector extends MockFactory {
+trait MockAmendConnector extends MockFactory { self: TestSuite =>
 
   val mockAmendConnector: AmendConnector = mock[AmendConnector]
 

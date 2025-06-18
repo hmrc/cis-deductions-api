@@ -23,12 +23,12 @@ import uk.gov.hmrc.http.StringContextOps
 
 import scala.concurrent.Future
 
-class MtdIdLookupConnectorSpec extends ConnectorSpec {
+class MtdIdLookupConnectorSpec extends ConnectorSpec with MockHttpClient with MockSharedAppConfig {
 
   val nino  = "test-nino"
   val mtdId = "test-mtdId"
 
-  class Test extends MockHttpClient with MockSharedAppConfig {
+  class Test {
 
     val connector = new MtdIdLookupConnector(
       http = mockHttpClient,

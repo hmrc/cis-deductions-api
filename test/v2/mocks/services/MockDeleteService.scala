@@ -23,10 +23,11 @@ import shared.models.errors.ErrorWrapper
 import shared.models.outcomes.ResponseWrapper
 import v2.models.request.delete.DeleteRequestData
 import v2.services.DeleteService
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteService extends MockFactory {
+trait MockDeleteService extends MockFactory { self: TestSuite =>
 
   val mockDeleteService: DeleteService = mock[DeleteService]
 
