@@ -28,7 +28,7 @@ import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveService extends MockFactory { self: TestSuite =>
+trait MockRetrieveService extends TestSuite with MockFactory {
 
   val mockRetrieveService: RetrieveService = mock[RetrieveService]
 

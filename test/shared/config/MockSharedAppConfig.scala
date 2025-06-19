@@ -23,7 +23,7 @@ import play.api.Configuration
 import shared.routing.Version
 import org.scalatest.TestSuite
 
-trait MockSharedAppConfig extends MockFactory { self: TestSuite =>
+trait MockSharedAppConfig extends TestSuite with MockFactory {
 
   implicit val mockSharedAppConfig: SharedAppConfig = mock[SharedAppConfig]
 

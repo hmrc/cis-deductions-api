@@ -23,7 +23,7 @@ import org.scalamock.scalatest.MockFactory
 import shared.models.errors.MtdError
 import org.scalatest.TestSuite
 
-trait MockValidatorFactory[Request] extends MockFactory { self: TestSuite =>
+trait MockValidatorFactory[Request] extends TestSuite with MockFactory {
 
   def validator(): CallHandler[Validator[Request]]
 

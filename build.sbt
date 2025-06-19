@@ -34,10 +34,8 @@ lazy val microservice = Project(appName, file("."))
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
     scalacOptions ++= List(
       "-feature",
-      "-Wconf:src=routes/.*:s",
-      "-Werror"
-    ),
-    scalacOptions ++= Seq("-nowarn")
+      "-Wconf:src=routes/.*:s"
+    )
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
@@ -54,12 +52,6 @@ lazy val it = project
     Test / fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml")
   .settings(libraryDependencies ++= AppDependencies.itDependencies)
-  .settings(
-    scalacOptions ++= Seq("-Werror"),
-    scalacOptions ++= Seq("-nowarn")
-  )
 
 dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
 dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
-dependencyUpdatesFilter -= moduleFilter(name = "scala-library")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-play")

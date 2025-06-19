@@ -76,57 +76,57 @@ class AmendValidatorFactorySpec extends UnitSpec {
 
     "return a single error" when {
       "invalid body type error" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodData/0/deductionAmount")))
       }
 
       "given an empty JSON period array in the request body" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
       "given an invalid request body Deduction fromDate format" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidDeductionFromDateFormatRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidDeductionFromDateFormatRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, DeductionFromDateFormatError))
       }
 
       "invalid request body Deduction toDate and fromDate are not within range" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidRangeDeductionToDateFromDateFormatRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidRangeDeductionToDateFromDateFormatRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(DeductionFromDateFormatError, DeductionToDateFormatError))))
       }
 
       "given an invalid request body Deduction toDate format" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidDeductionToDateFormatRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidDeductionToDateFormatRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, DeductionToDateFormatError))
       }
 
       "given an invalid request body deductionAmount too high" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidDeductionAmountTooHighRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidDeductionAmountTooHighRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError))
       }
 
       "given an invalid request body deductionAmount negative" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidDeductionAmountNegativeRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidDeductionAmountNegativeRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError))
       }
 
       "given an invalid request body CostOfMaterials too high" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidCostOfMaterialsTooHighRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidCostOfMaterialsTooHighRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError))
       }
 
       "given an invalid request body CostOfMaterials negative" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidCostOfMaterialsNegativeRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidCostOfMaterialsNegativeRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError))
       }
 
       "given an invalid request body GrossAmount too high" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidGrossAmountTooHighRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidGrossAmountTooHighRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError))
       }
 
       "given an invalid request body GrossAmount negative" in new AmendValidatorFactory {
-        private val result = validator(validNino, validId, invalidGrossAmountNegativeRequestJson).validateAndWrapResult()
+        private val result = this.validator(validNino, validId, invalidGrossAmountNegativeRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError))
       }
     }

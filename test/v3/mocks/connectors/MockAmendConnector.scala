@@ -26,7 +26,7 @@ import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendConnector extends MockFactory { self: TestSuite =>
+trait MockAmendConnector extends TestSuite with MockFactory {
 
   val mockAmendConnector: AmendConnector = mock[AmendConnector]
 

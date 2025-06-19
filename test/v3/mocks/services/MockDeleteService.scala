@@ -27,7 +27,7 @@ import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteService extends MockFactory { self: TestSuite =>
+trait MockDeleteService extends TestSuite with MockFactory {
 
   val mockDeleteService: DeleteService = mock[DeleteService]
 

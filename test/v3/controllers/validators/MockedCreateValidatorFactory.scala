@@ -26,7 +26,7 @@ import shared.models.errors.MtdError
 import v3.models.request.create.CreateRequestData
 import org.scalatest.TestSuite
 
-trait MockedCreateValidatorFactory extends MockFactory { self: TestSuite =>
+trait MockedCreateValidatorFactory extends TestSuite with MockFactory {
   val mockedCreateValidatorFactory: CreateValidatorFactory = mock[CreateValidatorFactory]
 
   object MockedCreateValidatorFactory {

@@ -28,7 +28,7 @@ object MockMtdIdLookupService {
   type MtdIdServiceOutcome = Either[MtdError, String]
 }
 
-trait MockMtdIdLookupService extends MockFactory { self: TestSuite =>
+trait MockMtdIdLookupService extends TestSuite with MockFactory {
 
   val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
 

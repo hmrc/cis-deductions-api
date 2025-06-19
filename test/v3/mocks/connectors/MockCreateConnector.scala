@@ -27,7 +27,7 @@ import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateConnector extends MockFactory { self: TestSuite =>
+trait MockCreateConnector extends TestSuite with MockFactory {
 
   val mockCreateConnector: CreateConnector = mock[CreateConnector]
 

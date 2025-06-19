@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import shared.models.domain.TaxYear
 import org.scalatest.TestSuite
 
-trait MockCisDeductionsApiConfig extends MockFactory { self: TestSuite =>
+trait MockCisDeductionsApiConfig extends TestSuite with MockFactory {
 
   implicit val mockCisDeductionApiConfig: CisDeductionsApiConfig = mock[CisDeductionsApiConfig]
 
