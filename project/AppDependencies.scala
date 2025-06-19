@@ -24,7 +24,6 @@ private object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-30" % bootstrapPlayVersion,
     "org.typelevel"                %% "cats-core"                 % "2.13.0",
     "com.chuusai"                  %% "shapeless"                 % "2.4.0-M1",
-    "com.neovisionaries"            % "nv-i18n"                   % "1.29",
     "com.github.jknack"             % "handlebars"                % "4.4.0"
   )
 
