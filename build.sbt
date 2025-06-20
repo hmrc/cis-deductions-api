@@ -15,7 +15,6 @@
  */
 
 import sbt.*
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 import org.scalafmt.sbt.ScalafmtPlugin
 import uk.gov.hmrc.DefaultBuildSettings
@@ -33,6 +32,7 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged                 := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
     scalacOptions ++= List(
+      "-Xfatal-warnings",
       "-feature",
       "-Wconf:src=routes/.*:s"
     )
@@ -52,6 +52,9 @@ lazy val it = project
     Test / fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml")
   .settings(libraryDependencies ++= AppDependencies.itDependencies)
+  .settings(
+    scalacOptions ++= Seq("-Xfatal-warnings")
+  )
 
 dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
 dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
