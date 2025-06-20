@@ -23,10 +23,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.CreateConnector
 import v3.models.request.create.CreateRequestData
 import v3.models.response.create.CreateResponseModel
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateConnector extends MockFactory {
+trait MockCreateConnector extends TestSuite with MockFactory {
 
   val mockCreateConnector: CreateConnector = mock[CreateConnector]
 

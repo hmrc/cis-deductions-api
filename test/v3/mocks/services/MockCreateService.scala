@@ -24,10 +24,11 @@ import shared.models.outcomes.ResponseWrapper
 import v3.models.request.create.CreateRequestData
 import v3.models.response.create.CreateResponseModel
 import v3.services.CreateService
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateService extends MockFactory {
+trait MockCreateService extends TestSuite with MockFactory {
 
   val mockCreateService: CreateService = mock[CreateService]
 

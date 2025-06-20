@@ -26,7 +26,7 @@ import shared.utils.UnitSpec
 import v2.models.domain.SubmissionId
 import v2.models.request.delete.DeleteRequestData
 
-class DeleteValidatorFactorySpec extends UnitSpec {
+class DeleteValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -74,8 +74,7 @@ class DeleteValidatorFactorySpec extends UnitSpec {
     }
   }
 
-  private class Test extends MockSharedAppConfig with MockCisDeductionsApiConfig {
-    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019))
+  private class Test {
     private val validatorFactory = new DeleteValidatorFactory
 
     protected def validator(nino: String, submissionId: String, taxYear: Option[String]): Validator[DeleteRequestData] =

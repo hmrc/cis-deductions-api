@@ -19,6 +19,7 @@ package v3.connectors
 import shared.connectors.ConnectorSpec
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v3.fixtures.CreateRequestFixtures.parsedRequestData
 import v3.models.request.create
 import v3.models.response.create.CreateResponseModel
@@ -43,7 +44,7 @@ class CreateConnectorSpec extends ConnectorSpec {
         val toDate = "2022-06-01"
 
         willPost(
-          url = s"$baseUrl/income-tax/cis/deductions/AA123456A",
+          url = url"$baseUrl/income-tax/cis/deductions/AA123456A",
           body = request.body
         ).returns(Future.successful(outcome))
 
@@ -56,7 +57,7 @@ class CreateConnectorSpec extends ConnectorSpec {
         val toDate = "2023-06-01"
 
         willPost(
-          url = s"$baseUrl/income-tax/23-24/cis/deductions/AA123456A",
+          url = url"$baseUrl/income-tax/23-24/cis/deductions/AA123456A",
           body = request.body
         ).returns(Future.successful(outcome))
 

@@ -41,7 +41,7 @@ import v3.models.response.create.CreateResponseModel
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CreateServiceSpec extends UnitSpec {
+class CreateServiceSpec extends UnitSpec with MockCreateConnector {
 
   private val nino                   = "AA123456A"
   implicit val correlationId: String = "X-123"
@@ -52,7 +52,7 @@ class CreateServiceSpec extends UnitSpec {
 
   private val requestData = create.CreateRequestData(Nino(nino), requestBody)
 
-  trait Test extends MockCreateConnector {
+  trait Test {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 

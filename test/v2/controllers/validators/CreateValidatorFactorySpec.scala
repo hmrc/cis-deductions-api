@@ -29,7 +29,7 @@ import v2.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatErr
 import v2.models.request.create
 import v2.models.request.create.CreateRequestData
 
-class CreateValidatorFactorySpec extends UnitSpec {
+class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
 
   private implicit val correlationId: String = "1234"
   val nino                                   = "AA123456A"
@@ -165,7 +165,7 @@ class CreateValidatorFactorySpec extends UnitSpec {
     }
   }
 
-  private class Test extends MockSharedAppConfig with MockCisDeductionsApiConfig {
+  private class Test {
     MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
     private val validatorFactory = new CreateValidatorFactory(mockCisDeductionApiConfig)
 

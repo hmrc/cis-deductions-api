@@ -23,10 +23,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.RetrieveConnector
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveConnector extends MockFactory {
+trait MockRetrieveConnector extends TestSuite with MockFactory {
 
   val mockRetrieveConnector: RetrieveConnector = mock[RetrieveConnector]
 

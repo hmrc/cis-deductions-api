@@ -19,6 +19,7 @@ package v3.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
 
@@ -36,7 +37,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(url = s"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
+        willDelete(url = url"$baseUrl/income-tax/cis/deductions/$nino/submissionId/${request.submissionId}") returns Future.successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.delete(request))
         result shouldBe outcome
@@ -50,7 +51,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        willDelete(url = s"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/${request.submissionId}") returns Future
+        willDelete(url = url"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino/submissionId/${request.submissionId}") returns Future
           .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.delete(request))

@@ -21,8 +21,9 @@ import org.scalamock.handlers.{CallHandler, CallHandler0}
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
 import shared.routing.Version
+import org.scalatest.TestSuite
 
-trait MockSharedAppConfig extends MockFactory {
+trait MockSharedAppConfig extends TestSuite with MockFactory {
 
   implicit val mockSharedAppConfig: SharedAppConfig = mock[SharedAppConfig]
 

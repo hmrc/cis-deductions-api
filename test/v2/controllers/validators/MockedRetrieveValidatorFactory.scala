@@ -23,8 +23,9 @@ import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import v2.models.request.retrieve.RetrieveRequestData
+import org.scalatest.TestSuite
 
-trait MockedRetrieveValidatorFactory extends MockFactory {
+trait MockedRetrieveValidatorFactory extends TestSuite with MockFactory {
   val mockedRetrieveValidatorFactory: RetrieveValidatorFactory = mock[RetrieveValidatorFactory]
 
   object MockedRetrieveValidatorFactory {

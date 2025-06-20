@@ -47,7 +47,7 @@ import v3.models.request.amend.AmendRequestData
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendServiceSpec extends UnitSpec {
+class AmendServiceSpec extends UnitSpec with MockAmendConnector {
 
   "service" when {
 
@@ -97,7 +97,7 @@ class AmendServiceSpec extends UnitSpec {
     }
   }
 
-  trait Test extends MockAmendConnector {
+  trait Test {
 
     private val nino         = Nino("AA123456A")
     private val submissionId = SubmissionId("S4636A77V5KB8625U")

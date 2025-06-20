@@ -22,10 +22,11 @@ import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.DeleteConnector
 import v2.models.request.delete.DeleteRequestData
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteConnector extends MockFactory {
+trait MockDeleteConnector extends TestSuite with MockFactory {
 
   val mockDeleteConnector: DeleteConnector = mock[DeleteConnector]
 

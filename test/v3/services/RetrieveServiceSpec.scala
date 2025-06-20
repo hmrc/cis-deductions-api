@@ -33,7 +33,7 @@ import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig {
+class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig with MockRetrieveConnector {
 
   private val nino = Nino("AA123456A")
 
@@ -50,7 +50,7 @@ class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig {
 
   implicit val correlationId: String = "X-123"
 
-  trait Test extends MockRetrieveConnector {
+  trait Test {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 

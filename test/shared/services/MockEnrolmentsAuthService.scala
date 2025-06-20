@@ -21,10 +21,11 @@ import org.scalamock.scalatest.MockFactory
 import shared.models.auth.UserDetails
 import shared.models.outcomes.AuthOutcome
 import uk.gov.hmrc.http.HeaderCarrier
+import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockEnrolmentsAuthService extends MockFactory {
+trait MockEnrolmentsAuthService extends TestSuite with MockFactory {
 
   val mockEnrolmentsAuthService: EnrolmentsAuthService = mock[EnrolmentsAuthService]
 
