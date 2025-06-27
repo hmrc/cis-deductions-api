@@ -46,7 +46,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
     }
 
     "called for a nTax Year Specific tax year" should {
-      "return a successful result" in new TysIfsTest with Test {
+      "return a successful result" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))

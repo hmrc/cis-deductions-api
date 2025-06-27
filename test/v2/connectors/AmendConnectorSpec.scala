@@ -49,7 +49,7 @@ class AmendConnectorSpec extends ConnectorSpec {
         result shouldBe expectedOutcome
       }
 
-      "the downstream call is successful for a TYS tax year" in new TysIfsTest with Test {
+      "the downstream call is successful for a TYS tax year" in new IfsTest with Test {
 
         def taxYearIso: String = "2023-12-01"
 
