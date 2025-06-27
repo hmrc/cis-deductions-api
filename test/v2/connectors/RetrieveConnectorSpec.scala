@@ -68,7 +68,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     }
 
     "given a valid request for a TaxYearSpecific tax year" must {
-      "return a 200 for success scenario" in new TysIfsTest with Test {
+      "return a 200 for success scenario" in new IfsTest with Test {
         protected def startDate = "2023-04-06"
         protected def endDate   = "2024-04-06"
 

@@ -17,7 +17,7 @@
 package v2.connectors
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,12 +39,10 @@ class AmendConnector @Inject() (val http: HttpClientV2, val appConfig: SharedApp
 
     import request._
 
-    val path = s"income-tax/cis/deductions/$nino/submissionId/$submissionId"
-
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
+      IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino/$submissionId")
     } else {
-      IfsUri[Unit](path)
+      IfsUri[Unit](s"income-tax/cis/deductions/$nino/submissionId/$submissionId")
     }
 
     put(body, downstreamUri)

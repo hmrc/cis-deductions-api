@@ -17,7 +17,7 @@
 package v3.connectors
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,7 +43,7 @@ class RetrieveConnector @Inject() (val http: HttpClientV2, val appConfig: Shared
     val (downstreamUri, queryParams) = {
       if (taxYear.useTaxYearSpecificApi) {
         (
-          TaxYearSpecificIfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
+          IfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
           List("startDate" -> startDate, "endDate" -> endDate, "source" -> source.toString)
         )
       } else {
