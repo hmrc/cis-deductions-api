@@ -18,7 +18,7 @@ package v2.connectors
 
 import play.api.http.Status.{CREATED, OK}
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,7 +40,7 @@ class CreateConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAp
     import request._
 
     val (downstreamUri, statusCode) = if (taxYear.useTaxYearSpecificApi) {
-      (TaxYearSpecificIfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
+      (IfsUri[CreateResponseModel](s"income-tax/${taxYear.asTysDownstream}/cis/deductions/$nino"), CREATED)
     } else {
       (DesUri[CreateResponseModel](s"income-tax/cis/deductions/$nino"), OK)
     }
