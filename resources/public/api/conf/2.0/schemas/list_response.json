@@ -38,7 +38,9 @@
           },
           "contractorName": {
             "description": "The name of the contractor the subcontractor worked for.",
-            "type": "string"
+            "type": "string",
+            "minimum": 1,
+            "maximum": 105
           },
           "employerRef": {
             "description": "A unique identifier, the contractor reference number.",
