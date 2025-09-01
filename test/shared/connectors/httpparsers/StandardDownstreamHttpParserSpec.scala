@@ -70,6 +70,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" should {
@@ -100,6 +101,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" should {
@@ -148,6 +150,28 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       |}
     """.stripMargin
   )
+
+  val multipleFailureErrorTypesJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "origin": "HIP",
+       |  "response": {
+       |    "failures": [
+       |      {
+       |        "type": "INVALID_TAX_YEAR",
+       |        "reason": "Submission has not passed validation. Invalid parameter taxYear."
+       |      },
+       |      {
+       |        "type": "INVALID_TAXABLE_ENTITY_ID",
+       |        "reason": "Submission has not passed validation. Invalid parameter taxableEntityId."
+       |      }
+       |    ]
+       |  }
+       |}
+    """.stripMargin
+  )
+
+
 
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     List(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, GONE, UNPROCESSABLE_ENTITY).foreach(responseCode =>
@@ -244,6 +268,24 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
                   MtdError("BVR2", "", BAD_REQUEST)
                 )))
           )
+        )
+      }
+    }
+  }
+
+  private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
+    "receiving a response with multiple HIP errors containing top level error codes" should {
+      "return a Left ResponseWrapper containing the extracted error codes" in {
+        val httpResponse = HttpResponse(
+          UNPROCESSABLE_ENTITY,
+          multipleFailureErrorTypesJson,
+          Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors(List(DownstreamErrorCode("INVALID_TAX_YEAR"), DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))))
         )
       }
     }

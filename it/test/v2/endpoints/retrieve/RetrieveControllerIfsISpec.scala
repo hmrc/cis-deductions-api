@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints
+package v2.endpoints.retrieve
 
 import models.errors.RuleSourceInvalidError
 import play.api.http.HeaderNames._
@@ -23,9 +23,12 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
 import shared.services._
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveJson._
 
-class RetrieveControllerISpec extends IntegrationBaseSpec {
+class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1792.enabled" -> false) ++ super.servicesConfig
 
   "Calling the retrieve endpoint" should {
     "return an OK response" when {
@@ -44,7 +47,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, taxYear)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
@@ -62,7 +65,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionWithoutIdsJson
+        response.json shouldBe singleDeductionWithoutIdsJsonHateoas
       }
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
@@ -79,7 +82,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24", isTys = true)
 
       }
 
@@ -194,7 +197,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }

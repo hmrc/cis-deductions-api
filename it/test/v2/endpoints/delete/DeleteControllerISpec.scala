@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.endpoints
+package v2.endpoints.delete
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.SubmissionIdFormatError
