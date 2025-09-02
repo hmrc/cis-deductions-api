@@ -171,6 +171,22 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val notFoundJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "origin": "HIP",
+       |  "response": {
+       |    "failures": [
+       |      {
+       |        "type": "NO_DATA_FOUND",
+       |        "reason": "The remote endpoint has indicated that the requested resource could not be found."
+       |      }
+       |    ]
+       |  }
+       |}
+    """.stripMargin
+  )
+
 
 
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
@@ -286,6 +302,22 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
           ResponseWrapper(
             correlationId,
             DownstreamErrors(List(DownstreamErrorCode("INVALID_TAX_YEAR"), DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))))
+        )
+      }
+    }
+
+    "receiving a 404 response from HIP" should {
+      "return a 404" in {
+        val httpResponse = HttpResponse(
+          NOT_FOUND,
+          notFoundJson,
+          Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors(List(DownstreamErrorCode("NO_DATA_FOUND"))))
         )
       }
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints.retrieve
+package v2.retrieve
 
 import models.errors.RuleSourceInvalidError
 import play.api.http.HeaderNames._
@@ -23,7 +23,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
 import shared.services._
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveJson._
 
 class RetrieveControllerHipISpec extends IntegrationBaseSpec {
 
@@ -44,7 +44,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24", isTys = true)
 
       }
 
@@ -94,14 +94,11 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
         }
       }
 
-      val extraTysErrors = List(
+      val downstreamErrors = List(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_REQUEST", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_PERIOD_START", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_PERIOD_END", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
@@ -111,7 +108,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
+      downstreamErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
     }
   }
 
@@ -135,7 +132,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }

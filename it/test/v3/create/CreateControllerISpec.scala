@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints.create
+package v3.create
 
 import models.errors._
 import play.api.http.HeaderNames.ACCEPT

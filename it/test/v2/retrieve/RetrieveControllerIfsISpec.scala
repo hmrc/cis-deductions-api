@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints.retrieve
+package v2.retrieve
 
 import models.errors.RuleSourceInvalidError
 import play.api.http.HeaderNames._
@@ -23,7 +23,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.models.errors._
 import shared.services._
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveJson._
 
 class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
 
@@ -47,7 +47,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, taxYear)
       }
 
       "valid request is made without any IDs" in new NonTysTest {
@@ -65,7 +65,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
 
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionWithoutIdsJson
+        response.json shouldBe singleDeductionWithoutIdsJsonHateoas
       }
 
       "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
@@ -82,7 +82,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(mtdRequest.get())
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
-        response.json shouldBe singleDeductionJson(fromDate, toDate)
+        response.json shouldBe singleDeductionJsonHateoas(fromDate, toDate, "2023-24", isTys = true)
 
       }
 
@@ -197,7 +197,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/current-position/$taxYear/$source")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
