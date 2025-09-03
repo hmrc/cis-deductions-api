@@ -17,6 +17,7 @@
 package v2.connectors
 
 import models.domain.CisSource
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -67,8 +68,9 @@ class RetrieveConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "given a valid request for a TaxYearSpecific tax year" must {
+    "given a valid request for a TaxYearSpecific tax year to IFS" must {
       "return a 200 for success scenario" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1792.enabled" -> false))
         protected def startDate = "2023-04-06"
         protected def endDate   = "2024-04-06"
 
@@ -94,6 +96,42 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
         willGet(
           url = url"$baseUrl/income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino",
+          parameters = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
+        ) returns Future.successful(outcome)
+
+        val result: DownstreamOutcome[RetrieveResponseModel[CisDeductions]] = await(connector.retrieve(request))
+        result shouldBe outcome
+      }
+    }
+
+    "given a valid request for a TaxYearSpecific tax year to HIP" must {
+      "return a 200 for success scenario" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1792.enabled" -> true))
+        protected def startDate = "2023-04-06"
+        protected def endDate   = "2024-04-06"
+
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveResponseModel[CisDeductions]]] = Right(
+          ResponseWrapper(
+            correlationId,
+            RetrieveResponseModel(
+              Some(0.00),
+              Some(0.00),
+              Some(0.00),
+              List(CisDeductions(
+                request.startDate,
+                request.endDate,
+                Some(""),
+                "",
+                Some(0.00),
+                Some(0.00),
+                Some(0.00),
+                List(PeriodData("", "", Some(0.00), Some(0.00), Some(0.00), "", Some(""), request.source))
+              ))
+            )
+          ))
+
+        willGet(
+          url = url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/cis/deductions/$nino",
           parameters = List("startDate" -> request.startDate, "endDate" -> request.endDate, "source" -> request.source.toString)
         ) returns Future.successful(outcome)
 

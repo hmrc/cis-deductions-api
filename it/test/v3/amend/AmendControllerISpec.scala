@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints
+package v3.amend
 
 import data.AmendDataExamples._
 import models.errors._

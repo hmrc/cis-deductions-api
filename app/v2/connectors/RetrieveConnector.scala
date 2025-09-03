@@ -16,8 +16,8 @@
 
 package v2.connectors
 
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,15 +40,24 @@ class RetrieveConnector @Inject() (val http: HttpClientV2, val appConfig: Shared
 
     val path = s"income-tax/cis/deductions/$nino"
 
+    lazy val downstreamUri1792 =
+      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1792")) {
+        HipUri[RetrieveResponseModel[CisDeductions]](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/cis/deductions/$nino")
+      } else {
+        IfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino")
+      }
+
+    lazy val downstreamUri1572 = IfsUri[RetrieveResponseModel[CisDeductions]](path)
+
     val (downstreamUri, queryParams) = {
       if (taxYear.useTaxYearSpecificApi) {
         (
-          IfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino"),
+          downstreamUri1792,
           List("startDate" -> startDate, "endDate" -> endDate, "source" -> source.toString)
         )
       } else {
         (
-          IfsUri[RetrieveResponseModel[CisDeductions]](path),
+          downstreamUri1572,
           List("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
         )
       }

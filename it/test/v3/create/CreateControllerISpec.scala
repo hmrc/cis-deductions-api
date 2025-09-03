@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.endpoints
+package v3.create
 
 import models.errors._
 import play.api.http.HeaderNames.ACCEPT
@@ -22,21 +22,11 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.{
-  FromDateFormatError,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  RuleDateRangeInvalidError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearNotEndedError,
-  RuleTaxYearNotSupportedError,
-  ToDateFormatError
-}
+import shared.models.errors.{FromDateFormatError, InternalError, MtdError, NinoFormatError, RuleDateRangeInvalidError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError, ToDateFormatError}
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.CreateRequestFixtures._
-import v2.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
+import v3.fixtures.CreateRequestFixtures._
+import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
 class CreateControllerISpec extends IntegrationBaseSpec {
 
@@ -53,15 +43,6 @@ class CreateControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe createDeductionResponseBody
       }
 
-      "any valid request is made for a Tax Year Specific (TYS) tax year" in new TysIfsTest {
-        override def setupStubs(): Unit = {
-          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(CREATED, createDeductionResponseBody)
-        }
-
-        val response: WSResponse = await(request().post(requestBodyJsonTys))
-        response.json shouldBe createDeductionResponseBodyTys
-        response.status shouldBe OK
-      }
     }
     "return error according to spec" when {
 
@@ -128,7 +109,8 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "INVALID_TAX_YEAR_ALIGN", BAD_REQUEST, RuleUnalignedDeductionsPeriodError),
           (UNPROCESSABLE_ENTITY, "EARLY_SUBMISSION", BAD_REQUEST, RuleTaxYearNotEndedError),
           (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleDeductionsDateRangeInvalidError),
-          (UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
+          (UNPROCESSABLE_ENTITY, "DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
@@ -151,7 +133,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
       buildRequest(s"/$nino/amendments")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -160,14 +142,6 @@ class CreateControllerISpec extends IntegrationBaseSpec {
 
   private trait NonTysTest extends Test {
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
-  }
-
-  private trait TysIfsTest extends Test {
-    val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino"
-
-    override def request(): WSRequest =
-      super.request().addHttpHeaders("suspend-temporal-validations" -> "true")
-
   }
 
 }
