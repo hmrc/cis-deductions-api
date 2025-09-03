@@ -171,24 +171,6 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val notFoundJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "origin": "HIP",
-       |  "response": {
-       |    "failures": [
-       |      {
-       |        "type": "NO_DATA_FOUND",
-       |        "reason": "The remote endpoint has indicated that the requested resource could not be found."
-       |      }
-       |    ]
-       |  }
-       |}
-    """.stripMargin
-  )
-
-
-
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     List(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, GONE, UNPROCESSABLE_ENTITY).foreach(responseCode =>
       s"receiving a $responseCode response" should {
@@ -290,35 +272,21 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   }
 
   private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
-    "receiving a response with multiple HIP errors containing top level error codes" should {
-      "return a Left ResponseWrapper containing the extracted error codes" in {
-        val httpResponse = HttpResponse(
-          UNPROCESSABLE_ENTITY,
-          multipleFailureErrorTypesJson,
-          Map("CorrelationId" -> List(correlationId))
-        )
+    List(NOT_FOUND, UNPROCESSABLE_ENTITY).foreach { responseCode =>
+      s"receiving a $responseCode response with multiple HIP errors containing types in failures array" should {
+        "return a Left ResponseWrapper containing the extracted error types" in {
+          val httpResponse = HttpResponse(
+            BAD_REQUEST,
+            multipleFailureErrorTypesJson,
+            Map("CorrelationId" -> List(correlationId))
+          )
 
-        httpReads.read(method, url, httpResponse) shouldBe Left(
-          ResponseWrapper(
-            correlationId,
-            DownstreamErrors(List(DownstreamErrorCode("INVALID_TAX_YEAR"), DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))))
-        )
-      }
-    }
-
-    "receiving a 404 response from HIP" should {
-      "return a 404" in {
-        val httpResponse = HttpResponse(
-          NOT_FOUND,
-          notFoundJson,
-          Map("CorrelationId" -> List(correlationId))
-        )
-
-        httpReads.read(method, url, httpResponse) shouldBe Left(
-          ResponseWrapper(
-            correlationId,
-            DownstreamErrors(List(DownstreamErrorCode("NO_DATA_FOUND"))))
-        )
+          httpReads.read(method, url, httpResponse) shouldBe Left(
+            ResponseWrapper(
+              correlationId,
+              DownstreamErrors(List(DownstreamErrorCode("INVALID_TAX_YEAR"), DownstreamErrorCode("INVALID_TAXABLE_ENTITY_ID"))))
+          )
+        }
       }
     }
   }
