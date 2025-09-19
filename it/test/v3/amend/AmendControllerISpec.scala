@@ -27,6 +27,7 @@ import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundE
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class AmendControllerISpec extends IntegrationBaseSpec {
 

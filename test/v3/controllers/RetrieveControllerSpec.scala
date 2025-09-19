@@ -97,7 +97,7 @@ class RetrieveControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new RetrieveController(
+    val controller: RetrieveController = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedRetrieveValidatorFactory,

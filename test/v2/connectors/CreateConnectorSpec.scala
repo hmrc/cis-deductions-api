@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class CreateConnectorSpec extends ConnectorSpec {
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
     val toDate: String
 
     val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)

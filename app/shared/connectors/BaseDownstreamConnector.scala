@@ -22,7 +22,7 @@ import shared.config.SharedAppConfig
 import shared.utils.{Logging, UrlUtils}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
-
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector extends Logging {

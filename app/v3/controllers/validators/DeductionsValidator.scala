@@ -31,7 +31,7 @@ object DeductionsValidator extends ResolverSupport {
   private[validators] val minYear = 1900
   private[validators] val maxYear = 2099
 
-  val checkDateRangeIsAFullTaxYear: Validator[DateRange] = satisfies(RuleDateRangeInvalidError) { dateRange: DateRange =>
+  val checkDateRangeIsAFullTaxYear: Validator[DateRange] = satisfies(RuleDateRangeInvalidError) { (dateRange: DateRange) =>
     val taxYear = TaxYear.containing(dateRange.endDate)
 
     (taxYear.startDate, taxYear.endDate) == (dateRange.startDate, dateRange.endDate)

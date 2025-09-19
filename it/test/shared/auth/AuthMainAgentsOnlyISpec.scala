@@ -25,6 +25,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 
 abstract class AuthMainAgentsOnlyISpec extends IntegrationBaseSpec {
 

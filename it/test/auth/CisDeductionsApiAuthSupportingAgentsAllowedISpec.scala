@@ -21,6 +21,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthSupportingAgentsAllowedISpec
 import v2.fixtures.CreateRequestFixtures.{createDeductionResponseBodyTys, requestBodyJsonTys}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class CisDeductionsApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 

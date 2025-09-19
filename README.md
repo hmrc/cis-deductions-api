@@ -4,9 +4,9 @@ CIS Deductions API
 The CIS Deductions API allows a developer to create, retrieve, amend and delete CIS deductions for a subcontractor.
 
 ## Requirements
-- Scala 2.13.x
+- Scala 3.5.x
 - Java 11
-- sbt 1.9.7
+- sbt 1.10.x
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Running the microservice
@@ -19,7 +19,7 @@ Run unit tests: `sbt test`
 
 Run integration tests: `sbt it/test`
 
-## Vieweing OAS
+## Viewing OAS
 To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:
 
 ```

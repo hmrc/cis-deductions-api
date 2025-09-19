@@ -108,7 +108,7 @@ class CreateControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateController(
+    val controller: CreateController = new CreateController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedCreateValidatorFactory,

@@ -87,7 +87,7 @@ class DeleteControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new DeleteController(
+    val controller: DeleteController = new DeleteController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedDeleteValidatorFactory,

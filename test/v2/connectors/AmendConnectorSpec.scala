@@ -70,7 +70,7 @@ class AmendConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val nino         = "AA123456A"
     val submissionId = "S4636A77V5KB8625U"

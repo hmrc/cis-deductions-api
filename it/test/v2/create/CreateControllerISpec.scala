@@ -22,11 +22,22 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.{FromDateFormatError, InternalError, MtdError, NinoFormatError, RuleDateRangeInvalidError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError, ToDateFormatError}
+import shared.models.errors.{
+  FromDateFormatError,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  RuleDateRangeInvalidError,
+  RuleIncorrectOrEmptyBodyError,
+  RuleTaxYearNotEndedError,
+  RuleTaxYearNotSupportedError,
+  ToDateFormatError
+}
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v2.fixtures.CreateRequestFixtures._
 import v2.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class CreateControllerISpec extends IntegrationBaseSpec {
 

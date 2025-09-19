@@ -32,6 +32,8 @@ class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
 
   case class Bar(a: Option[String] = None, b: Option[String] = None, e: Option[SomeEnum] = None)
 
+  given SchemaStructureSource[Bar] = SchemaStructureSource.derived
+
   case class Foo(bar: Bar, bars: Option[Seq[Bar]] = None, bar2: Option[Bar] = None)
 
   implicit val someEnumChecker: SchemaStructureSource[SomeEnum] = SchemaStructureSource.leaf

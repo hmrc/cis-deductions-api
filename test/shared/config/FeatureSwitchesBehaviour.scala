@@ -20,7 +20,7 @@ import play.api.Configuration
 import shared.utils.UnitSpec
 
 trait FeatureSwitchesBehaviour[FS <: FeatureSwitches] {
-  _: UnitSpec =>
+  self: UnitSpec =>
 
   def featureSwitches(configuration: Configuration): FS
 

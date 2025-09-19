@@ -85,7 +85,7 @@ class AmendControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new AmendController(
+    val controller: AmendController = new AmendController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedAmendValidatorFactory,

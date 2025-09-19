@@ -21,7 +21,7 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.{SharedAppConfig, MockSharedAppConfig}
 import shared.definition.APIStatus.{ALPHA, BETA}
 import shared.mocks.MockHttpClient
-import shared.routing._
+import shared.routing.*
 import shared.utils.UnitSpec
 
 import scala.language.reflectiveCalls
@@ -35,7 +35,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSha
         setupMockConfig(Version9)
         MockedSharedAppConfig.apiStatus(Version9) returns "BETA"
 
-        val result: APIStatus = apiDefinitionFactory.checkBuildApiStatus(Version9)
+        val result: APIStatus = checkBuildApiStatus(Version9)
         result shouldBe BETA
       }
 
@@ -46,7 +46,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSha
         setupMockConfig(Version9)
         MockedSharedAppConfig.apiStatus(Version9) returns "not-a-status"
 
-        apiDefinitionFactory.checkBuildApiStatus(Version9) shouldBe ALPHA
+        checkBuildApiStatus(Version9) shouldBe ALPHA
       }
     }
 
@@ -58,7 +58,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSha
           .anyNumberOfTimes()
 
         val exception: Exception = intercept[Exception] {
-          apiDefinitionFactory.checkBuildApiStatus(Version9)
+          checkBuildApiStatus(Version9)
         }
 
         val exceptionMessage: String = exception.getMessage
@@ -69,7 +69,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSha
 
   class Test {
 
-    protected val apiDefinitionFactory = new ApiDefinitionFactory {
+    val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory {
       protected val appConfig: SharedAppConfig = mockSharedAppConfig
 
       val definition: Definition = Definition(
@@ -82,8 +82,9 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockSha
           None)
       )
 
-      def checkBuildApiStatus(version: Version): APIStatus = buildAPIStatus(version)
     }
+
+    def checkBuildApiStatus(version: Version): APIStatus = apiDefinitionFactory.buildAPIStatus(version)
 
     protected def setupMockConfig(version: Version): Unit = {
       MockedSharedAppConfig

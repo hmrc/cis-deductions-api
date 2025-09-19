@@ -89,10 +89,6 @@ class RetrieveControllerSpec
           .retrieve(retrieveRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(validNino, taxYear, sourceRaw.toString))
-          .returns(responseWithHateoas)
-
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
@@ -126,12 +122,12 @@ class RetrieveControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new RetrieveController(
+    val controller: RetrieveController = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedRetrieveValidatorFactory,
       service = mockRetrieveService,
-      hateoasFactory = mockHateoasFactory,
+      hateoasFactory = new HateoasFactory(mockSharedAppConfig),
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

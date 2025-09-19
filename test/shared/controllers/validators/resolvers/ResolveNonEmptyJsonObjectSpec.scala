@@ -17,11 +17,12 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import play.api.libs.json._
-import shapeless.HNil
+import play.api.libs.json.*
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
 import shared.models.utils.JsonErrorValidators
 import shared.utils.{EmptinessChecker, UnitSpec}
+import EmptinessChecker.field
+import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with JsonErrorValidators {
 
@@ -30,16 +31,23 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with J
   case class Qux(mandatory: String, oneOf1: Option[String] = None, oneOf2: Option[String] = None)
 
   // at least one of oneOf1 and oneOf2 must be included:
-  implicit val emptinessChecker: EmptinessChecker[Qux] = EmptinessChecker.use { o =>
-    "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
+  given EmptinessChecker[Qux] = EmptinessChecker.use { o =>
+    List(
+      field("oneOf1", o.oneOf1),
+      field("oneOf2", o.oneOf2)
+    )
   }
+
+  given EmptinessChecker[Bar] = EmptinessChecker.derived
+
+  given SchemaStructureSource[Bar] = SchemaStructureSource.derived
 
   case class Foo(bar: Bar, bars: Option[Seq[Bar]] = None, baz: Option[Baz] = None, qux: Option[Qux] = None)
 
-  implicit val barFormat: Reads[Bar] = Json.reads
-  implicit val bazFormat: Reads[Baz] = Json.reads
-  implicit val quxFormat: Reads[Qux] = Json.reads
-  implicit val fooReads: Reads[Foo]  = Json.reads
+  given Reads[Bar] = Json.reads
+  given Reads[Baz] = Json.reads
+  given Reads[Qux] = Json.reads
+  given Reads[Foo] = Json.reads
 
   private def jsonObjectResolver(resolver: Resolver[JsValue, Foo]): Unit = {
     "return the parsed object" when {

@@ -141,7 +141,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
     protected def startDate: String
     protected def endDate: String
 

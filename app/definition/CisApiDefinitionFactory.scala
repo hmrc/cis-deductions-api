@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CisApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory with Logging {
 
-  lazy val definition: Definition =
+  val definition: Definition =
     Definition(
       api = APIDefinition(
         name = "CIS Deductions (MTD)",
