@@ -22,18 +22,18 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas._
+import shared.hateoas.*
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v2.controllers.validators.MockedRetrieveValidatorFactory
-import v2.fixtures.RetrieveJson._
-import v2.fixtures.RetrieveModels._
+import v2.fixtures.RetrieveJson.*
+import v2.fixtures.RetrieveModels.*
 import v2.mocks.services.MockRetrieveService
 import v2.models.request.retrieve.RetrieveRequestData
-import v2.models.response.retrieve.RetrieveResponseModel._
+import v2.models.response.retrieve.RetrieveResponseModel.*
 import v2.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global

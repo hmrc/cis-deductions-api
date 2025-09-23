@@ -23,7 +23,7 @@ import org.scalatest.TestSuite
 
 trait MockCisDeductionsApiConfig extends TestSuite with MockFactory {
 
-  implicit val mockCisDeductionApiConfig: CisDeductionsApiConfig = mock[CisDeductionsApiConfig]
+  given mockCisDeductionApiConfig: CisDeductionsApiConfig = mock[CisDeductionsApiConfig]
 
   object MockedCisDeductionApiConfig {
 

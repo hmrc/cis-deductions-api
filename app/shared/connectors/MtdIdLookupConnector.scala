@@ -33,7 +33,7 @@ object MtdIdLookupConnector {
 @Singleton
 class MtdIdLookupConnector @Inject() (http: HttpClientV2, appConfig: SharedAppConfig) {
 
-  def getMtdId(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupConnector.Outcome] = {
+  def getMtdId(nino: String)(using hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupConnector.Outcome] = {
     import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 
     http.get(url"${appConfig.mtdIdBaseUrl}/mtd-identifier-lookup/nino/$nino").execute[MtdIdLookupConnector.Outcome]

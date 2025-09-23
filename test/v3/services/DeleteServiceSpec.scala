@@ -46,13 +46,13 @@ class DeleteServiceSpec extends UnitSpec with MockDeleteConnector {
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   private val taxYear      = TaxYear.fromMtd("2023-24")
 
-  private implicit val correlationId: String = "X-123"
+  private given correlationId: String = "X-123"
 
   private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), taxYear)
 
   trait Test {
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+    given HeaderCarrier      = HeaderCarrier()
+    given EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new DeleteService(
       connector = mockDeleteConnector

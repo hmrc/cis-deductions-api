@@ -25,7 +25,7 @@ import org.scalatest.TestSuite
 
 trait MockSharedAppConfig extends TestSuite with MockFactory {
 
-  implicit val mockSharedAppConfig: SharedAppConfig = mock[SharedAppConfig]
+  given mockSharedAppConfig: SharedAppConfig = mock[SharedAppConfig]
 
   object MockedSharedAppConfig {
     // MTD ID Lookup Config

@@ -22,8 +22,8 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method._
-import shared.hateoas._
+import shared.hateoas.Method.*
+import shared.hateoas.*
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.Nino
 import shared.models.errors.{ErrorWrapper, NinoFormatError}
@@ -31,7 +31,7 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v2.controllers.validators.MockedCreateValidatorFactory
 import v2.fixtures.AmendRequestFixtures.requestJson
-import v2.fixtures.CreateRequestFixtures._
+import v2.fixtures.CreateRequestFixtures.*
 import v2.mocks.services.MockCreateService
 import v2.models.request.create
 import v2.models.response.create.{CreateHateoasData, CreateResponseModel}

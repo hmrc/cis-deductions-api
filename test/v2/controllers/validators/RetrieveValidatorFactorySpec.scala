@@ -21,12 +21,12 @@ import models.errors.RuleSourceInvalidError
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v2.models.request.retrieve.RetrieveRequestData
 
 class RetrieveValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
-  private implicit val correlationId: String = "1234"
+  private given correlationId: String = "1234"
 
   private val nino              = "AA123456A"
   private val invalidNino       = "GHFG197854"

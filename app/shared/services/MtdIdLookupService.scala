@@ -16,7 +16,7 @@
 
 package shared.services
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import shared.connectors.MtdIdLookupConnector
 import shared.controllers.validators.resolvers.ResolveNino
 import shared.models.errors.{InvalidBearerTokenError, NinoFormatError, _}
@@ -32,7 +32,7 @@ object MtdIdLookupService {
 @Singleton
 class MtdIdLookupService @Inject() (val connector: MtdIdLookupConnector) {
 
-  def lookup(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupService.Outcome] = {
+  def lookup(nino: String)(using hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupService.Outcome] = {
     if (!ResolveNino.isValid(nino)) {
       Future.successful(Left(NinoFormatError))
     } else {

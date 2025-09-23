@@ -37,11 +37,11 @@ class FeatureSwitchesSpec extends UnitSpec {
       val featureSwitches = CisDeductionsApiFeatureSwitches(configuration(false))
 
       "return true even if the suspend header is present and true" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "true"))) shouldBe true
+        featureSwitches.isTemporalValidationEnabled(using requestWith(headers(suspend = "true"))) shouldBe true
       }
 
       "return true if the suspend header is not present" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(Headers())) shouldBe true
+        featureSwitches.isTemporalValidationEnabled(using requestWith(Headers())) shouldBe true
       }
     }
 
@@ -49,19 +49,19 @@ class FeatureSwitchesSpec extends UnitSpec {
       val featureSwitches = CisDeductionsApiFeatureSwitches(configuration(true))
 
       "return false if the suspend header is present and true" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "true"))) shouldBe false
+        featureSwitches.isTemporalValidationEnabled(using requestWith(headers(suspend = "true"))) shouldBe false
       }
 
       "return true if the suspend header is present and false" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "false"))) shouldBe true
+        featureSwitches.isTemporalValidationEnabled(using requestWith(headers(suspend = "false"))) shouldBe true
       }
 
       "return true if the suspend header is not present" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(Headers())) shouldBe true
+        featureSwitches.isTemporalValidationEnabled(using requestWith(Headers())) shouldBe true
       }
 
       "return true if the suspend header is not a valid boolean" in {
-        featureSwitches.isTemporalValidationEnabled(requestWith(headers(suspend = "not a boolean"))) shouldBe true
+        featureSwitches.isTemporalValidationEnabled(using requestWith(headers(suspend = "not a boolean"))) shouldBe true
       }
     }
 

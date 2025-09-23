@@ -29,7 +29,7 @@ case class TaxYearRange(from: TaxYear, to: TaxYear)
 
 object TaxYearRange {
 
-  def todayMinus(years: Int)(implicit clock: Clock = Clock.systemUTC): TaxYearRange = {
+  def todayMinus(years: Int)(using clock: Clock = Clock.systemUTC): TaxYearRange = {
     val currentTaxYear = TaxYear.currentTaxYear
     val from           = TaxYear.fromDownstreamInt(currentTaxYear.year - years)
     TaxYearRange(from = from, to = currentTaxYear)

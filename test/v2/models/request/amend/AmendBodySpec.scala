@@ -16,9 +16,9 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsObject, JsSuccess, Json}
 import shared.utils.UnitSpec
-import v2.fixtures.AmendRequestFixtures._
+import v2.fixtures.AmendRequestFixtures.*
 
 class AmendBodySpec extends UnitSpec {
 

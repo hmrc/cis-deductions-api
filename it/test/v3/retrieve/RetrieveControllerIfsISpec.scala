@@ -17,13 +17,13 @@
 package v3.retrieve
 
 import models.errors.RuleSourceInvalidError
-import play.api.http.HeaderNames._
-import play.api.http.Status._
+import play.api.http.HeaderNames.*
+import play.api.http.Status.*
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.models.errors._
-import shared.services._
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.RetrieveJson._
+import v3.fixtures.RetrieveJson.*
 
 class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
 

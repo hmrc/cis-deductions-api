@@ -17,7 +17,7 @@
 package v2.models.response.retrieve
 
 import cats.Functor
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
 import shared.models.domain.TaxYear

@@ -18,7 +18,7 @@ package shared.models.audit
 
 import shared.controllers.{AuditHandler, RequestContext}
 import shared.models.auth.UserDetails
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, JsValue, OWrites}
 import shared.routing.Version
 
@@ -32,7 +32,7 @@ case class GenericAuditDetail(userType: String,
 
 object GenericAuditDetail {
 
-  implicit val writes: OWrites[GenericAuditDetail] = (
+  given OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
       (JsPath \ "versionNumber").write[String] and
@@ -45,7 +45,7 @@ object GenericAuditDetail {
   def auditDetailCreator(apiVersion: Version, params: Map[String, String]): AuditHandler.AuditDetailCreator[GenericAuditDetail] =
     new AuditHandler.AuditDetailCreator[GenericAuditDetail] {
 
-      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit
+      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(using
           ctx: RequestContext): GenericAuditDetail =
         GenericAuditDetail(
           userDetails = userDetails,

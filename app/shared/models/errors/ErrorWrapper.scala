@@ -33,7 +33,7 @@ case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[S
 
 object ErrorWrapper {
 
-  implicit val writes: Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
+  given Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
 
     val json = Json.toJson(errorResponse.error).as[JsObject]
 

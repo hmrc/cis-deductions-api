@@ -16,7 +16,7 @@
 
 package shared.models.errors
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsObject, JsPath, Json, OWrites}
 
 case class MtdError(code: String, message: String, httpStatus: Int, paths: Option[Seq[String]] = None) {
@@ -52,7 +52,7 @@ case class MtdError(code: String, message: String, httpStatus: Int, paths: Optio
 
 object MtdError {
 
-  implicit val writes: OWrites[MtdError] = (
+  given writes: OWrites[MtdError] = (
     (JsPath \ "code").write[String] and
       (JsPath \ "message").write[String] and
       (JsPath \ "paths").writeNullable[Seq[String]]

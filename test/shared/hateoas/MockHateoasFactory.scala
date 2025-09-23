@@ -29,7 +29,7 @@ trait MockHateoasFactory extends TestSuite with MockFactory {
 
     def wrap[A, D <: HateoasData](a: A, data: D): CallHandler[HateoasWrapper[A]] = {
       (mockHateoasFactory
-        .wrap(_: A, _: D)(_: HateoasLinksFactory[A, D]))
+        .wrap(_: A, _: D)(using _: HateoasLinksFactory[A, D]))
         .expects(a, data, *)
     }
 

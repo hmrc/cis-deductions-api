@@ -35,7 +35,7 @@ class ResolveParsedNumberSpec extends UnitSpec with ScalaCheckDrivenPropertyChec
       val resolve = ResolveParsedNumber(min, max)
 
       "return the error with the correct message if and only if the value is outside the inclusive range" when {
-        implicit val arbitraryMoney: Arbitrary[BigDecimal] = Arbitrary(Arbitrary.arbitrary[BigInt].map(x => BigDecimal(x) / 100))
+        given Arbitrary[BigDecimal] = Arbitrary(Arbitrary.arbitrary[BigInt].map(x => BigDecimal(x) / 100))
 
         "using validate" in forAll { (money: BigDecimal) =>
           val expected = if (min <= money && money <= max) Valid(money) else Invalid(List(error))

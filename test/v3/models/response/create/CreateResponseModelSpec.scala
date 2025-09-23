@@ -19,7 +19,7 @@ package v3.models.response.create
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
-import v3.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures.*
 
 class CreateResponseModelSpec extends UnitSpec with MockSharedAppConfig {
 

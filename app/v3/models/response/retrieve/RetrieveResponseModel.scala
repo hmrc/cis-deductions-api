@@ -17,7 +17,7 @@
 package v3.models.response.retrieve
 
 import cats.Functor
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class RetrieveResponseModel[I](totalDeductionAmount: Option[BigDecimal],
                                     totalCostOfMaterials: Option[BigDecimal],

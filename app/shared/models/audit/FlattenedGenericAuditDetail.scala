@@ -36,7 +36,7 @@ case class FlattenedGenericAuditDetail(versionNumber: Option[String],
 
 object FlattenedGenericAuditDetail {
 
-  implicit val writes: OWrites[FlattenedGenericAuditDetail] = (
+  given OWrites[FlattenedGenericAuditDetail] = (
     (JsPath \ "versionNumber").writeNullable[String] and
       (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and

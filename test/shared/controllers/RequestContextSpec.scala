@@ -23,7 +23,7 @@ class RequestContextSpec extends UnitSpec with MockIdGenerator {
 
   private val endpointLogContext = EndpointLogContext("controllerName", "endpointName")
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   private val expectedCorrelationId = "1234567890"
 
@@ -38,7 +38,7 @@ class RequestContextSpec extends UnitSpec with MockIdGenerator {
 
   "fromParts" should {
     "return a RequestContext" in {
-      val result = RequestContext.fromParts(hc, "12345", endpointLogContext)
+      val result = RequestContext.fromParts(using hc, "12345", endpointLogContext)
       result shouldBe RequestContext(hc, "12345", endpointLogContext)
     }
   }

@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json, OWrites}
 case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
 
 object AuditResponse {
-  implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
+  given OWrites[AuditResponse] = Json.writes[AuditResponse]
 
   def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
     response match {

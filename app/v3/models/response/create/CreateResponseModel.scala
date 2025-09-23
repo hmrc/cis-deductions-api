@@ -16,11 +16,11 @@
 
 package v3.models.response.create
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class CreateResponseModel(submissionId: String)
 
 object CreateResponseModel {
-  implicit val reads: Reads[CreateResponseModel]    = Json.reads[CreateResponseModel]
-  implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
+  given Reads[CreateResponseModel]   = Json.reads[CreateResponseModel]
+  given OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
 }

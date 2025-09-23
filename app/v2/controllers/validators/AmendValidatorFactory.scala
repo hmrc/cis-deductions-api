@@ -17,13 +17,13 @@
 package v2.controllers.validators
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import play.api.libs.json.{JsString, JsValue}
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
-import shared.models.errors._
-import v2.controllers.validators.DeductionsValidator._
+import shared.models.errors.*
+import v2.controllers.validators.DeductionsValidator.*
 import v2.controllers.validators.resolvers.ResolveSubmissionId
 import v2.models.errors.CisDeductionsApiCommonErrors.DeductionToDateFormatError
 import v2.models.request.amend.{AmendBody, AmendRequestData}

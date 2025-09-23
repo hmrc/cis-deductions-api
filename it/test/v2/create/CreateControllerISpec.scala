@@ -16,9 +16,9 @@
 
 package v2.create
 
-import models.errors._
+import models.errors.*
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
@@ -35,7 +35,7 @@ import shared.models.errors.{
 }
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.CreateRequestFixtures._
+import v2.fixtures.CreateRequestFixtures.*
 import v2.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 

@@ -18,7 +18,7 @@ package shared.controllers
 
 import cats.data.EitherT
 import cats.data.Validated.Valid
-import cats.implicits._
+import cats.implicits.*
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
@@ -37,7 +37,7 @@ import shared.utils.Logging
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler {
-  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result]
+  def handleRequest()(using ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result]
 }
 
 object RequestHandler {
@@ -61,7 +61,7 @@ object RequestHandler {
       responseModifier: Option[Output => Output] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result] =
+    def handleRequest()(using ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -78,7 +78,7 @@ object RequestHandler {
       * withResultCreator(ResultCreator.plainJson(successStatus))
       * }}}
       */
-    def withPlainJsonResult(successStatus: Int = Status.OK)(implicit ws: Writes[Output]): RequestHandlerBuilder[Input, Output] =
+    def withPlainJsonResult(successStatus: Int = Status.OK)(using ws: Writes[Output]): RequestHandlerBuilder[Input, Output] =
       withResultCreator(ResultCreator.plainJson(successStatus))
 
     /** Shorthand for
@@ -98,7 +98,7 @@ object RequestHandler {
       * }}}
       */
     def withHateoasResultFrom[HData <: HateoasData](
-        hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(implicit
+        hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(using
         linksFactory: HateoasLinksFactory[Output, HData],
         writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
       withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
@@ -108,7 +108,7 @@ object RequestHandler {
       * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
       * }}}
       */
-    def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(implicit
+    def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(using
         linksFactory: HateoasLinksFactory[Output, HData],
         writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
       withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
@@ -116,7 +116,7 @@ object RequestHandler {
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
 
-      implicit class Response(result: Result)(implicit appConfig: SharedAppConfig, apiVersion: Version) {
+      implicit class Response(result: Result)(using appConfig: SharedAppConfig, apiVersion: Version) {
 
         private def withDeprecationHeaders: List[(String, String)] = {
 
@@ -151,7 +151,7 @@ object RequestHandler {
 
       }
 
-      def handleRequest()(implicit
+      def handleRequest()(using
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
@@ -186,19 +186,19 @@ object RequestHandler {
         }.merge
       }
 
-      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: SharedAppConfig): Boolean =
+      private def simulateRequestCannotBeFulfilled(using request: UserRequest[_], appConfig: SharedAppConfig): Boolean =
         request.headers.get("Gov-Test-Scenario").contains("REQUEST_CANNOT_BE_FULFILLED") &&
           appConfig.allowRequestCannotBeFulfilledHeader(Version(request))
 
       private def doWithContext[A](ctx: RequestContext)(f: RequestContext => A): A = f(ctx)
 
-      private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
+      private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(using
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
           appConfig: SharedAppConfig): Result = {
 
-        implicit val apiVersion: Version = Version(request)
+        given Version = Version(request)
 
         logger.info(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
@@ -212,13 +212,13 @@ object RequestHandler {
         result
       }
 
-      private def handleFailure(errorWrapper: ErrorWrapper)(implicit
+      private def handleFailure(errorWrapper: ErrorWrapper)(using
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
           appConfig: SharedAppConfig): Result = {
 
-        implicit val apiVersion: Version = Version(request)
+        given Version = Version(request)
         logger.warn(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: ${ctx.correlationId}")
@@ -229,14 +229,14 @@ object RequestHandler {
         result
       }
 
-      private def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
+      private def unhandledError(errorWrapper: ErrorWrapper)(using endpointLogContext: EndpointLogContext): Result = {
         logger.error(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Unhandled error: $errorWrapper")
         InternalServerError(InternalError.asJson)
       }
 
-      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(using
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext): Unit =

@@ -28,9 +28,9 @@ import shared.services.EnrolmentsAuthService.{
 }
 import shared.utils.Logging
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -55,7 +55,7 @@ class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConf
   def authorised(
       mtdId: String,
       endpointAllowsSupportingAgents: Boolean = false
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuthOutcome] = {
+  )(using hc: HeaderCarrier, ec: ExecutionContext): Future[AuthOutcome] = {
 
     authFunction
       .authorised(initialPredicate(mtdId))

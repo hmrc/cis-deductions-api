@@ -26,7 +26,7 @@ import shared.utils.UnitSpec
 class RulesValidatorSpec extends UnitSpec {
 
   private val validNino    = Nino("AA123456A")
-  private val validTaxYear = TaxYear.currentTaxYear()
+  private val validTaxYear = TaxYear.currentTaxYear
 
   private case class TestParsedRequest(nino: Nino, taxYear: TaxYear, valid1: Boolean, valid2: Boolean)
   private object Valid1Error extends MtdError("INVALID_1", "Field valid1 is invalid", BAD_REQUEST)

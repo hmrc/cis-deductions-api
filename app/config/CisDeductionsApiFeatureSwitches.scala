@@ -30,7 +30,7 @@ case class CisDeductionsApiFeatureSwitches(protected val featureSwitchConfig: Co
   @Inject
   def this(appConfig: SharedAppConfig) = this(appConfig.featureSwitchConfig)
 
-  def isTemporalValidationEnabled(implicit request: Request[_]): Boolean = {
+  def isTemporalValidationEnabled(using request: Request[?]): Boolean = {
     if (isEnabled("allowTemporalValidationSuspension")) {
       request.headers.get("suspend-temporal-validations").forall(!BooleanUtils.toBoolean(_))
     } else {

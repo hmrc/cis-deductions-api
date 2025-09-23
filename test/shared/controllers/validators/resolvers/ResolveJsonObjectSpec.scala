@@ -26,7 +26,7 @@ class ResolveJsonObjectSpec extends UnitSpec with ResolverSupport with JsonError
 
   case class Foo(field1: String, field2: String)
 
-  implicit val fooReads: Reads[Foo] = Json.reads
+  given Reads[Foo] = Json.reads
 
   private def jsonObjectResolver(resolver: Resolver[JsValue, Foo]): Unit = {
     "return the parsed object" when {

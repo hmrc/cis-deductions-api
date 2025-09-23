@@ -35,7 +35,7 @@ trait MockAmendConnector extends TestSuite with MockFactory {
     def amendDeduction(
         requestData: AmendRequestData): CallHandler4[AmendRequestData, HeaderCarrier, ExecutionContext, String, Future[DownstreamOutcome[Unit]]] = {
       (mockAmendConnector
-        .amendDeduction(_: AmendRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .amendDeduction(_: AmendRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

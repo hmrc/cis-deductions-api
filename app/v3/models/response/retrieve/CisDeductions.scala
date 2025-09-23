@@ -16,7 +16,7 @@
 
 package v3.models.response.retrieve
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class CisDeductions(fromDate: String,
                          toDate: String,
@@ -28,6 +28,6 @@ case class CisDeductions(fromDate: String,
                          periodData: Seq[PeriodData])
 
 object CisDeductions {
-  implicit val reads: Reads[CisDeductions]    = Json.reads[CisDeductions]
-  implicit val writes: OWrites[CisDeductions] = Json.writes[CisDeductions]
+  given Reads[CisDeductions]   = Json.reads[CisDeductions]
+  given OWrites[CisDeductions] = Json.writes[CisDeductions]
 }

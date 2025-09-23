@@ -16,10 +16,10 @@
 
 package v2.hateoas
 
-import common.hateoas.RelType._
+import common.hateoas.RelType.*
 import shared.config.SharedAppConfig
 import shared.hateoas.Link
-import shared.hateoas.Method._
+import shared.hateoas.Method.*
 import shared.models.domain.TaxYear
 
 trait HateoasLinks {

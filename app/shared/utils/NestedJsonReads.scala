@@ -16,7 +16,7 @@
 
 package shared.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
@@ -27,7 +27,7 @@ trait NestedJsonReads {
 
   implicit class JsPathOps(jsPath: JsPath) {
 
-    def readNestedNullable[T](implicit rds: Reads[T]): Reads[Option[T]] = Reads[Option[T]] { json =>
+    def readNestedNullable[T](using rds: Reads[T]): Reads[Option[T]] = Reads[Option[T]] { json =>
       applyTillLastNested(json).fold(
         jsErr => jsErr,
         jsRes =>

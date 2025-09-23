@@ -74,9 +74,11 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
       behave like authorisedSupportingAgent(authValidationEnabled, initialPredicate, primaryAgentPredicate, supportingAgentPredicate)
 
       behave like disallowSupportingAgentForPrimaryOnlyEndpoint(authValidationEnabled, initialPredicate, primaryAgentPredicate)
+      behave like disallowInvalidAffinityGroup(authValidationEnabled, initialPredicate)
 
       behave like disallowUsersWithoutEnrolments(authValidationEnabled, initialPredicate)
       behave like disallowWhenNotLoggedIn(authValidationEnabled, initialPredicate)
+      behave like handleUnexpectedError(authValidationEnabled, initialPredicate)
     }
 
     def authorisedIndividual(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
@@ -250,6 +252,21 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
         result shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
 
+    def disallowInvalidAffinityGroup(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "disallow users with an invalid affinity group" in new Test {
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        val retrievalsResult = new ~(None, Enrolments(Set.empty))
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.successful(retrievalsResult))
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
+      }
+
     def disallowWhenNotLoggedIn(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
       "disallow users that are not logged in" in new Test {
         mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
@@ -274,6 +291,22 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockSharedAppConfig {
 
         val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
         result shouldBe Left(ClientOrAgentNotAuthorisedError)
+      }
+
+    def handleUnexpectedError(authValidationEnabled: Boolean, initialPredicate: Predicate): Unit =
+      "return InternalError on unexpected error" in new Test {
+        val exception = new RuntimeException("Unexpected error")
+
+        mockConfidenceLevelCheckConfig(authValidationEnabled = authValidationEnabled)
+
+        MockedAuthConnector
+          .authorised(initialPredicate, affinityGroup and authorisedEnrolments)
+          .once()
+          .returns(Future.failed(exception))
+
+        val result: AuthOutcome = await(enrolmentsAuthService.authorised(mtdId))
+        result shouldBe Left(InternalError)
+
       }
   }
 

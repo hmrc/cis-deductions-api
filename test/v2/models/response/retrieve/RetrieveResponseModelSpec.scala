@@ -18,8 +18,8 @@ package v2.models.response.retrieve
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import shared.config.MockSharedAppConfig
-import shared.hateoas.Method._
-import shared.hateoas._
+import shared.hateoas.Method.*
+import shared.hateoas.*
 import shared.models.domain.TaxYear
 import shared.utils.UnitSpec
 import v2.fixtures.RetrieveModels.cisDeductions

@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package shared.definition
+package shared.utils
 
-import play.api.libs.json.{Json, OFormat}
+class IdGeneratorSpec extends UnitSpec {
 
-case class PublishingException(message: String) extends Exception(message)
+  val generator        = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-case class Access(`type`: String, whitelistedApplicationIds: Seq[String])
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
+      }
+    }
+  }
 
-object Access {
-  implicit val formatAccess: OFormat[Access] = Json.format[Access]
-}
-
-case class Parameter(name: String, required: Boolean = false)
-
-object Parameter {
-  implicit val formatParameter: OFormat[Parameter] = Json.format[Parameter]
-}
-
-case class Definition(api: APIDefinition)
-
-object Definition {
-  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
 }

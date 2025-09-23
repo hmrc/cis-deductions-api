@@ -31,11 +31,11 @@ trait BaseDownstreamConnector extends Logging {
 
   // This is to provide an implicit AppConfig in existing connector implementations (which
   // typically declare the abstract `appConfig` field non-implicitly) without having to change them.
-  implicit protected lazy val _appConfig: SharedAppConfig = appConfig
+  protected given SharedAppConfig = appConfig
 
   private val jsonContentTypeHeader = Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)
 
-  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], maybeIntent: Option[String] = None)(implicit
+  def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], maybeIntent: Option[String] = None)(using
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -43,17 +43,17 @@ trait BaseDownstreamConnector extends Logging {
 
     val strategy = uri.strategy
 
-    def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+    def doPost(using hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.post(url"${getBackendUri(uri.path, strategy)}").withBody(Json.toJson(body)).execute[DownstreamOutcome[Resp]]
     }
 
     for {
       headers <- getBackendHeaders(strategy, jsonContentTypeHeader ++ intentHeader(maybeIntent))
-      result  <- doPost(headers)
+      result  <- doPost(using headers)
     } yield result
   }
 
-  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(implicit
+  def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(using
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -61,18 +61,18 @@ trait BaseDownstreamConnector extends Logging {
 
     val strategy = uri.strategy
 
-    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+    def doGet(using hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       val fullUrl = UrlUtils.appendQueryParams(getBackendUri(uri.path, strategy), queryParams)
       http.get(url"$fullUrl").execute
     }
 
     for {
       headers <- getBackendHeaders(strategy, intentHeader(maybeIntent))
-      result  <- doGet(headers)
+      result  <- doGet(using headers)
     } yield result
   }
 
-  def delete[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(implicit
+  def delete[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)] = Nil, maybeIntent: Option[String] = None)(using
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -80,18 +80,18 @@ trait BaseDownstreamConnector extends Logging {
 
     val strategy = uri.strategy
 
-    def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+    def doDelete(using hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       val fullUrl = UrlUtils.appendQueryParams(getBackendUri(uri.path, strategy), queryParams)
       http.delete(url"$fullUrl").execute
     }
 
     for {
       headers <- getBackendHeaders(strategy, intentHeader(maybeIntent))
-      result  <- doDelete(headers)
+      result  <- doDelete(using headers)
     } yield result
   }
 
-  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], maybeIntent: Option[String] = None)(implicit
+  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], maybeIntent: Option[String] = None)(using
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -99,13 +99,13 @@ trait BaseDownstreamConnector extends Logging {
 
     val strategy = uri.strategy
 
-    def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+    def doPut(using hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.put(url"${getBackendUri(uri.path, strategy)}").withBody(Json.toJson(body)).execute
     }
 
     for {
       headers <- getBackendHeaders(strategy, jsonContentTypeHeader ++ intentHeader(maybeIntent))
-      result  <- doPut(headers)
+      result  <- doPut(using headers)
     } yield result
   }
 
@@ -118,7 +118,7 @@ trait BaseDownstreamConnector extends Logging {
   private def getBackendHeaders(
       strategy: DownstreamStrategy,
       additionalHeaders: Seq[(String, String)]
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier, correlationId: String): Future[HeaderCarrier] = {
+  )(using ec: ExecutionContext, hc: HeaderCarrier, correlationId: String): Future[HeaderCarrier] = {
 
     for {
       contractHeaders <- strategy.contractHeaders(correlationId)

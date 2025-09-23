@@ -208,7 +208,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockSharedAppC
       new ApiVersionTitleRewriter(mockSharedAppConfig),
       new EndpointSummaryRewriter(mockSharedAppConfig),
       new EndpointSummaryGroupRewriter(mockSharedAppConfig),
-      new OasFeatureRewriter()(mockSharedAppConfig)
+      new OasFeatureRewriter(using mockSharedAppConfig)
     )
 
     private val assets       = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])

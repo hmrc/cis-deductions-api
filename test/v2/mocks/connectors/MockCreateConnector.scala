@@ -35,7 +35,7 @@ trait MockCreateConnector extends TestSuite with MockFactory {
 
     def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DownstreamOutcome[CreateResponseModel]]] = {
       (mockCreateConnector
-        .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .create(_: CreateRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

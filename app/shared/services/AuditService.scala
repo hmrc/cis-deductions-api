@@ -33,7 +33,7 @@ class AuditService @Inject() (auditConnector: AuditConnector, appNameConfigurati
 
   val logger: Logger = Logger(this.getClass)
 
-  def auditEvent[T](event: AuditEvent[T])(implicit hc: HeaderCarrier, ec: ExecutionContext, writer: Writes[T]): Future[AuditResult] = {
+  def auditEvent[T](event: AuditEvent[T])(using hc: HeaderCarrier, ec: ExecutionContext, writer: Writes[T]): Future[AuditResult] = {
 
     val eventTags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags() +
       ("transactionName" -> event.transactionName)

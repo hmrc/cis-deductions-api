@@ -35,7 +35,7 @@ trait MockDeleteService extends TestSuite with MockFactory {
 
     def delete(requestData: DeleteRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteService
-        .deleteDeductions(_: DeleteRequestData)(_: RequestContext, _: ExecutionContext))
+        .deleteDeductions(_: DeleteRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

@@ -23,7 +23,7 @@ case class DownstreamErrorCode(code: String) {
 }
 
 object DownstreamErrorCode {
-  implicit val reads: Reads[DownstreamErrorCode] = Json.reads[DownstreamErrorCode]
+  given Reads[DownstreamErrorCode] = Json.reads[DownstreamErrorCode]
 }
 
 sealed trait DownstreamError

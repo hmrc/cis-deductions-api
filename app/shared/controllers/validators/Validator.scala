@@ -20,13 +20,13 @@ import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.utils.Logging
-import cats.implicits._
+import cats.implicits.*
 
 trait Validator[+PARSED] extends Logging {
 
   def validate: Validated[Seq[MtdError], PARSED]
 
-  def validateAndWrapResult()(implicit correlationId: String): Either[ErrorWrapper, PARSED] = {
+  def validateAndWrapResult()(using correlationId: String): Either[ErrorWrapper, PARSED] = {
     validate match {
       case Valid(parsed) =>
         logger.info(s"Validation successful for the request with CorrelationId: $correlationId")

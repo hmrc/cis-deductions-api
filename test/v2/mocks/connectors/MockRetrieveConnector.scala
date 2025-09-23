@@ -35,7 +35,7 @@ trait MockRetrieveConnector extends TestSuite with MockFactory {
 
     def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]]] = {
       (mockRetrieveConnector
-        .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .retrieve(_: RetrieveRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

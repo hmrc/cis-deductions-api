@@ -52,7 +52,7 @@ class RequestHandlerSpec
     with ControllerSpecHateoasSupport
     with MockSharedAppConfig {
 
-  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+  given ec: ExecutionContextExecutor = ExecutionContext.global
 
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
   private val successCode         = ACCEPTED
@@ -62,31 +62,31 @@ class RequestHandlerSpec
 
   MockedIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
-  implicit val endpointLogContext: EndpointLogContext =
+  given endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
 
   private val versionHeader = HeaderNames.ACCEPT -> "application/vnd.hmrc.3.0+json"
 
-  implicit val hc: HeaderCarrier   = HeaderCarrier()
-  implicit val ctx: RequestContext = RequestContext.from(mockIdGenerator, endpointLogContext)
+  given hc: HeaderCarrier   = HeaderCarrier()
+  given ctx: RequestContext = RequestContext.from(mockIdGenerator, endpointLogContext)
 
   private val userDetails = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
 
-  implicit val userRequest: UserRequest[AnyContent] = {
+  given userRequest: UserRequest[AnyContent] = {
     val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(versionHeader)
     UserRequest[AnyContent](userDetails, fakeRequest)
   }
 
-  implicit val appConfig: SharedAppConfig = mockSharedAppConfig
-  private val mockService                 = mock[DummyService]
+  given SharedAppConfig   = mockSharedAppConfig
+  private val mockService = mock[DummyService]
 
   private def service =
-    (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
+    (mockService.service(_: Input.type)(using _: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
 
   case object Input
 
   case object Output {
-    implicit val writes: OWrites[Output.type] = _ => successResponseJson
+    given OWrites[Output.type] = _ => successResponseJson
   }
 
   case object HData extends HateoasData
@@ -96,7 +96,7 @@ class RequestHandlerSpec
   }
 
   trait DummyService {
-    def service(input: Input.type)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Output.type]]
+    def service(input: Input.type)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Output.type]]
   }
 
   def mockDeprecation(deprecationStatus: Deprecation): CallHandler[Validated[String, Deprecation]] =
@@ -190,7 +190,7 @@ class RequestHandlerSpec
           for (gtsHeader <- gtsHeaders) {
 
             val userRequest2 = UserRequest[AnyContent](userDetails, FakeRequest().withHeaders(versionHeader, gtsHeader))
-            val result       = requestHandler.handleRequest()(ctx, userRequest2, implicitly[ExecutionContext], mockSharedAppConfig)
+            val result       = requestHandler.handleRequest()(using ctx, userRequest2, summon[ExecutionContext], mockSharedAppConfig)
 
             status(result) shouldBe 422
             header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
@@ -210,7 +210,7 @@ class RequestHandlerSpec
 
           val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
 
-          val result = requestHandler.handleRequest()(ctx2, userRequest, ec, mockSharedAppConfig)
+          val result = requestHandler.handleRequest()(using ctx2, userRequest, ec, mockSharedAppConfig)
 
           contentAsJson(result) shouldBe successResponseJson
           header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)

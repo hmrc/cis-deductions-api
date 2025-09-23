@@ -36,7 +36,7 @@ trait MockCreateService extends TestSuite with MockFactory {
 
     def create(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
       (mockCreateService
-        .createDeductions(_: CreateRequestData)(_: RequestContext, _: ExecutionContext))
+        .createDeductions(_: CreateRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

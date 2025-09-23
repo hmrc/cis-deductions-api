@@ -32,7 +32,7 @@ import shared.utils.UnitSpec
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSharedAppConfig with GuiceOneAppPerSuite {
   test =>
 
-  implicit private val actorSystem: ActorSystem = ActorSystem("test")
+  private given ActorSystem = ActorSystem("test")
 
   val actionBuilder: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
 

@@ -16,28 +16,28 @@
 
 package shared.utils
 
-import play.api._
-import play.api.http.Status._
-import play.api.mvc.Results._
-import play.api.mvc._
-import shared.models.errors._
+import play.api.*
+import play.api.http.Status.*
+import play.api.mvc.Results.*
+import play.api.mvc.*
+import shared.models.errors.*
 import shared.routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import javax.inject._
-import scala.concurrent._
+import javax.inject.*
+import scala.concurrent.*
 
 @Singleton
 class ErrorHandler @Inject() (
     config: Configuration,
     auditConnector: AuditConnector,
     httpAuditEvent: HttpAuditEvent
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends JsonErrorHandler(auditConnector, httpAuditEvent, config) {
 
   import httpAuditEvent.dataEvent
@@ -46,7 +46,7 @@ class ErrorHandler @Inject() (
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
-    implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.warn(
       message = s"[ErrorHandler][onClientError] error in version " +
@@ -88,7 +88,7 @@ class ErrorHandler @Inject() (
   private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")
 
   override def onServerError(request: RequestHeader, ex: Throwable): Future[Result] = {
-    implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.warn(
       message = s"[ErrorHandler][onServerError] Internal server error in version " +

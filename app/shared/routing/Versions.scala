@@ -17,8 +17,8 @@
 package shared.routing
 
 import play.api.http.HeaderNames.ACCEPT
-import play.api.libs.json.Writes._
-import play.api.libs.json._
+import play.api.libs.json.Writes.*
+import play.api.libs.json.*
 import play.api.mvc.RequestHeader
 
 object Version {
@@ -48,7 +48,7 @@ object Version {
 
   }
 
-  implicit val versionFormat: Format[Version] = Format(VersionReads, VersionWrites)
+  given Format[Version] = Format(VersionReads, VersionWrites)
 
 }
 

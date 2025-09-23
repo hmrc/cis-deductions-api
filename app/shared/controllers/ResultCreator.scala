@@ -16,7 +16,7 @@
 
 package shared.controllers
 
-import shared.hateoas._
+import shared.hateoas.*
 import cats.Functor
 import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}
@@ -43,11 +43,11 @@ object ResultCreator {
   def noContent[Input, Output](successStatus: Int = Status.NO_CONTENT): ResultCreator[Input, Output] =
     (_: Input, _: Output) => ResultWrapper(successStatus, None)
 
-  def plainJson[Input, Output](successStatus: Int = Status.OK)(implicit ws: Writes[Output]): ResultCreator[Input, Output] =
+  def plainJson[Input, Output](successStatus: Int = Status.OK)(using ws: Writes[Output]): ResultCreator[Input, Output] =
     (_: Input, output: Output) => ResultWrapper(successStatus, Some(Json.toJson(output)))
 
   def hateoasWrapping[Input, Output, HData <: HateoasData](hateoasFactory: HateoasFactory, successStatus: Int = Status.OK)(
-      data: (Input, Output) => HData)(implicit
+      data: (Input, Output) => HData)(using
       linksFactory: HateoasLinksFactory[Output, HData],
       writes: Writes[HateoasWrapper[Output]]): ResultCreator[Input, Output] =
     (input: Input, output: Output) => {
@@ -57,7 +57,7 @@ object ResultCreator {
     }
 
   def hateoasListWrapping[Input, Output[_]: Functor, I, HData <: HateoasData](hateoasFactory: HateoasFactory, successStatus: Int = Status.OK)(
-      data: (Input, Output[I]) => HData)(implicit
+      data: (Input, Output[I]) => HData)(using
       linksFactory: HateoasListLinksFactory[Output, I, HData],
       writes: Writes[HateoasWrapper[Output[HateoasWrapper[I]]]]): ResultCreator[Input, Output[I]] =
     (input: Input, output: Output[I]) => {

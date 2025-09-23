@@ -28,13 +28,12 @@ object APIStatus {
   val parser: PartialFunction[String, APIStatus] = Enums.parser(values)
 
   given Format[APIStatus] = Enums.format(values)
-
 }
 
 case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
 
 object APIVersion {
-  implicit val formatAPIVersion: OFormat[APIVersion] = Json.format[APIVersion]
+  given OFormat[APIVersion] = Json.format[APIVersion]
 }
 
 case class APIDefinition(name: String,
@@ -59,4 +58,10 @@ case class APIDefinition(name: String,
 
 object APIDefinition {
   given OFormat[APIDefinition] = Json.format[APIDefinition]
+}
+
+case class Definition(api: APIDefinition)
+
+object Definition {
+  given OFormat[Definition] = Json.format[Definition]
 }

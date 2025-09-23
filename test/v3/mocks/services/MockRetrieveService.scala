@@ -37,7 +37,7 @@ trait MockRetrieveService extends TestSuite with MockFactory {
     def retrieve(
         requestData: RetrieveRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
       (mockRetrieveService
-        .retrieveDeductions(_: RetrieveRequestData)(_: RequestContext, _: ExecutionContext))
+        .retrieveDeductions(_: RetrieveRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

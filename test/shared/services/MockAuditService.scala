@@ -34,7 +34,7 @@ trait MockAuditService extends TestSuite with MockFactory {
 
     def verifyAuditEvent[T](event: AuditEvent[T]): CallHandler[Future[AuditResult]] = {
       (mockAuditService
-        .auditEvent(_: AuditEvent[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+        .auditEvent(_: AuditEvent[T])(using _: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
         .verify(event, *, *, *)
         .returning(Future.successful(AuditResult.Success))
     }

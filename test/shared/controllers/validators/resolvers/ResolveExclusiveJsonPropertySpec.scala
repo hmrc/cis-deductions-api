@@ -42,6 +42,10 @@ class ResolveExclusiveJsonPropertySpec extends UnitSpec {
       "resolve successfully" in {
         resolveExclusiveJsonProperty.resolver(json) shouldBe Valid(json)
       }
+
+      "apply successfully" in {
+        resolveExclusiveJsonProperty(json) shouldBe Valid(json)
+      }
     }
 
     "only one of the exclusive properties appears" must {

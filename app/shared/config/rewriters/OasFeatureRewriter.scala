@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 
 /** Checks whether the feature is enabled in the current environment e.g. ET/Sandbox.
   */
-@Singleton class OasFeatureRewriter @Inject() (implicit val appConfig: SharedAppConfig) extends HandlebarsRewriter {
+@Singleton class OasFeatureRewriter @Inject() ()(using val appConfig: SharedAppConfig) extends HandlebarsRewriter {
 
   private val fs = ConfigFeatureSwitches()
 

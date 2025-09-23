@@ -20,7 +20,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v2.fixtures.AmendRequestFixtures._
+import v2.fixtures.AmendRequestFixtures.*
 import v2.models.domain.SubmissionId
 import v2.models.request.amend.AmendRequestData
 

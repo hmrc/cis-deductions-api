@@ -16,13 +16,13 @@
 
 package v3.models.request.amend
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class AmendBody(periodData: Seq[PeriodDetails])
 
 object AmendBody {
-  implicit val reads: Reads[AmendBody] = Json.reads[AmendBody]
+  given Reads[AmendBody] = Json.reads[AmendBody]
 
-  implicit val writes: OWrites[AmendBody] = Json.writes[AmendBody]
+  given OWrites[AmendBody] = Json.writes[AmendBody]
 
 }

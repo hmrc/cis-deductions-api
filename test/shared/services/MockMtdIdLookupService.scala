@@ -36,7 +36,7 @@ trait MockMtdIdLookupService extends TestSuite with MockFactory {
 
     def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
       (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .lookup(_: String)(using _: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
 

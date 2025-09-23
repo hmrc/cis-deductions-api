@@ -91,8 +91,8 @@ object TaxYear {
 
   private val mtdTaxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
 
-  def now(implicit clock: Clock = Clock.systemUTC): TaxYear            = TaxYear.containing(LocalDate.now(clock))
-  def currentTaxYear(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.now
+  def now(using clock: Clock = Clock.systemUTC): TaxYear            = TaxYear.containing(LocalDate.now(clock))
+  def currentTaxYear(using clock: Clock = Clock.systemUTC): TaxYear = TaxYear.now
 
   /** @param date
     *   the date in extended ISO-8601 format (e.g. 2020-04-05)
@@ -121,7 +121,7 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  implicit val ordering: Ordering[TaxYear] = Ordering.by(_.year)
+  given Ordering[TaxYear] = Ordering.by(_.year)
 
-  implicit val writes: Writes[TaxYear] = implicitly[Writes[String]].contramap(_.asMtd)
+  given Writes[TaxYear] = summon[Writes[String]].contramap(_.asMtd)
 }

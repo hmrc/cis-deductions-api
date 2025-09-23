@@ -38,7 +38,7 @@ trait TaxYearPropertyCheckSupport extends ShrinkLowPriority {
     arbTaxYear(min.startYear, max.startYear - 1)
 
   def forTaxYearsInRange(min: TaxYear, max: TaxYear)(f: TaxYear => Unit): Unit = {
-    implicit val arbTaxYear: Arbitrary[TaxYear] = arbTaxYearInRange(min, max)
+    given Arbitrary[TaxYear] = arbTaxYearInRange(min, max)
 
     forAll { (taxYear: TaxYear) => f(taxYear) }
   }
@@ -47,7 +47,7 @@ trait TaxYearPropertyCheckSupport extends ShrinkLowPriority {
     forTaxYearsInRange(min, maxAllowed)(f)
 
   def forTaxYearsBefore(maxExclusive: TaxYear)(f: TaxYear => Unit): Unit = {
-    implicit val arbTaxYear: Arbitrary[TaxYear] = arbTaxYearInRangeExclusive(minAllowed, maxExclusive)
+    given Arbitrary[TaxYear] = arbTaxYearInRangeExclusive(minAllowed, maxExclusive)
 
     forAll { (taxYear: TaxYear) => f(taxYear) }
   }

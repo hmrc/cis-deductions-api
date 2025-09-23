@@ -31,7 +31,7 @@ object HateoasWrapper {
   implicit def writes[A: OWrites]: Writes[HateoasWrapper[A]] = Writes { w =>
     // Explicitly use writes method rather than Json.toJson so that we don't have to
     // throw out meaningless JsArray, JsString, etc cases...
-    implicitly[OWrites[A]].writes(w.payload) match {
+    summon[OWrites[A]].writes(w.payload) match {
       case payloadJson: JsObject =>
         if (w.links.nonEmpty) {
           // Manually construct JsObject circumventing `.+` operator to preserve order of fields

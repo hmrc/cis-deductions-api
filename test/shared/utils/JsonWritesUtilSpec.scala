@@ -29,7 +29,7 @@ class JsonWritesUtilSpec extends UnitSpec with JsonWritesUtil {
   import JsonWritesUtilSpec._
 
   "OWrites produced from writesFrom" when {
-    implicit val writesOnlyForD1_D2: OWrites[D] = writesFrom {
+    given OWrites[D] = writesFrom {
       case d: D1 => Json.writes[D1].writes(d)
       case d: D2 => Json.writes[D2].writes(d)
     }

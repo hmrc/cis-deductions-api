@@ -25,5 +25,5 @@ case class Link(
 )
 
 object Link {
-  implicit val writes: Writes[Link] = Json.writes[Link]
+  given Writes[Link] = Json.writes[Link]
 }

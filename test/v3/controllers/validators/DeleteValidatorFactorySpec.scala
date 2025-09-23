@@ -21,14 +21,14 @@ import models.errors.SubmissionIdFormatError
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
 
 class DeleteValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
 
-  private implicit val correlationId: String = "1234"
+  private given correlationId: String = "1234"
 
   private val validNino         = "AA123456A"
   private val validSubmissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"

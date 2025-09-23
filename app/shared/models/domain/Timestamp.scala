@@ -42,6 +42,6 @@ object Timestamp {
     new Timestamp(str)
   }
 
-  implicit val reads: Reads[Timestamp]   = Reads.of[String].map(Timestamp(_))
-  implicit val writes: Writes[Timestamp] = ts => JsString(ts.value)
+  given Reads[Timestamp]  = Reads.of[String].map(Timestamp(_))
+  given Writes[Timestamp] = ts => JsString(ts.value)
 }

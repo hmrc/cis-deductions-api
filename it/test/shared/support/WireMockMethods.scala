@@ -16,7 +16,7 @@
 
 package shared.support
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -49,12 +49,12 @@ trait WireMockMethods {
       }
     }
 
-    def withRequestBody[T](body: T)(implicit writes: Writes[T]): Mapping = {
+    def withRequestBody[T](body: T)(using writes: Writes[T]): Mapping = {
       val stringBody = writes.writes(body).toString()
       new Mapping(method, uri, queryParams, headers, Some(stringBody))
     }
 
-    def thenReturn[T](status: Int, body: T)(implicit writes: Writes[T]): StubMapping = {
+    def thenReturn[T](status: Int, body: T)(using writes: Writes[T]): StubMapping = {
       val stringBody = writes.writes(body).toString()
       thenReturnInternal(status, Map.empty, Some(stringBody))
     }

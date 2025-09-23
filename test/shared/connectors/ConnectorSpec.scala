@@ -31,16 +31,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames with MockHttpClient with MockSharedAppConfig {
 
-  lazy val baseUrl                   = "http://test-BaseUrl"
-  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
+  lazy val baseUrl            = "http://test-BaseUrl"
+  given correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val inputHeaders: Seq[(String, String)] = List(
     "Gov-Test-Scenario" -> "DEFAULT",
     "AnotherHeader"     -> "HeaderValue"
   )
 
-  implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = inputHeaders)
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+  given HeaderCarrier    = HeaderCarrier(otherHeaders = inputHeaders)
+  given ExecutionContext = scala.concurrent.ExecutionContext.global
 
   val dummyHeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
@@ -69,7 +69,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPost[BODY, T](url: URL, body: BODY)(implicit writes: Writes[BODY]): CallHandler[Future[T]] = {
+    protected def willPost[BODY, T](url: URL, body: BODY)(using writes: Writes[BODY]): CallHandler[Future[T]] = {
       MockedHttpClient
         .post(
           url = url,
@@ -80,7 +80,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPut[BODY, T](url: URL, body: BODY)(implicit writes: Writes[BODY]): CallHandler[Future[T]] = {
+    protected def willPut[BODY, T](url: URL, body: BODY)(using writes: Writes[BODY]): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,

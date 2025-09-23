@@ -133,7 +133,7 @@ case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEna
 
 object ConfidenceLevelConfig {
 
-  implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
+  given configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config             = rootConfig.getConfig(path)
     val confidenceLevelInt = config.getInt("confidence-level")
 

@@ -25,9 +25,9 @@ import shared.utils.{Logging, UnitSpec}
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
-  implicit val logContext: EndpointLogContext = EndpointLogContext("ctrl", "ep")
+  given EndpointLogContext = EndpointLogContext("ctrl", "ep")
 
-  val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
+  val mapping: DownstreamResponseMappingSupport & Logging = new DownstreamResponseMappingSupport with Logging {}
 
   val correlationId = "someCorrelationId"
 
@@ -43,7 +43,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
   case class TestClass(field: Option[String])
 
   object TestClass {
-    implicit val format: Format[TestClass] = Json.format[TestClass]
+    given Format[TestClass] = Json.format[TestClass]
   }
 
   object Error1 extends MtdError("msg", "code1", BAD_REQUEST)

@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendService @Inject() (connector: AmendConnector) extends BaseService {
 
-  def amendDeductions(request: AmendRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def amendDeductions(request: AmendRequestData)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendDeduction(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
 

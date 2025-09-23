@@ -20,7 +20,7 @@ import cats.implicits.toBifunctorOps
 import models.errors.RuleSourceInvalidError
 import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v3.connectors.RetrieveConnector
 import v3.models.request.retrieve.RetrieveRequestData
@@ -32,9 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: SharedAppConfig) extends BaseService {
 
-  def retrieveDeductions(request: RetrieveRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
+  def retrieveDeductions(
+      request: RetrieveRequestData)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 

@@ -35,7 +35,7 @@ trait MockAmendService extends TestSuite with MockFactory {
 
     def amend(requestData: AmendRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendService
-        .amendDeductions(_: AmendRequestData)(_: RequestContext, _: ExecutionContext))
+        .amendDeductions(_: AmendRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

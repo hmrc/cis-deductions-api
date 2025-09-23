@@ -55,6 +55,20 @@ class VersionSpec extends UnitSpec with MockFactory {
         result shouldBe JsString("3.0")
       }
     }
+
+    "deserialized from Json" must {
+      "return Version2 for '2.0'" in {
+        val json   = Json.parse(""""2.0"""")
+        val result = Json.fromJson[Version](json)
+        result shouldBe JsSuccess(Version2)
+      }
+
+      "fail with JsError if not a string" in {
+        val json   = Json.parse("123")
+        val result = Json.fromJson[Version](json)
+        result shouldBe a[JsError]
+      }
+    }
   }
 
   "Version.apply(RequestHeader)" when {

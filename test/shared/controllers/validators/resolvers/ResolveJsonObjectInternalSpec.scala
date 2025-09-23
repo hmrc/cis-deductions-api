@@ -28,8 +28,8 @@ class ResolveJsonObjectInternalSpec extends UnitSpec with JsonErrorValidators {
 
   case class Foo(bar: Bar, bars: Seq[Bar])
 
-  implicit val barReads: Reads[Bar] = Json.reads
-  implicit val fooReads: Reads[Foo] = Json.reads
+  given Reads[Bar] = Json.reads
+  given Reads[Foo] = Json.reads
 
   private val resolver = ResolveJsonObjectInternal.resolver[Foo]
 

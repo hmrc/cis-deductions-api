@@ -24,11 +24,11 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v3.controllers.validators.MockedRetrieveValidatorFactory
-import v3.fixtures.RetrieveJson._
+import v3.fixtures.RetrieveJson.*
 import v3.fixtures.RetrieveModels._
 import v3.mocks.services.MockRetrieveService
 import v3.models.request.retrieve.RetrieveRequestData

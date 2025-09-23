@@ -17,7 +17,7 @@
 package definition
 
 import shared.config.SharedAppConfig
-import shared.definition._
+import shared.definition.*
 import shared.routing.{Version2, Version3}
 import shared.utils.Logging
 

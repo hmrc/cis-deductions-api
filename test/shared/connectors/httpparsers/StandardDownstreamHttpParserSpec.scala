@@ -30,7 +30,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   case class SomeDataObject(data: String)
 
   object SomeDataObject {
-    implicit val reads: Reads[SomeDataObject] = Json.reads
+    given Reads[SomeDataObject] = Json.reads
   }
 
   val method = "POST"
@@ -40,7 +40,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 
-  val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
+  val httpReads: HttpReads[DownstreamOutcome[Unit]] = summon
 
   val data                  = "someData"
   val expectedJson: JsValue = Json.obj("data" -> data)
@@ -75,8 +75,8 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
     "a success code is specified" should {
       "use that status code for success" in {
-        implicit val successCode: SuccessCode                       = SuccessCode(PARTIAL_CONTENT)
-        val httpReads: HttpReads[DownstreamOutcome[SomeDataObject]] = implicitly
+        given successCode: SuccessCode                              = SuccessCode(PARTIAL_CONTENT)
+        val httpReads: HttpReads[DownstreamOutcome[SomeDataObject]] = summon
 
         val httpResponse = HttpResponse(PARTIAL_CONTENT, expectedJson.toString(), Map("CorrelationId" -> List(correlationId)))
 
@@ -105,13 +105,55 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     }
 
     "a success code is specified" should {
-      implicit val successCode: SuccessCode             = SuccessCode(PARTIAL_CONTENT)
-      val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
+      given successCode: SuccessCode                    = SuccessCode(PARTIAL_CONTENT)
+      val httpReads: HttpReads[DownstreamOutcome[Unit]] = summon
 
       "use that status code for success" in {
         val httpResponse = HttpResponse(PARTIAL_CONTENT, "", headers = Map("CorrelationId" -> List(correlationId)))
 
         httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
+      }
+    }
+  }
+
+  "validateJson" when {
+    implicit val reads: Reads[SomeDataObject] = Json.reads[SomeDataObject]
+
+    "the JSON is valid" should {
+      "return the parsed model" in {
+        val validJsonResponse: HttpResponse = HttpResponse(
+          OK,
+          expectedJson,
+          Map("CorrelationId" -> Seq(correlationId))
+        )
+
+        val result: Option[SomeDataObject] = validJsonResponse.validateJson[SomeDataObject]
+
+        result shouldBe Some(downstreamResponseData)
+      }
+    }
+
+    "the JSON is invalid" should {
+      "return None" in {
+        val invalidJsonResponse: HttpResponse = HttpResponse(
+          OK,
+          Json.obj("data"     -> 1234),
+          Map("CorrelationId" -> Seq(correlationId))
+        )
+
+        val result: Option[SomeDataObject] = invalidJsonResponse.validateJson[SomeDataObject]
+
+        result shouldBe None
+      }
+    }
+
+    "the response contains no JSON" should {
+      "return None" in {
+        val emptyResponse: HttpResponse = HttpResponse(OK, "", Map("CorrelationId" -> Seq(correlationId)))
+
+        val result: Option[SomeDataObject] = emptyResponse.validateJson[SomeDataObject]
+
+        result shouldBe None
       }
     }
   }

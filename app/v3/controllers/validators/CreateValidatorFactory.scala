@@ -17,15 +17,15 @@
 package v3.controllers.validators
 
 import cats.data.Validated
-import cats.data.Validated._
-import cats.implicits._
+import cats.data.Validated.*
+import cats.implicits.*
 import config.CisDeductionsApiConfig
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.{DateRange, TaxYear}
-import shared.models.errors._
-import v3.controllers.validators.DeductionsValidator._
+import shared.models.errors.*
+import v3.controllers.validators.DeductionsValidator.*
 import v3.controllers.validators.resolvers.ResolveEmployeeRef
 import v3.models.request.create.{CreateBody, CreateRequestData}
 

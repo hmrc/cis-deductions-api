@@ -33,14 +33,14 @@ trait MockEnrolmentsAuthService extends TestSuite with MockFactory {
 
     def authoriseUser(): Unit = {
       (mockEnrolmentsAuthService
-        .authorised(_: String, _: Boolean)(_: HeaderCarrier, _: ExecutionContext))
+        .authorised(_: String, _: Boolean)(using _: HeaderCarrier, _: ExecutionContext))
         .expects(*, *, *, *)
         .returns(Future.successful(Right(UserDetails("mtd-id", "Individual", None))))
     }
 
     def authoriseAgent(mtdId: String, supportingAgentAccessAllowed: Boolean = false): CallHandler[Future[AuthOutcome]] = {
       (mockEnrolmentsAuthService
-        .authorised(_: String, _: Boolean)(_: HeaderCarrier, _: ExecutionContext))
+        .authorised(_: String, _: Boolean)(using _: HeaderCarrier, _: ExecutionContext))
         .expects(mtdId, supportingAgentAccessAllowed, *, *)
     }
 

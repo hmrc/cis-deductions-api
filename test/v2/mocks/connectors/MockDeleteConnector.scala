@@ -34,7 +34,7 @@ trait MockDeleteConnector extends TestSuite with MockFactory {
 
     def deleteDeduction(requestData: DeleteRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockDeleteConnector
-        .delete(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .delete(_: DeleteRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

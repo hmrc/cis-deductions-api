@@ -17,7 +17,7 @@
 package v3.services
 
 import cats.implicits.toBifunctorOps
-import models.errors._
+import models.errors.*
 import shared.controllers.RequestContext
 import shared.models.errors.{InternalError, MtdError, NinoFormatError, RuleTaxYearNotEndedError, RuleTaxYearNotSupportedError}
 import shared.services.{BaseService, ServiceOutcome}
@@ -31,8 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateService @Inject() (connector: CreateConnector) extends BaseService {
 
-  def createDeductions(
-      request: CreateRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
+  def createDeductions(request: CreateRequestData)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[CreateResponseModel]] = {
 
     connector.create(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }

@@ -120,7 +120,7 @@ trait JsonErrorValidators {
     }
   }
 
-  def testOptionalFields[A](json: JsValue)(property: String)(implicit rds: Reads[A]): Unit = {
+  def testOptionalFields[A](json: JsValue)(property: String)(using rds: Reads[A]): Unit = {
     s"the JSON is missing the optional property $property" should {
 
       val jsonWithoutProperty = json.as[JsObject].-(property)
@@ -136,7 +136,7 @@ trait JsonErrorValidators {
     }
   }
 
-  def testPropertyType[T](json: JsValue)(path: String, replacement: JsValue, expectedError: String)(implicit rds: Reads[T]): Unit = {
+  def testPropertyType[T](json: JsValue)(path: String, replacement: JsValue, expectedError: String)(using rds: Reads[T]): Unit = {
 
     val jsPath = jsPathFrom(path)
 

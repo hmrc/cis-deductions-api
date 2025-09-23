@@ -119,6 +119,17 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with J
       }
     }
 
+    "an instance is created" must {
+      "delegate to the companion object resolver and apply" in {
+        val json = Json.parse("""{ "bar": {"field1" : "field one", "field2" : "field two" }}""")
+
+        val instance = ResolveNonEmptyJsonObject[Foo]
+
+        instance.resolver(json) shouldBe Valid(Foo(bar = Bar("field one", "field two")))
+        instance(json) shouldBe Valid(Foo(bar = Bar("field one", "field two")))
+      }
+    }
+
     "the strict resolver is used" must {
       val resolver = ResolveNonEmptyJsonObject.strictResolver[Foo]
 

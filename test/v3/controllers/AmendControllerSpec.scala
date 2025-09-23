@@ -26,7 +26,7 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import v3.fixtures.AmendRequestFixtures._
+import v3.fixtures.AmendRequestFixtures.*
 import v3.controllers.validators.MockedAmendValidatorFactory
 import v3.mocks.services.MockAmendService
 import v3.models.domain.SubmissionId

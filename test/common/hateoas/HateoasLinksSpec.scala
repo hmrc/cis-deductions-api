@@ -18,7 +18,7 @@ package common.hateoas
 
 import shared.config.MockSharedAppConfig
 import shared.hateoas.Link
-import shared.hateoas.Method._
+import shared.hateoas.Method.*
 import shared.models.domain.TaxYear
 import shared.utils.UnitSpec
 

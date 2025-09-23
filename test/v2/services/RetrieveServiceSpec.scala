@@ -21,11 +21,11 @@ import models.errors.RuleSourceInvalidError
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.fixtures.RetrieveModels._
+import v2.fixtures.RetrieveModels.*
 import v2.mocks.connectors.MockRetrieveConnector
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
@@ -48,11 +48,11 @@ class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig with MockRet
   val tysRequest: RetrieveRequestData                = RetrieveRequestData(nino, tysTaxYear, source)
   val response: RetrieveResponseModel[CisDeductions] = retrieveCisDeductionsModel
 
-  implicit val correlationId: String = "X-123"
+  given correlationId: String = "X-123"
 
   trait Test {
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("controller", "retrievecis")
+    given HeaderCarrier      = HeaderCarrier()
+    given EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
     val service = new RetrieveService(mockRetrieveConnector, mockSharedAppConfig)
   }

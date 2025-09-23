@@ -19,7 +19,7 @@ package v3.controllers
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
-import shared.controllers._
+import shared.controllers.*
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -35,19 +35,19 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
                                  service: AmendService,
                                  auditService: AuditService,
                                  cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                 val idGenerator: IdGenerator)(using ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "amend"
 
-  implicit val endpointLogContext: EndpointLogContext =
+  given endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "AmendController",
       endpointName = "amendEndpoint"
     )
 
   def amend(nino: String, submissionId: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-    implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+    given ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
     val validator = validatorFactory.validator(nino, submissionId, request.body)
     val requestHandler = RequestHandler
