@@ -37,7 +37,7 @@ class DeleteValidatorFactory {
           ResolveNino(nino),
           ResolveSubmissionId(submissionId),
           ResolveTaxYear(taxYear)
-        ).mapN(DeleteRequestData)
+        ).mapN(DeleteRequestData.apply)
 
     }
 

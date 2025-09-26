@@ -18,13 +18,12 @@ import sbt.*
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 import uk.gov.hmrc.DefaultBuildSettings
 
-ThisBuild / scalaVersion := "3.4.3"
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 0
 ThisBuild / scalacOptions ++= Seq(
   "-Werror",
   "-Wconf:msg=Flag.*repeatedly:s"
 )
-ThisBuild / scalacOptions += "-nowarn" // Added help suppress warnings in migration. Must be removed when changes shown are complete
 ThisBuild / scalafmtOnCompile := true
 
 val appName = "cis-deductions-api"

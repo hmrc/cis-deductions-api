@@ -47,13 +47,14 @@ object DeductionsValidator extends ResolverSupport {
   }
 
   private val validatePeriodDetails =
-    resolveValid[PeriodDetails] thenValidate combinedValidator(
-      validateAmount(RuleDeductionAmountError).contramap(_.deductionAmount),
-      validateMaybeAmount(RuleCostOfMaterialsError).contramap(_.costOfMaterials),
-      validateMaybeAmount(RuleGrossAmountError).contramap(_.grossAmountPaid),
-      validateIsoDate(DeductionToDateFormatError).contramap(_.deductionToDate),
-      validateIsoDate(DeductionFromDateFormatError).contramap(_.deductionFromDate)
-    )
+    resolveValid[PeriodDetails].thenValidate(
+      combinedValidator(
+        validateAmount(RuleDeductionAmountError).contramap(_.deductionAmount),
+        validateMaybeAmount(RuleCostOfMaterialsError).contramap(_.costOfMaterials),
+        validateMaybeAmount(RuleGrossAmountError).contramap(_.grossAmountPaid),
+        validateIsoDate(DeductionToDateFormatError).contramap(_.deductionToDate),
+        validateIsoDate(DeductionFromDateFormatError).contramap(_.deductionFromDate)
+      ))
 
   private def validateMaybeAmount(error: => MtdError): Validator[Option[BigDecimal]] = validateAmount(error).validateOptionally
 

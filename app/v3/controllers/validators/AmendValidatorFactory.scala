@@ -47,7 +47,7 @@ class AmendValidatorFactory {
 
         val resolveTaxYearFromIsoDate = ResolveIsoDate(DeductionToDateFormatError).resolver.map(TaxYear.containing)
 
-        resolveToDateFromPeriodDetails thenResolve resolveTaxYearFromIsoDate
+        resolveToDateFromPeriodDetails.thenResolve(resolveTaxYearFromIsoDate)
       }
 
       def validate: Validated[Seq[MtdError], AmendRequestData] =

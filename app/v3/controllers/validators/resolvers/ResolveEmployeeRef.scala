@@ -27,7 +27,7 @@ object ResolveEmployeeRef extends ResolverSupport {
   private val empRefFormat = "[0-9]{3}/[^ ]{0,9}".r
 
   val resolver: Resolver[String, EmployeeRef] =
-    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef)
+    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef.apply)
 
   def apply(value: String): Validated[Seq[MtdError], EmployeeRef] = resolver(value)
 

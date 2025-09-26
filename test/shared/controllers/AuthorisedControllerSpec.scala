@@ -21,7 +21,7 @@ import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Result}
 import shared.config.MockSharedAppConfig
 import shared.models.auth.UserDetails
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate

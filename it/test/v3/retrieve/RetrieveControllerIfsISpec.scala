@@ -113,7 +113,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
     }
 
@@ -164,7 +164,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(args => serviceErrorTest.tupled(args))
 
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
@@ -174,7 +174,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
+      extraTysErrors.foreach(args => tysServiceErrorTest.tupled(args))
     }
   }
 

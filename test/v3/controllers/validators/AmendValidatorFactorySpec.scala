@@ -21,7 +21,7 @@ import play.api.libs.json.JsValue
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.*
 import shared.utils.UnitSpec
-import v3.fixtures.AmendRequestFixtures._
+import v3.fixtures.AmendRequestFixtures.*
 import v3.models.domain.SubmissionId
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.amend.AmendRequestData

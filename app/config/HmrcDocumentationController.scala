@@ -17,14 +17,13 @@
 package config
 
 import controllers.Assets
-import play.api.http.HttpErrorHandler
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 /* TODO: This file exists as a placeholder for uk.gov.hmrc.api.controllers.DocumentationController
     until the play-hmrc-api library gets upgraded to support Play 27*/
 
-class HmrcDocumentationController(cc: ControllerComponents, assets: Assets, errorHandler: HttpErrorHandler) extends BackendController(cc) {
+class HmrcDocumentationController(cc: ControllerComponents, assets: Assets) extends BackendController(cc) {
 
   def documentation(version: String, endpointName: String): Action[AnyContent] =
     assets.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")

@@ -75,7 +75,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
     }
 
@@ -108,7 +108,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      downstreamErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
+      downstreamErrors.foreach(args => tysServiceErrorTest.tupled(args))
     }
   }
 

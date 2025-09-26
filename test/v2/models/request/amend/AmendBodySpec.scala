@@ -16,7 +16,7 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json.{JsError, JsObject, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import shared.utils.UnitSpec
 import v2.fixtures.AmendRequestFixtures.*
 

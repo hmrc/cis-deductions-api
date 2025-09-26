@@ -39,7 +39,7 @@ class RetrieveValidatorFactory {
           ResolveNino(nino),
           ResolveTaxYear(taxYear),
           ResolveSource(source)
-        ).mapN(RetrieveRequestData)
+        ).mapN(RetrieveRequestData.apply)
 
     }
   }

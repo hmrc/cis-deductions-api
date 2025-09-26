@@ -54,7 +54,7 @@ class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig with MockRet
     given HeaderCarrier      = HeaderCarrier()
     given EndpointLogContext = EndpointLogContext("controller", "retrievecis")
 
-    val service = new RetrieveService(mockRetrieveConnector, mockSharedAppConfig)
+    val service = new RetrieveService(mockRetrieveConnector)
   }
 
   "RetrieveDeductions" should {
@@ -97,7 +97,7 @@ class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig with MockRet
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)
       )
-      errors.foreach(args => (serviceError _).tupled(args))
+      errors.foreach(args => serviceError.tupled(args))
 
       val extraTysErrors = List(
         ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
@@ -105,7 +105,7 @@ class RetrieveServiceSpec extends UnitSpec with MockSharedAppConfig with MockRet
         ("INVALID_END_DATE", InternalError),
         ("TAX_YEAR_NOT_ALIGNED", InternalError)
       )
-      extraTysErrors.foreach(args => (tysServiceError _).tupled(args))
+      extraTysErrors.foreach(args => tysServiceError.tupled(args))
     }
   }
 

@@ -16,9 +16,9 @@
 
 package shared.utils
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import shared.utils.NestedJsonReads._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
+import shared.utils.NestedJsonReads.*
 
 class NestedJsonReadsSpec extends UnitSpec {
 
@@ -79,7 +79,7 @@ class NestedJsonReadsSpec extends UnitSpec {
   "Valid Json" should {
 
     "return JsSuccess" in {
-      firstOutput.validate[Test] shouldBe a[JsSuccess[_]]
+      firstOutput.validate[Test] shouldBe a[JsSuccess[?]]
     }
   }
 
@@ -118,7 +118,7 @@ class NestedJsonReadsSpec extends UnitSpec {
 
   "Empty path" should {
     "return a None " in {
-      fourthOutput.validate[Test] shouldBe a[JsSuccess[_]]
+      fourthOutput.validate[Test] shouldBe a[JsSuccess[?]]
     }
   }
 

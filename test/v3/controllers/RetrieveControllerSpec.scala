@@ -29,7 +29,7 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v3.controllers.validators.MockedRetrieveValidatorFactory
 import v3.fixtures.RetrieveJson.*
-import v3.fixtures.RetrieveModels._
+import v3.fixtures.RetrieveModels.*
 import v3.mocks.services.MockRetrieveService
 import v3.models.request.retrieve.RetrieveRequestData
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -26,7 +26,7 @@ object JsonWritesUtilSpec {
 }
 
 class JsonWritesUtilSpec extends UnitSpec with JsonWritesUtil {
-  import JsonWritesUtilSpec._
+  import JsonWritesUtilSpec.*
 
   "OWrites produced from writesFrom" when {
     given OWrites[D] = writesFrom {

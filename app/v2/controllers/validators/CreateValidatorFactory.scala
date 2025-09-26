@@ -51,7 +51,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(CreateRequestData) andThen validateBusinessRules
+        ).mapN(CreateRequestData.apply) andThen validateBusinessRules
 
       private def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] = {
         import parsed.body.periodData
@@ -68,7 +68,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
           satisfiesMin(appConfig.minTaxYearCisDeductions, RuleTaxYearNotSupportedError)
             .contramap((dateRange: DateRange) => TaxYear.containing(dateRange.endDate))
 
-        resolveDateRange thenValidate taxYearOfDateRangeIsSupported thenValidate checkDateRangeIsAFullTaxYear
+        resolveDateRange.thenValidate(taxYearOfDateRangeIsSupported).thenValidate(checkDateRangeIsAFullTaxYear)
       }
 
     }

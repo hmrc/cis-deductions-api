@@ -24,7 +24,7 @@ import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.*
 import shared.utils.UnitSpec
-import v3.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.create
 import v3.models.request.create.CreateRequestData

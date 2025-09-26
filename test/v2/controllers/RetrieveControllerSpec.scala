@@ -34,7 +34,7 @@ import v2.fixtures.RetrieveModels.*
 import v2.mocks.services.MockRetrieveService
 import v2.models.request.retrieve.RetrieveRequestData
 import v2.models.response.retrieve.RetrieveResponseModel.*
-import v2.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
+import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

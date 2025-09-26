@@ -110,7 +110,7 @@ class CreateServiceSpec extends UnitSpec with MockCreateConnector {
           ("DUPLICATE_MONTH", RuleDuplicatePeriodError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

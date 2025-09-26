@@ -93,7 +93,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", "2023"), BAD_REQUEST, TaxYearFormatError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -125,7 +125,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }
