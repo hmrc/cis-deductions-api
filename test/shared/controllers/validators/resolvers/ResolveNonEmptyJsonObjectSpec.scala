@@ -38,10 +38,6 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with J
     )
   }
 
-  given EmptinessChecker[Bar] = EmptinessChecker.derived
-
-  given SchemaStructureSource[Bar] = SchemaStructureSource.derived
-
   case class Foo(bar: Bar, bars: Option[Seq[Bar]] = None, baz: Option[Baz] = None, qux: Option[Qux] = None)
 
   given Reads[Bar] = Json.reads
