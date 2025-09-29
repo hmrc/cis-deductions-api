@@ -66,7 +66,7 @@ Done:    The BSAS shared code has differences which I've copied to here.
 
          Next steps:
            1. Run 'coverage' AKA:
-                sbt clean coverage test it:test coverageReport
+                sbt clean coverage test it/test coverageReport
            2. If all good, create and merge a PR with just this shared update and the commit message:
                 MTDSA-????? Shared code update
            3. Carry on!
