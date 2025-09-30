@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
 
 package models.domain
 
-import play.api.libs.json
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait CisSource
+enum CisSource {
+  case all, contractor, customer
+}
 
 object CisSource {
-  case object `all`        extends CisSource
-  case object `contractor` extends CisSource
-  case object `customer`   extends CisSource
 
-  implicit val format: json.Format[CisSource] = Enums.format[CisSource]
+  given Format[CisSource] = Enums.format(values)
 
-  val parser: PartialFunction[String, CisSource] = Enums.parser[CisSource]
+  val parser: PartialFunction[String, CisSource] = Enums.parser(values)
 }

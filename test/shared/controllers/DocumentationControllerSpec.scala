@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTyp
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import shared.config.rewriters._
+import shared.config.rewriters.*
 import shared.config.{SharedAppConfig, MockSharedAppConfig, RealAppConfig}
-import shared.definition._
+import shared.definition.*
 import shared.routing.{Version, Versions}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -208,7 +208,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockSharedAppC
       new ApiVersionTitleRewriter(mockSharedAppConfig),
       new EndpointSummaryRewriter(mockSharedAppConfig),
       new EndpointSummaryGroupRewriter(mockSharedAppConfig),
-      new OasFeatureRewriter()(mockSharedAppConfig)
+      new OasFeatureRewriter(using mockSharedAppConfig)
     )
 
     private val assets       = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])

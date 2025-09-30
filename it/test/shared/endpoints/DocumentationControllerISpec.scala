@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import play.api.libs.ws.WSResponse
 import shared.config.SharedAppConfig
 import shared.routing.{Version, Versions}
 import shared.support.IntegrationBaseSpec
-
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {

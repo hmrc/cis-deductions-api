@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json, OWrites}
 case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
 
 object AuditResponse {
-  implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
+  given OWrites[AuditResponse] = Json.writes[AuditResponse]
 
   def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
     response match {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import cats.data.Validated.{Invalid, Valid}
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import shared.config.Deprecation.Deprecated
-import shared.routing._
+import shared.routing.*
 import shared.utils.UnitSpec
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import shared.models.errors.{
 import shared.models.outcomes.ResponseWrapper
 import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.fixtures.AmendRequestFixtures._
+import v3.fixtures.AmendRequestFixtures.*
 import v3.mocks.connectors.MockAmendConnector
 import v3.models.domain.SubmissionId
 import v3.models.request.amend.AmendRequestData
@@ -93,7 +93,7 @@ class AmendServiceSpec extends UnitSpec with MockAmendConnector {
         "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
     }
   }
 
@@ -103,12 +103,12 @@ class AmendServiceSpec extends UnitSpec with MockAmendConnector {
     private val submissionId = SubmissionId("S4636A77V5KB8625U")
     private val taxYear      = TaxYear.fromIso("2019-07-05")
 
-    implicit val correlationId: String = "X-123"
+    given correlationId: String = "X-123"
 
     val requestData: AmendRequestData = AmendRequestData(nino, submissionId, taxYear, amendRequestObj)
 
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+    given HeaderCarrier      = HeaderCarrier()
+    given EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendService(connector = mockAmendConnector)
 

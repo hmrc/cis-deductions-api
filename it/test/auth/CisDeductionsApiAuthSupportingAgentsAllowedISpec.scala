@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthSupportingAgentsAllowedISpec
 import v2.fixtures.CreateRequestFixtures.{createDeductionResponseBodyTys, requestBodyJsonTys}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class CisDeductionsApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 

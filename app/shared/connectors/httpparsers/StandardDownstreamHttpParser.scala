@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package shared.connectors.httpparsers
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Reads
 import shared.connectors.DownstreamOutcome
 import shared.models.errors.{InternalError, OutboundError}
@@ -28,13 +28,13 @@ object StandardDownstreamHttpParser extends HttpParser {
   case class SuccessCode(status: Int) extends AnyVal
 
   // Return Right[IfsResponse[Unit]] as success response has no body - no need to assign it a value
-  implicit def readsEmpty(implicit successCode: SuccessCode = SuccessCode(NO_CONTENT)): HttpReads[DownstreamOutcome[Unit]] =
+  implicit def readsEmpty(using successCode: SuccessCode = SuccessCode(NO_CONTENT)): HttpReads[DownstreamOutcome[Unit]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(url, response) { correlationId =>
         Right(ResponseWrapper(correlationId, ()))
       }
 
-  implicit def reads[A: Reads](implicit successCode: SuccessCode = SuccessCode(OK)): HttpReads[DownstreamOutcome[A]] =
+  implicit def reads[A: Reads](using successCode: SuccessCode = SuccessCode(OK)): HttpReads[DownstreamOutcome[A]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(url, response) { correlationId =>
         response.validateJson[A] match {
@@ -43,7 +43,7 @@ object StandardDownstreamHttpParser extends HttpParser {
         }
       }
 
-  private def doRead[A](url: String, response: HttpResponse)(successOutcomeFactory: String => DownstreamOutcome[A])(implicit
+  private def doRead[A](url: String, response: HttpResponse)(successOutcomeFactory: String => DownstreamOutcome[A])(using
       successCode: SuccessCode): DownstreamOutcome[A] = {
 
     val correlationId = retrieveCorrelationId(response)

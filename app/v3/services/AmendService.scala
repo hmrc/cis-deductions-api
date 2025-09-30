@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package v3.services
 
 import cats.implicits.toBifunctorOps
-import models.errors._
+import models.errors.*
 import shared.controllers.RequestContext
 import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import shared.services.{BaseService, ServiceOutcome}
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendService @Inject() (connector: AmendConnector) extends BaseService {
 
-  def amendDeductions(request: AmendRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def amendDeductions(request: AmendRequestData)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendDeduction(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
 

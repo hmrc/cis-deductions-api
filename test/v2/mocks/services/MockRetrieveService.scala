@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ trait MockRetrieveService extends TestSuite with MockFactory {
     def retrieve(
         requestData: RetrieveRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveResponseModel[CisDeductions]]]]] = {
       (mockRetrieveService
-        .retrieveDeductions(_: RetrieveRequestData)(_: RequestContext, _: ExecutionContext))
+        .retrieveDeductions(_: RetrieveRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

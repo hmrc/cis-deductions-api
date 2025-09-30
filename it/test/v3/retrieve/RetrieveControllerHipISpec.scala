@@ -17,13 +17,13 @@
 package v3.retrieve
 
 import models.errors.RuleSourceInvalidError
-import play.api.http.HeaderNames._
-import play.api.http.Status._
+import play.api.http.HeaderNames.*
+import play.api.http.Status.*
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.models.errors._
-import shared.services._
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.RetrieveJson._
+import v3.fixtures.RetrieveJson.*
 
 class RetrieveControllerHipISpec extends IntegrationBaseSpec {
 
@@ -75,7 +75,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
     }
 
@@ -108,7 +108,7 @@ class RetrieveControllerHipISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      downstreamErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
+      downstreamErrors.foreach(args => tysServiceErrorTest.tupled(args))
     }
   }
 

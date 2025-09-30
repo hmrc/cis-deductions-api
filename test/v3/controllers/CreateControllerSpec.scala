@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v3.controllers.validators.MockedCreateValidatorFactory
 import v3.fixtures.AmendRequestFixtures.requestJson
-import v3.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures.*
 import v3.mocks.services.MockCreateService
 import v3.models.request.create
 import v3.models.response.create.CreateResponseModel
@@ -91,7 +91,7 @@ class CreateControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateController(
+    val controller: CreateController = new CreateController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedCreateValidatorFactory,

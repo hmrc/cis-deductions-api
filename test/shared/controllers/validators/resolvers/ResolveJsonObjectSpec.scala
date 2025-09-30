@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class ResolveJsonObjectSpec extends UnitSpec with ResolverSupport with JsonError
 
   case class Foo(field1: String, field2: String)
 
-  implicit val fooReads: Reads[Foo] = Json.reads
+  given Reads[Foo] = Json.reads
 
   private def jsonObjectResolver(resolver: Resolver[JsValue, Foo]): Unit = {
     "return the parsed object" when {

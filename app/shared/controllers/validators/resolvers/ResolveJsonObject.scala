@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.MtdError
 import shared.utils.Logging
 
-class ResolveJsonObject[T](implicit val reads: Reads[T]) extends ResolverSupport with Logging {
+class ResolveJsonObject[T](using val reads: Reads[T]) extends ResolverSupport with Logging {
 
   val resolver: Resolver[JsValue, T] = ResolveJsonObject.resolver
 
@@ -36,6 +36,6 @@ object ResolveJsonObject extends ResolverSupport {
   /** Gets a resolver that also validates for unexpected JSON fields
     */
   def strictResolver[A: Reads: SchemaStructureSource]: Resolver[JsValue, A] =
-    (ResolveJsonObjectInternal.resolver thenValidate UnexpectedJsonFieldsValidator.validator).map(_._2)
+    (ResolveJsonObjectInternal.resolver.thenValidate(UnexpectedJsonFieldsValidator.validator)).map(_._2)
 
 }

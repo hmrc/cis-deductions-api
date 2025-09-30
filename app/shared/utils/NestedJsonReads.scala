@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package shared.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
@@ -27,7 +27,7 @@ trait NestedJsonReads {
 
   implicit class JsPathOps(jsPath: JsPath) {
 
-    def readNestedNullable[T](implicit rds: Reads[T]): Reads[Option[T]] = Reads[Option[T]] { json =>
+    def readNestedNullable[T](using rds: Reads[T]): Reads[Option[T]] = Reads[Option[T]] { json =>
       applyTillLastNested(json).fold(
         jsErr => jsErr,
         jsRes =>

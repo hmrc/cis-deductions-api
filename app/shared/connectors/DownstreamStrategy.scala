@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ trait DownstreamStrategy {
   /** Gets the contract headers that the services require. This includes any Authorization headers, and returns a future to allow for any required
     * non-blocking retrieval of tokens e.g. from an OAuth service.
     */
-  def contractHeaders(correlationId: String)(implicit ec: ExecutionContext): Future[Seq[(String, String)]]
+  def contractHeaders(correlationId: String)(using ec: ExecutionContext): Future[Seq[(String, String)]]
 
   /** Gets the headers in the MTD request that are to be passed through to the downstream service. This includes request tracking headers and
     * gov-test-scenario headers for when the downstream host is a stub.
@@ -50,7 +50,7 @@ object DownstreamStrategy {
   def standardStrategy(downstreamConfig: DownstreamConfig): DownstreamStrategy = new DownstreamStrategy {
     override def baseUrl: String = downstreamConfig.baseUrl
 
-    override def contractHeaders(correlationId: String)(implicit ec: ExecutionContext): Future[Seq[(String, String)]] = {
+    override def contractHeaders(correlationId: String)(using ec: ExecutionContext): Future[Seq[(String, String)]] = {
       Future.successful(
         List(
           "Authorization" -> s"Bearer ${downstreamConfig.token}",
@@ -69,7 +69,7 @@ object DownstreamStrategy {
   def basicAuthStrategy(downstreamConfig: BasicAuthDownstreamConfig): DownstreamStrategy = new DownstreamStrategy {
     override def baseUrl: String = downstreamConfig.baseUrl
 
-    override def contractHeaders(correlationId: String)(implicit ec: ExecutionContext): Future[Seq[(String, String)]] = {
+    override def contractHeaders(correlationId: String)(using ec: ExecutionContext): Future[Seq[(String, String)]] = {
       val encodedToken = Base64.getEncoder.encodeToString(s"${downstreamConfig.clientId}:${downstreamConfig.clientSecret}".getBytes(Charsets.UTF_8))
 
       Future.successful(
@@ -89,7 +89,7 @@ object DownstreamStrategy {
     * @param offStrategy
     *   the strategy to use when the switch is disabled
     */
-  def switchedStrategy(onStrategy: => DownstreamStrategy, offStrategy: => DownstreamStrategy, switchName: String)(implicit
+  def switchedStrategy(onStrategy: => DownstreamStrategy, offStrategy: => DownstreamStrategy, switchName: String)(using
       appConfig: SharedAppConfig): DownstreamStrategy =
     if (ConfigFeatureSwitches().isEnabled(switchName)) onStrategy else offStrategy
 

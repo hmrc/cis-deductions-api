@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 package v3.controllers.validators
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import play.api.libs.json.{JsString, JsValue}
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
-import shared.models.errors._
-import v3.controllers.validators.DeductionsValidator._
+import shared.models.errors.*
+import v3.controllers.validators.DeductionsValidator.*
 import v3.controllers.validators.resolvers.ResolveSubmissionId
 import v3.models.errors.CisDeductionsApiCommonErrors.DeductionToDateFormatError
 import v3.models.request.amend.{AmendBody, AmendRequestData}
@@ -47,7 +47,7 @@ class AmendValidatorFactory {
 
         val resolveTaxYearFromIsoDate = ResolveIsoDate(DeductionToDateFormatError).resolver.map(TaxYear.containing)
 
-        resolveToDateFromPeriodDetails thenResolve resolveTaxYearFromIsoDate
+        resolveToDateFromPeriodDetails.thenResolve(resolveTaxYearFromIsoDate)
       }
 
       def validate: Validated[Seq[MtdError], AmendRequestData] =

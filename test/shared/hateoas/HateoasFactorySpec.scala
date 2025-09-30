@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ class HateoasFactorySpec extends UnitSpec with MockSharedAppConfig {
   private case class Response(foo: String)
 
   private case class ListResponse[A](items: Seq[A])
-
-  private case class NestedListResponse[A](field: String, items: Seq[A])
 
   private case class Data1(id: String) extends HateoasData
 

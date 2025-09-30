@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@ package shared.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
+import cats.implicits.*
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json, Reads}
 import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 
 class ValidatorSpec extends UnitSpec with MockFactory {
 
-  private implicit val correlationId: String = "1234"
+  private given correlationId: String = "1234"
 
   private val validNino    = Nino("AA123456A")
   private val validTaxYear = TaxYear.fromMtd("2023-24")
@@ -46,7 +46,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
   case class TestParsedRequest(nino: Nino, taxYear: TaxYear, body: TestParsedRequestBody)
   case class TestParsedRequestBody(value1: String, value2: Boolean)
-  implicit val testParsedRequestBodyReads: Reads[TestParsedRequestBody] = Json.reads[TestParsedRequestBody]
+  given Reads[TestParsedRequestBody] = Json.reads[TestParsedRequestBody]
 
   /** The main/outermost validator.
     */
@@ -60,11 +60,11 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         ResolveNino(nino),
         ResolveTaxYear(taxYear),
         jsonResolver(jsonBody)
-      ).mapN(TestParsedRequest) andThen TestRulesValidator.validateBusinessRules
+      ).mapN(TestParsedRequest.apply) andThen TestRulesValidator.validateBusinessRules
 
     override def invalid(error: MtdError): Invalid[Seq[MtdError]] = super.invalid(error)
 
-    override def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] = super.combine(results: _*)
+    override def combine(results: Validated[Seq[MtdError], ?]*): Validated[Seq[MtdError], Unit] = super.combine(results*)
   }
 
   /** Perform additional business-rules validation on the correctly parsed request.
@@ -161,6 +161,22 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val result    = validator.validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/value2")))
       }
+    }
+  }
+
+  "returningErrors()" should {
+    val errors: Seq[MtdError] = List(NinoFormatError, TaxYearFormatError)
+
+    "return a Validator that always returns those errors on validate" in {
+      val validator: Validator[Nothing] = Validator.returningErrors(errors)
+
+      validator.validate shouldBe Invalid(errors)
+    }
+
+    "return a Validator that returns the errors wrapped in validateAndWrapResult" in {
+      val validator: Validator[Nothing] = Validator.returningErrors(errors)
+
+      validator.validateAndWrapResult() shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(errors)))
     }
   }
 

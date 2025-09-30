@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ package v2.services
 
 import cats.implicits.toBifunctorOps
 import models.errors.RuleSourceInvalidError
-import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v2.connectors.RetrieveConnector
 import v2.models.request.retrieve.RetrieveRequestData
@@ -30,11 +29,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveService @Inject() (connector: RetrieveConnector, appConfig: SharedAppConfig) extends BaseService {
+class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseService {
 
-  def retrieveDeductions(request: RetrieveRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
+  def retrieveDeductions(
+      request: RetrieveRequestData)(using ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[RetrieveResponseModel[CisDeductions]]] = {
 
     val errorMapping = if (request.taxYear.useTaxYearSpecificApi) errorMapTys else errorMap
 

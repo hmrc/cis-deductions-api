@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import play.api.libs.json.JsValue
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
-import v3.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.create
 import v3.models.request.create.CreateRequestData
 
 class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
 
-  private implicit val correlationId: String = "1234"
-  val nino                                   = "AA123456A"
-  val invalidNino                            = "GHFG197854"
+  private given correlationId: String = "1234"
+  val nino                            = "AA123456A"
+  val invalidNino                     = "GHFG197854"
 
   "running validation" should {
     "return no errors" when {

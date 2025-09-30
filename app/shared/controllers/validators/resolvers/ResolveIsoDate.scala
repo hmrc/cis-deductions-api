@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ object ResolveIsoDate extends ResolverSupport {
   }
 
   def withMinMaxCheck(value: String, error: MtdError, minMaxError: MtdError): Validated[Seq[MtdError], LocalDate] = {
-    val resolver = ResolveIsoDate(error).resolver thenValidate validateYearRange(minMaxError)
+    val resolver = ResolveIsoDate(error).resolver.thenValidate(validateYearRange(minMaxError))
     resolver(value)
   }
 

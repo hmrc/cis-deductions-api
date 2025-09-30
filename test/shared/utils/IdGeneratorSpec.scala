@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package shared.utils
 
-import shared.utils.UnitSpec
+class IdGeneratorSpec extends UnitSpec {
 
-import java.time.LocalDate
+  val generator        = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-class DateRangeSpec extends UnitSpec {
-
-  private val startDate = LocalDate.parse("2023-06-01")
-  private val endDate   = LocalDate.parse("2024-05-07")
-
-  "apply(LocalDate,LocalDate)" should {
-    "return a DateRange" in {
-      DateRange(startDate -> endDate) shouldBe DateRange(startDate, endDate)
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
+      }
     }
   }
 

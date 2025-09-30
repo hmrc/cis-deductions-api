@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 package v3.controllers.validators
 
 import cats.data.Validated
-import cats.data.Validated._
-import cats.implicits._
+import cats.data.Validated.*
+import cats.implicits.*
 import config.CisDeductionsApiConfig
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.{DateRange, TaxYear}
-import shared.models.errors._
-import v3.controllers.validators.DeductionsValidator._
+import shared.models.errors.*
+import v3.controllers.validators.DeductionsValidator.*
 import v3.controllers.validators.resolvers.ResolveEmployeeRef
 import v3.models.request.create.{CreateBody, CreateRequestData}
 
@@ -50,7 +50,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(CreateRequestData) andThen validateBusinessRules
+        ).mapN(CreateRequestData.apply) andThen validateBusinessRules
 
       private def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] = {
         import parsed.body.periodData
@@ -67,7 +67,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
           satisfiesMin(appConfig.minTaxYearCisDeductions, RuleTaxYearNotSupportedError)
             .contramap((dateRange: DateRange) => TaxYear.containing(dateRange.endDate))
 
-        resolveDateRange thenValidate taxYearOfDateRangeIsSupported thenValidate checkDateRangeIsAFullTaxYear
+        resolveDateRange.thenValidate(taxYearOfDateRangeIsSupported).thenValidate(checkDateRangeIsAFullTaxYear)
       }
 
     }

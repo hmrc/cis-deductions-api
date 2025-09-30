@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package shared.controllers
 
-import play.api.mvc._
+import play.api.mvc.*
 import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
 import shared.models.auth.UserDetails
 import shared.models.errors.MtdError
@@ -30,7 +30,7 @@ case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends
 
 abstract class AuthorisedController(
     cc: ControllerComponents
-)(implicit appConfig: SharedAppConfig, ec: ExecutionContext)
+)(using appConfig: SharedAppConfig, ec: ExecutionContext)
     extends BackendController(cc) {
 
   val authService: EnrolmentsAuthService
@@ -55,7 +55,7 @@ abstract class AuthorisedController(
         mtdId: String,
         request: Request[A],
         block: UserRequest[A] => Future[Result]
-    )(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+    )(using headerCarrier: HeaderCarrier): Future[Result] = {
 
       authService.authorised(mtdId, endpointAllowsSupportingAgents).flatMap[Result] {
         case Right(userDetails) =>
@@ -67,7 +67,7 @@ abstract class AuthorisedController(
 
     override def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[Result]): Future[Result] = {
 
-      implicit val headerCarrier: HeaderCarrier = hc(request)
+      given headerCarrier: HeaderCarrier = hc(request)
 
       lookupService.lookup(nino).flatMap[Result] {
         case Right(mtdId) =>

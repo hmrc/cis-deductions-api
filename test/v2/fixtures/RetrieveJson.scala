@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -274,9 +274,11 @@ object RetrieveJson {
        |    ],
        |    "links": [
        |                {
-       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c${if (isTys)
-        s"?taxYear=$taxYearParam"
-      else ""}",
+       |                    "href": "/individuals/deductions/cis/AA123456A/amendments/4557ecb5-fd32-48cc-81f5-e6acd1099f3c${
+        if (isTys)
+          s"?taxYear=$taxYearParam"
+        else ""
+      }",
        |                    "method": "DELETE",
        |                    "rel": "delete-cis-deductions-for-subcontractor"
        |                },

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v3.services
 
-import models.errors._
+import models.errors.*
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
 import shared.models.errors.{
@@ -43,9 +43,9 @@ import scala.concurrent.Future
 
 class CreateServiceSpec extends UnitSpec with MockCreateConnector {
 
-  private val nino                   = "AA123456A"
-  implicit val correlationId: String = "X-123"
-  private val submissionId           = "123456789"
+  private val nino            = "AA123456A"
+  given correlationId: String = "X-123"
+  private val submissionId    = "123456789"
 
   private val requestBody =
     CreateBody(fromDate = "2020-05-06", toDate = "2020-06-05", "", "", Seq(PeriodDetails(0.00, "", "", Some(0.00), Some(0.00))))
@@ -53,8 +53,8 @@ class CreateServiceSpec extends UnitSpec with MockCreateConnector {
   private val requestData = create.CreateRequestData(Nino(nino), requestBody)
 
   trait Test {
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+    given HeaderCarrier      = HeaderCarrier()
+    given EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new CreateService(
       connector = mockCreateConnector
@@ -111,7 +111,7 @@ class CreateServiceSpec extends UnitSpec with MockCreateConnector {
           ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 
 import java.time.{Clock, LocalDate, ZoneOffset}
@@ -269,7 +269,7 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
     val error = MtdError("SOME_ERROR", "Message", 400)
 
     def resolver(localDate: LocalDate): Resolver[String, TaxYear] = {
-      implicit val clock: Clock = Clock.fixed(localDate.atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
+      given Clock = Clock.fixed(localDate.atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
       ResolveIncompleteTaxYear(error).resolver
     }
 
@@ -288,7 +288,7 @@ class ResolveTaxYearSpec extends UnitSpec with ResolverSupport {
         .toInstant
       val clock: Clock = Clock.fixed(date, ZoneOffset.UTC)
 
-      val result = ResolveIncompleteTaxYear()(clock)(taxYear)
+      val result = ResolveIncompleteTaxYear()(using clock)(taxYear)
       result shouldBe Valid(parsedTaxYear)
     }
 

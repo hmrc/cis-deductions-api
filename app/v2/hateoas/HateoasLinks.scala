@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package v2.hateoas
 
-import common.hateoas.RelType._
+import common.hateoas.RelType.*
 import shared.config.SharedAppConfig
 import shared.hateoas.Link
-import shared.hateoas.Method._
+import shared.hateoas.Method.*
 import shared.models.domain.TaxYear
 
 trait HateoasLinks {
 
-  private def withTaxYearParameter(appConfig: SharedAppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
+  private def withTaxYearParameter(uri: String, maybeTaxYear: Option[TaxYear]): String = {
 
     maybeTaxYear match {
       case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
@@ -48,7 +48,7 @@ trait HateoasLinks {
   def deleteCisDeduction(appConfig: SharedAppConfig, nino: String, id: String, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
     val uri = baseUri(appConfig, nino) + s"/amendments/$id"
 
-    Link(href = withTaxYearParameter(appConfig, uri, taxYear), method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
+    Link(href = withTaxYearParameter(uri, taxYear), method = DELETE, rel = if (isSelf) SELF else DELETE_CIS)
   }
 
   // L3

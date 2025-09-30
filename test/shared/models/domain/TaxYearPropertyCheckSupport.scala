@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,18 +38,18 @@ trait TaxYearPropertyCheckSupport extends ShrinkLowPriority {
     arbTaxYear(min.startYear, max.startYear - 1)
 
   def forTaxYearsInRange(min: TaxYear, max: TaxYear)(f: TaxYear => Unit): Unit = {
-    implicit val arbTaxYear: Arbitrary[TaxYear] = arbTaxYearInRange(min, max)
+    given Arbitrary[TaxYear] = arbTaxYearInRange(min, max)
 
-    forAll { taxYear: TaxYear => f(taxYear) }
+    forAll { (taxYear: TaxYear) => f(taxYear) }
   }
 
   def forTaxYearsFrom(min: TaxYear)(f: TaxYear => Unit): Unit =
     forTaxYearsInRange(min, maxAllowed)(f)
 
   def forTaxYearsBefore(maxExclusive: TaxYear)(f: TaxYear => Unit): Unit = {
-    implicit val arbTaxYear: Arbitrary[TaxYear] = arbTaxYearInRangeExclusive(minAllowed, maxExclusive)
+    given Arbitrary[TaxYear] = arbTaxYearInRangeExclusive(minAllowed, maxExclusive)
 
-    forAll { taxYear: TaxYear => f(taxYear) }
+    forAll { (taxYear: TaxYear) => f(taxYear) }
   }
 
   def forPreTysTaxYears(f: TaxYear => Unit): Unit =

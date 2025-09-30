@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package shared.models.domain
 
 import shared.utils.UnitSpec
-
+import shared.models.domain.TaxYear.currentTaxYear
 import java.time.{Clock, LocalDate, ZoneOffset}
 
 class TaxYearRangeSpec extends UnitSpec {
@@ -45,10 +45,18 @@ class TaxYearRangeSpec extends UnitSpec {
 
   "todayMinus(years)" should {
     "return a TaxYearRange from the 'subtracted' tax year to the current tax year" in {
-      implicit val clock: Clock = Clock.fixed(LocalDate.parse("2023-04-01").atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
+      given Clock = Clock.fixed(LocalDate.parse("2023-04-01").atStartOfDay(ZoneOffset.UTC).toInstant, ZoneOffset.UTC)
 
       TaxYearRange.todayMinus(years = 4) shouldBe TaxYearRange(TaxYear.fromMtd("2018-19"), TaxYear.fromMtd("2022-23"))
     }
+  }
+
+  "return a TaxYearRange using the default systemUTC clock when no implicit clock is provided" in {
+    val expectedRange: TaxYearRange = TaxYearRange(TaxYear.fromDownstreamInt(currentTaxYear.year - 1), currentTaxYear)
+
+    val actualRange: TaxYearRange = TaxYearRange.todayMinus(1)
+
+    actualRange shouldBe expectedRange
   }
 
 }

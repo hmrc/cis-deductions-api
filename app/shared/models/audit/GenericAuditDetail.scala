@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package shared.models.audit
 
 import shared.controllers.{AuditHandler, RequestContext}
 import shared.models.auth.UserDetails
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, JsValue, OWrites}
 import shared.routing.Version
 
@@ -32,7 +32,7 @@ case class GenericAuditDetail(userType: String,
 
 object GenericAuditDetail {
 
-  implicit val writes: OWrites[GenericAuditDetail] = (
+  given OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
       (JsPath \ "versionNumber").write[String] and
@@ -40,12 +40,12 @@ object GenericAuditDetail {
       (JsPath \ "request").writeNullable[JsValue] and
       (JsPath \ "X-CorrelationId").write[String] and
       (JsPath \ "response").write[AuditResponse]
-  )(unlift(GenericAuditDetail.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
   def auditDetailCreator(apiVersion: Version, params: Map[String, String]): AuditHandler.AuditDetailCreator[GenericAuditDetail] =
     new AuditHandler.AuditDetailCreator[GenericAuditDetail] {
 
-      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit
+      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(using
           ctx: RequestContext): GenericAuditDetail =
         GenericAuditDetail(
           userDetails = userDetails,

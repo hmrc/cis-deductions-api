@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ trait MockCreateConnector extends TestSuite with MockFactory {
 
     def createCisDeduction(requestData: CreateRequestData): CallHandler[Future[DownstreamOutcome[CreateResponseModel]]] = {
       (mockCreateConnector
-        .create(_: CreateRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .create(_: CreateRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

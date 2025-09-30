@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ trait MockMtdIdLookupService extends TestSuite with MockFactory {
 
     def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
       (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .lookup(_: String)(using _: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
 

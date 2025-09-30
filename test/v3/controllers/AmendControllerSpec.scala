@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import v3.fixtures.AmendRequestFixtures._
+import v3.fixtures.AmendRequestFixtures.*
 import v3.controllers.validators.MockedAmendValidatorFactory
 import v3.mocks.services.MockAmendService
 import v3.models.domain.SubmissionId
@@ -85,7 +85,7 @@ class AmendControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new AmendController(
+    val controller: AmendController = new AmendController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedAmendValidatorFactory,

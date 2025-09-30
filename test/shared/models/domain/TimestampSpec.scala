@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,12 @@ class TimestampSpec extends UnitSpec {
     }
   }
 
+  "Timestamp.toString" should {
+    "return the string value" in {
+      Timestamp("2023-01-20T01:20:30.000Z").toString shouldBe "2023-01-20T01:20:30.000Z"
+    }
+  }
+
   "Timestamp deserialized from a JSON string field" should {
     "parse correctly" when {
 
@@ -96,8 +102,8 @@ class TimestampSpec extends UnitSpec {
   private case class AnyDownstreamResponse(amount: Int, category: String, lastUpdated: Timestamp)
 
   private object AnyDownstreamResponse {
-    implicit val reads: Reads[AnyDownstreamResponse]    = Json.reads[AnyDownstreamResponse]
-    implicit val writes: OWrites[AnyDownstreamResponse] = Json.writes[AnyDownstreamResponse]
+    given Reads[AnyDownstreamResponse]   = Json.reads[AnyDownstreamResponse]
+    given OWrites[AnyDownstreamResponse] = Json.writes[AnyDownstreamResponse]
   }
 
 }

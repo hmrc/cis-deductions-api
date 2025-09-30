@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ object ResolveCalculationId extends ResolverSupport {
   private val calculationIdRegex = """^[0-9]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$""".r
 
   val resolver: Resolver[String, CalculationId] =
-    ResolveStringPattern(calculationIdRegex, CalculationIdFormatError).resolver.map(CalculationId)
+    ResolveStringPattern(calculationIdRegex, CalculationIdFormatError).resolver.map(CalculationId.apply)
 
   def apply(value: String): Validated[Seq[MtdError], CalculationId] = resolver(value)
 

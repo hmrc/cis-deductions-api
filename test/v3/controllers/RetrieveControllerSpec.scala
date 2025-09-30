@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v3.controllers.validators.MockedRetrieveValidatorFactory
-import v3.fixtures.RetrieveJson._
-import v3.fixtures.RetrieveModels._
+import v3.fixtures.RetrieveJson.*
+import v3.fixtures.RetrieveModels.*
 import v3.mocks.services.MockRetrieveService
 import v3.models.request.retrieve.RetrieveRequestData
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -97,7 +97,7 @@ class RetrieveControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new RetrieveController(
+    val controller: RetrieveController = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedRetrieveValidatorFactory,

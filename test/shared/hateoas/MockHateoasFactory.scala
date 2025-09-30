@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,8 @@ trait MockHateoasFactory extends TestSuite with MockFactory {
 
     def wrap[A, D <: HateoasData](a: A, data: D): CallHandler[HateoasWrapper[A]] = {
       (mockHateoasFactory
-        .wrap(_: A, _: D)(_: HateoasLinksFactory[A, D]))
+        .wrap(_: A, _: D)(using _: HateoasLinksFactory[A, D]))
         .expects(a, data, *)
-    }
-
-    def wrapList[A[_]: Functor, I, D <: HateoasData](a: A[I], data: D): CallHandler[HateoasWrapper[A[HateoasWrapper[I]]]] = {
-      (mockHateoasFactory
-        .wrapList(_: A[I], _: D)(_: Functor[A], _: HateoasListLinksFactory[A, I, D]))
-        .expects(a, data, *, *)
     }
 
   }

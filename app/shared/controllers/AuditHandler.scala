@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package shared.controllers
 
-import cats.syntax.either._
+import cats.syntax.either.*
 import play.api.libs.json.{JsValue, Writes}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
@@ -29,7 +29,7 @@ import scala.concurrent.ExecutionContext
 
 trait AuditHandler extends RequestContextImplicits {
 
-  def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+  def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(using
       ctx: RequestContext,
       ec: ExecutionContext): Unit
 
@@ -53,26 +53,8 @@ object AuditHandler {
       responseBodyMap = if (includeResponse) identity else const(None)
     )
 
-  def custom[A: Writes](auditService: AuditService,
-                        auditType: String,
-                        transactionName: String,
-                        auditDetailCreator: AuditDetailCreator[A],
-                        requestBody: Option[JsValue] = None,
-                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler = {
-    // $COVERAGE-OFF$
-    new AuditHandlerImpl[A](
-      auditService = auditService,
-      auditType = auditType,
-      transactionName = transactionName,
-      auditDetailCreator,
-      requestBody = requestBody,
-      responseBodyMap = responseBodyMap
-    )
-    // $COVERAGE-ON$
-  }
-
   trait AuditDetailCreator[A] {
-    def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit ctx: RequestContext): A
+    def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(using ctx: RequestContext): A
   }
 
   private class AuditHandlerImpl[A: Writes](auditService: AuditService,
@@ -83,7 +65,7 @@ object AuditHandler {
                                             responseBodyMap: Option[JsValue] => Option[JsValue])
       extends AuditHandler {
 
-    def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+    def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(using
         ctx: RequestContext,
         ec: ExecutionContext): Unit = {
 

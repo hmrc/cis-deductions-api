@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ case class TaxYearRange(from: TaxYear, to: TaxYear)
 
 object TaxYearRange {
 
-  def todayMinus(years: Int)(implicit clock: Clock = Clock.systemUTC): TaxYearRange = {
+  def todayMinus(years: Int)(using clock: Clock = Clock.systemUTC): TaxYearRange = {
     val currentTaxYear = TaxYear.currentTaxYear
     val from           = TaxYear.fromDownstreamInt(currentTaxYear.year - years)
     TaxYearRange(from = from, to = currentTaxYear)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[S
 
 object ErrorWrapper {
 
-  implicit val writes: Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
+  given Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
 
     val json = Json.toJson(errorResponse.error).as[JsObject]
 

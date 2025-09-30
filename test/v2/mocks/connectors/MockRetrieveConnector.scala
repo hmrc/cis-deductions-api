@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ trait MockRetrieveConnector extends TestSuite with MockFactory {
 
     def retrieveCisDeduction(requestData: RetrieveRequestData): CallHandler[Future[DownstreamOutcome[RetrieveResponseModel[CisDeductions]]]] = {
       (mockRetrieveConnector
-        .retrieve(_: RetrieveRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .retrieve(_: RetrieveRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

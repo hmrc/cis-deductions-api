@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ trait Rewriter {
 }
 
 @Singleton
-class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsMetadata, env: Environment)(implicit ec: ExecutionContext)
+class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsMetadata, env: Environment)(using ec: ExecutionContext)
     extends Assets(errorHandler, meta, env) {
-  import meta._
+  import meta.*
 
   /** Retrieves the requested asset and runs it through the rewriters if any..
     * @param path
@@ -49,7 +49,7 @@ class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsM
   }
 
   // Mostly copied from the private method in Assets:
-  private def assetAt(path: String, filename: String, rewrites: Seq[Rewriter])(implicit
+  private def assetAt(path: String, filename: String, rewrites: Seq[Rewriter])(using
       request: RequestHeader
   ): Future[Result] = {
 

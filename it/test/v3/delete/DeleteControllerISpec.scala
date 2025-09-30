@@ -19,14 +19,14 @@ package v3.delete
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v3.fixtures.CreateRequestFixtures._
+import v3.fixtures.CreateRequestFixtures.*
 
 class DeleteControllerISpec extends IntegrationBaseSpec {
 
@@ -93,7 +93,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           (RequestData("AA123456A", "4557ecb5-fd32-48cc-81f5-e6acd1099f3c", "2023"), BAD_REQUEST, TaxYearFormatError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -125,7 +125,7 @@ class DeleteControllerISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

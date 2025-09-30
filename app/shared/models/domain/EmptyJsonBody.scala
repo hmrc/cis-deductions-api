@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import play.api.libs.json.{JsObject, JsValue, Writes}
 
 object EmptyJsonBody {
 
-  implicit val writes: Writes[EmptyJsonBody.type] = new Writes[EmptyJsonBody.type] {
+  given writes: Writes[EmptyJsonBody.type] = new Writes[EmptyJsonBody.type] {
     override def writes(o: EmptyJsonBody.type): JsValue = JsObject.empty
   }
 

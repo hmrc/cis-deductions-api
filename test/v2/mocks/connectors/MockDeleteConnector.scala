@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ trait MockDeleteConnector extends TestSuite with MockFactory {
 
     def deleteDeduction(requestData: DeleteRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockDeleteConnector
-        .delete(_: DeleteRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .delete(_: DeleteRequestData)(using _: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

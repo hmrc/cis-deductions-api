@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package v2.models.response.retrieve
 
 import models.domain.CisSource
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class PeriodData(deductionFromDate: String,
                       deductionToDate: String,
@@ -29,6 +29,6 @@ case class PeriodData(deductionFromDate: String,
                       source: CisSource)
 
 object PeriodData {
-  implicit val reads: Reads[PeriodData]   = Json.reads[PeriodData]
-  implicit val writes: Writes[PeriodData] = Json.writes[PeriodData]
+  given Reads[PeriodData]  = Json.reads[PeriodData]
+  given Writes[PeriodData] = Json.writes[PeriodData]
 }

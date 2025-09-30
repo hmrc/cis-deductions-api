@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ trait MockCreateService extends TestSuite with MockFactory {
 
     def create(requestData: CreateRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateResponseModel]]]] = {
       (mockCreateService
-        .createDeductions(_: CreateRequestData)(_: RequestContext, _: ExecutionContext))
+        .createDeductions(_: CreateRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

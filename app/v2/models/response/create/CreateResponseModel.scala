@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,21 @@
 package v2.models.response.create
 
 import common.hateoas.HateoasLinks
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.config.SharedAppConfig
-import shared.hateoas._
+import shared.hateoas.*
 import v2.models.request.create.CreateRequestData
 
 case class CreateResponseModel(submissionId: String)
 
 object CreateResponseModel extends HateoasLinks {
-  implicit val reads: Reads[CreateResponseModel]    = Json.reads[CreateResponseModel]
-  implicit val writes: OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
+  given Reads[CreateResponseModel]   = Json.reads[CreateResponseModel]
+  given OWrites[CreateResponseModel] = Json.writes[CreateResponseModel]
 
   implicit object CreateLinksFactory extends HateoasLinksFactory[CreateResponseModel, CreateHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: CreateHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(retrieveCisDeduction(appConfig, nino, requestData.body.fromDate, requestData.body.toDate, None, false))
     }
 

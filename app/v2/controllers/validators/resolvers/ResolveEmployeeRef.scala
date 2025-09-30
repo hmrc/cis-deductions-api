@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ object ResolveEmployeeRef extends ResolverSupport {
   private val empRefFormat = "[0-9]{3}/[^ ]{0,9}".r
 
   val resolver: Resolver[String, EmployeeRef] =
-    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef)
+    ResolveStringPattern(empRefFormat, EmployerRefFormatError).resolver.map(EmployeeRef.apply)
 
   def apply(value: String): Validated[Seq[MtdError], EmployeeRef] = resolver(value)
 

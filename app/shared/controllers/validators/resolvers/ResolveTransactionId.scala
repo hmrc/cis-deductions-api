@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ object ResolveTransactionId extends ResolverSupport {
   private val transactionIdRegex = "^[0-9A-Za-z]{1,12}$".r
 
   val resolver: Resolver[String, TransactionId] =
-    ResolveStringPattern(transactionIdRegex, TransactionIdFormatError).resolver.map(TransactionId)
+    ResolveStringPattern(transactionIdRegex, TransactionIdFormatError).resolver.map(TransactionId.apply)
 
   def apply(value: String): Validated[Seq[MtdError], TransactionId] = resolver(value)
 }

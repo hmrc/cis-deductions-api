@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import shared.utils.Logging
 
-class ResolveJsonObjectInternal[A](implicit val reads: Reads[A]) extends ResolverSupport with Logging {
+class ResolveJsonObjectInternal[A](using val reads: Reads[A]) extends ResolverSupport with Logging {
 
   val resolver: Resolver[JsValue, (JsObject, A)] = {
     case jsObj: JsObject =>
@@ -42,9 +42,9 @@ class ResolveJsonObjectInternal[A](implicit val reads: Reads[A]) extends Resolve
 
   private def toMtdError(errors: Seq[(JsPath, Seq[JsonValidationError])]): Seq[MtdError] = {
     val failures = errors.map {
-      case (path, List(JsonValidationError(List("error.path.missing"))))                      => MissingMandatoryField(path)
-      case (path, List(JsonValidationError(List(error)))) if error.contains("error.expected") => WrongFieldType(path)
-      case (path, _)                                                                          => OtherFailure(path)
+      case (path, List(JsonValidationError(List("error.path.missing"))))                              => MissingMandatoryField(path)
+      case (path, List(JsonValidationError(List(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
+      case (path, _)                                                                                  => OtherFailure(path)
     }
 
     log(failures)

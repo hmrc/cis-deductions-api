@@ -17,13 +17,13 @@
 package v2.retrieve
 
 import models.errors.RuleSourceInvalidError
-import play.api.http.HeaderNames._
-import play.api.http.Status._
+import play.api.http.HeaderNames.*
+import play.api.http.Status.*
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.models.errors._
-import shared.services._
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
-import v2.fixtures.RetrieveJson._
+import v2.fixtures.RetrieveJson.*
 
 class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
 
@@ -113,7 +113,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
           ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
     }
 
@@ -164,7 +164,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
-      errors.foreach(args => (serviceErrorTest _).tupled(args))
+      errors.foreach(args => serviceErrorTest.tupled(args))
 
       val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
@@ -174,7 +174,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      extraTysErrors.foreach(args => (tysServiceErrorTest _).tupled(args))
+      extraTysErrors.foreach(args => tysServiceErrorTest.tupled(args))
     }
   }
 

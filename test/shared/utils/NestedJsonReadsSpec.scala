@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package shared.utils
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import shared.utils.NestedJsonReads._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
+import shared.utils.NestedJsonReads.*
 
 class NestedJsonReadsSpec extends UnitSpec {
 
@@ -79,7 +79,16 @@ class NestedJsonReadsSpec extends UnitSpec {
   "Valid Json" should {
 
     "return JsSuccess" in {
-      firstOutput.validate[Test] shouldBe a[JsSuccess[_]]
+      firstOutput.validate[Test] shouldBe a[JsSuccess[?]]
+    }
+  }
+
+  "An empty JsPath" should {
+    "return a JsError with error.path.empty" in {
+      val empty                            = JsPath
+      val result: JsResult[Option[String]] = empty.readNestedNullable[String].reads(Json.obj("a" -> "b"))
+      result shouldBe a[JsError]
+      result.asInstanceOf[JsError].errors.head._2.exists(_.message == "error.path.empty") shouldBe true
     }
   }
 
@@ -109,7 +118,7 @@ class NestedJsonReadsSpec extends UnitSpec {
 
   "Empty path" should {
     "return a None " in {
-      fourthOutput.validate[Test] shouldBe a[JsSuccess[_]]
+      fourthOutput.validate[Test] shouldBe a[JsSuccess[?]]
     }
   }
 
@@ -117,10 +126,10 @@ class NestedJsonReadsSpec extends UnitSpec {
 
   object Test {
 
-    implicit val reads: Reads[Test] = (
+    given Reads[Test] = (
       (JsPath \ "a" \ "b" \ "c").read[String] and
         (__ \ "a" \ "c" \ "e").readNestedNullable[String]
-    )(Test.apply _)
+    )(Test.apply)
 
   }
 

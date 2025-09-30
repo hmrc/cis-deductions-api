@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,19 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas._
+import shared.hateoas.*
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v2.controllers.validators.MockedRetrieveValidatorFactory
-import v2.fixtures.RetrieveJson._
-import v2.fixtures.RetrieveModels._
+import v2.fixtures.RetrieveJson.*
+import v2.fixtures.RetrieveModels.*
 import v2.mocks.services.MockRetrieveService
 import v2.models.request.retrieve.RetrieveRequestData
-import v2.models.response.retrieve.RetrieveResponseModel._
-import v2.models.response.retrieve.{CisDeductions, RetrieveHateoasData, RetrieveResponseModel}
+import v2.models.response.retrieve.RetrieveResponseModel.*
+import v2.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -89,10 +89,6 @@ class RetrieveControllerSpec
           .retrieve(retrieveRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        MockHateoasFactory
-          .wrapList(response, RetrieveHateoasData(validNino, taxYear, sourceRaw.toString))
-          .returns(responseWithHateoas)
-
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = None,
@@ -126,12 +122,12 @@ class RetrieveControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new RetrieveController(
+    val controller: RetrieveController = new RetrieveController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockedRetrieveValidatorFactory,
       service = mockRetrieveService,
-      hateoasFactory = mockHateoasFactory,
+      hateoasFactory = new HateoasFactory(mockSharedAppConfig),
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator

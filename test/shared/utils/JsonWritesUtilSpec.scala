@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ object JsonWritesUtilSpec {
 }
 
 class JsonWritesUtilSpec extends UnitSpec with JsonWritesUtil {
-  import JsonWritesUtilSpec._
+  import JsonWritesUtilSpec.*
 
   "OWrites produced from writesFrom" when {
-    implicit val writesOnlyForD1_D2: OWrites[D] = writesFrom {
+    given OWrites[D] = writesFrom {
       case d: D1 => Json.writes[D1].writes(d)
       case d: D2 => Json.writes[D2].writes(d)
     }

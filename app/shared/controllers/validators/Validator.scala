@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.utils.Logging
-import cats.implicits._
+import cats.implicits.*
 
 trait Validator[+PARSED] extends Logging {
 
   def validate: Validated[Seq[MtdError], PARSED]
 
-  def validateAndWrapResult()(implicit correlationId: String): Either[ErrorWrapper, PARSED] = {
+  def validateAndWrapResult()(using correlationId: String): Either[ErrorWrapper, PARSED] = {
     validate match {
       case Valid(parsed) =>
         logger.info(s"Validation successful for the request with CorrelationId: $correlationId")
@@ -47,7 +47,7 @@ trait Validator[+PARSED] extends Logging {
 
   protected def invalid(error: MtdError): Invalid[Seq[MtdError]] = Invalid(List(error))
 
-  protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
+  protected def combine(results: Validated[Seq[MtdError], ?]*): Validated[Seq[MtdError], Unit] =
     results.traverse_(identity)
 
   private def combineErrors(errors: Seq[MtdError]): Seq[MtdError] = {

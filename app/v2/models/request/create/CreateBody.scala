@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,6 @@ case class CreateBody(
 )
 
 object CreateBody {
-  implicit val reads: Reads[CreateBody]   = Json.reads[CreateBody]
-  implicit val writes: Writes[CreateBody] = Json.writes[CreateBody]
+  given Reads[CreateBody]  = Json.reads[CreateBody]
+  given Writes[CreateBody] = Json.writes[CreateBody]
 }

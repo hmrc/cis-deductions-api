@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package shared.models.audit
 
 import play.api.libs.json.{JsValue, Json}
 import shared.models.audit.AuditResponseFixture.{auditResponseModelWithBody, auditResponseModelWithErrors}
-import shared.models.audit.FlattenedGenericAuditDetail._
 import shared.models.auth.UserDetails
 import shared.utils.UnitSpec
 

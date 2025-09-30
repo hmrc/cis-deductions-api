@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ trait ServiceSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
   protected val logContext: EndpointLogContext = EndpointLogContext("controller", "endpointName")
   protected val correlationId                  = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  implicit protected val ec: ExecutionContext                = scala.concurrent.ExecutionContext.global
-  implicit protected val hc: HeaderCarrier                   = HeaderCarrier()
-  implicit protected lazy val requestContext: RequestContext = RequestContext(hc, correlationId, logContext)
+  protected given ExecutionContext  = scala.concurrent.ExecutionContext.global
+  protected given hc: HeaderCarrier = HeaderCarrier()
+  protected given RequestContext    = RequestContext(hc, correlationId, logContext)
 }

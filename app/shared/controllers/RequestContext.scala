@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,21 @@ case class RequestContext(hc: HeaderCarrier, correlationId: String, endpointLogC
 
 object RequestContext {
 
-  implicit def fromParts(implicit hc: HeaderCarrier, correlationId: String, endpointLogContext: EndpointLogContext): RequestContext =
+  implicit def fromParts(using hc: HeaderCarrier, correlationId: String, endpointLogContext: EndpointLogContext): RequestContext =
     RequestContext(hc, correlationId, endpointLogContext)
 
-  def from(idGenerator: IdGenerator, endpointLogContext: EndpointLogContext)(implicit hc: HeaderCarrier): RequestContext =
+  def from(idGenerator: IdGenerator, endpointLogContext: EndpointLogContext)(using hc: HeaderCarrier): RequestContext =
     RequestContext(hc, idGenerator.generateCorrelationId, endpointLogContext)
 
 }
 
 trait RequestContextImplicits {
 
-  implicit def toHeaderCarrier(implicit ctx: RequestContext): HeaderCarrier = ctx.hc
+  given toHeaderCarrier(using ctx: RequestContext): HeaderCarrier = ctx.hc
 
-  implicit def toCorrelationId(implicit ctx: RequestContext): String = ctx.correlationId
+  given toCorrelationId(using ctx: RequestContext): String = ctx.correlationId
 
-  implicit def toEndpointLogContext(implicit ctx: RequestContext): EndpointLogContext = ctx.endpointLogContext
+  given toEndpointLogContext(using ctx: RequestContext): EndpointLogContext = ctx.endpointLogContext
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import shared.models.errors.{MtdError, ValueFormatError}
 case class ResolveParsedNumber(min: BigDecimal = 0, max: BigDecimal = 99999999999.99, disallowZero: Boolean = false) extends ResolverSupport {
 
   def resolver(error: => MtdError): Resolver[BigDecimal, BigDecimal] =
-    resolveValid[BigDecimal] thenValidate validator(error)
+    resolveValid[BigDecimal].thenValidate(validator(error))
 
-  def validator(error: => MtdError): Validator[BigDecimal] = { value: BigDecimal =>
+  def validator(error: => MtdError): Validator[BigDecimal] = { (value: BigDecimal) =>
     val valid = min <= value && value <= max && value.scale <= 2 && (!disallowZero || value != 0)
 
     Option.when(!valid)(List(error))

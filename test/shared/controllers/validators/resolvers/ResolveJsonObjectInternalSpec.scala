@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
@@ -28,8 +28,8 @@ class ResolveJsonObjectInternalSpec extends UnitSpec with JsonErrorValidators {
 
   case class Foo(bar: Bar, bars: Seq[Bar])
 
-  implicit val barReads: Reads[Bar] = Json.reads
-  implicit val fooReads: Reads[Foo] = Json.reads
+  given Reads[Bar] = Json.reads
+  given Reads[Foo] = Json.reads
 
   private val resolver = ResolveJsonObjectInternal.resolver[Foo]
 

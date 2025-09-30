@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ trait MockAmendService extends TestSuite with MockFactory {
 
     def amend(requestData: AmendRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendService
-        .amendDeductions(_: AmendRequestData)(_: RequestContext, _: ExecutionContext))
+        .amendDeductions(_: AmendRequestData)(using _: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

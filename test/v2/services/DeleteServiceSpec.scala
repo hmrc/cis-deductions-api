@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,13 +46,13 @@ class DeleteServiceSpec extends UnitSpec with MockDeleteConnector {
   private val submissionId = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
   private val taxYear      = TaxYear.fromMtd("2023-24")
 
-  private implicit val correlationId: String = "X-123"
+  private given correlationId: String = "X-123"
 
   private val requestData = DeleteRequestData(nino, SubmissionId(submissionId), Some(taxYear))
 
   trait Test {
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+    given HeaderCarrier      = HeaderCarrier()
+    given EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new DeleteService(
       connector = mockDeleteConnector
@@ -97,7 +97,7 @@ class DeleteServiceSpec extends UnitSpec with MockDeleteConnector {
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
     )
 
-    (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+    (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
   }
 
 }

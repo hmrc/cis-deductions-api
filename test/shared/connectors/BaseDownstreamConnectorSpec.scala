@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
   private val body        = Json.toJson("body")
   private val userAgent   = "this-api"
 
-  private implicit val correlationId: String = "someCorrelationId"
-  private val outcome                        = Right(ResponseWrapper(correlationId, Result(2)))
+  private given correlationId: String = "someCorrelationId"
+  private val outcome                 = Right(ResponseWrapper(correlationId, Result(2)))
 
   private val headerCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
@@ -72,13 +72,13 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
       new DownstreamStrategy {
         override def baseUrl: String = self.baseUrl
 
-        override def contractHeaders(correlationId: String)(implicit ec: ExecutionContext): Future[Seq[(String, String)]] =
+        override def contractHeaders(correlationId: String)(using ec: ExecutionContext): Future[Seq[(String, String)]] =
           Future.successful(apiContractHeaders)
 
         override def environmentHeaders: Seq[String] = passThroughHeaderNames
       })
 
-  private implicit val httpReads: HttpReads[DownstreamOutcome[Result]] = mock[HttpReads[DownstreamOutcome[Result]]]
+  given HttpReads[DownstreamOutcome[Result]] = mock[HttpReads[DownstreamOutcome[Result]]]
 
   "BaseDownstreamConnector" when {
 
@@ -115,7 +115,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntentSpecified: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier = headerCarrierForInput()
 
           MockedHttpClient.post(
             absoluteUrl,
@@ -138,7 +138,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntentSpecified: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier = headerCarrierForInput()
 
           MockedHttpClient.put(
             absoluteUrl,
@@ -161,7 +161,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntentSpecified: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier = headerCarrierForInput()
 
           MockedHttpClient.get(
             absoluteUrl,
@@ -183,7 +183,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntentSpecified: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier            = headerCarrierForInput()
           val qps: Seq[(String, String)] = List("param1" -> "value1")
 
           MockedHttpClient
@@ -208,7 +208,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntent: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier = headerCarrierForInput()
 
           MockedHttpClient.delete(
             absoluteUrl,
@@ -230,7 +230,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def makeCall(maybeIntent: Option[String],
                      additionalRequiredHeaders: Seq[(String, String)] = Nil,
                      additionalExcludedHeaders: Seq[(String, String)] = Nil): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput()
+          given HeaderCarrier = headerCarrierForInput()
 
           MockedHttpClient.delete(
             url"$absoluteUrl?param1=value1&param2=value2",
@@ -249,7 +249,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
 
     "a request is received with headers" must {
       def makeCall(downstreamUri: DownstreamUri[Result], requiredHeaders: Seq[(String, String)] = Nil, excludedHeaders: Seq[(String, String)] = Nil)(
-          implicit hc: HeaderCarrier): Assertion = {
+          using hc: HeaderCarrier): Assertion = {
         MockedHttpClient.put(
           absoluteUrl,
           headerCarrierConfig,
@@ -262,16 +262,16 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
       }
 
       "not pass through input headers that aren't in environmentHeaders" in {
-        val inputHeader                = "Header1" -> "Value1"
-        implicit val hc: HeaderCarrier = headerCarrierForInput(inputHeader)
+        val inputHeader     = "Header1" -> "Value1"
+        given HeaderCarrier = headerCarrierForInput(inputHeader)
 
         makeCall(uri(), excludedHeaders = Seq(inputHeader))
       }
 
       "pass through input headers that are in environmentHeaders" when {
         def passThroughInputs(passThrough: String): Assertion = {
-          val inputHeader                = "Header1" -> "Value1"
-          implicit val hc: HeaderCarrier = headerCarrierForInput(inputHeader)
+          val inputHeader     = "Header1" -> "Value1"
+          given HeaderCarrier = headerCarrierForInput(inputHeader)
 
           makeCall(uri(passThroughHeaderNames = Seq(passThrough)), requiredHeaders = Seq("Header1" -> "Value1"))
         }
@@ -289,7 +289,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
         def contractHeadersOverrideInputHeaders(inputHeader: (String, String)): Assertion = {
           val contractHeader = "Header1" -> "ContractValue"
 
-          implicit val hc: HeaderCarrier = headerCarrierForInput(inputHeader)
+          given HeaderCarrier = headerCarrierForInput(inputHeader)
 
           makeCall(
             uri(apiContractHeaders = Seq(contractHeader), passThroughHeaderNames = Seq("Header1")),
@@ -309,7 +309,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
 
       "automatically added additional headers (typically content-type) must override input values (even if configured for pass through)" when {
         def additionalHeadersOverrideInputHeaders(inputHeader: (String, String)): Assertion = {
-          implicit val hc: HeaderCarrier = headerCarrierForInput(inputHeader)
+          given HeaderCarrier = headerCarrierForInput(inputHeader)
 
           makeCall(
             uri(apiContractHeaders = Nil, passThroughHeaderNames = Seq("Content-Type")),

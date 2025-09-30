@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import play.api.libs.json.{JsObject, Json}
 import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 import shared.models.errors.RuleIncorrectOrEmptyBodyError
 import shared.utils.UnitSpec
+import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructure.{Arr, Leaf}
+import shared.models.domain.TaxYear
 
 class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
 
@@ -34,7 +36,7 @@ class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
 
   case class Foo(bar: Bar, bars: Option[Seq[Bar]] = None, bar2: Option[Bar] = None)
 
-  implicit val someEnumChecker: SchemaStructureSource[SomeEnum] = SchemaStructureSource.leaf
+  given SchemaStructureSource[SomeEnum] = SchemaStructureSource.leaf
 
   val validator = new UnexpectedJsonFieldsValidator[Foo]
 
@@ -194,7 +196,7 @@ class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
           val extraPathCheckerA1 = SchemaStructureSource[A1]
           val extraPathCheckerA2 = SchemaStructureSource[A2]
 
-          implicit val extraPathCheckerA: SchemaStructureSource[A] = SchemaStructureSource.instance {
+          given SchemaStructureSource[A] = SchemaStructureSource.instance {
             case a1: A1 => extraPathCheckerA1.schemaStructureOf(a1)
             case a2: A2 => extraPathCheckerA2.schemaStructureOf(a2)
           }
@@ -221,6 +223,39 @@ class UnexpectedJsonFieldsValidatorSpec extends UnitSpec {
           }
         }
       }
+    }
+  }
+
+  "SchemaStructureSource" must {
+    "return Leaf for non-list types" in {
+      SchemaStructureSource[String].schemaStructureOf("test") shouldBe Leaf
+      SchemaStructureSource[Int].schemaStructureOf(1) shouldBe Leaf
+      SchemaStructureSource[Double].schemaStructureOf(1.00) shouldBe Leaf
+      SchemaStructureSource[Boolean].schemaStructureOf(true) shouldBe Leaf
+      SchemaStructureSource[BigInt].schemaStructureOf(BigInt(1)) shouldBe Leaf
+      SchemaStructureSource[BigDecimal].schemaStructureOf(BigDecimal(1)) shouldBe Leaf
+      SchemaStructureSource[TaxYear].schemaStructureOf(TaxYear.fromMtd("2025-26")) shouldBe Leaf
+      SchemaStructureSource[Option[String]].schemaStructureOf(Some("test")) shouldBe Leaf
+      SchemaStructureSource[Option[String]].schemaStructureOf(None) shouldBe Leaf
+    }
+
+    "return Arr of Leaf for non-empty Seq" in {
+      SchemaStructureSource[Seq[String]].schemaStructureOf(Seq("test", "test")) shouldBe Arr(Seq(Leaf, Leaf))
+      SchemaStructureSource[Seq[Int]].schemaStructureOf(Seq(1, 1)) shouldBe Arr(Seq(Leaf, Leaf))
+    }
+
+    "return empty Arr for empty Seq" in {
+      SchemaStructureSource[Seq[Double]].schemaStructureOf(Seq.empty) shouldBe Arr(Seq.empty)
+      SchemaStructureSource[Seq[Boolean]].schemaStructureOf(Seq.empty) shouldBe Arr(Seq.empty)
+    }
+
+    "return Arr of Leaf for non-empty List" in {
+      SchemaStructureSource[List[BigInt]].schemaStructureOf(List(BigInt(1), BigInt(1))) shouldBe Arr(Seq(Leaf, Leaf))
+      SchemaStructureSource[List[BigDecimal]].schemaStructureOf(List(BigDecimal(1), BigDecimal(1))) shouldBe Arr(Seq(Leaf, Leaf))
+    }
+
+    "return empty Arr for empty List" in {
+      SchemaStructureSource[List[TaxYear]].schemaStructureOf(List.empty) shouldBe Arr(Seq.empty)
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package v2.controllers
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
-import shared.controllers._
-import shared.hateoas._
+import shared.controllers.*
+import shared.hateoas.*
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -38,19 +38,19 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
                                   hateoasFactory: HateoasFactory,
                                   auditService: AuditService,
                                   cc: ControllerComponents,
-                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+                                  val idGenerator: IdGenerator)(using ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "create"
 
-  implicit val endpointLogContext: EndpointLogContext =
+  given endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "CreateRequestController",
       endpointName = "createEndpoint"
     )
 
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
-    implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+    given ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
     val validator = validatorFactory.validator(nino, request.body)
     val requestHandler = RequestHandler

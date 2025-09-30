@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
 package shared.hateoas
 
 import cats.Functor
-import cats.implicits._
+import cats.implicits.*
 import shared.config.SharedAppConfig
 
 import javax.inject.Inject
 
 class HateoasFactory @Inject() (appConfig: SharedAppConfig) {
 
-  def wrap[A, D <: HateoasData](payload: A, data: D)(implicit lf: HateoasLinksFactory[A, D]): HateoasWrapper[A] = {
+  def wrap[A, D <: HateoasData](payload: A, data: D)(using lf: HateoasLinksFactory[A, D]): HateoasWrapper[A] = {
     val links = lf.links(appConfig, data)
 
     HateoasWrapper(payload, links)
   }
 
-  def wrapList[A[_]: Functor, I, D](payload: A[I], data: D)(implicit lf: HateoasListLinksFactory[A, I, D]): HateoasWrapper[A[HateoasWrapper[I]]] = {
+  def wrapList[A[_]: Functor, I, D](payload: A[I], data: D)(using lf: HateoasListLinksFactory[A, I, D]): HateoasWrapper[A[HateoasWrapper[I]]] = {
     val hateoasList = payload.map(i => HateoasWrapper(i, lf.itemLinks(appConfig, data, i)))
 
     HateoasWrapper(hateoasList, lf.links(appConfig, data))

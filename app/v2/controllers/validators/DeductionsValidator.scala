@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toTraverseOps
 import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.{DateRange, TaxYear}
-import shared.models.errors._
-import v2.models.errors.CisDeductionsApiCommonErrors._
+import shared.models.errors.*
+import v2.models.errors.CisDeductionsApiCommonErrors.*
 import v2.models.request.amend.PeriodDetails
 
 object DeductionsValidator extends ResolverSupport {
@@ -31,7 +31,7 @@ object DeductionsValidator extends ResolverSupport {
   private[validators] val minYear = 1900
   private[validators] val maxYear = 2099
 
-  val checkDateRangeIsAFullTaxYear: Validator[DateRange] = satisfies(RuleDateRangeInvalidError) { dateRange: DateRange =>
+  val checkDateRangeIsAFullTaxYear: Validator[DateRange] = satisfies(RuleDateRangeInvalidError) { (dateRange: DateRange) =>
     val taxYear = TaxYear.containing(dateRange.endDate)
 
     (taxYear.startDate, taxYear.endDate) == (dateRange.startDate, dateRange.endDate)
@@ -47,13 +47,14 @@ object DeductionsValidator extends ResolverSupport {
   }
 
   private val validatePeriodDetails =
-    resolveValid[PeriodDetails] thenValidate combinedValidator(
-      validateAmount(RuleDeductionAmountError).contramap(_.deductionAmount),
-      validateMaybeAmount(RuleCostOfMaterialsError).contramap(_.costOfMaterials),
-      validateMaybeAmount(RuleGrossAmountError).contramap(_.grossAmountPaid),
-      validateIsoDate(DeductionToDateFormatError).contramap(_.deductionToDate),
-      validateIsoDate(DeductionFromDateFormatError).contramap(_.deductionFromDate)
-    )
+    resolveValid[PeriodDetails].thenValidate(
+      combinedValidator(
+        validateAmount(RuleDeductionAmountError).contramap(_.deductionAmount),
+        validateMaybeAmount(RuleCostOfMaterialsError).contramap(_.costOfMaterials),
+        validateMaybeAmount(RuleGrossAmountError).contramap(_.grossAmountPaid),
+        validateIsoDate(DeductionToDateFormatError).contramap(_.deductionToDate),
+        validateIsoDate(DeductionFromDateFormatError).contramap(_.deductionFromDate)
+      ))
 
   private def validateMaybeAmount(error: => MtdError): Validator[Option[BigDecimal]] = validateAmount(error).validateOptionally
 

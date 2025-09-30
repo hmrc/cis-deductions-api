@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ abstract class ControllerBaseSpec
 }
 
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator with RealAppConfig {
-  _: ControllerBaseSpec =>
+  self: ControllerBaseSpec =>
 
   protected val correlationId    = "X-123"
   protected val validNino        = "AA123456A"
@@ -130,7 +130,7 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
   }
 
   trait AuditEventChecking[DETAIL] {
-    _: ControllerTest =>
+    self: ControllerTest =>
 
     protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[DETAIL]
 

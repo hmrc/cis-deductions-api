@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class AmendBody(periodData: Seq[PeriodDetails])
 
 object AmendBody {
-  implicit val reads: Reads[AmendBody] = Json.reads[AmendBody]
+  given Reads[AmendBody] = Json.reads[AmendBody]
 
-  implicit val writes: OWrites[AmendBody] = Json.writes[AmendBody]
+  given OWrites[AmendBody] = Json.writes[AmendBody]
 
 }

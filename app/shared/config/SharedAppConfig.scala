@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEna
 
 object ConfidenceLevelConfig {
 
-  implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
+  given configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config             = rootConfig.getConfig(path)
     val confidenceLevelInt = config.getInt("confidence-level")
 

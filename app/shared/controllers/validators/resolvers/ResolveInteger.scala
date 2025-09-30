@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import shared.models.errors.{MtdError, ValueFormatError}
 case class ResolveInteger(min: Int, max: Int) extends ResolverSupport {
 
   def resolver(error: => MtdError): Resolver[Int, Int] =
-    resolveValid[Int] thenValidate validator(error)
+    resolveValid[Int].thenValidate(validator(error))
 
-  def validator(error: => MtdError): Validator[Int] = { value: Int =>
+  def validator(error: => MtdError): Validator[Int] = { (value: Int) =>
     val valid = min <= value && value <= max
 
     Option.when(!valid)(List(error))
