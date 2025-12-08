@@ -118,7 +118,7 @@ class SharedAppConfig @Inject() (val config: ServicesConfig, protected[config] v
             Deprecated(dO, Some(sD)).valid
           else
             s"sunsetDate must be later than deprecatedOn date for a deprecated version $version".invalid
-        case (Some(dO), None, true) => Deprecated(dO, Some(dO.plusMonths(6).plusDays(1))).valid
+        case (Some(dO), None, true) => Deprecated(dO, Some(dO.plusMonths(6))).valid
         case (Some(dO), _, false)   => Deprecated(dO, None).valid
         case _                      => s"deprecatedOn date is required for a deprecated version $version".invalid
       }
