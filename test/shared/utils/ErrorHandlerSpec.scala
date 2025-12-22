@@ -150,8 +150,16 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       }
     }
 
-    "return 504 with error body" when {
-      Seq(499, 504).foreach { statusCode =>
+    "Upstream5xxResponse thrown" in new Test() {
+      val ex: UpstreamErrorResponse = UpstreamErrorResponse("server error", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE, None.orNull)
+      val result: Future[Result]    = handler.onServerError(requestHeader, ex)
+
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+      contentAsJson(result) shouldBe InternalError.asJson
+    }
+
+    "return GATEWAY_TIMEOUT with error body" when {
+      Seq(499, GATEWAY_TIMEOUT).foreach { statusCode =>
         s"a $statusCode UpstreamErrorResponse is returned" in new Test {
           val errorResponse: UpstreamErrorResponse = UpstreamErrorResponse("request timeout", statusCode, statusCode, Map.empty)
           val result: Future[Result]               = handler.onServerError(requestHeader, errorResponse)
@@ -160,14 +168,6 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
           contentAsJson(result) shouldBe GatewayTimeoutError.asJson
         }
       }
-    }
-
-    "Upstream5xxResponse thrown" in new Test() {
-      val ex: UpstreamErrorResponse = UpstreamErrorResponse("server error", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE, None.orNull)
-      val result: Future[Result]    = handler.onServerError(requestHeader, ex)
-
-      status(result) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(result) shouldBe InternalError.asJson
     }
   }
 

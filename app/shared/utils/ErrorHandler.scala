@@ -97,7 +97,8 @@ class ErrorHandler @Inject() (
       ex
     )
 
-    val timeoutStatusCodes: Set[Int] = Set(499, 504)
+    val NGINX_TIMEOUT                = 499
+    val timeoutStatusCodes: Set[Int] = Set(NGINX_TIMEOUT, GATEWAY_TIMEOUT)
 
     val (errorCode, eventType) = ex match {
       case _: NotFoundException                                                  => (NotFoundError, "ResourceNotFound")
