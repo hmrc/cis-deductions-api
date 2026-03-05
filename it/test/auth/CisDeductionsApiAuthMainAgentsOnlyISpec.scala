@@ -20,12 +20,12 @@ import play.api.http.Status.CREATED
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthMainAgentsOnlyISpec
-import v2.fixtures.CreateRequestFixtures.{createDeductionResponseBodyTys, requestBodyJsonTys}
+import v3.fixtures.CreateRequestFixtures.{createDeductionResponseBody, requestBodyJsonTys}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class CisDeductionsApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
-  val callingApiVersion = "2.0"
+  val callingApiVersion = "3.0"
 
   val supportingAgentsNotAllowedEndpoint = "create"
 
@@ -37,6 +37,6 @@ class CisDeductionsApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
   override val downstreamSuccessStatus: Int = CREATED
 
-  val maybeDownstreamResponseJson: Option[JsValue] = Option(createDeductionResponseBodyTys)
+  val maybeDownstreamResponseJson: Option[JsValue] = Option(createDeductionResponseBody)
 
 }

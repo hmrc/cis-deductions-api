@@ -42,7 +42,7 @@ You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-chan
 
 ## API Reference / Documentation 
 
-Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/cis-deductions-api/2.0)
+Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/cis-deductions-api/3.0)
 
 ## License
 
