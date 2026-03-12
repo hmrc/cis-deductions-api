@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v3.connectors
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -38,26 +38,15 @@ class RetrieveConnector @Inject() (val http: HttpClientV2, val appConfig: Shared
 
     import request.*
 
-    val path = s"income-tax/cis/deductions/$nino"
-
-    lazy val downstreamUri1792 =
-      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1792")) {
-        HipUri[RetrieveResponseModel[CisDeductions]](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/cis/deductions/$nino")
-      } else {
-        IfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/${taxYear.asTysDownstream}/$nino")
-      }
-
-    lazy val downstreamUri1572 = IfsUri[RetrieveResponseModel[CisDeductions]](path)
-
     val (downstreamUri, queryParams) = {
       if (taxYear.useTaxYearSpecificApi) {
         (
-          downstreamUri1792,
+          HipUri[RetrieveResponseModel[CisDeductions]](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/cis/deductions/$nino"),
           List("startDate" -> startDate, "endDate" -> endDate, "source" -> source.toString)
         )
       } else {
         (
-          downstreamUri1572,
+          IfsUri[RetrieveResponseModel[CisDeductions]](s"income-tax/cis/deductions/$nino"),
           List("periodStart" -> startDate, "periodEnd" -> endDate, "source" -> source.toString)
         )
       }
