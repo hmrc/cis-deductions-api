@@ -23,7 +23,7 @@ private object AppDependencies {
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-30" % bootstrapPlayVersion,
     "org.typelevel"                %% "cats-core"                 % "2.13.0",
-    "com.github.jknack"             % "handlebars"                % "4.5.0"
+    "com.github.jknack"             % "handlebars"                % "4.3.1"
   )
 
   val test: Seq[sbt.ModuleID] = Seq(
