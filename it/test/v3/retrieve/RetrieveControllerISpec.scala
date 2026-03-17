@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,11 @@ import shared.services.*
 import shared.support.IntegrationBaseSpec
 import v3.fixtures.RetrieveJson.*
 
-class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1792.enabled" -> false) ++ super.servicesConfig
+class RetrieveControllerISpec extends IntegrationBaseSpec {
 
   "Calling the retrieve endpoint" should {
     "return an OK response" when {
-      "a valid request is made" in new NonTysTest {
-
+      "a valid request is made for a pre-TYS tax year" in new NonTysTest {
         override def setupStubs(): Unit =
           DownstreamStub
             .onSuccess(
@@ -50,8 +46,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         response.json shouldBe singleDeductionJson(fromDate, toDate)
       }
 
-      "valid request is made without any IDs" in new NonTysTest {
-
+      "a valid request is made without any IDs for a pre-TYS tax year" in new NonTysTest {
         override def setupStubs(): Unit =
           DownstreamStub
             .onSuccess(
@@ -68,8 +63,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         response.json shouldBe singleDeductionWithoutIdsJson
       }
 
-      "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
-
+      "a valid request is made for a Tax Year Specific tax year" in new TysHipTest {
         override def setupStubs(): Unit =
           DownstreamStub
             .onSuccess(
@@ -83,51 +77,45 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         response.status shouldBe OK
         response.header("Content-Type") shouldBe Some("application/json")
         response.json shouldBe singleDeductionJson(fromDate, toDate)
+      }
+    }
 
+    "return error according to spec" when {
+      val input = List(
+        ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
+        ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
+        ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
+      )
+
+      input.foreach { case (requestNino, requestTaxYear, requestSource, expectedStatus, expectedBody) =>
+        s"Non‑TYS validation fails with ${expectedBody.code} error" in new NonTysTest {
+          override val nino: String    = requestNino
+          override val taxYear: String = requestTaxYear
+          override val source: String  = requestSource
+
+          val response: WSResponse = await(mtdRequest.get())
+          response.status shouldBe expectedStatus
+          response.json shouldBe expectedBody.asJson
+        }
       }
 
-      "return error according to spec" when {
+      input.foreach { case (requestNino, requestTaxYear, requestSource, expectedStatus, expectedBody) =>
+        s"TYS HIP validation fails with ${expectedBody.code} error" in new TysHipTest {
+          override val nino: String    = requestNino
+          override val taxYear: String = requestTaxYear
+          override val source: String  = requestSource
 
-        def validationErrorTest(requestNino: String,
-                                requestTaxYear: String,
-                                requestSource: String,
-                                expectedStatus: Int,
-                                expectedBody: MtdError): Unit = {
-
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-
-            override val nino: String    = requestNino
-            override val taxYear: String = requestTaxYear
-            override val source: String  = requestSource
-
-            val response: WSResponse = await(mtdRequest.get())
-            response.status shouldBe expectedStatus
-            response.json shouldBe expectedBody.asJson
-            response.header("Content-Type") shouldBe Some("application/json")
-          }
+          val response: WSResponse = await(mtdRequest.get())
+          response.status shouldBe expectedStatus
+          response.json shouldBe expectedBody.asJson
         }
-
-        val input = List(
-          ("AA12345", "2020-21", "customer", BAD_REQUEST, NinoFormatError),
-          ("AA123456B", "2021-23", "customer", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456B", "2020-21", "asdf", BAD_REQUEST, RuleSourceInvalidError),
-          ("AA123456B", "2021--22", "customer", BAD_REQUEST, TaxYearFormatError)
-        )
-        input.foreach(args => validationErrorTest.tupled(args))
       }
     }
 
     "downstream service error" when {
 
-      def errorBody(code: String): String =
-        s"""
-           |{
-           |   "code": "$code",
-           |   "reason": "message"
-           |}
-            """.stripMargin
-
-      def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+      def nonTysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
         s"downstream returns $downstreamErrorCode with status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): Unit =
@@ -140,8 +128,8 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         }
       }
 
-      def tysServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysIfsTest {
+      def tysHipServiceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"TYS downstream returns $downstreamErrorCode with status $downstreamStatus" in new TysHipTest {
 
           override def setupStubs(): Unit =
             DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
@@ -153,7 +141,7 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         }
       }
 
-      val errors = List(
+      val nonTysErrors = List(
         (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
@@ -164,17 +152,23 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
-      errors.foreach(args => serviceErrorTest.tupled(args))
+      nonTysErrors.foreach(args => nonTysServiceErrorTest.tupled(args))
 
-      val extraTysErrors = List(
+      val tysHipErrors = List(
+        (BAD_REQUEST, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError)
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       )
-      extraTysErrors.foreach(args => tysServiceErrorTest.tupled(args))
+      tysHipErrors.foreach(args => tysHipServiceErrorTest.tupled(args))
     }
   }
 
@@ -202,6 +196,21 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
         )
     }
 
+    def errorBody(code: String): String =
+      s"""
+         |{
+         |  "origin": "HoD",
+         |  "response": {
+         |    "failures": [
+         |      {
+         |        "type": "$code",
+         |        "reason": "message"
+         |      }
+         |    ]
+         |  }
+         |}
+            """.stripMargin
+
   }
 
   private trait NonTysTest extends Test {
@@ -212,13 +221,13 @@ class RetrieveControllerIfsISpec extends IntegrationBaseSpec {
     val downstreamUri: String                      = s"/income-tax/cis/deductions/$nino"
   }
 
-  private trait TysIfsTest extends Test {
-    val taxYear: String                            = "2023-24"
-    val fromDate: String                           = "2023-04-06"
-    val toDate: String                             = "2024-04-05"
-    val downstreamTaxYear: String                  = "23-24"
+  private trait TysHipTest extends Test {
+    val taxYear: String                            = "2025-26"
+    val fromDate: String                           = "2025-04-06"
+    val toDate: String                             = "2026-04-05"
+    private val downstreamTaxYear: String          = "25-26"
     val downstreamQueryParams: Map[String, String] = Map("startDate" -> fromDate, "endDate" -> toDate, "source" -> source)
-    val downstreamUri: String                      = s"/income-tax/cis/deductions/$downstreamTaxYear/$nino"
+    val downstreamUri: String                      = s"/itsa/income-tax/v1/$downstreamTaxYear/cis/deductions/$nino"
   }
 
 }
