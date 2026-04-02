@@ -33,16 +33,13 @@ put:
     content:
       application/json:
         schema:
-          $ref: './schemas/amendCisDeductions/amend_cis_deductions_request.json'
-        examples:
-          example-1:
-            description: Amend CIS request
-            value:
-              $ref: './examples/AmendCisDeductions/amend_cis_deductions_request.json'
+          $ref: './schemas/cis_deductions_amend/request.json'
+        example:
+          $ref: './examples/cis_deductions_amend/request.json'
 
   responses:
     "204":
-      description: No Content
+      description: Success (No Content)
       headers:
         X-CorrelationId:
           $ref: './common/headers.yaml#/components/parameters/correlationId'

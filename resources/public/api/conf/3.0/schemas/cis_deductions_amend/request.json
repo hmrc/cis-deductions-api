@@ -1,7 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Amend CIS Deductions for Subcontractor\n",
-  "description": "This endpoint allows as developer to amend a CIS deductions which has been previously populated",
   "type": "object",
   "properties": {
     "periodData": {
@@ -19,13 +17,13 @@
             "example": 5000.99
           },
           "deductionFromDate": {
-            "description": "The From date when the deduction was made within the CIS tax year period.",
+            "description": "The From date when the deduction was made within the CIS tax year period.\n\nMust conform to the format `YYYY-MM-DD`",
             "type": "string",
             "format": "date",
             "example": "2020-04-06"
           },
           "deductionToDate": {
-            "description": "The To date when the deduction was made within the CIS tax year period.",
+            "description": "The To date when the deduction was made within the CIS tax year period.\n\nMust conform to the format `YYYY-MM-DD`",
             "type": "string",
             "format": "date",
             "example": "2020-04-05"

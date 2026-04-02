@@ -46,12 +46,9 @@ get:
       content:
         application/json:
           schema:
-            $ref: './schemas/list_response.json'
-          examples:
-            example-response:
-              description: Example Response
-              value:
-                $ref: './examples/list_response_1.json'
+            $ref: './schemas/cis_deductions_retrieve/response.json'
+          example:
+            $ref: './examples/cis_deductions_retrieve/response.json'
     "400":
       description: Bad request
       headers:

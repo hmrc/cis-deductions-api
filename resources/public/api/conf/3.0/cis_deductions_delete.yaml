@@ -28,7 +28,7 @@ delete:
 
   responses:
     "204":
-      description: No Content
+      description: Success (No Content)
       headers:
         X-CorrelationId:
           $ref: './common/headers.yaml#/components/parameters/correlationId'
