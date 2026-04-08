@@ -32,12 +32,9 @@ post:
     content:
       application/json:
         schema:
-          $ref: './schemas/create_request.json'
-        examples:
-          example-1:
-            description: Create CIS request
-            value:
-              $ref: './examples/create_request.json'
+          $ref: './schemas/cis_deductions_create/request.json'
+        example:
+          $ref: './examples/cis_deductions_create/request.json'
 
   responses:
     "200":
@@ -54,12 +51,9 @@ post:
       content:
         application/json:
           schema:
-            $ref: './schemas/create_response.json'
-          examples:
-            example-user-response:
-              description: Example user response
-              value:
-                $ref: './examples/example_1.json'
+            $ref: './schemas/cis_deductions_create/response.json'
+          example:
+            $ref: './examples/cis_deductions_create/response.json'
     "400":
       description: Bad request
       headers:
