@@ -144,10 +144,10 @@ components:
 
     ruleDuplicateSubmission:
       description: |
-        CIS deductions already exists for this tax year.
+        CIS deduction already exists for contractor this tax year.
       value:
         code: RULE_DUPLICATE_SUBMISSION
-        message: CIS deduction already exists for this tax year
+        message: CIS deduction already exists for contractor this tax year
 
     ruleFromDate:
       description: |

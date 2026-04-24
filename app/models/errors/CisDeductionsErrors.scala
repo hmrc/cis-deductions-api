@@ -42,7 +42,8 @@ object RuleDateRangeOutOfDateError
 
 object RuleSourceInvalidError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid", BAD_REQUEST)
 
-object RuleDuplicateSubmissionError extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for this tax year", BAD_REQUEST)
+object RuleDuplicateSubmissionError
+    extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for contractor this tax year", BAD_REQUEST)
 
 object EmployerRefFormatError extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid", BAD_REQUEST)
 
