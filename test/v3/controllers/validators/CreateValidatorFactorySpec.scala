@@ -17,19 +17,20 @@
 package v3.controllers.validators
 
 import config.MockCisDeductionsApiConfig
-import models.errors.{EmployerRefFormatError, RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
-import play.api.libs.json.JsValue
+import models.errors.{ContractorNameFormatError, EmployerRefFormatError, RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
+import play.api.libs.json.{JsString, JsValue}
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.*
+import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.create
 import v3.models.request.create.CreateRequestData
 
-class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
+class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig with JsonErrorValidators {
 
   private given correlationId: String = "1234"
   val nino                            = "AA123456A"
@@ -156,6 +157,11 @@ class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with 
       "invalid date range before minimum tax year is provided" in new Test {
         private val result = validator(nino, requestBodyJsonErrorNotSupportedTaxYear).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "invalid contractor name format is provided" in new Test {
+        private val result = validator(nino, requestBodyJson.update("/contractorName", JsString("a" * 106))).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, ContractorNameFormatError))
       }
 
       "invalid employer reference format is provided" in new Test {

@@ -84,6 +84,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/formatFromDate'
             FORMAT_TO_DATE:
               $ref: './common/errors.yaml#/components/examples/formatToDate'
+            FORMAT_CONTRACTOR_NAME:
+              $ref: './common/errors.yaml#/components/examples/formatContractorName'
             RULE_DEDUCTIONS_AMOUNT:
               $ref: './common/errors.yaml#/components/examples/ruleDeductionsAmount'
             RULE_COST_OF_MATERIALS:

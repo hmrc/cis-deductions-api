@@ -73,3 +73,10 @@ object RuleOutsideAmendmentWindowError
       message = "You are outside the amendment window",
       BAD_REQUEST
     )
+
+object ContractorNameFormatError
+    extends MtdError(
+      code = "FORMAT_CONTRACTOR_NAME ",
+      message = "The provided contractor name is invalid",
+      BAD_REQUEST
+    )
