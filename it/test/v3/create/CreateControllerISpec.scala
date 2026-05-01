@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,18 @@ package v3.create
 import models.errors.*
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.{
-  FromDateFormatError,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  RuleDateRangeInvalidError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearNotEndedError,
-  RuleTaxYearNotSupportedError,
-  ToDateFormatError
-}
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import shared.models.utils.JsonErrorValidators
 
-class CreateControllerISpec extends IntegrationBaseSpec {
+class CreateControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
   "Calling the create endpoint" should {
 
@@ -73,6 +64,7 @@ class CreateControllerISpec extends IntegrationBaseSpec {
           ("AA1123A", requestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", emptyRequest, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123456A", requestInvalidEmpRef, BAD_REQUEST, EmployerRefFormatError),
+          ("AA123456A", requestBodyJson.update("/contractorName", JsString("a" * 106)), BAD_REQUEST, ContractorNameFormatError),
           ("AA123456A", requestRuleDeductionAmountJson, BAD_REQUEST, RuleDeductionAmountError),
           ("AA123456A", requestInvalidRuleCostOfMaterialsJson, BAD_REQUEST, RuleCostOfMaterialsError),
           ("AA123456A", requestInvalidGrossAmountJson, BAD_REQUEST, RuleGrossAmountError),

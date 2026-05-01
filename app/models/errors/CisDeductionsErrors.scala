@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,5 +71,12 @@ object RuleOutsideAmendmentWindowError
     extends MtdError(
       code = "RULE_OUTSIDE_AMENDMENT_WINDOW",
       message = "You are outside the amendment window",
+      BAD_REQUEST
+    )
+
+object ContractorNameFormatError
+    extends MtdError(
+      code = "FORMAT_CONTRACTOR_NAME ",
+      message = "The provided contractor name is invalid",
       BAD_REQUEST
     )

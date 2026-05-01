@@ -64,6 +64,13 @@ components:
       value:
         code: FORMAT_TO_DATE
         message: The provided To date is invalid
+        
+    formatContractorName:
+      description: |
+        The contractor name is not a valid format.
+      value:
+        code: FORMAT_CONTRACTOR_NAME
+        message: The provided contractor name is invalid
 
     incorrectOrEmptyBody:
       description: |
