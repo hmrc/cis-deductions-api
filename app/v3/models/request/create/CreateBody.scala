@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import v3.models.request.amend.PeriodDetails
 case class CreateBody(
     fromDate: String,
     toDate: String,
-    contractorName: String,
+    contractorName: Option[String],
     employerRef: String,
     periodData: Seq[PeriodDetails]
 )
