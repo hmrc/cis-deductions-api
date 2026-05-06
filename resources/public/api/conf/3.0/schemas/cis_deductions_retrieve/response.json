@@ -46,7 +46,7 @@
             "example": "2021-04-05"
           },
           "contractorName": {
-            "description": "The name of the contractor the subcontractor worked for. Must not be empty or contain only whitespace.",
+            "description": "The name of the contractor the subcontractor worked for.",
             "type": "string",
             "pattern": "^.{1,105}$",
             "example": "Some Contractor"
