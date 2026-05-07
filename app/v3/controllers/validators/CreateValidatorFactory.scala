@@ -20,14 +20,13 @@ import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
 import config.CisDeductionsApiConfig
-import models.errors.ContractorNameFormatError
+import models.errors.{ContractorNameFormatError, EmployerRefFormatError}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.*
 import shared.models.domain.{DateRange, TaxYear}
 import shared.models.errors.*
 import v3.controllers.validators.DeductionsValidator.*
-import v3.controllers.validators.resolvers.ResolveEmployeeRef
 import v3.models.request.create.{CreateBody, CreateRequestData}
 
 import javax.inject.{Inject, Singleton}
@@ -45,6 +44,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
     .withYearsLimitedTo(minYear, maxYear)
 
   private val contractorNameRegex = "^.{1,105}$".r
+  private val empRefFormat        = "[0-9]{3}/[^ ]{0,9}".r
 
   def validator(nino: String, body: JsValue): Validator[CreateRequestData] =
     new Validator[CreateRequestData] {
@@ -61,7 +61,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
         combine(
           validateDateRange(parsed.body.fromDate -> parsed.body.toDate),
           ResolveStringPattern(parsed.body.contractorName, contractorNameRegex, ContractorNameFormatError),
-          ResolveEmployeeRef(parsed.body.employerRef),
+          ResolveStringPattern(parsed.body.employerRef, empRefFormat, EmployerRefFormatError),
           validatePeriodData(periodData)
         ).map(_ => parsed)
       }
