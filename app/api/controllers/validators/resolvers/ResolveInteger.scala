@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
-import shared.models.errors.{MtdError, ValueFormatError}
+import api.models.errors.{MtdError, ValueFormatError}
 
 case class ResolveInteger(min: Int, max: Int) extends ResolverSupport {
 

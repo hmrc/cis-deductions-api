@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import org.scalamock.handlers.CallHandler
-import shared.config.{ConfidenceLevelConfig, MockSharedAppConfig}
-import shared.models.auth.UserDetails
-import shared.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
-import shared.models.outcomes.AuthOutcome
-import shared.services.EnrolmentsAuthService.{
+import api.config.{ConfidenceLevelConfig, MockSharedAppConfig}
+import api.models.auth.UserDetails
+import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
+import api.models.outcomes.AuthOutcome
+import api.services.EnrolmentsAuthService.{
   authorisationDisabledPredicate,
   authorisationEnabledPredicate,
   mtdEnrolmentPredicate,

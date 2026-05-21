@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
-import shared.utils.{MockIdGenerator, UnitSpec}
+import api.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class RequestContextSpec extends UnitSpec with MockIdGenerator {

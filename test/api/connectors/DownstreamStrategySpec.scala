@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
-import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
-import shared.utils.UnitSpec
+import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import api.utils.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

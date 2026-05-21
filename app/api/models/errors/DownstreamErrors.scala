@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.models.errors
+package api.models.errors
 
 import play.api.libs.json.{Json, Reads}
 

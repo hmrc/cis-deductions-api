@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.definition
+package api.definition
 
 import play.api.libs.json.{Format, Json, OFormat}
-import shared.routing.Version
-import shared.utils.enums.Enums
+import api.routing.Version
+import api.utils.enums.Enums
 
 enum APIStatus {
   case ALPHA, BETA, STABLE, DEPRECATED, RETIRED

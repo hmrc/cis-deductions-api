@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.controllers.{EndpointLogContext, RequestContext}
-import shared.utils.UnitSpec
+import api.controllers.{EndpointLogContext, RequestContext}
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext

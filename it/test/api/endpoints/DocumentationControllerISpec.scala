@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package shared.endpoints
+package api.endpoints
 
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import shared.config.SharedAppConfig
-import shared.routing.{Version, Versions}
-import shared.support.IntegrationBaseSpec
+import api.config.SharedAppConfig
+import api.routing.{Version, Versions}
+import api.support.IntegrationBaseSpec
 import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import scala.util.Try
 

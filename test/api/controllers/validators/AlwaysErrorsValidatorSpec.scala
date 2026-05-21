@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators
+package api.controllers.validators
 
 import cats.data.Validated.Invalid
 import play.api.http.Status
-import shared.models.errors.MtdError
-import shared.utils.UnitSpec
+import api.models.errors.MtdError
+import api.utils.UnitSpec
 
 class AlwaysErrorsValidatorSpec extends UnitSpec {
 

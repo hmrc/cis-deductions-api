@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators
+package api.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.*
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 /** For complex additional validating that needs to take place after the initial validation and parsing of the JSON payload.
   *

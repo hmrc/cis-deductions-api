@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
 import play.api.libs.json.{JsValue, Json}
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 import java.time.{LocalDate, ZoneId}
 

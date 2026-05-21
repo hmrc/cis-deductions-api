@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import cats.syntax.either.*
 import play.api.libs.json.{JsValue, Writes}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.auth.UserDetails
-import shared.models.errors.ErrorWrapper
-import shared.routing.Version
-import shared.services.AuditService
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.auth.UserDetails
+import api.models.errors.ErrorWrapper
+import api.routing.Version
+import api.services.AuditService
 
 import scala.Function.const
 import scala.concurrent.ExecutionContext

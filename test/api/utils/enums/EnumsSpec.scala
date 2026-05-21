@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.utils.enums
+package api.utils.enums
 
 import cats.Show
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.Inspectors
 import play.api.libs.json.*
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 enum Enum {
   case `enum-one`, `enum-two`, `enum-three`

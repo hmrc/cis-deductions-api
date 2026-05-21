@@ -18,12 +18,12 @@ package v3.services
 
 import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
-import shared.config.MockSharedAppConfig
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.controllers.EndpointLogContext
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.fixtures.RetrieveModels.*
 import v3.mocks.connectors.MockRetrieveConnector

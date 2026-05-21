@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.models.audit.AuditEvent
+import api.models.audit.AuditEvent
 import play.api.Configuration
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier

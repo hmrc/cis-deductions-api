@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.config.SharedAppConfig
-import shared.models.auth.UserDetails
-import shared.models.errors.{InternalError, *}
-import shared.models.outcomes.AuthOutcome
-import shared.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate}
-import shared.utils.Logging
+import api.config.SharedAppConfig
+import api.models.auth.UserDetails
+import api.models.errors.{InternalError, *}
+import api.models.outcomes.AuthOutcome
+import api.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate}
+import api.utils.Logging
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate

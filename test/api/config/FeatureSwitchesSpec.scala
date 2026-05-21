@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 import play.api.Configuration
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec with FeatureSwitchesBehaviour[FeatureSwitches] {
 

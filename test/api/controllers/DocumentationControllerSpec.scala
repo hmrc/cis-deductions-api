@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import com.typesafe.config.ConfigFactory
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
-import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import shared.config.rewriters.*
-import shared.config.{SharedAppConfig, MockSharedAppConfig, RealAppConfig}
-import shared.definition.*
-import shared.routing.{Version, Versions}
+import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
+import api.config.rewriters.*
+import api.config.{SharedAppConfig, MockSharedAppConfig, RealAppConfig}
+import api.definition.*
+import api.routing.{Version, Versions}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

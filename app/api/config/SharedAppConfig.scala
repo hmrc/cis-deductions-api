@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 import cats.data.Validated
 import cats.implicits.catsSyntaxValidatedId
 import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
-import shared.config.Deprecation.{Deprecated, NotDeprecated}
-import shared.routing.Version
+import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
 import play.api.libs.json.*
-import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
-import shared.models.errors.MtdError
-import shared.utils.Logging
+import api.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
+import api.models.errors.MtdError
+import api.utils.Logging
 
 class ResolveJsonObject[T](using val reads: Reads[T]) extends ResolverSupport with Logging {
 

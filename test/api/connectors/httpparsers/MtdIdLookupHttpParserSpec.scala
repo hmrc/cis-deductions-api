@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.connectors.httpparsers
+package api.connectors.httpparsers
 
 import play.api.http.Status.IM_A_TEAPOT
 import play.api.libs.json.Writes.StringWrites
 import play.api.libs.json.{JsResultException, Json}
 import play.api.test.Helpers.OK
-import shared.connectors.MtdIdLookupConnector
-import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
-import shared.utils.UnitSpec
+import api.connectors.MtdIdLookupConnector
+import api.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {

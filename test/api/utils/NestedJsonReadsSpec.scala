@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
-import shared.utils.NestedJsonReads.*
+import api.utils.NestedJsonReads.*
 
 class NestedJsonReadsSpec extends UnitSpec {
 

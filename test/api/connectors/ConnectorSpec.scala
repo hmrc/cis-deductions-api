@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
 import com.google.common.base.Charsets
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Writes}
-import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
-import shared.mocks.MockHttpClient
-import shared.utils.UnitSpec
+import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import api.mocks.MockHttpClient
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.net.URL

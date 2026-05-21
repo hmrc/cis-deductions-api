@@ -16,9 +16,9 @@
 
 package v3.connectors
 
-import shared.connectors.ConnectorSpec
-import shared.models.domain.Nino
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.ConnectorSpec
+import api.models.domain.Nino
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.fixtures.CreateRequestFixtures.parsedRequestData
 import v3.models.request.create

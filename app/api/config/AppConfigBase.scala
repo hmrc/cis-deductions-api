@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.models.errors
+package api.models.errors
 
-import shared.models.audit.AuditError
+import api.models.audit.AuditError
 import play.api.libs.json.{JsObject, Json, Writes}
 
 case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[Seq[MtdError]] = None) {

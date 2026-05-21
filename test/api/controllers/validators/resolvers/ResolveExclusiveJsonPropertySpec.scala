@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsObject, JsString}
-import shared.models.errors.MtdError
-import shared.utils.UnitSpec
+import api.models.errors.MtdError
+import api.utils.UnitSpec
 
 class ResolveExclusiveJsonPropertySpec extends UnitSpec {
 

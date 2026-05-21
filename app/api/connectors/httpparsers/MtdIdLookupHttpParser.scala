@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.connectors.httpparsers
+package api.connectors.httpparsers
 
 import play.api.http.Status.OK
 import play.api.libs.json.*
-import shared.connectors
-import shared.connectors.MtdIdLookupConnector
+import api.connectors
+import api.connectors.MtdIdLookupConnector
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object MtdIdLookupHttpParser extends HttpParser {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class NinoSpec extends UnitSpec {
 

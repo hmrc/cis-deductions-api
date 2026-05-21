@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, Writes}
-import shared.config.SharedAppConfig
-import shared.utils.{Logging, UrlUtils}
+import api.config.SharedAppConfig
+import api.utils.{Logging, UrlUtils}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue

@@ -19,7 +19,7 @@ package v3.controllers.validators.resolvers
 import cats.data.Validated.{Invalid, Valid}
 import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v3.controllers.validators.resolvers
 
 class ResolveSourceSpec extends UnitSpec {

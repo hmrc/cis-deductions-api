@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.config.rewriters
+package api.config.rewriters
 
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
-import shared.config.SharedAppConfig
+import api.config.SharedAppConfig
 
 trait HandlebarsRewriter {
   given appConfig: SharedAppConfig

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 case class EndpointLogContext(
     controllerName: String,

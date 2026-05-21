@@ -17,7 +17,7 @@
 package v3.models.errors
 
 import play.api.http.Status.BAD_REQUEST
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 object CisDeductionsApiCommonErrors {
 

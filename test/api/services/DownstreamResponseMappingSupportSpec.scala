@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Format, Json}
-import shared.controllers.EndpointLogContext
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.{Logging, UnitSpec}
+import api.controllers.EndpointLogContext
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.utils.{Logging, UnitSpec}
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 

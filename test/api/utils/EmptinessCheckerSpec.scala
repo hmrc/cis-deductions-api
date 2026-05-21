@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
-import shared.utils.EmptinessChecker.*
-import shared.utils.EmptyPathsResult.*
+import api.utils.EmptinessChecker.*
+import api.utils.EmptyPathsResult.*
 
 class EmptinessCheckerSpec extends UnitSpec {
 

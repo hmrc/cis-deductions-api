@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
-import shared.utils.UnitSpec
-import shared.models.domain.TaxYear.currentTaxYear
+import api.utils.UnitSpec
+import api.models.domain.TaxYear.currentTaxYear
 import java.time.{Clock, LocalDate, ZoneOffset}
 
 class TaxYearRangeSpec extends UnitSpec {

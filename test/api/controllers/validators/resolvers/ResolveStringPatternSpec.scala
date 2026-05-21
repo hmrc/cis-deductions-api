@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors.TaxYearFormatError
-import shared.utils.UnitSpec
+import api.models.errors.TaxYearFormatError
+import api.utils.UnitSpec
 
 import scala.util.matching.Regex
 

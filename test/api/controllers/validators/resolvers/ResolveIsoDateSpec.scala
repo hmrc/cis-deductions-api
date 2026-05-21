@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors.{DateFormatError, MtdError, RuleDateRangeInvalidError, StartDateFormatError}
-import shared.utils.UnitSpec
+import api.models.errors.{DateFormatError, MtdError, RuleDateRangeInvalidError, StartDateFormatError}
+import api.utils.UnitSpec
 
 import java.time.LocalDate
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
-import shared.config.SharedAppConfig
+import api.config.SharedAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 
@@ -34,7 +34,7 @@ object MtdIdLookupConnector {
 class MtdIdLookupConnector @Inject() (http: HttpClientV2, appConfig: SharedAppConfig) {
 
   def getMtdId(nino: String)(using hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupConnector.Outcome] = {
-    import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
+    import api.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 
     http.get(url"${appConfig.mtdIdBaseUrl}/mtd-identifier-lookup/nino/$nino").execute[MtdIdLookupConnector.Outcome]
   }

@@ -16,10 +16,10 @@
 
 package definition
 
-import shared.config.SharedAppConfig
-import shared.definition.*
-import shared.routing.Version3
-import shared.utils.Logging
+import api.config.SharedAppConfig
+import api.definition.*
+import api.routing.Version3
+import api.utils.Logging
 
 import javax.inject.{Inject, Singleton}
 

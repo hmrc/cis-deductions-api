@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import play.api.mvc.*
-import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
-import shared.models.auth.UserDetails
-import shared.models.errors.MtdError
-import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.config.{SharedAppConfig, ConfigFeatureSwitches}
+import api.models.auth.UserDetails
+import api.models.errors.MtdError
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.controllers.RequestContextImplicits
-import shared.utils.Logging
+import api.controllers.RequestContextImplicits
+import api.utils.Logging
 
 trait BaseService extends RequestContextImplicits with DownstreamResponseMappingSupport with Logging

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 import com.typesafe.config.ConfigFactory
 import play.api.ConfigLoader
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L500
 
 class ConfidenceLevelSpec extends UnitSpec {

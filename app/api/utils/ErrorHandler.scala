@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
 import play.api.*
 import play.api.http.Status.*
 import play.api.mvc.Results.*
 import play.api.mvc.*
-import shared.models.errors.*
-import shared.routing.Versions
+import api.models.errors.*
+import api.routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

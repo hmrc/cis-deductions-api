@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared
+package api
 
-import shared.models.errors.DownstreamError
-import shared.models.outcomes.ResponseWrapper
+import api.models.errors.DownstreamError
+import api.models.outcomes.ResponseWrapper
 
 package object connectors {
   type DownstreamOutcome[A] = Either[ResponseWrapper[DownstreamError], ResponseWrapper[A]]

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.utils
+package api.models.utils
 
 import play.api.libs.json.*
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 trait JsonErrorValidators {
   self: UnitSpec =>

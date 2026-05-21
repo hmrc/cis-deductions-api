@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
-import shared.models.errors.ErrorWrapper
+import api.models.errors.ErrorWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results.Status

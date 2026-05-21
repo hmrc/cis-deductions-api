@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.models.audit
+package api.models.audit
 
-import shared.controllers.{AuditHandler, RequestContext}
-import shared.models.auth.UserDetails
+import api.controllers.{AuditHandler, RequestContext}
+import api.models.auth.UserDetails
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, JsValue, OWrites}
-import shared.routing.Version
+import api.routing.Version
 
 case class GenericAuditDetail(userType: String,
                               agentReferenceNumber: Option[String],

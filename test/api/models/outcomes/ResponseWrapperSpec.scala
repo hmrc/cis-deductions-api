@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.outcomes
+package api.models.outcomes
 
 import play.api.libs.json.{JsValue, Json}
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class ResponseWrapperSpec extends UnitSpec {
 

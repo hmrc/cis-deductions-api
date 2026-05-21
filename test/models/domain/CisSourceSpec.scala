@@ -16,7 +16,7 @@
 
 package models.domain
 
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class CisSourceSpec extends UnitSpec {
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.domain.TransactionId
-import shared.models.errors.TransactionIdFormatError
-import shared.utils.UnitSpec
+import api.models.domain.TransactionId
+import api.models.errors.TransactionIdFormatError
+import api.utils.UnitSpec
 
 class ResolveTransactionIdSpec extends UnitSpec {
 

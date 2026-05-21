@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 import scala.util.matching.Regex
 

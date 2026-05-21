@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.utils.enums
+package api.utils.enums
 
 import cats.Show
 import play.api.libs.json.*

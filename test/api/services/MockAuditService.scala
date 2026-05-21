@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.models.audit.AuditEvent
+import api.models.audit.AuditEvent
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.Writes

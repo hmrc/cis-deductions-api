@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 import uk.gov.hmrc.http.HeaderCarrier
 import org.scalatest.TestSuite
 

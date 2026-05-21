@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.connectors.httpparsers
+package api.connectors.httpparsers
 
 import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json, Reads}
-import shared.connectors.DownstreamOutcome
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.UnitSpec
+import api.connectors.DownstreamOutcome
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 class StandardDownstreamHttpParserSpec extends UnitSpec {
@@ -38,7 +38,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   val correlationId = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
+  import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 
   val httpReads: HttpReads[DownstreamOutcome[Unit]] = summon
 

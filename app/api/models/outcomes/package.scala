@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models
+package api.models
 
-import shared.models.auth.UserDetails
-import shared.models.errors.MtdError
+import api.models.auth.UserDetails
+import api.models.errors.MtdError
 
 package object outcomes {
 

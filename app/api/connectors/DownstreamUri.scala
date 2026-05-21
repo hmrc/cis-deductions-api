@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
-import shared.config.{SharedAppConfig, DownstreamConfig}
+import api.config.{SharedAppConfig, DownstreamConfig}
 
 case class DownstreamUri[+Resp](
     path: String,

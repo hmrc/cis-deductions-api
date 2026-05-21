@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.domain.Nino
-import shared.models.errors.{MtdError, NinoFormatError}
+import api.models.domain.Nino
+import api.models.errors.{MtdError, NinoFormatError}
 
 object ResolveNino {
 

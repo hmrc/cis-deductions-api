@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import play.api.libs.json.{JsArray, JsObject, JsValue}
-import shared.models.errors.RuleIncorrectOrEmptyBodyError
-import shared.utils.Logging
+import api.models.errors.RuleIncorrectOrEmptyBodyError
+import api.utils.Logging
 import UnexpectedJsonFieldsValidator.SchemaStructureSource
-import shared.models.domain.TaxYear
+import api.models.domain.TaxYear
 import scala.compiletime.{constValue, erasedValue, summonInline}
 import scala.deriving.Mirror
 

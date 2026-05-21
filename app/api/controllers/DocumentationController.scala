@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import controllers.RewriteableAssets
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.rewriters.DocumentationRewriters
-import shared.definition.ApiDefinitionFactory
+import api.config.rewriters.DocumentationRewriters
+import api.definition.ApiDefinitionFactory
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}

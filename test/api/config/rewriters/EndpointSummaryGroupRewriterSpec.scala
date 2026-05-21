@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.config.rewriters
+package api.config.rewriters
 
 import com.github.jknack.handlebars.HandlebarsException
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.utils.UnitSpec
 
 class EndpointSummaryGroupRewriterSpec extends UnitSpec with MockSharedAppConfig {
 

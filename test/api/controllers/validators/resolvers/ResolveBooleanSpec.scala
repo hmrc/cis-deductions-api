@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.errors.BadRequestError
-import shared.utils.UnitSpec
+import api.models.errors.BadRequestError
+import api.utils.UnitSpec
 
 class ResolveBooleanSpec extends UnitSpec {
 

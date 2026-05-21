@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
 case class BusinessId(businessId: String) {
   override def toString: String = businessId

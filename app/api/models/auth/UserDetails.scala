@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package shared.models.auth
+package api.models.auth
 
 case class UserDetails(mtdId: String, userType: String, agentReferenceNumber: Option[String])

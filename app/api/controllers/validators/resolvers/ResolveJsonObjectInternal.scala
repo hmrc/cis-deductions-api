@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.*
-import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import shared.utils.Logging
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import api.utils.Logging
 
 class ResolveJsonObjectInternal[A](using val reads: Reads[A]) extends ResolverSupport with Logging {
 

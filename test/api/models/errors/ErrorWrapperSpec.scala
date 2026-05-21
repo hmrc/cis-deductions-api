@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.models.errors
+package api.models.errors
 
 import play.api.libs.json.Json
-import shared.models.audit.AuditError
-import shared.utils.UnitSpec
+import api.models.audit.AuditError
+import api.utils.UnitSpec
 
 class ErrorWrapperSpec extends UnitSpec {
 

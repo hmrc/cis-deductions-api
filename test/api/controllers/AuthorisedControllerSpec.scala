@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import play.api.Configuration
 import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Result}
-import shared.config.MockSharedAppConfig
-import shared.models.auth.UserDetails
-import shared.models.errors.*
-import shared.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
+import api.config.MockSharedAppConfig
+import api.models.auth.UserDetails
+import api.models.errors.*
+import api.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.models.domain.CalculationId
-import shared.models.errors.CalculationIdFormatError
-import shared.utils.UnitSpec
+import api.models.domain.CalculationId
+import api.models.errors.CalculationIdFormatError
+import api.utils.UnitSpec
 
 class ResolveCalculationIdSpec extends UnitSpec {
 

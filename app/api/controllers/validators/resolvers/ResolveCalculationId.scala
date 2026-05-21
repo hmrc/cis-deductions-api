@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
-import shared.models.domain.CalculationId
-import shared.models.errors.{CalculationIdFormatError, MtdError}
+import api.models.domain.CalculationId
+import api.models.errors.{CalculationIdFormatError, MtdError}
 
 object ResolveCalculationId extends ResolverSupport {
 

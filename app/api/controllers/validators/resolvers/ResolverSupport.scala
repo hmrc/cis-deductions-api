@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 import scala.math.Ordered.orderingToOrdered
 

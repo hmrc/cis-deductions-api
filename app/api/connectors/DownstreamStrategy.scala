@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
 import com.google.common.base.Charsets
-import shared.config.{SharedAppConfig, BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig}
+import api.config.{SharedAppConfig, BasicAuthDownstreamConfig, ConfigFeatureSwitches, DownstreamConfig}
 
 import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}

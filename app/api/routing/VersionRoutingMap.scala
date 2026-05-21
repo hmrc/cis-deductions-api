@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.routing
+package api.routing
 
 import play.api.routing.Router
 

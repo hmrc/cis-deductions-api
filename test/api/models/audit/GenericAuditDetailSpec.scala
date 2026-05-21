@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.models.audit
+package api.models.audit
 
 import play.api.libs.json.Json
-import shared.models.audit.GenericAuditDetailFixture.*
-import shared.utils.UnitSpec
+import api.models.audit.GenericAuditDetailFixture.*
+import api.utils.UnitSpec
 
 class GenericAuditDetailSpec extends UnitSpec {
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.config.rewriters
+package api.config.rewriters
 
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.utils.UnitSpec
 
 class EndpointSummaryRewriterSpec extends UnitSpec with MockSharedAppConfig {
 

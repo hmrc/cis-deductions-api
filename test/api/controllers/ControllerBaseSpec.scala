@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import cats.implicits.catsSyntaxValidatedId
 import play.api.http.{HeaderNames, MimeTypes, Status}
@@ -22,14 +22,14 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
-import shared.config.Deprecation.NotDeprecated
-import shared.config.{MockSharedAppConfig, RealAppConfig}
-import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
-import shared.models.domain.Nino
-import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
-import shared.routing.{Version, Version9}
-import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import shared.utils.{MockIdGenerator, UnitSpec}
+import api.config.Deprecation.NotDeprecated
+import api.config.{MockSharedAppConfig, RealAppConfig}
+import api.models.audit.{AuditError, AuditEvent, AuditResponse}
+import api.models.domain.Nino
+import api.models.errors.{BadRequestError, ErrorWrapper, MtdError}
+import api.routing.{Version, Version9}
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

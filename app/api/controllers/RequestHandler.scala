@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import cats.data.EitherT
 import cats.data.Validated.Valid
@@ -23,15 +23,15 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import shared.config.SharedAppConfig
-import shared.config.Deprecation.Deprecated
-import shared.controllers.validators.Validator
-import shared.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.Version
-import shared.services.ServiceOutcome
-import shared.utils.DateUtils.longDateTimestampGmt
-import shared.utils.Logging
+import api.config.SharedAppConfig
+import api.config.Deprecation.Deprecated
+import api.controllers.validators.Validator
+import api.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
+import api.models.outcomes.ResponseWrapper
+import api.routing.Version
+import api.services.ServiceOutcome
+import api.utils.DateUtils.longDateTimestampGmt
+import api.utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 

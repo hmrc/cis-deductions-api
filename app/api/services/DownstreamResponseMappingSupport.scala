@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.controllers.EndpointLogContext
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.Logging
+import api.controllers.EndpointLogContext
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.utils.Logging
 
 trait DownstreamResponseMappingSupport {
   self: Logging =>

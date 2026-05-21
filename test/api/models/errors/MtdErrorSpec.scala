@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.models.errors
+package api.models.errors
 
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class MtdErrorSpec extends UnitSpec {
 

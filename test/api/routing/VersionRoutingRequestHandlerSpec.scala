@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.routing
+package api.routing
 
 import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside
@@ -24,9 +24,9 @@ import play.api.mvc.*
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import shared.config.MockSharedAppConfig
-import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import api.utils.UnitSpec
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSharedAppConfig with GuiceOneAppPerSuite {
   test =>

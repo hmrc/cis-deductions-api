@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
-import shared.connectors.{MockMtdIdLookupConnector, MtdIdLookupConnector}
-import shared.models.errors.*
-import shared.services.MtdIdLookupService.Outcome
+import api.connectors.{MockMtdIdLookupConnector, MtdIdLookupConnector}
+import api.models.errors.*
+import api.services.MtdIdLookupService.Outcome
 
 import scala.concurrent.Future
 

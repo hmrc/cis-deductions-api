@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import shared.models.auth.UserDetails
-import shared.models.outcomes.AuthOutcome
+import api.models.auth.UserDetails
+import api.models.outcomes.AuthOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import org.scalatest.TestSuite
 

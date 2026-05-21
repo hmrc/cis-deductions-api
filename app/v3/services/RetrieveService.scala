@@ -18,9 +18,9 @@ package v3.services
 
 import cats.implicits.toBifunctorOps
 import models.errors.RuleSourceInvalidError
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.RetrieveConnector
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}

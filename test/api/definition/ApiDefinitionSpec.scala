@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.definition
+package api.definition
 
 import play.api.libs.json.*
-import shared.routing.Version3
-import shared.utils.UnitSpec
+import api.routing.Version3
+import api.utils.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 

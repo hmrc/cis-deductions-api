@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.routing
+package api.routing
 
 import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json.Writes.*

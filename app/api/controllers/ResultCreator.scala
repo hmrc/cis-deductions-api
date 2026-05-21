@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}

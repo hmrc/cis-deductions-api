@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.schema
+package api.schema
 
 import play.api.libs.json.Reads
 

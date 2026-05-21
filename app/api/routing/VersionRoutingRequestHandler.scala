@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.routing
+package api.routing
 
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
 import play.api.routing.Router
 import play.core.DefaultWebCommands
-import shared.config.SharedAppConfig
-import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import api.config.SharedAppConfig
+import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 
 import javax.inject.{Provider, Inject, Singleton}
 

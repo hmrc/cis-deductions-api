@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.models.audit
+package api.models.audit
 
 import play.api.libs.json.{JsValue, Json}
-import shared.models.audit.AuditResponseFixture.{auditResponseModelWithBody, auditResponseModelWithErrors}
-import shared.models.auth.UserDetails
-import shared.utils.UnitSpec
+import api.models.audit.AuditResponseFixture.{auditResponseModelWithBody, auditResponseModelWithErrors}
+import api.models.auth.UserDetails
+import api.utils.UnitSpec
 
 class FlattenedGenericAuditDetailSpec extends UnitSpec {
 

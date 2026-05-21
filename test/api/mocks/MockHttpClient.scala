@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.mocks
+package api.mocks
 
 import izumi.reflect.Tag
 import org.scalamock.handlers.CallHandler
@@ -23,7 +23,7 @@ import org.scalatest.TestSuite
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.JsValue
 import play.api.libs.ws.BodyWritable
-import shared.utils.UrlUtils
+import api.utils.UrlUtils
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 

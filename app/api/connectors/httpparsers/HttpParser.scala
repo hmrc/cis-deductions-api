@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.connectors.httpparsers
+package api.connectors.httpparsers
 
 import play.api.libs.json.*
-import shared.models.errors.*
-import shared.utils.Logging
+import api.models.errors.*
+import api.utils.Logging
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.util.Try

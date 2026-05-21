@@ -19,12 +19,12 @@ package v3.controllers.validators
 import config.MockCisDeductionsApiConfig
 import models.errors.{ContractorNameFormatError, EmployerRefFormatError, RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
 import play.api.libs.json.{JsString, JsValue}
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.create

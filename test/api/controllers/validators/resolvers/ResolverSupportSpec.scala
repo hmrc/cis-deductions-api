@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxOption
-import shared.models.errors.MtdError
-import shared.utils.UnitSpec
+import api.models.errors.MtdError
+import api.utils.UnitSpec
 
 import java.util.concurrent.atomic.AtomicInteger
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
 import scala.compiletime.{constValue, erasedValue, summonInline}
 import scala.deriving.Mirror

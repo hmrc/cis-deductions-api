@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators
+package api.controllers.validators
 
-import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
+import api.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.utils.Logging
+import api.utils.Logging
 import cats.implicits.*
 
 trait Validator[+PARSED] extends Logging {

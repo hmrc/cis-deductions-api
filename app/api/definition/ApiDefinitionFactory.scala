@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.definition
+package api.definition
 
 import cats.data.Validated.Invalid
-import shared.config.SharedAppConfig
-import shared.routing.Version
-import shared.utils.Logging
+import api.config.SharedAppConfig
+import api.routing.Version
+import api.utils.Logging
 
 trait ApiDefinitionFactory extends Logging {
 

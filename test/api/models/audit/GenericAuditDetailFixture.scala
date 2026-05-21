@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.models.audit
+package api.models.audit
 
-import shared.models.audit.AuditResponseFixture.{auditResponseJsonWithErrors, auditResponseModelWithBody, auditResponseModelWithErrors}
+import api.models.audit.AuditResponseFixture.{auditResponseJsonWithErrors, auditResponseModelWithBody, auditResponseModelWithErrors}
 import play.api.libs.json.{JsValue, Json}
 
 object GenericAuditDetailFixture {

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.config.rewriters
+package api.config.rewriters
 
-import shared.config.SharedAppConfig
-import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
+import api.config.SharedAppConfig
+import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
 import javax.inject.{Inject, Singleton}
 

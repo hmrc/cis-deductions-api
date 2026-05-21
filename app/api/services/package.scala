@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared
+package api
 
-import shared.models.errors.ErrorWrapper
-import shared.models.outcomes.ResponseWrapper
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 
 package object services {
 

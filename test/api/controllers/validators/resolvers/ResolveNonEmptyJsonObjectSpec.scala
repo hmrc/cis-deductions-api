@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.*
-import shared.models.errors.RuleIncorrectOrEmptyBodyError
-import shared.models.utils.JsonErrorValidators
-import shared.utils.{EmptinessChecker, UnitSpec}
+import api.models.errors.RuleIncorrectOrEmptyBodyError
+import api.models.utils.JsonErrorValidators
+import api.utils.{EmptinessChecker, UnitSpec}
 import EmptinessChecker.field
-import shared.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
+import api.controllers.validators.resolvers.UnexpectedJsonFieldsValidator.SchemaStructureSource
 
 class ResolveNonEmptyJsonObjectSpec extends UnitSpec with ResolverSupport with JsonErrorValidators {
 

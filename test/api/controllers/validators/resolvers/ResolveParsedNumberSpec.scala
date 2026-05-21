@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import shared.models.errors.ValueFormatError
-import shared.utils.UnitSpec
+import api.models.errors.ValueFormatError
+import api.utils.UnitSpec
 
 class ResolveParsedNumberSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks {
 

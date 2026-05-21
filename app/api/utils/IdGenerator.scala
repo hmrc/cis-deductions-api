@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
 import java.util.UUID
 import javax.inject.Singleton

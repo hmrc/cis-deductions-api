@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 case class DownstreamConfig(
     baseUrl: String,

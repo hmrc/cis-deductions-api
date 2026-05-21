@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.config
+package api.config
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import shared.config.Deprecation.{Deprecated, NotDeprecated}
-import shared.routing.*
-import shared.utils.UnitSpec
+import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.routing.*
+import api.utils.UnitSpec
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -387,7 +387,7 @@ class SharedAppConfigSpec extends UnitSpec {
       """
         |  appName = "any-name-api"
         |  appUrl = "http://localhost:9999"
-        |  
+        |
         |  api {
         |""".stripMargin ++
 
@@ -395,7 +395,7 @@ class SharedAppConfigSpec extends UnitSpec {
 
         """
           |  }
-          |  
+          |
           |  microservice {
           |    services {
           |      mtd-id-lookup {

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
 import org.scalatest.Assertion
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.Json
-import shared.config.{MockSharedAppConfig, SharedAppConfig}
-import shared.mocks.MockHttpClient
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.UnitSpec
+import api.config.{MockSharedAppConfig, SharedAppConfig}
+import api.mocks.MockHttpClient
+import api.models.outcomes.ResponseWrapper
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 

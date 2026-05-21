@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package shared.utils
+package api.utils
 
-import shared.utils.UrlUtils.*
+import api.utils.UrlUtils.*
 
 class UrlUtilsSpec extends UnitSpec {
 

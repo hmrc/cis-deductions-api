@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package shared.config.rewriters
+package api.config.rewriters
 
 import controllers.Rewriter
 import play.api.Configuration
-import shared.config.MockSharedAppConfig
-import shared.config.rewriters.DocumentationRewriters.CheckRewrite
-import shared.utils.UnitSpec
+import api.config.MockSharedAppConfig
+import api.config.rewriters.DocumentationRewriters.CheckRewrite
+import api.utils.UnitSpec
 
 class OasFeatureRewriterSpec extends UnitSpec with MockSharedAppConfig {
 

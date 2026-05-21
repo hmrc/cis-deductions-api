@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.utils.enums
+package api.utils.enums
 
 import play.api.libs.json.{Format, JsString, Json, Reads, Writes}
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 trait EnumJsonSpecSupport {
   self: UnitSpec =>

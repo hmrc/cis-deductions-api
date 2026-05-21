@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package shared.services
+package api.services
 
 import play.api.http.Status.*
-import shared.connectors.MtdIdLookupConnector
-import shared.controllers.validators.resolvers.ResolveNino
-import shared.models.errors.{InvalidBearerTokenError, NinoFormatError, _}
+import api.connectors.MtdIdLookupConnector
+import api.controllers.validators.resolvers.ResolveNino
+import api.models.errors.{InvalidBearerTokenError, NinoFormatError, _}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}

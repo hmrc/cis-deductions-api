@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators
+package api.controllers.validators
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.MtdError
-import shared.utils.UnitSpec
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.MtdError
+import api.utils.UnitSpec
 
 class RulesValidatorSpec extends UnitSpec {
 

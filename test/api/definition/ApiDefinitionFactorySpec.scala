@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package shared.definition
+package api.definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.config.Deprecation.NotDeprecated
-import shared.config.{SharedAppConfig, MockSharedAppConfig}
-import shared.definition.APIStatus.{ALPHA, BETA}
-import shared.mocks.MockHttpClient
-import shared.routing.*
-import shared.utils.UnitSpec
+import api.config.Deprecation.NotDeprecated
+import api.config.{SharedAppConfig, MockSharedAppConfig}
+import api.definition.APIStatus.{ALPHA, BETA}
+import api.mocks.MockHttpClient
+import api.routing.*
+import api.utils.UnitSpec
 
 import scala.language.reflectiveCalls
 

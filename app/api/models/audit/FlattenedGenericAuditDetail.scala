@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.models.audit
+package api.models.audit
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, JsValue, OWrites}
-import shared.models.auth.UserDetails
+import api.models.auth.UserDetails
 
 import scala.util.Try
 

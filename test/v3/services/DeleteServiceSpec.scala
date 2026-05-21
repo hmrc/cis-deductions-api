@@ -17,9 +17,9 @@
 package v3.services
 
 import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.{
+import api.controllers.EndpointLogContext
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.{
   DownstreamErrorCode,
   DownstreamErrors,
   ErrorWrapper,
@@ -30,8 +30,8 @@ import shared.models.errors.{
   RuleTaxYearNotSupportedError,
   TaxYearFormatError
 }
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.UnitSpec
+import api.models.outcomes.ResponseWrapper
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.connectors.MockDeleteConnector
 import v3.models.domain.SubmissionId

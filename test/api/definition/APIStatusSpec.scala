@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.definition
+package api.definition
 
-import shared.definition.APIStatus.{ALPHA, BETA, DEPRECATED, RETIRED, STABLE}
-import shared.utils.UnitSpec
-import shared.utils.enums.EnumJsonSpecSupport
+import api.definition.APIStatus.{ALPHA, BETA, DEPRECATED, RETIRED, STABLE}
+import api.utils.UnitSpec
+import api.utils.enums.EnumJsonSpecSupport
 
 class APIStatusSpec extends UnitSpec with EnumJsonSpecSupport {
 

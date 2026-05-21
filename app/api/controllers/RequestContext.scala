@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import uk.gov.hmrc.http.HeaderCarrier
-import shared.utils.IdGenerator
+import api.utils.IdGenerator
 
 case class RequestContext(hc: HeaderCarrier, correlationId: String, endpointLogContext: EndpointLogContext) {
 

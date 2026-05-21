@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.connectors
+package api.connectors
 
-import shared.config.MockSharedAppConfig
-import shared.connectors.MtdIdLookupConnector.Outcome
-import shared.mocks.MockHttpClient
+import api.config.MockSharedAppConfig
+import api.connectors.MtdIdLookupConnector.Outcome
+import api.mocks.MockHttpClient
 import uk.gov.hmrc.http.StringContextOps
 
 import scala.concurrent.Future

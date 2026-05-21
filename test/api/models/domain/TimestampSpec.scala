@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
 import play.api.libs.json.{Json, OWrites, Reads}
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class TimestampSpec extends UnitSpec {
 

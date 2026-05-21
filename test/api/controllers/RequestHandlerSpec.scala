@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package api.controllers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -24,16 +24,16 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.{FakeRequest, ResultExtractors}
-import shared.config.Deprecation.{Deprecated, NotDeprecated}
-import shared.config.{SharedAppConfig, Deprecation, MockSharedAppConfig}
-import shared.controllers.validators.Validator
-import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.auth.UserDetails
-import shared.models.errors.{ErrorWrapper, InternalError, MtdError, NinoFormatError}
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
-import shared.services.{MockAuditService, ServiceOutcome}
-import shared.utils.{MockIdGenerator, UnitSpec}
+import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.config.{SharedAppConfig, Deprecation, MockSharedAppConfig}
+import api.controllers.validators.Validator
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.auth.UserDetails
+import api.models.errors.{ErrorWrapper, InternalError, MtdError, NinoFormatError}
+import api.models.outcomes.ResponseWrapper
+import api.routing.{Version, Version3}
+import api.services.{MockAuditService, ServiceOutcome}
+import api.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 

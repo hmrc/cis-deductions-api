@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package api.models.domain
 
 import play.api.libs.json.*
-import shared.utils.enums.Enums
+import api.utils.enums.Enums
 
 enum Status {
   case valid, invalid, superseded

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.controllers.validators.resolvers
 
 import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+import api.models.domain.BusinessId
+import api.models.errors.{BusinessIdFormatError, MtdError}
 
 object ResolveBusinessId extends ResolverSupport {
 
