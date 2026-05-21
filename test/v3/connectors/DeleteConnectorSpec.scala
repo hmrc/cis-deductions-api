@@ -63,7 +63,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
   trait Test { self: ConnectorTest =>
     def taxYear: TaxYear
 
-    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
     protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), taxYear)
   }
 

@@ -18,7 +18,7 @@ package v3.controllers.validators
 
 import config.MockCisDeductionsApiConfig
 import models.errors.SubmissionIdFormatError
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
@@ -26,7 +26,7 @@ import api.utils.UnitSpec
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
 
-class DeleteValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
+class DeleteValidatorFactorySpec extends UnitSpec with MockAppConfig with MockCisDeductionsApiConfig {
 
   private given correlationId: String = "1234"
 

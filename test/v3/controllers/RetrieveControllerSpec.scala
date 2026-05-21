@@ -20,7 +20,7 @@ import models.domain.CisSource
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
@@ -40,7 +40,7 @@ class RetrieveControllerSpec
     with ControllerTestRunner
     with MockedRetrieveValidatorFactory
     with MockRetrieveService
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockAuditService {
 
   private val fromDate = "2019-04-06"
@@ -55,8 +55,8 @@ class RetrieveControllerSpec
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
 
-        MockedSharedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/deductions/cis").anyNumberOfTimes()
+        MockedAppConfig.featureSwitchConfig.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         willUseValidator(returningSuccess(retrieveRequestData))
 
@@ -107,11 +107,11 @@ class RetrieveControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.retrieve(validNino, taxYearRaw, sourceRaw.toString)(fakeRequest)
 

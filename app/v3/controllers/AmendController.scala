@@ -18,7 +18,7 @@ package v3.controllers
 
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -35,7 +35,7 @@ class AmendController @Inject() (val authService: EnrolmentsAuthService,
                                  service: AmendService,
                                  auditService: AuditService,
                                  cc: ControllerComponents,
-                                 val idGenerator: IdGenerator)(using ec: ExecutionContext, appConfig: SharedAppConfig)
+                                 val idGenerator: IdGenerator)(using ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "amend"

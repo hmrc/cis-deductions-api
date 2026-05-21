@@ -20,7 +20,7 @@ import com.google.common.base.Charsets
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Writes}
-import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockSharedAppConfig}
+import api.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockAppConfig}
 import api.mocks.MockHttpClient
 import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,7 +29,7 @@ import java.net.URL
 import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames with MockHttpClient with MockSharedAppConfig {
+trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames with MockHttpClient with MockAppConfig {
 
   lazy val baseUrl            = "http://test-BaseUrl"
   given correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
@@ -123,13 +123,13 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait DesTest extends StandardConnectorTest {
     val name = "des"
 
-    MockedSharedAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
+    MockedAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait IfsTest extends StandardConnectorTest {
     override val name = "ifs"
 
-    MockedSharedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
+    MockedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
   protected trait HipTest extends ConnectorTest {
@@ -149,7 +149,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "Gov-Test-Scenario"    -> "DEFAULT"
     ) ++ intent.map("intent" -> _)
 
-    MockedSharedAppConfig.hipDownstreamConfig
+    MockedAppConfig.hipDownstreamConfig
       .anyNumberOfTimes() returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
 
   }

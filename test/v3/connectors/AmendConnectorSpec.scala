@@ -77,7 +77,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
     def taxYearIso: String
 
-    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     lazy val request: AmendRequestData = AmendRequestData(Nino(nino), SubmissionId(submissionId), TaxYear.fromIso(taxYearIso), amendRequestObj)
   }

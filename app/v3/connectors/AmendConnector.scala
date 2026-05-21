@@ -16,7 +16,7 @@
 
 package v3.connectors
 
-import api.config.SharedAppConfig
+import api.config.AppConfig
 import api.connectors.DownstreamUri.IfsUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -27,7 +27,7 @@ import v3.models.request.amend.AmendRequestData
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class AmendConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendDeduction(
       request: AmendRequestData

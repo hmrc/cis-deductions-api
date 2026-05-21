@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
 
-class SharedAppConfigSpec extends UnitSpec {
+class AppConfigSpec extends UnitSpec {
 
   private val simpleAppConfig = appConfig(versionConf = "")
 
@@ -200,7 +200,7 @@ class SharedAppConfigSpec extends UnitSpec {
   "deprecationFor" when {
     "the API version is not deprecated" should {
       "return NotDeprecated" in {
-        val config: SharedAppConfig = appConfig(
+        val config: AppConfig = appConfig(
           """
             |    1.0 {
             |      status = "BETA"
@@ -220,7 +220,7 @@ class SharedAppConfigSpec extends UnitSpec {
     "the API version is deprecated" when {
       "deprecatedOn is missing" should {
         "return the expected message" in {
-          val config: SharedAppConfig = appConfig(
+          val config: AppConfig = appConfig(
             """
               |    1.0 {
               |      status = "DEPRECATED"
@@ -243,7 +243,7 @@ class SharedAppConfigSpec extends UnitSpec {
         "sunsetEnabled is true (default)" when {
           "sunsetDate is provided" should {
             "return Deprecated with supplied sunsetDate" in {
-              val config: SharedAppConfig = appConfig(
+              val config: AppConfig = appConfig(
                 """
                   |    1.0 {
                   |      status = "DEPRECATED"
@@ -271,7 +271,7 @@ class SharedAppConfigSpec extends UnitSpec {
 
           "sunsetDate is not provided" should {
             "return Deprecated with default sunsetDate (+6 months)" in {
-              val config: SharedAppConfig = appConfig(
+              val config: AppConfig = appConfig(
                 """
                   |    1.0 {
                   |      status = "DEPRECATED"
@@ -300,7 +300,7 @@ class SharedAppConfigSpec extends UnitSpec {
         "sunsetEnabled is false" when {
           "sunsetDate is provided" should {
             "return Deprecated without the supplied sunsetDate" in {
-              val config: SharedAppConfig = appConfig(
+              val config: AppConfig = appConfig(
                 """
                   |    1.0 {
                   |      status = "DEPRECATED"
@@ -329,7 +329,7 @@ class SharedAppConfigSpec extends UnitSpec {
 
           "sunsetDate is not provided" should {
             "return Deprecated with no sunsetDate" in {
-              val config: SharedAppConfig = appConfig(
+              val config: AppConfig = appConfig(
                 """
                   |    1.0 {
                   |      status = "DEPRECATED"
@@ -358,7 +358,7 @@ class SharedAppConfigSpec extends UnitSpec {
 
         "sunsetDate is before deprecatedOn" should {
           "return the expected message" in {
-            val config: SharedAppConfig = appConfig(
+            val config: AppConfig = appConfig(
               """
                 |    1.0 {
                 |      status = "DEPRECATED"
@@ -382,7 +382,7 @@ class SharedAppConfigSpec extends UnitSpec {
     }
   }
 
-  private def appConfig(versionConf: String): SharedAppConfig = {
+  private def appConfig(versionConf: String): AppConfig = {
     val conf = ConfigFactory.parseString(
       """
         |  appName = "any-name-api"
@@ -426,7 +426,7 @@ class SharedAppConfigSpec extends UnitSpec {
 
     val configuration  = Configuration(conf)
     val servicesConfig = new ServicesConfig(configuration)
-    new SharedAppConfig(servicesConfig, configuration)
+    new AppConfig(servicesConfig, configuration)
   }
 
 }

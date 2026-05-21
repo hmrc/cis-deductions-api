@@ -31,7 +31,7 @@ class CreateConnectorSpec extends ConnectorSpec {
   trait Test { self: ConnectorTest =>
     val toDate: String
 
-    val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: CreateConnector = new CreateConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val outcome = Right(ResponseWrapper(correlationId, CreateResponseModel("123456789")))
 

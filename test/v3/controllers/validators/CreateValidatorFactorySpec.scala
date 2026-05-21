@@ -19,7 +19,7 @@ package v3.controllers.validators
 import config.MockCisDeductionsApiConfig
 import models.errors.{ContractorNameFormatError, EmployerRefFormatError, RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
 import play.api.libs.json.{JsString, JsValue}
-import api.config.MockSharedAppConfig
+import api.config.MockAppConfig
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
@@ -30,7 +30,7 @@ import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatErr
 import v3.models.request.create
 import v3.models.request.create.CreateRequestData
 
-class CreateValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig with JsonErrorValidators {
+class CreateValidatorFactorySpec extends UnitSpec with MockAppConfig with MockCisDeductionsApiConfig with JsonErrorValidators {
 
   private given correlationId: String = "1234"
   val nino                            = "AA123456A"
