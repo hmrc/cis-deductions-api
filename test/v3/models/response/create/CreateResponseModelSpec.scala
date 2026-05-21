@@ -17,11 +17,11 @@
 package v3.models.response.create
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.utils.UnitSpec
 import v3.fixtures.CreateRequestFixtures.*
 
-class CreateResponseModelSpec extends UnitSpec with MockSharedAppConfig {
+class CreateResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "CisDeductionsResponseModel" when {
     " write to JSON " should {

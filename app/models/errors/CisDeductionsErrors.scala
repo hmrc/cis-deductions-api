@@ -16,7 +16,7 @@
 
 package models.errors
 
-import shared.models.errors.MtdError
+import api.models.errors.MtdError
 
 import play.api.http.Status.*
 

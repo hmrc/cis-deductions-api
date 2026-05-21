@@ -18,7 +18,7 @@ package v3.mocks.connectors
 
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
-import shared.connectors.DownstreamOutcome
+import api.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.AmendConnector
 import v3.models.request.amend.AmendRequestData

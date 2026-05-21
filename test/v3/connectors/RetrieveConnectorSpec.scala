@@ -17,9 +17,9 @@
 package v3.connectors
 
 import models.domain.CisSource
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}
@@ -109,7 +109,7 @@ class RetrieveConnectorSpec extends ConnectorSpec {
 
     protected val taxYear: TaxYear = TaxYear.fromIso(endDate)
 
-    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    protected val connector: RetrieveConnector = new RetrieveConnector(http = mockHttpClient, appConfig = mockAppConfig)
     protected val request: RetrieveRequestData = RetrieveRequestData(Nino(nino), taxYear, CisSource.`contractor`)
   }
 

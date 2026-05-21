@@ -17,8 +17,8 @@
 package config
 
 import play.api.Configuration
-import shared.config.FeatureSwitchesBehaviour
-import shared.utils.UnitSpec
+import api.config.FeatureSwitchesBehaviour
+import api.utils.UnitSpec
 
 class CisDeductionApiFeatureSwitchesSpec extends UnitSpec with FeatureSwitchesBehaviour[CisDeductionsApiFeatureSwitches] {
   override def featureSwitches(configuration: Configuration): CisDeductionsApiFeatureSwitches = CisDeductionsApiFeatureSwitches(configuration)

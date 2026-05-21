@@ -20,13 +20,13 @@ import models.errors.RuleUnalignedDeductionsPeriodError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.Nino
-import shared.models.errors.{ErrorWrapper, NinoFormatError}
-import shared.models.outcomes.ResponseWrapper
-import shared.services.MockAuditService
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.Nino
+import api.models.errors.{ErrorWrapper, NinoFormatError}
+import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import v3.controllers.validators.MockedCreateValidatorFactory
 import v3.fixtures.AmendRequestFixtures.requestJson
 import v3.fixtures.CreateRequestFixtures.*
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class CreateControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockedCreateValidatorFactory
     with MockCreateService
     with MockAuditService {
@@ -101,11 +101,11 @@ class CreateControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.create(validNino)(fakePostRequest(requestJson))
 

@@ -16,9 +16,9 @@
 
 package v3.connectors
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
@@ -63,7 +63,7 @@ class DeleteConnectorSpec extends ConnectorSpec {
   trait Test { self: ConnectorTest =>
     def taxYear: TaxYear
 
-    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    protected val connector: DeleteConnector = new DeleteConnector(http = mockHttpClient, appConfig = mockAppConfig)
     protected val request: DeleteRequestData = DeleteRequestData(Nino(nino), SubmissionId(submissionId), taxYear)
   }
 

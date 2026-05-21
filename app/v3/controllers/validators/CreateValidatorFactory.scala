@@ -22,10 +22,10 @@ import cats.implicits.*
 import config.CisDeductionsApiConfig
 import models.errors.{ContractorNameFormatError, EmployerRefFormatError}
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.*
-import shared.models.domain.{DateRange, TaxYear}
-import shared.models.errors.*
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.{DateRange, TaxYear}
+import api.models.errors.*
 import v3.controllers.validators.DeductionsValidator.*
 import v3.models.request.create.{CreateBody, CreateRequestData}
 

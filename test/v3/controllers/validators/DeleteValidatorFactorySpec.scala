@@ -18,15 +18,15 @@ package v3.controllers.validators
 
 import config.MockCisDeductionsApiConfig
 import models.errors.SubmissionIdFormatError
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
 
-class DeleteValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockCisDeductionsApiConfig {
+class DeleteValidatorFactorySpec extends UnitSpec with MockAppConfig with MockCisDeductionsApiConfig {
 
   private given correlationId: String = "1234"
 

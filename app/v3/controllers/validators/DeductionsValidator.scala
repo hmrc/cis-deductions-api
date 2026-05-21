@@ -20,9 +20,9 @@ import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toTraverseOps
 import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError}
-import shared.controllers.validators.resolvers.*
-import shared.models.domain.{DateRange, TaxYear}
-import shared.models.errors.*
+import api.controllers.validators.resolvers.*
+import api.models.domain.{DateRange, TaxYear}
+import api.models.errors.*
 import v3.models.errors.CisDeductionsApiCommonErrors.*
 import v3.models.request.amend.PeriodDetails
 

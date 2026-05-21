@@ -18,14 +18,14 @@ package v3.controllers.validators
 
 import models.domain.CisSource
 import models.errors.RuleSourceInvalidError
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v3.models.request.retrieve.RetrieveRequestData
 
-class RetrieveValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private given correlationId: String = "1234"
 
   private val nino              = "AA123456A"

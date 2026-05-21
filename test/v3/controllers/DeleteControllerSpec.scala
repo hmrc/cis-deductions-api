@@ -20,13 +20,13 @@ import models.errors.SubmissionIdFormatError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.{ErrorWrapper, NinoFormatError}
-import shared.models.outcomes.ResponseWrapper
-import shared.services.MockAuditService
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.{ErrorWrapper, NinoFormatError}
+import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import v3.controllers.validators.MockedDeleteValidatorFactory
 import v3.mocks.services.MockDeleteService
 import v3.models.domain.SubmissionId
@@ -39,7 +39,7 @@ class DeleteControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockedDeleteValidatorFactory
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockDeleteService
     with MockAuditService {
 
@@ -97,11 +97,11 @@ class DeleteControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.delete(validNino, submissionId, rawTaxYear)(fakeRequest)
 

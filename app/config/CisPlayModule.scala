@@ -19,8 +19,8 @@ package config
 import com.google.inject.AbstractModule
 import definition.CisApiDefinitionFactory
 import routing.CisVersionRoutingMap
-import shared.definition.ApiDefinitionFactory
-import shared.routing.VersionRoutingMap
+import api.definition.ApiDefinitionFactory
+import api.routing.VersionRoutingMap
 
 class CisPlayModule extends AbstractModule {
 

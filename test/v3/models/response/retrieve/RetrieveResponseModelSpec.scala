@@ -17,11 +17,11 @@
 package v3.models.response.retrieve
 
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.utils.UnitSpec
 import v3.fixtures.{RetrieveJson, RetrieveModels}
 
-class RetrieveResponseModelSpec extends UnitSpec with MockSharedAppConfig {
+class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 
   "RetrieveResponseModel" when {
     "processing a complete response" should {

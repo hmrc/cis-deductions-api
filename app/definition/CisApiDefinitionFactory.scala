@@ -16,15 +16,15 @@
 
 package definition
 
-import shared.config.SharedAppConfig
-import shared.definition.*
-import shared.routing.Version3
-import shared.utils.Logging
+import api.config.AppConfig
+import api.definition.*
+import api.routing.Version3
+import api.utils.Logging
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CisApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory with Logging {
+class CisApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory with Logging {
 
   val definition: Definition =
     Definition(

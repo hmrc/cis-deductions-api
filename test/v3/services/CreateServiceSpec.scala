@@ -17,9 +17,9 @@
 package v3.services
 
 import models.errors.*
-import shared.controllers.EndpointLogContext
-import shared.models.domain.Nino
-import shared.models.errors.{
+import api.controllers.EndpointLogContext
+import api.models.domain.Nino
+import api.models.errors.{
   DownstreamErrorCode,
   DownstreamErrors,
   ErrorWrapper,
@@ -29,8 +29,8 @@ import shared.models.errors.{
   RuleTaxYearNotEndedError,
   RuleTaxYearNotSupportedError
 }
-import shared.models.outcomes.ResponseWrapper
-import shared.utils.UnitSpec
+import api.models.outcomes.ResponseWrapper
+import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.mocks.connectors.MockCreateConnector
 import v3.models.request.amend.PeriodDetails

@@ -16,11 +16,11 @@
 
 package v3.mocks.services
 
-import shared.models.outcomes.ResponseWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import shared.controllers.RequestContext
-import shared.models.errors.ErrorWrapper
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 import v3.services.RetrieveService

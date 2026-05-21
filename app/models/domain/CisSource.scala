@@ -17,7 +17,7 @@
 package models.domain
 
 import play.api.libs.json.*
-import shared.utils.enums.Enums
+import api.utils.enums.Enums
 
 enum CisSource {
   case all, contractor, customer

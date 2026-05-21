@@ -18,9 +18,9 @@ package v3.services
 
 import cats.implicits.toBifunctorOps
 import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
-import shared.controllers.RequestContext
-import shared.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, TaxYearFormatError}
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.services.{BaseService, ServiceOutcome}
 import v3.connectors.DeleteConnector
 import v3.models.request.delete.DeleteRequestData
 

@@ -16,9 +16,9 @@
 
 package v3.connectors
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.fixtures.AmendRequestFixtures.*
 import v3.models.domain.SubmissionId
@@ -77,7 +77,7 @@ class AmendConnectorSpec extends ConnectorSpec {
 
     def taxYearIso: String
 
-    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+    val connector: AmendConnector = new AmendConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     lazy val request: AmendRequestData = AmendRequestData(Nino(nino), SubmissionId(submissionId), TaxYear.fromIso(taxYearIso), amendRequestObj)
   }
