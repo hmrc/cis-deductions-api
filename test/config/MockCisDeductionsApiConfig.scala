@@ -16,9 +16,9 @@
 
 package config
 
+import api.models.domain.TaxYear
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import api.models.domain.TaxYear
 import org.scalatest.TestSuite
 
 trait MockCisDeductionsApiConfig extends TestSuite with MockFactory {

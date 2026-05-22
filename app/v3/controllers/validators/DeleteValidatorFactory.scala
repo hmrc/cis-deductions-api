@@ -16,11 +16,11 @@
 
 package v3.controllers.validators
 
-import cats.data.Validated
-import cats.implicits.catsSyntaxTuple3Semigroupal
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import api.models.errors.MtdError
+import cats.data.Validated
+import cats.implicits.catsSyntaxTuple3Semigroupal
 import v3.controllers.validators.resolvers.ResolveSubmissionId
 import v3.models.request.delete.DeleteRequestData
 

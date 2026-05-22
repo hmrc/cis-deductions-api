@@ -16,18 +16,18 @@
 
 package v3.amend
 
+import api.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import data.AmendDataExamples.*
 import models.errors.*
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import api.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import api.support.IntegrationBaseSpec
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
-import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class AmendControllerISpec extends IntegrationBaseSpec {
 

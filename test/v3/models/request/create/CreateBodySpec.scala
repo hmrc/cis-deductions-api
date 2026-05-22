@@ -16,8 +16,8 @@
 
 package v3.models.request.create
 
-import play.api.libs.json.{JsError, JsSuccess, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import v3.fixtures.CreateRequestFixtures.*
 
 class CreateBodySpec extends UnitSpec {

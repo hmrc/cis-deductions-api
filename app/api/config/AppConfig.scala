@@ -16,12 +16,12 @@
 
 package api.config
 
+import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.routing.Version
 import cats.data.Validated
 import cats.implicits.catsSyntaxValidatedId
 import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
-import api.config.Deprecation.{Deprecated, NotDeprecated}
-import api.routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 
 /** Do not extend/sub-class this class, instead make your own api-specific config file and pass in separately. */
 @Singleton
-class AppConfig @Inject()(val config: ServicesConfig, protected[config] val configuration: Configuration) extends AppConfigBase {
+class AppConfig @Inject() (val config: ServicesConfig, protected[config] val configuration: Configuration) extends AppConfigBase {
   // API name
   def appName: String = config.getString("appName")
 

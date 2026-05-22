@@ -16,10 +16,10 @@
 
 package v3.connectors
 
-import models.domain.CisSource
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import models.domain.CisSource
 import uk.gov.hmrc.http.StringContextOps
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, PeriodData, RetrieveResponseModel}

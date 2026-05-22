@@ -16,14 +16,14 @@
 
 package v3.mocks.connectors
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import api.connectors.DownstreamOutcome
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.RetrieveConnector
 import v3.models.request.retrieve.RetrieveRequestData
 import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
-import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -16,9 +16,9 @@
 
 package config
 
-import play.api.Configuration
 import api.config.FeatureSwitches
 import api.models.domain.TaxYear
+import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}

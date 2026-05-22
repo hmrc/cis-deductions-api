@@ -16,13 +16,13 @@
 
 package v3.controllers.validators
 
-import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
 import api.config.MockAppConfig
 import api.controllers.validators.Validator
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
 import v3.models.request.retrieve.RetrieveRequestData
 
 class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {

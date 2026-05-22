@@ -16,13 +16,13 @@
 
 package v3.mocks.connectors
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import api.connectors.DownstreamOutcome
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.DeleteConnector
 import v3.models.request.delete.DeleteRequestData
-import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 

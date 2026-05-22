@@ -16,11 +16,11 @@
 
 package v3.controllers.validators
 
-import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError, SubmissionIdFormatError}
-import play.api.libs.json.JsValue
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
+import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError, SubmissionIdFormatError}
+import play.api.libs.json.JsValue
 import v3.fixtures.AmendRequestFixtures.*
 import v3.models.domain.SubmissionId
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}

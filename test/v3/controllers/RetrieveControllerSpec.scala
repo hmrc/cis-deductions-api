@@ -16,10 +16,6 @@
 
 package v3.controllers
 
-import models.domain.CisSource
-import play.api.Configuration
-import play.api.libs.json.JsValue
-import play.api.mvc.Result
 import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -27,11 +23,16 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
+import models.domain.CisSource
+import play.api.Configuration
+import play.api.libs.json.JsValue
+import play.api.mvc.Result
 import v3.controllers.validators.MockedRetrieveValidatorFactory
 import v3.fixtures.RetrieveJson.*
 import v3.fixtures.RetrieveModels.*
 import v3.mocks.services.MockRetrieveService
 import v3.models.request.retrieve.RetrieveRequestData
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
