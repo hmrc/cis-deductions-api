@@ -16,8 +16,8 @@
 
 package routing
 
-import play.api.routing.Router
 import api.routing.{Version, Version3, VersionRoutingMap}
+import play.api.routing.Router
 
 import javax.inject.Inject
 

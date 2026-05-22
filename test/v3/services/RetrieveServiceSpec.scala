@@ -16,14 +16,14 @@
 
 package v3.services
 
-import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
 import api.config.MockAppConfig
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
+import models.domain.CisSource
+import models.errors.RuleSourceInvalidError
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.fixtures.RetrieveModels.*
 import v3.mocks.connectors.MockRetrieveConnector

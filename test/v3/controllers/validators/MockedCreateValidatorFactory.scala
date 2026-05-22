@@ -16,15 +16,15 @@
 
 package v3.controllers.validators
 
+import api.controllers.validators.Validator
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.JsValue
-import api.controllers.validators.Validator
-import api.models.errors.MtdError
-import v3.models.request.create.CreateRequestData
 import org.scalatest.TestSuite
+import play.api.libs.json.JsValue
+import v3.models.request.create.CreateRequestData
 
 trait MockedCreateValidatorFactory extends TestSuite with MockFactory {
   val mockedCreateValidatorFactory: CreateValidatorFactory = mock[CreateValidatorFactory]

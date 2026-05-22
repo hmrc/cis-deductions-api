@@ -16,12 +16,12 @@
 
 package auth
 
+import api.auth.AuthSupportingAgentsAllowedISpec
 import play.api.http.Status.CREATED
 import play.api.libs.json.JsValue
-import play.api.libs.ws.{WSRequest, WSResponse}
-import api.auth.AuthSupportingAgentsAllowedISpec
-import v3.fixtures.CreateRequestFixtures.{createDeductionResponseBody, requestBodyJsonTys}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import play.api.libs.ws.{WSRequest, WSResponse}
+import v3.fixtures.CreateRequestFixtures.{createDeductionResponseBody, requestBodyJsonTys}
 
 class CisDeductionsApiAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 

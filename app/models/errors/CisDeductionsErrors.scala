@@ -17,7 +17,6 @@
 package models.errors
 
 import api.models.errors.MtdError
-
 import play.api.http.Status.*
 
 object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid", BAD_REQUEST)

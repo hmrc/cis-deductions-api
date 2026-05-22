@@ -16,12 +16,12 @@
 
 package v3.controllers.validators
 
-import cats.data.Validated
-import cats.data.Validated.*
-import cats.implicits.*
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import api.models.errors.MtdError
+import cats.data.Validated
+import cats.data.Validated.*
+import cats.implicits.*
 import v3.controllers.validators.resolvers.ResolveSource
 import v3.models.request.retrieve.RetrieveRequestData
 

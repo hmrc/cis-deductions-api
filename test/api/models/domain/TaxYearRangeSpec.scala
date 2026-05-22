@@ -16,8 +16,9 @@
 
 package api.models.domain
 
-import api.utils.UnitSpec
 import api.models.domain.TaxYear.currentTaxYear
+import api.utils.UnitSpec
+
 import java.time.{Clock, LocalDate, ZoneOffset}
 
 class TaxYearRangeSpec extends UnitSpec {

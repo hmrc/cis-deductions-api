@@ -16,12 +16,12 @@
 
 package v3.controllers
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import v3.controllers.validators.DeleteValidatorFactory
 import v3.services.DeleteService
 

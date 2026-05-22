@@ -16,9 +16,9 @@
 
 package v3.controllers.validators.resolvers
 
+import api.utils.UnitSpec
 import cats.data.Validated.{Invalid, Valid}
 import models.errors.SubmissionIdFormatError
-import api.utils.UnitSpec
 import v3.models.domain.SubmissionId
 
 class ResolveSubmissionIdSpec extends UnitSpec {

@@ -16,14 +16,14 @@
 
 package v3.controllers.validators
 
+import api.controllers.validators.Validator
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import api.controllers.validators.Validator
-import api.models.errors.MtdError
-import v3.models.request.delete.DeleteRequestData
 import org.scalatest.TestSuite
+import v3.models.request.delete.DeleteRequestData
 
 trait MockedDeleteValidatorFactory extends TestSuite with MockFactory {
   val mockedDeleteValidatorFactory: DeleteValidatorFactory = mock[DeleteValidatorFactory]

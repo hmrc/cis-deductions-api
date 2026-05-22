@@ -16,16 +16,16 @@
 
 package v3.controllers.validators
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.{DateRange, TaxYear}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
 import config.CisDeductionsApiConfig
 import models.errors.{ContractorNameFormatError, EmployerRefFormatError}
 import play.api.libs.json.JsValue
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.*
-import api.models.domain.{DateRange, TaxYear}
-import api.models.errors.*
 import v3.controllers.validators.DeductionsValidator.*
 import v3.models.request.create.{CreateBody, CreateRequestData}
 

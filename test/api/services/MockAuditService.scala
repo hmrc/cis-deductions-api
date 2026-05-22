@@ -19,10 +19,10 @@ package api.services
 import api.models.audit.AuditEvent
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import org.scalatest.TestSuite
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -16,9 +16,9 @@
 
 package v3.fixtures
 
+import api.models.audit.{AuditError, AuditResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsObject, JsValue, Json}
-import api.models.audit.{AuditError, AuditResponse}
 import v3.models.request.amend.PeriodDetails
 import v3.models.request.create.CreateBody
 import v3.models.response.create.CreateResponseModel

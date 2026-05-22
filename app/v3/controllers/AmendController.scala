@@ -16,13 +16,13 @@
 
 package v3.controllers
 
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
 import api.config.AppConfig
 import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, ControllerComponents}
 import v3.controllers.validators.AmendValidatorFactory
 import v3.services.AmendService
 
