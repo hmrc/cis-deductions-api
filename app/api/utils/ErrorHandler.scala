@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import api.models.errors.*
 import api.routing.Versions
 import play.api.*
 import play.api.http.Status.*
+import play.api.libs.json.Json
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import uk.gov.hmrc.auth.core.AuthorisationException
@@ -104,6 +105,7 @@ class ErrorHandler @Inject() (
       case _: NotFoundException                                                  => (NotFoundError, "ResourceNotFound")
       case _: AuthorisationException                                             => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
       case _: JsValidationException                                              => (BadRequestError, "ServerValidationError")
+      case _: GatewayTimeoutException                                            => (GatewayTimeoutError, "ServerTimeoutError")
       case e: HttpException                                                      => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if timeoutStatusCodes.contains(e.statusCode) => (GatewayTimeoutError, "ServerTimeoutError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
@@ -122,7 +124,7 @@ class ErrorHandler @Inject() (
       )
     )
 
-    Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
+    Future.successful(Status(errorCode.httpStatus)(Json.toJson(errorCode)))
   }
 
 }
