@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ object StandardDownstreamHttpParser extends HttpParser {
   implicit def reads[A: Reads](using successCode: SuccessCode = SuccessCode(OK)): HttpReads[DownstreamOutcome[A]] =
     (_: String, url: String, response: HttpResponse) =>
       doRead(url, response) { correlationId =>
-        response.validateJson[A] match {
+        response.validateJsonWithLogging[A] match {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
           case None      => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
         }
