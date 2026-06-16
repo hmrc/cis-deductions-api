@@ -16,9 +16,9 @@
 
 package api.services
 
+import api.models.audit.AuditEvent
 import play.api.Configuration
 import play.api.libs.json.{Json, Writes}
-import api.models.audit.AuditEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
