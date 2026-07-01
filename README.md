@@ -1,40 +1,57 @@
 CIS Deductions API
 ========================
 
-The CIS Deductions API allows a developer to create, retrieve, amend and delete CIS deductions for a subcontractor.
+[![Apache-2.0 license](http://img.shields.io/badge/license-Apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+This API allows a developer to create, retrieve, amend and delete CIS deductions for a subcontractor.
 
 ## Requirements
 - Scala 3.5.x
-- Java 11
+- Java 21
 - sbt 1.10.x
-- [Service Manager](https://github.com/hmrc/service-manager)
+- [Service manager V2](https://github.com/hmrc/sm2)
 
-## Running the microservice
-Run from the console using: `sbt run` (starts on port 7781 by default)
+## Development Setup
 
-Start the service manager profile: `sm2 --start CIS_DEDUCTIONS_ALL`
+Run the microservice from the console using: `sbt run` (starts on port 7797 by default)
 
-## Running tests
+Start the service manager profile:
+
+```bash
+sm2 -start CIS_DEDUCTIONS_ALL
+```
+
+## Run Tests
+
 Run unit tests: `sbt test`
 
 Run integration tests: `sbt it/test`
 
-## Viewing OAS
-To view documentation locally ensure the CIS Deductions API is running, and run api-documentation-frontend:
+## View OpenAPI Specification (OAS) documentation
 
-```
-./run_local_with_dependencies.sh
+To view the OpenAPI documentation locally, ensure the API is running.
+
+Start the `api-documentation-frontend` and `api-definition` services using the Service Manager profile:
+
+```bash
+sm2 -start DEVHUB_PREVIEW_OPENAPI
 ```
 
-Then go to http://localhost:9680/api-documentation/docs/openapi/preview and use this port and version:
+Then navigate to the preview page:
 
+```text
+http://localhost:9680/api-documentation/docs/openapi/preview
 ```
+
+Enter the specification URL using the appropriate port and API version:
+
+```text
 http://localhost:7781/api/conf/3.0/application.yaml
 ```
 
 ## Changelog
 
-You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
+You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog)
 
 ## Support and Reporting Issues
 
