@@ -13,7 +13,7 @@ This API allows a developer to create, retrieve, amend and delete CIS deductions
 
 ## Development Setup
 
-Run the microservice from the console using: `sbt run` (starts on port 7797 by default)
+Run the microservice from the console using: `sbt run` (starts on port 7781 by default)
 
 Start the service manager profile:
 
@@ -63,4 +63,4 @@ Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-
 
 ## License
 
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)
