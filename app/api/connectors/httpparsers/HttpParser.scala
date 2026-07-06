@@ -47,10 +47,6 @@ trait HttpParser extends Logging {
           None
       }
 
-    lazy val jsonOpt: Option[JsValue] = {
-      Try(response.json).toOption
-    }
-
   }
 
   def retrieveCorrelationId(response: HttpResponse): String = response.header("CorrelationId").getOrElse("")
