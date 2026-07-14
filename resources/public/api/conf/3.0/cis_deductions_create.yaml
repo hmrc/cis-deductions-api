@@ -2,6 +2,7 @@ post:
   summary: Create CIS Deductions for Subcontractor
   description: |
     This endpoint allows a developer to create a customer’s CIS deductions that have been previously populated. A National Insurance number must be provided.
+    **This endpoint can only be used after the tax year has ended.**
     
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
