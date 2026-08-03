@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,32 @@ import api.support.IntegrationBaseSpec
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.http.Status.OK
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.WSResponse
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
+
+  private val apiDefinitionJson: JsValue = Json.parse(s"""
+       |{
+       |  "api":{
+       |    "name":"CIS Deductions (MTD)",
+       |    "description":"An API for providing Construction industry scheme data",
+       |    "context":"individuals/deductions/cis",
+       |    "categories":["INCOME_TAX_MTD"],
+       |    "versions":[
+       |      {
+       |        "version":"3.0",
+       |        "status":"BETA",
+       |        "access":"PUBLIC",
+       |        "endpointsEnabled":true
+       |      }
+       |    ]
+       |  }
+       |}
+    """.stripMargin)
 
   private val config = app.injector.instanceOf[AppConfig]
 
@@ -44,11 +63,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       response.status shouldBe Status.OK
 
       val responseBody = response.body
-
-      responseBody should include(""""api":{"name":""")
-      responseBody should include(""""categories":["INCOME_TAX_MTD"]""")
-
-      noException should be thrownBy Json.parse(responseBody)
+      Json.parse(responseBody) shouldBe Json.toJson(apiDefinitionJson)
     }
   }
 

@@ -39,6 +39,7 @@ class AppConfig @Inject() (val config: ServicesConfig, protected[config] val con
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
+  // Downstream Config
   def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
   def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")
   def hipDownstreamConfig: BasicAuthDownstreamConfig = basicAuthDownstreamConfig("hip")
@@ -46,12 +47,10 @@ class AppConfig @Inject() (val config: ServicesConfig, protected[config] val con
   // API Config
   def apiGatewayContext: String                    = config.getString("api.gateway.context")
   def confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
-
-  def apiStatus(version: Version): String = config.getString(s"api.$version.status")
-
-  def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-
-  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+  def apiStatus(version: Version): String          = config.getString(s"api.$version.status")
+  def featureSwitchConfig: Configuration           = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+  def endpointsEnabled(version: String): Boolean   = config.getBoolean(s"api.$version.endpoints.enabled")
+  def controlledAccessEnabled: Boolean             = config.getBoolean("api.controlled-access.enabled")
 
   /** Like endpointsEnabled, but will return false if version doesn't exist.
     */
@@ -60,8 +59,7 @@ class AppConfig @Inject() (val config: ServicesConfig, protected[config] val con
       .getOptional[Boolean](s"api.$version.endpoints.enabled")
       .getOrElse(false)
 
-  def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
-
+  def endpointsEnabled(version: Version): Boolean              = config.getBoolean(s"api.$version.endpoints.enabled")
   def apiVersionReleasedInProduction(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.api-released-in-production")
 
   def endpointReleasedInProduction(version: String, name: String): Boolean = {
