@@ -182,7 +182,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
     private val apiFactory = new ApiDefinitionFactory {
       protected val appConfig: AppConfig = mockAppConfig
 
-      val definition: Definition = Definition(
+      lazy val definition: Definition = Definition(
         APIDefinition(
           "test API definition",
           "description",
