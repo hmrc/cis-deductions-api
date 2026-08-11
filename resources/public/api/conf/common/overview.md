@@ -1,4 +1,10 @@
-> HMRC is no longer accepting production credential access requests for new 2026–27 quarterly update products, as the market window for these products has now closed.
+<div class="govuk-warning-text warning-icon-fix">
+    <span class="govuk-warning-text__icon warning-icon-ui-fix" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        HMRC is no longer accepting production credential access requests for new 2026–27 quarterly update products, as the market window for these products has now closed.
+    </strong>
+</div>
 
 Use the CIS Deductions API to submit, 
 edit and retrieve information about a customer’s Construction Industry Scheme (CIS) 
