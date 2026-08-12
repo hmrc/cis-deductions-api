@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import api.controllers.*
 import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
+import config.CisDeductionsApiFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import v3.controllers.validators.CreateValidatorFactory
@@ -49,7 +50,12 @@ class CreateController @Inject() (val authService: EnrolmentsAuthService,
   def create(nino: String): Action[JsValue] = authorisedAction(nino).async(parse.json) { implicit request =>
     given ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-    val validator = validatorFactory.validator(nino, request.body)
+    val validator = validatorFactory.validator(
+      nino = nino,
+      body = request.body,
+      temporalValidationEnabled = CisDeductionsApiFeatureSwitches(appConfig.featureSwitchConfig).isTemporalValidationEnabled
+    )
+
     val requestHandler = RequestHandler
       .withValidator(validator)
       .withService(service.createDeductions)

@@ -7,16 +7,12 @@ post:
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
-    | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                       |
-    |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-    | N/A - DEFAULT                    | Simulates success response.                                                                                                    |
-    | DEDUCTIONS_DATE_RANGE_INVALID    | Simulates the scenario where the deductions period does not align from the 6th of one month to the 5th of the following month. |
-    | UNALIGNED_DEDUCTIONS_PERIOD      | Simulates the scenario where the deductions periods do not align with the tax year supplied.                                   |
-    | TAX_YEAR_NOT_ENDED               | Simulates the scenario where the submission is for a tax year that has not ended.                                              |
-    | DUPLICATE_SUBMISSION             | Simulates the scenario where CIS deductions already exists for this tax year.                                                  |
-    | DUPLICATE_PERIOD                 | Simulates the scenario where CIS deductions already exists for this period.                                                    |
-    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                |
-    | STATEFUL                         | Performs a stateful create.                                                                                                    |
+    | Header Value (Gov-Test-Scenario) | Scenario                                                                                        |
+    |----------------------------------|-------------------------------------------------------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response.                                                                     |
+    | DUPLICATE_SUBMISSION             | Simulates the scenario where CIS deductions already exists for this tax year.                   |
+    | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window. |
+    | STATEFUL                         | Performs a stateful create.                                                                     |
 
   parameters:
     - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -24,6 +20,7 @@ post:
     - $ref: './common/headers.yaml#/components/parameters/acceptJson'
     - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
     - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+    - $ref: './common/headers.yaml#/components/parameters/suspendTemporalValidationsHeader'
 
   security:
     - User-Restricted:

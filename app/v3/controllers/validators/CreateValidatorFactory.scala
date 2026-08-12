@@ -18,35 +18,36 @@ package v3.controllers.validators
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear.currentTaxYear
 import api.models.domain.{DateRange, TaxYear}
 import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
 import config.CisDeductionsApiConfig
-import models.errors.{ContractorNameFormatError, EmployerRefFormatError}
+import models.errors.{ContractorNameFormatError, EmployerRefFormatError, RuleUnalignedDeductionsPeriodError}
 import play.api.libs.json.JsValue
 import v3.controllers.validators.DeductionsValidator.*
 import v3.models.request.create.{CreateBody, CreateRequestData}
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
 
-  private val resolveJson = new ResolveJsonObject[CreateBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[CreateBody]()
 
   private val resolveDateRange = ResolveDateRange(
-    startDateFormatError = FromDateFormatError,
-    endDateFormatError = ToDateFormatError,
+    startDateFormatError = FromDateFormatError.withPath("/fromDate"),
+    endDateFormatError = ToDateFormatError.withPath("/toDate"),
     endBeforeStartDateError = RuleDateRangeInvalidError
-  )
-    .withYearsLimitedTo(minYear, maxYear)
+  ).withYearsLimitedTo(minYear, maxYear)
 
   private val contractorNameRegex = "^.{1,105}$".r
   private val empRefFormat        = "[0-9]{3}/[^ ]{0,9}".r
 
-  def validator(nino: String, body: JsValue): Validator[CreateRequestData] =
+  def validator(nino: String, body: JsValue, temporalValidationEnabled: Boolean): Validator[CreateRequestData] =
     new Validator[CreateRequestData] {
 
       def validate: Validated[Seq[MtdError], CreateRequestData] =
@@ -55,15 +56,44 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
           resolveJson(body)
         ).mapN(CreateRequestData.apply) andThen validateBusinessRules
 
-      private def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] = {
-        import parsed.body.periodData
-
-        combine(
+      private def validateBusinessRules(parsed: CreateRequestData): Validated[Seq[MtdError], CreateRequestData] =
+        (
           validateDateRange(parsed.body.fromDate -> parsed.body.toDate),
-          ResolveStringPattern(parsed.body.contractorName, contractorNameRegex, ContractorNameFormatError),
-          ResolveStringPattern(parsed.body.employerRef, empRefFormat, EmployerRefFormatError),
-          validatePeriodData(periodData)
-        ).map(_ => parsed)
+          ResolveStringPattern(parsed.body.contractorName, contractorNameRegex, ContractorNameFormatError.withPath("/contractorName")),
+          ResolveStringPattern(parsed.body.employerRef, empRefFormat, EmployerRefFormatError.withPath("/employerRef")),
+          validatePeriodData(parsed.body.periodData)
+        ).mapN { (dateRange, _, _, periods) => (dateRange, periods) }
+          .andThen { case (dateRange, periods) =>
+            val taxYear: TaxYear = TaxYear.containing(dateRange.endDate)
+
+            combine(
+              validateTaxYearHasEnded(taxYear),
+              validateUnalignedDeductionPeriods(taxYear, periods),
+              validateDeductionDateRanges(periods),
+              validateDuplicatePeriods(periods)
+            )
+          }
+          .map(_ => parsed)
+
+      private def validateTaxYearHasEnded(taxYear: TaxYear): Validated[Seq[MtdError], Unit] = Validated.cond(
+        !temporalValidationEnabled || taxYear.year < currentTaxYear.year,
+        (),
+        List(RuleTaxYearNotEndedError)
+      )
+
+      private def validateUnalignedDeductionPeriods(taxYear: TaxYear, periods: Seq[ParsedPeriod]): Validated[Seq[MtdError], Unit] = {
+        val paths: Seq[String] = periods.flatMap { period =>
+          val fromDate: LocalDate = period.dateRange.startDate
+          val toDate: LocalDate   = period.dateRange.endDate
+
+          if (fromDate.isBefore(taxYear.startDate) || toDate.isAfter(taxYear.endDate)) {
+            List(s"/periodData/${period.index}")
+          } else {
+            Nil
+          }
+        }
+
+        Validated.cond(paths.isEmpty, (), List(RuleUnalignedDeductionsPeriodError.withPaths(paths)))
       }
 
       private val validateDateRange = {
@@ -71,7 +101,7 @@ class CreateValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
           satisfiesMin(appConfig.minTaxYearCisDeductions, RuleTaxYearNotSupportedError)
             .contramap((dateRange: DateRange) => TaxYear.containing(dateRange.endDate))
 
-        resolveDateRange.thenValidate(taxYearOfDateRangeIsSupported).thenValidate(checkDateRangeIsAFullTaxYear)
+        resolveDateRange.thenValidate(checkDateRangeIsAFullTaxYear).thenValidate(taxYearOfDateRangeIsSupported)
       }
 
     }

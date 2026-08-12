@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ object AmendRequestFixtures {
     )
   )
 
-  val requestJson: JsValue = Json.parse {
+  val requestJson: JsValue = Json.parse(
     """
       |{
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
@@ -55,14 +55,37 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val requestJsonWithoutOptionalValues: JsValue = Json.parse {
+  val requestBodyJsonTys: JsValue = Json.parse(
     """
       |{
       |  "periodData": [
-      |      {
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2023-06-06",
+      |      "deductionToDate": "2023-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2023-07-06",
+      |      "deductionToDate": "2023-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonWithoutOptionalValues: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05"
@@ -74,99 +97,14 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidFromDateForTaxYear: JsValue = Json.parse {
+  val invalidRequestJson: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-05" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
       |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidToDateForTaxYear: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-04",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidDateRange: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2021-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": false,
-      |  "periodData": [
-      |      {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
@@ -182,18 +120,14 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val missingOptionalRequestJson: JsValue = Json.parse {
+  val missingOptionalRequestJson: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05"
@@ -205,18 +139,14 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val missingMandatoryFieldRequestJson: JsValue = Json.parse {
+  val missingMandatoryFieldRequestJson: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
@@ -231,69 +161,25 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val missingPeriodDataRequestJson: JsValue = Json.parse {
+  val emptyPeriodDataJson: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val missingDeductionToDateRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-
-  }
-
-  val emptyPeriodDataJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "last week" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": []
       |}
-      |""".stripMargin
+    """.stripMargin
+  )
 
-  }
-
-  val invalidFromDateFormatRequestJson: JsValue = Json.parse {
+  val requestJsonErrorTaxYearNotSupported: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "last week" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2018-06-06",
+      |      "deductionToDate": "2018-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
@@ -306,155 +192,158 @@ object AmendRequestFixtures {
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidToDateFormatRequestJson: JsValue = Json.parse {
+  val requestJsonErrorDeductionAmountTooHigh: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "yesterday",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
       |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidDeductionFromDateFormatRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "yesterday",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "yesterday",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidRangeDeductionToDateFromDateFormatRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "1670-10-09",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2018-07-05",
-      |      "deductionToDate": "2100-01-01",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidDeductionToDateFormatRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "tomorrow",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "tomorrow",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidDeductionAmountTooHighRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
       |      "deductionAmount": 99999999999999999999.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidDeductionAmountNegativeRequestJson: JsValue = Json.parse {
+  val requestJsonErrorDeductionAmountNegative: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": -19.00,
-      |      "deductionFromDate": "2019-06-06",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorDeductionFromDate: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |      {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "yesterday",
+      |      "deductionToDate": "2020-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "yesterday",
+      |      "deductionToDate": "2020-08-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorDeductionToDate: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "tomorrow",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "tomorrow",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorDeductionToDateBeforeFromDate: JsValue = Json.parse(
+    """
+      |{
+      |  "fromDate": "2019-04-06",
+      |  "toDate": "2020-04-05",
+      |  "contractorName": "Bovis",
+      |  "employerRef": "123/AB56797",
+      |  "periodData": [
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-07-06",
+      |      "deductionToDate": "2019-06-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-08-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorDatesOutsideSupportedRange: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "1899-12-31",
+      |      "deductionToDate": "1993-09-17",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2200-09-02",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorDeductionPeriodNotAligned: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-07",
       |      "deductionToDate": "2019-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
@@ -462,210 +351,128 @@ object AmendRequestFixtures {
       |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionToDate": "2019-08-06",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidCostOfMaterialsTooHighRequestJson: JsValue = Json.parse {
+  val requestJsonErrorDuplicateDeductionPeriods: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
       |      "deductionFromDate": "2019-06-06",
       |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    },
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2019-06-06",
+      |      "deductionToDate": "2019-07-05",
+      |      "costOfMaterials": 35.00,
+      |      "grossAmountPaid": 1457.00
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
+
+  val requestJsonErrorCostOfMaterialsTooHigh: JsValue = Json.parse(
+    """
+      |{
+      |  "periodData": [
+      |    {
+      |      "deductionAmount": 355.00,
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 99999999999999999999.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidCostOfMaterialsNegativeRequestJson: JsValue = Json.parse {
+  val requestJsonErrorCostOfMaterialsNegative: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": -19.00,
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
+      |      "costOfMaterials": 19.00,
       |      "grossAmountPaid": 1457.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
+      |      "costOfMaterials": -35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidGrossAmountTooHighRequestJson: JsValue = Json.parse {
+  val requestJsonErrorGrossAmountPaidTooHigh: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 99999999999999999999.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
+    """.stripMargin
+  )
 
-  val invalidGrossAmountNegativeRequestJson: JsValue = Json.parse {
+  val requestJsonErrorGrossAmountPaidNegative: JsValue = Json.parse(
     """
       |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
       |  "periodData": [
-      |      {
+      |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
+      |      "deductionFromDate": "2020-06-06",
+      |      "deductionToDate": "2020-07-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": -19.00
       |    },
       |    {
       |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
+      |      "deductionFromDate": "2020-07-06",
+      |      "deductionToDate": "2020-08-05",
       |      "costOfMaterials": 35.00,
       |      "grossAmountPaid": 1457.00
       |    }
       |  ]
       |}
-      |""".stripMargin
-  }
-
-  val invalidToDateBeforeFromDateRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2020-04-06" ,
-      |  "toDate": "2019-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val invalidFieldsRequestJson: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": false,
-      |  "employerRef": 78,
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
-
-  val responseJson: JsValue = Json.parse(
-    """
-      |{
-      |"id": "S4636A77V5KB8625U"
-      |}
-      |""".stripMargin
+    """.stripMargin
   )
-
-  val invalidDeductionDateRange: JsValue = Json.parse {
-    """
-      |{
-      |  "fromDate": "2019-04-06" ,
-      |  "toDate": "2020-04-05",
-      |  "contractorName": "Bovis",
-      |  "employerRef": "BV40092",
-      |  "periodData": [
-      |      {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-06-06",
-      |      "deductionToDate": "2019-07-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    },
-      |    {
-      |      "deductionAmount": 355.00,
-      |      "deductionFromDate": "2019-07-06",
-      |      "deductionToDate": "2019-08-05",
-      |      "costOfMaterials": 35.00,
-      |      "grossAmountPaid": 1457.00
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-  }
 
 }

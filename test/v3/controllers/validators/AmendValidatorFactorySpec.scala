@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,120 +16,245 @@
 
 package v3.controllers.validators
 
-import api.models.domain.{Nino, TaxYear}
+import api.controllers.validators.Validator
+import api.models.domain.{DateRange, Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
-import models.errors.{RuleCostOfMaterialsError, RuleDeductionAmountError, RuleGrossAmountError, SubmissionIdFormatError}
+import config.MockCisDeductionsApiConfig
+import models.errors.*
 import play.api.libs.json.JsValue
 import v3.fixtures.AmendRequestFixtures.*
 import v3.models.domain.SubmissionId
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 import v3.models.request.amend.AmendRequestData
 
-class AmendValidatorFactorySpec extends UnitSpec {
+import java.time.LocalDate
 
-  private given correlationId: String = "1234"
-  private val validNino               = "AA123456A"
-  private val validId                 = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
+class AmendValidatorFactorySpec extends UnitSpec with MockCisDeductionsApiConfig {
 
-  val validatorFactory = new AmendValidatorFactory()
+  private given correlationId: String   = "1234"
+  private val validNino: String         = "AA123456A"
+  private val validSubmissionId: String = "4557ecb5-fd32-48cc-81f5-e6acd1099f3c"
 
-  private def validator(nino: String, submissionId: String, body: JsValue) =
-    validatorFactory.validator(nino, submissionId, body)
-
-  "running amend validation" should {
+  "running validation" should {
     "return no errors" when {
-      "given a valid request" in {
-        val amendBodyTaxYear    = "2019-20"
-        val amendRequestDataObj = AmendRequestData(Nino(validNino), SubmissionId(validId), TaxYear.fromMtd(amendBodyTaxYear), amendRequestObj)
-        val result              = validator(validNino, validId, requestJson).validateAndWrapResult()
-        result shouldBe Right(amendRequestDataObj)
+      "a full valid request with all the fields is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator().validateAndWrapResult()
+
+        result shouldBe Right(
+          AmendRequestData(Nino(validNino), SubmissionId(validSubmissionId), TaxYear.fromMtd("2019-20"), amendRequestObj)
+        )
       }
 
-      "given a valid request with none of the optional values" in {
-        val amendBodyTaxYear = "2019-20"
-        val amendRequestDataObj =
-          AmendRequestData(Nino(validNino), SubmissionId(validId), TaxYear.fromMtd(amendBodyTaxYear), amendMissingOptionalRequestObj)
-        val result = validator(validNino, validId, requestJsonWithoutOptionalValues).validateAndWrapResult()
-        result shouldBe Right(amendRequestDataObj)
+      "a minimum valid request with only mandatory fields is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonWithoutOptionalValues).validateAndWrapResult()
+
+        result shouldBe Right(
+          AmendRequestData(Nino(validNino), SubmissionId(validSubmissionId), TaxYear.fromMtd("2019-20"), amendMissingOptionalRequestObj)
+        )
       }
     }
 
-    "return a single error" when {
-      "given an invalid nino" in {
-        val result = validator("23456A", validId, requestJson).validateAndWrapResult()
+    "return NinoFormatError error" when {
+      "an invalid nino is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(nino = "GHFG197854").validateAndWrapResult()
+
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
+    }
 
-      "given an invalid submission ID" in {
-        val result = validator(validNino, "contractor1", requestJson).validateAndWrapResult()
+    "return SubmissionIdFormatError error" when {
+      "an invalid invalid submission ID is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(submissionId = "contractor1").validateAndWrapResult()
+
         result shouldBe Left(ErrorWrapper(correlationId, SubmissionIdFormatError))
       }
     }
 
-    "return multiple errors" when {
-      "given multiple wrong fields" in {
-        val result = validator("2sbt3456A", "idcontract123", requestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, SubmissionIdFormatError))))
-      }
-    }
+    "return RuleIncorrectOrEmptyBodyError error" when {
+      "mandatory fields are missing" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = missingMandatoryFieldRequestJson).validateAndWrapResult()
 
-    "return a single error" when {
-      "invalid body type error" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, missingMandatoryFieldRequestJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodData/0/deductionAmount")))
       }
 
-      "given an empty JSON period array in the request body" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, emptyPeriodDataJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
-      }
+      "an empty periodData array is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = emptyPeriodDataJson).validateAndWrapResult()
 
-      "given an invalid request body Deduction fromDate format" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidDeductionFromDateFormatRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, DeductionFromDateFormatError))
-      }
-
-      "invalid request body Deduction toDate and fromDate are not within range" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidRangeDeductionToDateFromDateFormatRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(DeductionFromDateFormatError, DeductionToDateFormatError))))
-      }
-
-      "given an invalid request body Deduction toDate format" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidDeductionToDateFormatRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, DeductionToDateFormatError))
-      }
-
-      "given an invalid request body deductionAmount too high" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidDeductionAmountTooHighRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError))
-      }
-
-      "given an invalid request body deductionAmount negative" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidDeductionAmountNegativeRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError))
-      }
-
-      "given an invalid request body CostOfMaterials too high" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidCostOfMaterialsTooHighRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError))
-      }
-
-      "given an invalid request body CostOfMaterials negative" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidCostOfMaterialsNegativeRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError))
-      }
-
-      "given an invalid request body GrossAmount too high" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidGrossAmountTooHighRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError))
-      }
-
-      "given an invalid request body GrossAmount negative" in new AmendValidatorFactory {
-        private val result = this.validator(validNino, validId, invalidGrossAmountNegativeRequestJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError))
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodData")))
       }
     }
+
+    "return RuleTaxYearNotSupportedError error" when {
+      "a date range for a tax year before the minimum supported tax year is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorTaxYearNotSupported).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+    }
+
+    "return DeductionFromDateFormatError error" when {
+      "an invalid deduction from date format is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionFromDate).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            DeductionFromDateFormatError.withPaths(
+              List(
+                "/periodData/0/deductionFromDate",
+                "/periodData/1/deductionFromDate"
+              )
+            )
+          )
+        )
+      }
+    }
+
+    "return DeductionToDateFormatError error" when {
+      "an invalid deduction to date format is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionToDate).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            DeductionToDateFormatError.withPaths(
+              List(
+                "/periodData/0/deductionToDate",
+                "/periodData/1/deductionToDate"
+              )
+            )
+          )
+        )
+      }
+    }
+
+    "return RuleDateRangeInvalidError error" when {
+      "a deduction to date that is before deduction from date is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionToDateBeforeFromDate).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleDateRangeInvalidError.withPaths(
+              List(
+                "/periodData/0",
+                "/periodData/1"
+              )
+            )
+          )
+        )
+      }
+    }
+
+    "return RuleDeductionsDateRangeInvalidError error" when {
+      "a deduction period that does not align from the 6th of one month to the 5th of the following month is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionPeriodNotAligned).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleDeductionsDateRangeInvalidError.withPaths(
+              List(
+                "/periodData/0/deductionFromDate",
+                "/periodData/0/deductionToDate",
+                "/periodData/1/deductionFromDate",
+                "/periodData/1/deductionToDate"
+              )
+            )
+          )
+        )
+      }
+    }
+
+    "return RuleDuplicatePeriodError error" when {
+      "duplicate deduction periods are supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDuplicateDeductionPeriods).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleDuplicatePeriodError.forDuplicatedPeriod(
+              DateRange(LocalDate.parse("2019-06-06"), LocalDate.parse("2019-07-05")),
+              List("/periodData/0", "/periodData/1")
+            )
+          )
+        )
+      }
+    }
+
+    "return RuleDeductionAmountError error" when {
+      "a deduction amount that is too high is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionAmountTooHigh).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError.withPath("/periodData/0/deductionAmount")))
+      }
+
+      "a deduction amount that is negative is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDeductionAmountNegative).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleDeductionAmountError.withPath("/periodData/0/deductionAmount")))
+      }
+    }
+
+    "return RuleCostOfMaterialsError error" when {
+      "a cost of materials that is too high is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorCostOfMaterialsTooHigh).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError.withPath("/periodData/0/costOfMaterials")))
+      }
+
+      "a cost of materials that is negative is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorCostOfMaterialsNegative).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleCostOfMaterialsError.withPath("/periodData/1/costOfMaterials")))
+      }
+    }
+
+    "return RuleGrossAmountError error" when {
+      "a gross amount paid that is too high is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorGrossAmountPaidTooHigh).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError.withPath("/periodData/0/grossAmountPaid")))
+      }
+
+      "a gross amount paid that is negative is supplied" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorGrossAmountPaidNegative).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleGrossAmountError.withPath("/periodData/0/grossAmountPaid")))
+      }
+    }
+
+    "return multiple errors" when {
+      "multiple date range validation rules are violated" in new Test {
+        val result: Either[ErrorWrapper, AmendRequestData] = validator(body = requestJsonErrorDatesOutsideSupportedRange).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            BadRequestError,
+            Some(
+              List(
+                DeductionFromDateFormatError.withPath("/periodData/0/deductionFromDate"),
+                DeductionToDateFormatError.withPath("/periodData/1/deductionToDate")
+              )
+            )
+          )
+        )
+      }
+    }
+  }
+
+  private trait Test {
+    MockedCisDeductionApiConfig.minTaxYearCisDeductions.returns(TaxYear.starting(2019)).anyNumberOfTimes()
+
+    private val validatorFactory: AmendValidatorFactory = new AmendValidatorFactory(mockCisDeductionApiConfig)
+
+    protected def validator(nino: String = validNino,
+                            submissionId: String = validSubmissionId,
+                            body: JsValue = requestJson): Validator[AmendRequestData] =
+      validatorFactory.validator(nino, submissionId, body)
+
   }
 
 }

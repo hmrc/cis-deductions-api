@@ -16,82 +16,166 @@
 
 package v3.create
 
+import api.models.domain.DateRange
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import models.errors.*
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status.*
-import play.api.libs.json.{JsString, JsValue, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers.*
 import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
 
+import java.time.LocalDate
+
 class CreateControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
-  "Calling the create endpoint" should {
-
+  "Calling the 'Create CIS Deductions for Subcontractor' endpoint" should {
     "return a 200 status code" when {
+      "any valid non-TYS request is made" in new NonTysTest {
+        override def setupStubs(): Unit = DownstreamStub.onSuccess(
+          method = DownstreamStub.POST,
+          uri = downstreamUri,
+          status = OK,
+          body = createDeductionResponseBody
+        )
 
-      "any valid request is made" in new NonTysTest {
-        override def setupStubs(): Unit = {
-          DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(OK, createDeductionResponseBody)
-        }
-        val response: WSResponse = await(request().post(requestBodyJson))
+        val response: WSResponse = await(request().post(requestJson))
         response.status shouldBe OK
         response.json shouldBe createDeductionResponseBody
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
-    }
-    "return error according to spec" when {
+      "any valid TYS request is made" in new TysTest {
+        override def setupStubs(): Unit = DownstreamStub.onSuccess(
+          method = DownstreamStub.POST,
+          uri = downstreamUri,
+          status = CREATED,
+          body = createDeductionResponseBody
+        )
 
+        val response: WSResponse = await(request().post(requestBodyJsonTys))
+        response.status shouldBe OK
+        response.json shouldBe createDeductionResponseBody
+        response.header("Content-Type") shouldBe Some("application/json")
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+    }
+
+    "return error according to spec" when {
       "validation error" when {
         def validationErrorTest(requestNino: String, body: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-
             override val nino: String = requestNino
 
             val response: WSResponse = await(request().post(body))
             response.status shouldBe expectedStatus
             response.json shouldBe expectedBody.asJson
+            response.header("Content-Type") shouldBe Some("application/json")
           }
         }
 
-        val input = List(
-          ("AA1123A", requestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", emptyRequest, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123456A", requestInvalidEmpRef, BAD_REQUEST, EmployerRefFormatError),
-          ("AA123456A", requestBodyJson.update("/contractorName", JsString("a" * 106)), BAD_REQUEST, ContractorNameFormatError),
-          ("AA123456A", requestRuleDeductionAmountJson, BAD_REQUEST, RuleDeductionAmountError),
-          ("AA123456A", requestInvalidRuleCostOfMaterialsJson, BAD_REQUEST, RuleCostOfMaterialsError),
-          ("AA123456A", requestInvalidGrossAmountJson, BAD_REQUEST, RuleGrossAmountError),
-          ("AA123456A", requestInvalidDateRangeJson, BAD_REQUEST, RuleDateRangeInvalidError),
-          ("AA123456A", requestBodyJsonErrorFromDate, BAD_REQUEST, FromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorToDate, BAD_REQUEST, ToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionToDate, BAD_REQUEST, DeductionToDateFormatError),
-          ("AA123456A", requestBodyJsonErrorDeductionFromDate, BAD_REQUEST, DeductionFromDateFormatError),
-          ("AA123456A", requestBodyJsonErrorTaxYearNotSupported, BAD_REQUEST, RuleTaxYearNotSupportedError)
+        val input: Seq[(String, JsValue, Int, MtdError)] = List(
+          ("AA1123A", requestJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", requestJsonErrorFromDate, BAD_REQUEST, FromDateFormatError.withPath("/fromDate")),
+          ("AA123456A", requestJsonErrorToDate, BAD_REQUEST, ToDateFormatError.withPath("/toDate")),
+          ("AA123456A", requestJsonErrorTaxYearNotSupported, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", requestJsonCurrentTaxYear, BAD_REQUEST, RuleTaxYearNotEndedError),
+          ("AA123456A", requestJsonErrorToDateBeforeFromDate, BAD_REQUEST, RuleDateRangeInvalidError),
+          ("AA123456A", requestJsonErrorEmpRef, BAD_REQUEST, EmployerRefFormatError.withPath("/employerRef")),
+          (
+            "AA123456A",
+            requestJson.update("/contractorName", JsString("a" * 106)),
+            BAD_REQUEST,
+            ContractorNameFormatError.withPath("/contractorName")
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDeductionFromDate,
+            BAD_REQUEST,
+            DeductionFromDateFormatError.withPaths(List("/periodData/0/deductionFromDate", "/periodData/1/deductionFromDate"))
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDeductionToDate,
+            BAD_REQUEST,
+            DeductionToDateFormatError.withPaths(List("/periodData/0/deductionToDate", "/periodData/1/deductionToDate"))
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDeductionPeriodsOutsideTaxYear,
+            BAD_REQUEST,
+            RuleUnalignedDeductionsPeriodError.withPaths(List("/periodData/0", "/periodData/1"))
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDeductionPeriodNotAligned,
+            BAD_REQUEST,
+            RuleDeductionsDateRangeInvalidError.withPaths(
+              List(
+                "/periodData/0/deductionFromDate",
+                "/periodData/0/deductionToDate",
+                "/periodData/1/deductionFromDate",
+                "/periodData/1/deductionToDate"
+              )
+            )
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDuplicateDeductionPeriods,
+            BAD_REQUEST,
+            RuleDuplicatePeriodError.forDuplicatedPeriod(
+              DateRange(LocalDate.parse("2019-06-06"), LocalDate.parse("2019-07-05")),
+              List("/periodData/0", "/periodData/1")
+            )
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorDeductionAmountTooHigh,
+            BAD_REQUEST,
+            RuleDeductionAmountError.withPath("/periodData/0/deductionAmount")
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorCostOfMaterialsNegative,
+            BAD_REQUEST,
+            RuleCostOfMaterialsError.withPath("/periodData/1/costOfMaterials")
+          ),
+          (
+            "AA123456A",
+            requestJsonErrorGrossAmountPaidNegative,
+            BAD_REQUEST,
+            RuleGrossAmountError.withPath("/periodData/0/grossAmountPaid")
+          )
         )
-        input.foreach(args => validationErrorTest.tupled(args))
+
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
-            override def setupStubs(): Unit = {
-              DownstreamStub.when(DownstreamStub.POST, downstreamUri).thenReturn(downstreamStatus, Json.parse(errorBody(downstreamCode)))
-            }
+          s"downstream returns a code $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+            override def setupStubs(): Unit = DownstreamStub.onError(
+              method = DownstreamStub.POST,
+              uri = downstreamUri,
+              errorStatus = downstreamStatus,
+              errorBody = errorBody(downstreamCode)
+            )
 
-            val response: WSResponse = await(request().post(requestBodyJson))
+            val response: WSResponse = await(request().post(requestJson))
             response.status shouldBe expectedStatus
-            response.json shouldBe Json.toJson(expectedBody)
+            response.json shouldBe expectedBody.asJson
+            response.header("X-CorrelationId").nonEmpty shouldBe true
+            response.header("Content-Type") shouldBe Some("application/json")
           }
         }
 
-        val errors = List(
+        val errors: Seq[(Int, String, Int, MtdError)] = List(
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
@@ -105,7 +189,7 @@ class CreateControllerISpec extends IntegrationBaseSpec with JsonErrorValidators
           (UNPROCESSABLE_ENTITY, "INVALID_REQUEST_DUPLICATE_MONTH", BAD_REQUEST, RuleDuplicatePeriodError)
         )
 
-        val extraTysErrors = List(
+        val extraTysErrors: Seq[(Int, String, Int, MtdError)] = List(
           (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
@@ -116,28 +200,27 @@ class CreateControllerISpec extends IntegrationBaseSpec with JsonErrorValidators
           (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => serviceErrorTest.tupled(args))
+        (errors ++ extraTysErrors).foreach(serviceErrorTest.tupled)
       }
     }
   }
 
   private trait Test {
-    val nino = "AA123456A"
+    val nino: String = "AA123456A"
 
     val downstreamUri: String
 
-    def setupStubs(): Unit = {}
+    def setupStubs(): Unit = ()
 
     def request(): WSRequest = {
       AuditStub.audit()
       AuthStub.authorised()
       MtdIdLookupStub.ninoFound(nino)
       setupStubs()
-
       buildRequest(s"/$nino/amendments")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
+          (AUTHORIZATION, "Bearer 123")
         )
     }
 
@@ -145,6 +228,10 @@ class CreateControllerISpec extends IntegrationBaseSpec with JsonErrorValidators
 
   private trait NonTysTest extends Test {
     val downstreamUri: String = s"/income-tax/cis/deductions/$nino"
+  }
+
+  private trait TysTest extends Test {
+    val downstreamUri: String = s"/income-tax/23-24/cis/deductions/$nino"
   }
 
 }

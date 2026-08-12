@@ -16,6 +16,7 @@
 
 package models.errors
 
+import api.models.domain.DateRange
 import api.models.errors.MtdError
 import play.api.http.Status.*
 
@@ -25,7 +26,14 @@ object RuleUnalignedDeductionsPeriodError
     extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied", BAD_REQUEST)
 
 object RuleDuplicatePeriodError
-    extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period", BAD_REQUEST)
+    extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period", BAD_REQUEST) {
+
+  def forDuplicatedPeriod(dateRange: DateRange, paths: Seq[String]): MtdError = copy(
+    message = s"More than one deduction period has been supplied for the period '${dateRange.startDate}' to '${dateRange.endDate}''",
+    paths = Some(paths)
+  )
+
+}
 
 object RuleDeductionsDateRangeInvalidError
     extends MtdError(

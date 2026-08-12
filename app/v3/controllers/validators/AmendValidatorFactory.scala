@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,48 +18,55 @@ package v3.controllers.validators
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.*
-import api.models.domain.TaxYear
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import cats.data.Validated
 import cats.implicits.*
-import play.api.libs.json.{JsString, JsValue}
+import config.CisDeductionsApiConfig
+import play.api.libs.json.JsValue
 import v3.controllers.validators.DeductionsValidator.*
 import v3.controllers.validators.resolvers.ResolveSubmissionId
-import v3.models.errors.CisDeductionsApiCommonErrors.DeductionToDateFormatError
+import v3.models.domain.SubmissionId
 import v3.models.request.amend.{AmendBody, AmendRequestData}
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
+import scala.math.Ordered.orderingToOrdered
 
 @Singleton
-class AmendValidatorFactory {
+class AmendValidatorFactory @Inject() (appConfig: CisDeductionsApiConfig) {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendBody]()
 
+  private case class ParsedData(nino: Nino, submissionId: SubmissionId, body: AmendBody)
+
   def validator(nino: String, submissionId: String, body: JsValue): Validator[AmendRequestData] =
     new Validator[AmendRequestData] {
-
-      private val resolveTaxYearFromPeriodDetails = {
-        def deductionToDates(body: JsValue): Seq[String] =
-          (body \\ "deductionToDate").collect { case JsString(isoDate) => isoDate }.toSeq
-
-        val resolveToDateFromPeriodDetails: Resolver[JsValue, String] =
-          deductionToDates(_).headOption.toValid(List(RuleIncorrectOrEmptyBodyError))
-
-        val resolveTaxYearFromIsoDate = ResolveIsoDate(DeductionToDateFormatError).resolver.map(TaxYear.containing)
-
-        resolveToDateFromPeriodDetails.thenResolve(resolveTaxYearFromIsoDate)
-      }
 
       def validate: Validated[Seq[MtdError], AmendRequestData] =
         (
           ResolveNino(nino),
           ResolveSubmissionId(submissionId),
-          resolveTaxYearFromPeriodDetails(body),
           resolveJson(body)
-        ).mapN(AmendRequestData.apply) andThen validateBusinessRules
+        ).mapN(ParsedData.apply) andThen validateBusinessRules
 
-      private def validateBusinessRules(parsed: AmendRequestData): Validated[Seq[MtdError], AmendRequestData] =
-        validatePeriodData(parsed.body.periodData).map(_ => parsed)
+      private def validateBusinessRules(parsed: ParsedData): Validated[Seq[MtdError], AmendRequestData] =
+        validatePeriodData(parsed.body.periodData).andThen { periods =>
+          val taxYear: TaxYear = TaxYear.containing(periods.head.dateRange.endDate)
+
+          combine(
+            validateTaxYearIsSupported(taxYear),
+            validateDeductionDateRanges(periods),
+            validateDuplicatePeriods(periods)
+          ).map { _ =>
+            AmendRequestData(parsed.nino, parsed.submissionId, taxYear, parsed.body)
+          }
+        }
+
+      private def validateTaxYearIsSupported(taxYear: TaxYear): Validated[Seq[MtdError], Unit] = Validated.cond(
+        taxYear >= appConfig.minTaxYearCisDeductions,
+        (),
+        List(RuleTaxYearNotSupportedError)
+      )
 
     }
 
