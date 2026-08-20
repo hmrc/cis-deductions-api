@@ -22,10 +22,10 @@ components:
       name: taxYear
       in: path
       description: |
-        The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years.
+        The tax year the data applies to, for example, 2025-26. The start year and end year must not span two tax years.
       schema:
         type: string
-        example: 2021-22
+        example: 2025-26
       required: true
     source:
       in: path

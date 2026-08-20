@@ -192,12 +192,19 @@ components:
         code: RULE_TAX_YEAR_NOT_SUPPORTED
         message: The tax year specified does not lie within the supported range
 
+    ruleTaxYearNotSupportedCY-4:
+      description: |
+        The specified tax year is outside the allowable tax years (the current tax year minus four years).
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The specified tax year is outside the allowable tax years (the current tax year minus four years)
+
     ruleTaxYearRangeInvalid:
       description: |
-        The specified date range is outside the allowable tax years (the current tax year minus four years).
+        Tax year range invalid. A tax year range of one year is required.
       value:
         code: RULE_TAX_YEAR_RANGE_INVALID
-        message: The specified date range is outside the allowable tax years (the current tax year minus four years)
+        message: A tax year range of one year is required
 
 
     ruleTaxYearNotAligned:
@@ -220,13 +227,6 @@ components:
       value:
         code: RULE_UNALIGNED_DEDUCTIONS_PERIOD
         message: The deductions periods do not align with the tax year supplied
-
-    ruleTaxYearRangeExceeded:
-      description: |
-        The tax year range is exceeded.  A tax year range of one year is required.
-      value:
-        code: RULE_TAX_YEAR_RANGE_EXCEEDED
-        message: Tax year range exceeded. A tax year range of one year is required
 
     ruleIncorrectGovTestScenario:
       description: |

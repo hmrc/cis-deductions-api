@@ -60,8 +60,8 @@ delete:
               $ref: './common/errors.yaml#/components/examples/formatTaxYear'
             FORMAT_SUBMISSION_ID:
               $ref: './common/errors.yaml#/components/examples/formatSubmissionId'
-            RULE_TAX_YEAR_RANGE_EXCEEDED:
-              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeExceeded'
+            RULE_TAX_YEAR_RANGE_INVALID:
+              $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
             RULE_TAX_YEAR_NOT_SUPPORTED:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
             RULE_INCORRECT_GOV_TEST_SCENARIO:
