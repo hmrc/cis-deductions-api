@@ -78,7 +78,12 @@ object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested reso
 // Common rule errors
 
 object RuleTaxYearNotSupportedError
-    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST)
+    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "The tax year specified does not lie within the supported range", BAD_REQUEST) {
+
+  def dateRangeMsg: MtdError =
+    RuleTaxYearNotSupportedError.copy(message = "The specified tax year is outside the allowable tax years (the current tax year minus four years)")
+
+}
 
 object RuleIncorrectOrEmptyBodyError
     extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted", BAD_REQUEST)

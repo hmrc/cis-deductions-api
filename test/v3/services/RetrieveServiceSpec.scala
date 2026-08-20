@@ -32,6 +32,7 @@ import v3.models.response.retrieve.{CisDeductions, RetrieveResponseModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.postfixOps
 
 class RetrieveServiceSpec extends UnitSpec with MockAppConfig with MockRetrieveConnector {
 

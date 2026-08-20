@@ -30,7 +30,8 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
   private val nino              = "AA123456A"
   private val invalidNino       = "GHFG197854"
-  private val taxYearRaw        = "2019-20"
+  private val taxYear           = TaxYear.currentTaxYear
+  private val taxYearRaw        = taxYear.asMtd
   private val invalidTaxYearRaw = "2019-2020"
   private val sourceRaw         = CisSource.`all`
   private val invalidSource     = "All"
@@ -51,12 +52,27 @@ class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {
             .validateAndWrapResult()
         result shouldBe Right(RetrieveRequestData(Nino(nino), TaxYear.fromMtd(taxYearRaw), sourceRaw))
       }
+      "the request uses cy-4" in new SetUp {
+        val taxYearEnd: Int        = taxYear.year - 4
+        val invalidTaxYear: String = TaxYear.ending(taxYearEnd).asMtd
+        val result: Either[ErrorWrapper, RetrieveRequestData] =
+          validator(nino, invalidTaxYear, sourceRaw.toString)
+            .validateAndWrapResult()
+        result shouldBe Right(RetrieveRequestData(Nino(nino), TaxYear.fromMtd(invalidTaxYear), sourceRaw))
+      }
     }
 
     "return errors" when {
       "invalid taxYear is passed in the request" in new SetUp {
         val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, invalidTaxYearRaw, sourceRaw.toString).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+      }
+
+      "tax year outside of the allowed range" in new SetUp {
+        val taxYearEnd: Int                                   = taxYear.year - 5
+        val invalidTaxYear: String                            = TaxYear.ending(taxYearEnd).asMtd
+        val result: Either[ErrorWrapper, RetrieveRequestData] = validator(nino, invalidTaxYear, sourceRaw.toString).validateAndWrapResult()
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError.dateRangeMsg))
       }
 
       "invalid source data is passed in the request" in new SetUp {

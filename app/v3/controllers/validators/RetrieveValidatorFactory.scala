@@ -18,7 +18,8 @@ package v3.controllers.validators
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
-import api.models.errors.MtdError
+import api.models.domain.TaxYear
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
@@ -39,8 +40,10 @@ class RetrieveValidatorFactory {
           ResolveNino(nino),
           ResolveTaxYear(taxYear),
           ResolveSource(source)
-        ).mapN(RetrieveRequestData.apply)
+        ).mapN(RetrieveRequestData.apply) andThen validateBusinessRules
 
+      def validateBusinessRules(parsed: RetrieveRequestData): Validated[Seq[MtdError], RetrieveRequestData] =
+        if (TaxYear.currentTaxYear.year - parsed.taxYear.year >= 5) invalid(RuleTaxYearNotSupportedError.dateRangeMsg) else Valid(parsed)
     }
   }
 

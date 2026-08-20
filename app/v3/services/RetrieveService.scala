@@ -42,7 +42,7 @@ class RetrieveService @Inject() (connector: RetrieveConnector) extends BaseServi
 
   private val errorMap: Map[String, MtdError] =
     Map(
-      "INVALID_DATE_RANGE"        -> RuleTaxYearRangeInvalidError,
+      "INVALID_DATE_RANGE"        -> RuleTaxYearNotSupportedError.dateRangeMsg,
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "NO_DATA_FOUND"             -> NotFoundError,
       "INVALID_PERIOD_START"      -> InternalError,
