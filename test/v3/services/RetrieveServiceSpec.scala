@@ -88,7 +88,7 @@ class RetrieveServiceSpec extends UnitSpec with MockAppConfig with MockRetrieveC
 
       val errors = List(
         ("INVALID_CORRELATIONID", InternalError),
-        ("INVALID_DATE_RANGE", RuleTaxYearRangeInvalidError),
+        ("INVALID_DATE_RANGE", RuleTaxYearNotSupportedError.dateRangeMsg),
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("NO_DATA_FOUND", NotFoundError),
         ("INVALID_TAX_YEAR", InternalError),

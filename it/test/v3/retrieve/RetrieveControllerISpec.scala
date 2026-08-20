@@ -149,7 +149,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_PERIOD_START", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_PERIOD_END", INTERNAL_SERVER_ERROR, InternalError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearNotSupportedError.dateRangeMsg),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError)
       )
       nonTysErrors.foreach(args => nonTysServiceErrorTest.tupled(args))
@@ -159,12 +159,11 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+        (UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE", BAD_REQUEST, RuleTaxYearNotSupportedError.dateRangeMsg),
         (BAD_REQUEST, "INVALID_SOURCE", BAD_REQUEST, RuleSourceInvalidError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_ALIGNED", INTERNAL_SERVER_ERROR, InternalError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError)
       )
@@ -222,7 +221,7 @@ class RetrieveControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysHipTest extends Test {
-    val currentTaxYear:TaxYear                     = TaxYear.currentTaxYear
+    val currentTaxYear: TaxYear                    = TaxYear.currentTaxYear
     val taxYear: String                            = currentTaxYear.asMtd
     val fromDate: String                           = currentTaxYear.startDate.toString
     val toDate: String                             = currentTaxYear.endDate.toString
