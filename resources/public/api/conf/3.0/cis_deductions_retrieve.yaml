@@ -67,8 +67,6 @@ get:
               $ref: './common/errors.yaml#/components/examples/formatNino'
             FORMAT_TAX_YEAR:
               $ref: './common/errors.yaml#/components/examples/formatTaxYear'
-            RULE_DATE_RANGE_INVALID:
-              $ref: './common/errors.yaml#/components/examples/ruleDateRangeInvalid'
             RULE_TAX_YEAR_NOT_SUPPORTED:
               $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupportedCY-4'
             RULE_TAX_YEAR_RANGE_INVALID:
