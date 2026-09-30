@@ -4,6 +4,12 @@ info:
   version: "3.0"
   title: CIS Deductions (MTD)
   description: |
+    The following endpoints are stateful in the Sandbox:
+      * Retrieve CIS Deductions for Subcontractor
+      * Create CIS Deductions for Subcontractor
+      * Amend CIS Deductions for Subcontractor
+      * Delete CIS Deductions for Subcontractor
+    
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
 
