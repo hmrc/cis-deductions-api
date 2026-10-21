@@ -179,10 +179,11 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     private implicit val materializer: Materializer = NoMaterializer
 
-    private val apiFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
+    protected val appConfig: AppConfig = mockAppConfig
 
-      lazy val definition: Definition = Definition(
+    private val apiFactory = new ApiDefinitionFactory(appConfig) {
+
+      override lazy val definition: Definition = Definition(
         APIDefinition(
           "test API definition",
           "description",

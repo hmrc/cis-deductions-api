@@ -23,7 +23,6 @@ import api.mocks.MockHttpClient
 import api.routing.*
 import api.utils.UnitSpec
 import cats.implicits.catsSyntaxValidatedId
-import definition.CisApiDefinitionFactory
 
 import scala.language.reflectiveCalls
 
@@ -127,7 +126,7 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockHttpClient with MockApp
   }
 
   class Test {
-    val apiDefinitionFactory: ApiDefinitionFactory = new CisApiDefinitionFactory(mockAppConfig)
+    val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
   }
 
 }

@@ -20,7 +20,6 @@ import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.errors.{RuleOutsideAmendmentWindowError, SubmissionIdFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}

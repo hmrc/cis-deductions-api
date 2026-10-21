@@ -22,7 +22,6 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
 import config.MockCisDeductionsApiConfig
-import models.errors.SubmissionIdFormatError
 import v3.models.domain.SubmissionId
 import v3.models.request.delete.DeleteRequestData
 

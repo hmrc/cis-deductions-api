@@ -21,7 +21,6 @@ import api.models.domain.{DateRange, Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
 import config.MockCisDeductionsApiConfig
-import models.errors.*
 import play.api.libs.json.JsValue
 import v3.fixtures.AmendRequestFixtures.*
 import v3.models.domain.SubmissionId

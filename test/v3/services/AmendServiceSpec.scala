@@ -18,20 +18,9 @@ package v3.services
 
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors.{
-  DownstreamErrorCode,
-  DownstreamErrors,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  RuleIncorrectOrEmptyBodyError,
-  RuleTaxYearNotSupportedError
-}
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
-import models.errors.*
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.fixtures.AmendRequestFixtures.*
 import v3.mocks.connectors.MockAmendConnector
