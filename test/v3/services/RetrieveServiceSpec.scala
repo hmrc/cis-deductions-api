@@ -23,7 +23,6 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
 import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.fixtures.RetrieveModels.*
 import v3.mocks.connectors.MockRetrieveConnector

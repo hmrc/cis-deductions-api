@@ -20,7 +20,6 @@ import api.models.domain.TaxYear
 import api.models.errors.*
 import api.services.*
 import api.support.IntegrationBaseSpec
-import models.errors.RuleSourceInvalidError
 import play.api.http.HeaderNames.*
 import play.api.http.Status.*
 import play.api.libs.ws.{WSRequest, WSResponse}

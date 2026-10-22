@@ -21,7 +21,6 @@ import api.models.domain.{DateRange, TaxYear}
 import api.models.errors.*
 import cats.data.Validated
 import cats.implicits.{catsSyntaxTuple2Semigroupal, toTraverseOps}
-import models.errors.*
 import v3.models.errors.CisDeductionsApiCommonErrors.*
 import v3.models.request.amend.PeriodDetails
 

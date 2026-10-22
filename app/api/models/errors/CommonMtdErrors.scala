@@ -16,6 +16,7 @@
 
 package api.models.errors
 
+import api.models.domain.DateRange
 import play.api.http.Status.*
 
 // MtdError types that are common across MTD APIs.
@@ -57,9 +58,6 @@ object InvalidHttpMethodError extends MtdError("INVALID_HTTP_METHOD", "Invalid H
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body", UNSUPPORTED_MEDIA_TYPE)
 
-object InvalidTaxYearParameterError
-    extends MtdError(code = "INVALID_TAX_YEAR_PARAMETER", message = "A tax year before 2023-24 was supplied", BAD_REQUEST)
-
 //Authentication/Authorisation errors
 
 /** Authentication OK but not allowed access to the requested resource
@@ -100,3 +98,63 @@ object RuleEndBeforeStartDateError
 //Stub Errors
 object RuleIncorrectGovTestScenarioError
     extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The supplied Gov-Test-Scenario is not valid", BAD_REQUEST)
+
+object SubmissionIdFormatError extends MtdError("FORMAT_SUBMISSION_ID", "The provided submission ID is invalid", BAD_REQUEST)
+
+object RuleUnalignedDeductionsPeriodError
+    extends MtdError("RULE_UNALIGNED_DEDUCTIONS_PERIOD", "The deductions periods do not align with the tax year supplied", BAD_REQUEST)
+
+object RuleDuplicatePeriodError
+    extends MtdError("RULE_DUPLICATE_PERIOD", "More than one deduction period has been supplied for the same month or period", BAD_REQUEST) {
+
+  def forDuplicatedPeriod(dateRange: DateRange, paths: Seq[String]): MtdError = copy(
+    message = s"More than one deduction period has been supplied for the period '${dateRange.startDate}' to '${dateRange.endDate}''",
+    paths = Some(paths)
+  )
+
+}
+
+object RuleDeductionsDateRangeInvalidError
+    extends MtdError(
+      "RULE_DEDUCTIONS_DATE_RANGE_INVALID",
+      "The deductions period must align from the 6th of one month to the 5th of the following month",
+      BAD_REQUEST)
+
+object RuleSourceInvalidError extends MtdError("RULE_SOURCE_INVALID", "The source is invalid", BAD_REQUEST)
+
+object RuleDuplicateSubmissionError
+    extends MtdError("RULE_DUPLICATE_SUBMISSION", "CIS deduction already exists for contractor this tax year", BAD_REQUEST)
+
+object EmployerRefFormatError extends MtdError("FORMAT_EMPLOYER_REFERENCE", "The format of the Employer Reference number is invalid", BAD_REQUEST)
+
+object RuleDeductionAmountError
+    extends MtdError(
+      "RULE_DEDUCTIONS_AMOUNT",
+      "The deductions amount should be a positive number less than 99999999999.99 up to 2 decimal places",
+      BAD_REQUEST)
+
+object RuleCostOfMaterialsError
+    extends MtdError(
+      "RULE_COST_OF_MATERIALS",
+      "The cost of materials should be a positive number less than 99999999999.99 up to 2 decimal places",
+      BAD_REQUEST)
+
+object RuleGrossAmountError
+    extends MtdError(
+      "RULE_GROSS_AMOUNT_PAID",
+      "The gross amount should be a positive number less than 99999999999.99 up to 2 decimal places",
+      BAD_REQUEST)
+
+object RuleOutsideAmendmentWindowError
+    extends MtdError(
+      code = "RULE_OUTSIDE_AMENDMENT_WINDOW",
+      message = "You are outside the amendment window",
+      BAD_REQUEST
+    )
+
+object ContractorNameFormatError
+    extends MtdError(
+      code = "FORMAT_CONTRACTOR_NAME ",
+      message = "The provided contractor name is invalid",
+      BAD_REQUEST
+    )

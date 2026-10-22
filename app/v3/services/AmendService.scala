@@ -17,10 +17,9 @@
 package v3.services
 
 import api.controllers.RequestContext
-import api.models.errors.{InternalError, MtdError, NinoFormatError, NotFoundError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
-import models.errors.*
 import v3.connectors.AmendConnector
 import v3.models.request.amend.AmendRequestData
 

@@ -20,7 +20,6 @@ import api.models.domain.DateRange
 import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
-import models.errors.*
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue

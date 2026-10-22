@@ -20,10 +20,9 @@ import api.config.MockAppConfig
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors.{ErrorWrapper, NinoFormatError}
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
-import models.errors.SubmissionIdFormatError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result

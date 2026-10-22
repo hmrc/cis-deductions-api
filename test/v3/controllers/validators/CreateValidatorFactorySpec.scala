@@ -22,7 +22,6 @@ import api.models.errors.*
 import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
 import config.MockCisDeductionsApiConfig
-import models.errors.*
 import play.api.libs.json.{JsString, JsValue}
 import v3.fixtures.CreateRequestFixtures.*
 import v3.models.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}

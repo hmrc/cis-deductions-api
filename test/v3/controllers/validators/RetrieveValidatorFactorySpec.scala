@@ -22,7 +22,6 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.utils.UnitSpec
 import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
 import v3.models.request.retrieve.RetrieveRequestData
 
 class RetrieveValidatorFactorySpec extends UnitSpec with MockAppConfig {

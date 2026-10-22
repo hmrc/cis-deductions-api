@@ -17,10 +17,9 @@
 package v3.controllers.validators.resolvers
 
 import api.controllers.validators.resolvers.ResolverSupport
-import api.models.errors.MtdError
+import api.models.errors.{MtdError, RuleSourceInvalidError}
 import cats.data.Validated
 import models.domain.CisSource
-import models.errors.RuleSourceInvalidError
 
 object ResolveSource extends ResolverSupport {
 
