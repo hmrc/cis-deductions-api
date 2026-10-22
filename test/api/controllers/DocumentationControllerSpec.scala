@@ -18,7 +18,7 @@ package api.controllers
 
 import api.config.rewriters.*
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import api.config.{AppConfig, MockAppConfig, RealAppConfig}
+import api.config.{MockAppConfig, RealAppConfig}
 import api.definition.*
 import api.routing.{Version, Versions}
 import com.typesafe.config.ConfigFactory
@@ -179,9 +179,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     private implicit val materializer: Materializer = NoMaterializer
 
-    protected val appConfig: AppConfig = mockAppConfig
-
-    private val apiFactory = new ApiDefinitionFactory(appConfig) {
+    private val apiFactory = new ApiDefinitionFactory(mockAppConfig) {
 
       override lazy val definition: Definition = Definition(
         APIDefinition(
