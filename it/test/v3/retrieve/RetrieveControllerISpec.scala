@@ -23,7 +23,7 @@ import api.support.IntegrationBaseSpec
 import play.api.http.HeaderNames.*
 import play.api.http.Status.*
 import play.api.libs.ws.{WSRequest, WSResponse}
-import v3.fixtures.RetrieveJson.*
+import v3.retrieve.fixtures.RetrieveJson.*
 
 class RetrieveControllerISpec extends IntegrationBaseSpec {
 
