@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.amend.validators
+package v3.amend
 
 import api.controllers.validators.Validator
 import api.models.domain.{DateRange, Nino, TaxYear}
@@ -22,7 +22,7 @@ import api.models.errors.*
 import api.utils.UnitSpec
 import config.MockCisDeductionsApiConfig
 import play.api.libs.json.JsValue
-import v3.amend.fixtures.AmendRequestFixtures.*
+import v3.amend.AmendRequestFixtures.*
 import v3.amend.model.request.AmendRequestData
 import v3.common.model.domain.SubmissionId
 import v3.common.model.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}

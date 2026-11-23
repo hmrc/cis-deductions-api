@@ -24,7 +24,6 @@ import api.utils.IdGenerator
 import config.CisDeductionsApiFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import v3.create.validators.CreateValidatorFactory
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

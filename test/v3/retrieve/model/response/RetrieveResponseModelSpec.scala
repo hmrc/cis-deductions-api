@@ -19,8 +19,8 @@ package v3.retrieve.model.response
 import api.config.MockAppConfig
 import api.utils.UnitSpec
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import v3.retrieve.fixtures.RetrieveJson
-import v3.retrieve.fixtures.RetrieveModels
+import v3.retrieve.RetrieveJson
+import v3.retrieve.RetrieveModels
 
 class RetrieveResponseModelSpec extends UnitSpec with MockAppConfig {
 

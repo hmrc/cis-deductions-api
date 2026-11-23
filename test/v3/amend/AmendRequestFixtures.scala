@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.amend.fixtures
+package v3.amend
 
 import play.api.libs.json.{JsValue, Json}
 import v3.amend.model.request.AmendBody

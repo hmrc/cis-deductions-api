@@ -26,11 +26,10 @@ import api.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v3.retrieve.fixtures.RetrieveJson.*
-import v3.retrieve.fixtures.RetrieveModels.*
+import v3.retrieve.RetrieveJson.*
+import v3.retrieve.RetrieveModels.*
 import v3.retrieve.model.domain.CisSource
 import v3.retrieve.model.request.RetrieveRequestData
-import v3.retrieve.validators.MockedRetrieveValidatorFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

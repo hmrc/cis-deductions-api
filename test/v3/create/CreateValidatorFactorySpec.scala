@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.create.validators
+package v3.create
 
 import api.controllers.validators.Validator
 import api.models.domain.{DateRange, Nino, TaxYear}
@@ -24,7 +24,7 @@ import api.utils.UnitSpec
 import config.MockCisDeductionsApiConfig
 import play.api.libs.json.{JsString, JsValue}
 import v3.common.model.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
-import v3.create.fixtures.CreateRequestFixtures.*
+import v3.create.CreateRequestFixtures.*
 import v3.create.model.request.{CreateBody, CreateRequestData}
 
 import java.time.LocalDate

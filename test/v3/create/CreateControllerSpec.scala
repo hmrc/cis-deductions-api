@@ -26,11 +26,10 @@ import api.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v3.amend.fixtures.AmendRequestFixtures.requestJson
-import v3.create.fixtures.CreateRequestFixtures.*
+import v3.amend.AmendRequestFixtures.requestJson
+import v3.create.CreateRequestFixtures.*
 import v3.create.model.request.CreateRequestData
 import v3.create.model.response.CreateResponseModel
-import v3.create.validators.MockedCreateValidatorFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

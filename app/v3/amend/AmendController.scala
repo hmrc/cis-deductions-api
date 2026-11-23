@@ -23,7 +23,6 @@ import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import v3.amend.validators.AmendValidatorFactory
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

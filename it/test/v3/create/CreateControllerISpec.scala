@@ -26,7 +26,7 @@ import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import v3.common.model.errors.CisDeductionsApiCommonErrors.{DeductionFromDateFormatError, DeductionToDateFormatError}
-import v3.create.fixtures.CreateRequestFixtures.*
+import v3.create.CreateRequestFixtures.*
 
 import java.time.LocalDate
 

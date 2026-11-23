@@ -23,7 +23,7 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.retrieve.fixtures.RetrieveModels.*
+import v3.retrieve.RetrieveModels.*
 import v3.retrieve.model.domain.CisSource
 import v3.retrieve.model.request.RetrieveRequestData
 import v3.retrieve.model.response.{CisDeductions, RetrieveResponseModel}

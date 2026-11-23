@@ -20,7 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v3.create.fixtures.CreateRequestFixtures.parsedRequestData
+import v3.create.CreateRequestFixtures.parsedRequestData
 import v3.create.model.request.CreateRequestData
 import v3.create.model.response.CreateResponseModel
 

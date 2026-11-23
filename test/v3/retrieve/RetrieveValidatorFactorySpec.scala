@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieve.validators
+package v3.retrieve
 
 import api.config.MockAppConfig
 import api.controllers.validators.Validator

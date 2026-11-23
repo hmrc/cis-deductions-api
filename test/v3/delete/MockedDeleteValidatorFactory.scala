@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.delete.validators
+package v3.delete
 
 import api.controllers.validators.Validator
 import api.models.errors.MtdError

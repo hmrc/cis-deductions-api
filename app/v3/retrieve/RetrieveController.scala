@@ -22,7 +22,6 @@ import api.routing.Version
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import api.utils.IdGenerator
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import v3.retrieve.validators.RetrieveValidatorFactory
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

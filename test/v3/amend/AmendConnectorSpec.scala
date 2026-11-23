@@ -20,7 +20,7 @@ import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v3.amend.fixtures.AmendRequestFixtures.*
+import v3.amend.AmendRequestFixtures.*
 import v3.amend.model.request.AmendRequestData
 import v3.common.model.domain.SubmissionId
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieve.fixtures
+package v3.retrieve
 
 import play.api.libs.json.{JsValue, Json}
 

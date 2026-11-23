@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieve.fixtures
+package v3.retrieve
 
 import v3.retrieve.model.domain.CisSource
 import v3.retrieve.model.response.{CisDeductions, PeriodData, RetrieveResponseModel}

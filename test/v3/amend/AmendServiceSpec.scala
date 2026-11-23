@@ -22,7 +22,7 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.amend.fixtures.AmendRequestFixtures.*
+import v3.amend.AmendRequestFixtures.*
 import v3.amend.model.request.AmendRequestData
 import v3.common.model.domain.SubmissionId
 

@@ -28,7 +28,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v3.common.model.domain.SubmissionId
 import v3.delete.model.request.DeleteRequestData
-import v3.delete.validators.MockedDeleteValidatorFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

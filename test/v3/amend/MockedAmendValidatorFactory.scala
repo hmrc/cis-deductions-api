@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.amend.validators
+package v3.amend
 
 import api.controllers.validators.Validator
 import api.models.errors.MtdError

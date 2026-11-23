@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.create.fixtures
+package v3.create
 
 import api.models.domain.TaxYear.currentTaxYear
 import play.api.libs.json.{JsValue, Json}
