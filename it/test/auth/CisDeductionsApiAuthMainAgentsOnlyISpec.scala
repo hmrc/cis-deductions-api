@@ -21,7 +21,7 @@ import play.api.http.Status.CREATED
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import v3.fixtures.CreateRequestFixtures.{createDeductionResponseBody, requestBodyJsonTys}
+import v3.create.CreateRequestFixtures.{createDeductionResponseBody, requestBodyJsonTys}
 
 class CisDeductionsApiAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 

@@ -1,0 +1,49 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v3.retrieve
+
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
+import api.models.domain.TaxYear
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
+import cats.data.Validated
+import cats.data.Validated.*
+import cats.implicits.*
+import v3.retrieve.model.request.RetrieveRequestData
+
+import javax.inject.Singleton
+
+@Singleton
+class RetrieveValidatorFactory {
+
+  def validator(nino: String, taxYear: String, source: String): Validator[RetrieveRequestData] = {
+
+    new Validator[RetrieveRequestData] {
+
+      def validate: Validated[Seq[MtdError], RetrieveRequestData] =
+        (
+          ResolveNino(nino),
+          ResolveTaxYear(taxYear),
+          ResolveSource(source)
+        ).mapN(RetrieveRequestData.apply) andThen validateBusinessRules
+
+      def validateBusinessRules(parsed: RetrieveRequestData): Validated[Seq[MtdError], RetrieveRequestData] =
+        if (TaxYear.currentTaxYear.year - parsed.taxYear.year >= 5) invalid(RuleTaxYearNotSupportedError.dateRangeMsg) else Valid(parsed)
+    }
+  }
+
+}
