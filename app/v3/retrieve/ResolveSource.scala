@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieve.validators.resolvers
+package v3.retrieve
 
 import api.controllers.validators.resolvers.ResolverSupport
 import api.models.errors.{MtdError, RuleSourceInvalidError}

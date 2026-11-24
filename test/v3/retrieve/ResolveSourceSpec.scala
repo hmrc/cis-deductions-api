@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package v3.retrieve.validators.resolvers
+package v3.retrieve
 
 import api.models.errors.RuleSourceInvalidError
 import api.utils.UnitSpec
 import cats.data.Validated.{Invalid, Valid}
 import v3.retrieve.model.domain.CisSource
-import v3.retrieve.validators.resolvers
 
 class ResolveSourceSpec extends UnitSpec {
 
@@ -35,7 +34,7 @@ class ResolveSourceSpec extends UnitSpec {
 
     "return an error" when {
       "passed an invalid source" in {
-        resolvers.ResolveSource("notASource") shouldBe Invalid(List(RuleSourceInvalidError))
+        ResolveSource("notASource") shouldBe Invalid(List(RuleSourceInvalidError))
       }
     }
   }

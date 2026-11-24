@@ -24,7 +24,6 @@ import cats.data.Validated
 import cats.data.Validated.*
 import cats.implicits.*
 import v3.retrieve.model.request.RetrieveRequestData
-import v3.retrieve.validators.resolvers.ResolveSource
 
 import javax.inject.Singleton
 
